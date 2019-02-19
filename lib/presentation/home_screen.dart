@@ -34,6 +34,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+    _switchAnim = new RelativeRectTween(
+      begin: RelativeRect.fromLTRB(0,0, 20,0),
+      end: RelativeRect.fromLTRB(0.0, 0.0, 0.0, 0.0),
+    ).animate(_switchAnimCont);
 
     bloc = BlocProvider.of<SquazzleBloc>(context);
     bloc.setup();
@@ -79,9 +83,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               if (drag.delta.dy < -10) move = 'up';
             },
             onHorizontalDragUpdate: (drag) {
-              if (drag.delta.dx > 10) {
-                move = 'right';
-              }
+              if (drag.delta.dx > 10) move = 'right';
               if (drag.delta.dx < -10) move = 'left';
             },
             onVerticalDragEnd: (drag) {print('$index: $move');},
@@ -90,25 +92,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               final Offset nextToRightPos = square.localToGlobal(Offset.zero);
               square = keys[index].currentContext.findRenderObject();
               final Offset currPos = square.localToGlobal(Offset.zero);
-              _switchAnim = Tween(begin: -1, end: 0).animate(
-                  CurvedAnimation(parent: _switchAnimCont, curve: Curves.fastOutSlowIn)
-              );
-              _switchAnimCont.reverse();
               print('$index: $move');
             },
-            child: PositionedTransition(
-              animation: _switchAnimCont,
-              builder: (context, child) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: colors[state.field.grid[(index/5).truncate()][index%5]],
-                    borderRadius: BorderRadius.all(Radius.circular(5.0))
-                  ),
-                );
-              }),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: colors[state.field.grid[(index/5).truncate()][index%5]],
+                  borderRadius: BorderRadius.all(Radius.circular(5.0))
+              ),
+            ),
           );
         }),
       )
     );
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _switchAnimCont.dispose();
+  }
+
 }

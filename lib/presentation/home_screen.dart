@@ -32,12 +32,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     for (int i = 0; i < 25; i++) keys.add(GlobalKey(debugLabel:'$i'));
     _switchAnimCont = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(seconds: 2),
     );
-    _switchAnim = new RelativeRectTween(
-      begin: RelativeRect.fromLTRB(0,0, 20,0),
-      end: RelativeRect.fromLTRB(0.0, 0.0, 0.0, 0.0),
-    ).animate(_switchAnimCont);
+    _switchAnim = Tween(begin: -1, end: 0).animate(
+      CurvedAnimation(
+        parent: _switchAnimCont,
+        curve: Curves.fastOutSlowIn,
+      ),
+    );
 
     bloc = BlocProvider.of<SquazzleBloc>(context);
     bloc.setup();
@@ -63,46 +65,57 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget fieldWidget(SquazzleState state) {
-    return Container(
-      alignment: Alignment.bottomCenter,
-      child: GridView.count(
-        shrinkWrap: true,
-        crossAxisSpacing: 4,
-        mainAxisSpacing: 4,
-        crossAxisCount: 5,
-        children: List.generate(25, (index) {
-          return GestureDetector(
-            key: keys[index],
-            onTap: (){
-              final RenderBox renderBoxRed = keys[index].currentContext.findRenderObject();
-              final positionRed = renderBoxRed.localToGlobal(Offset.zero);
-              print("POSITION of $index: $positionRed ");
-            },
-            onVerticalDragUpdate: (drag) {
-              if (drag.delta.dy > 10) move = 'down';
-              if (drag.delta.dy < -10) move = 'up';
-            },
-            onHorizontalDragUpdate: (drag) {
-              if (drag.delta.dx > 10) move = 'right';
-              if (drag.delta.dx < -10) move = 'left';
-            },
-            onVerticalDragEnd: (drag) {print('$index: $move');},
-            onHorizontalDragEnd: (drag) {
-              RenderBox square = keys[index+1].currentContext.findRenderObject();
-              final Offset nextToRightPos = square.localToGlobal(Offset.zero);
-              square = keys[index].currentContext.findRenderObject();
-              final Offset currPos = square.localToGlobal(Offset.zero);
-              print('$index: $move');
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  color: colors[state.field.grid[(index/5).truncate()][index%5]],
-                  borderRadius: BorderRadius.all(Radius.circular(5.0))
-              ),
-            ),
-          );
-        }),
-      )
+    double width = MediaQuery.of(context).size.width;
+    _switchAnimCont.forward();
+    return AnimatedBuilder(
+      animation: _switchAnim,
+      builder: (context, child) {
+        return Container(
+          alignment: Alignment.bottomCenter,
+          child: GridView.count(
+            shrinkWrap: true,
+            crossAxisSpacing: 4,
+            mainAxisSpacing: 4,
+            crossAxisCount: 5,
+            children: List.generate(25, (index) {
+              return GestureDetector(
+                key: keys[index],
+                onTap: (){
+                  final RenderBox renderBoxRed = keys[index].currentContext.findRenderObject();
+                  final positionRed = renderBoxRed.localToGlobal(Offset.zero);
+                  print("POSITION of $index: $positionRed ");
+                },
+                onVerticalDragUpdate: (drag) {
+                  if (drag.delta.dy > 10) move = 'down';
+                  if (drag.delta.dy < -10) move = 'up';
+                },
+                onHorizontalDragUpdate: (drag) {
+                  if (drag.delta.dx > 10) move = 'right';
+                  if (drag.delta.dx < -10) move = 'left';
+                },
+                onVerticalDragEnd: (drag) {print('$index: $move');},
+                onHorizontalDragEnd: (drag) {
+                  RenderBox square = keys[index+1].currentContext.findRenderObject();
+                  final Offset nextToRightPos = square.localToGlobal(Offset.zero);
+                  square = keys[index].currentContext.findRenderObject();
+                  final Offset currPos = square.localToGlobal(Offset.zero);
+                  print('$index: $move');
+                  _switchAnimCont.reverse();
+                },
+                child: Transform(
+                  transform: Matrix4.translationValues((_switchAnim.value as int).toDouble() * width, 0,0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: colors[state.field.grid[(index/5).truncate()][index%5]],
+                        borderRadius: BorderRadius.all(Radius.circular(5.0))
+                    ),
+                  ),
+                ),
+              );
+            }),
+          )
+        );
+      },
     );
   }
 

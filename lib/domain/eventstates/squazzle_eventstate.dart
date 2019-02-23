@@ -6,17 +6,14 @@ import 'package:squazzle/domain/bloc_utils/bloc_utils.dart';
 class SquazzleState extends BlocState {
   final SquazzleStateType type;
   final String message;
-  final GameField field;
 
   SquazzleState({
     @required this.type,
     this.message,
-    this.field,
   });
 
-  factory SquazzleState.init(GameField field) =>
-      SquazzleState(type: SquazzleStateType.init,
-                    field: field);
+  factory SquazzleState.init() =>
+      SquazzleState(type: SquazzleStateType.init);
 
   factory SquazzleState.notInit() =>
       SquazzleState(type: SquazzleStateType.notInit);

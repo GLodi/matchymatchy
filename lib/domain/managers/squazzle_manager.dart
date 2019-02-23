@@ -8,4 +8,7 @@ class SquazzleManager {
   SquazzleManager(this._apiHelper);
 
   Observable<GameField> getGame() => Observable.fromFuture(_apiHelper.getGame());
+
+  Observable<GameField> applyMove(Move move) =>
+      Observable.fromFuture(_apiHelper.applyMove(move));
 }

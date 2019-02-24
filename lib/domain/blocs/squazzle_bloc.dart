@@ -8,6 +8,8 @@ class SquazzleBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
 
   final _gameFieldSubject = BehaviorSubject<GameField>();
   Stream<GameField> get gameField => _gameFieldSubject.stream;
+  final _targetFieldSubject = BehaviorSubject<TargetField>();
+  Stream<TargetField> get targetField => _targetFieldSubject.stream;
 
   final _moveSubject = PublishSubject<List<int>>();
   Sink<List<int>> get move => _moveSubject.sink;
@@ -29,12 +31,13 @@ class SquazzleBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
   @override
   Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
     if (event.type == SquazzleEventType.start) {
-      SquazzleState result;
       await _manager.getGame().listen((field) {
         _gameFieldSubject.add(field);
-        result = SquazzleState.init();
-      } ).asFuture();
-      yield result;
+      }).asFuture();
+      await _manager.getTarget().listen((target) {
+        _targetFieldSubject.add(target);
+      }).asFuture();
+      yield SquazzleState.init();
     }
   }
 }

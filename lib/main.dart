@@ -7,16 +7,16 @@ import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/home_screen.dart';
 
 void main() {
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,]);
   kiwi.Container container = new kiwi.Container();
   container.registerSingleton((c) =>
     new NetUtils());
   container.registerSingleton((c) =>
     new ApiHelper(c.resolve<NetUtils>()));
   container.registerSingleton((c) =>
-    new SquazzleManager(c.resolve<ApiHelper>()));
+    new LogicHelper());
+  container.registerSingleton((c) =>
+    new SquazzleManager(c.resolve<ApiHelper>(), c.resolve<LogicHelper>()));
   container.registerSingleton((c) =>
     new SquazzleBloc(c.resolve<SquazzleManager>()));
   runApp(App());

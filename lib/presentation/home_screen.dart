@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   List<Tween> _switchTween = List();
   List<Animation> _switchAnim = List();
   List<AnimationController> _switchAnimCont = List();
-  double fifthWidth, tenthWidth;
+  double fifthWidth, tenthWidth, opacityLevel = 1;
   GameField field = GameField(grid: [
     [1,1,1,1,1],
     [1,1,1,1,1],
@@ -62,28 +62,46 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             return Center(child: CircularProgressIndicator());
           }
           case SquazzleStateType.init : {
-            fifthWidth = MediaQuery.of(context).size.width / 5;
+            fifthWidth = MediaQuery.of(context).size.width/5;
             tenthWidth = fifthWidth/2;
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return Stack(
               children: <Widget>[
-                Container(
-                  constraints: BoxConstraints(maxHeight: 3*tenthWidth, maxWidth: 3*tenthWidth),
-                  margin: EdgeInsets.only(top: 50),
-                  alignment: Alignment.topCenter,
-                  child: targetWidget(),
+                StreamBuilder<bool>(
+                  stream: bloc.correct,
+                  builder: (context, snapshot) {
+                    return AnimatedOpacity(
+                      opacity: opacityLevel,
+                      child: Container(),
+                    );
+                  },
                 ),
-                Container(
-                  constraints: BoxConstraints(maxHeight: 5*fifthWidth),
-                  alignment: Alignment.bottomCenter,
-                  child: fieldWidget(),
-                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      constraints: BoxConstraints(maxHeight: 3*tenthWidth, maxWidth: 3*tenthWidth),
+                      margin: EdgeInsets.only(top: 50),
+                      alignment: Alignment.topCenter,
+                      child: targetWidget(),
+                    ),
+                    Container(
+                      constraints: BoxConstraints(maxHeight: 5*fifthWidth),
+                      margin: EdgeInsets.only(bottom: 40),
+                      alignment: Alignment.bottomCenter,
+                      child: fieldWidget(),
+                    ),
+                  ],
+                )
               ],
             );
           }
         }
       },
     );
+  }
+
+  void _changeOpacity() {
+    setState(() => opacityLevel = opacityLevel == 0 ? 1.0 : 0.0);
   }
 
   Widget fieldWidget() {
@@ -192,6 +210,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       stream: bloc.targetField,
       initialData: target,
       builder: (context, snapshot) {
+        target = snapshot.data;
         return Stack(
           children: <Widget>[
             squareTarget(0, 0, 0),

@@ -2,6 +2,7 @@ import 'package:squazzle/data/models/models.dart';
 
 class LogicHelper {
   GameField game;
+  TargetField target;
 
   Future<GameField> getGame() async {
     var grid = [
@@ -21,7 +22,8 @@ class LogicHelper {
       [1,2,3],
       [1,2,3],
     ];
-    return TargetField(grid: grid);
+    target = TargetField(grid: grid);
+    return target;
   }
 
   Future<GameField> applyMove(Move move) async {
@@ -56,6 +58,20 @@ class LogicHelper {
       }
       default: throw Exception('Wrong direction');
     }
+  }
+
+  Future<bool> checkIfCorrect() async {
+    bool result = true;
+    for(int i = 1; i < 4; i++) {
+      for(int j = 1; j < 4; j++) {
+        if (game.grid[i][j] != target.grid[i-1][j-1]) {
+          result = false;
+          break;
+        }
+      }
+      if (result == false) break;
+    }
+    return result;
   }
 
 }

@@ -10,6 +10,8 @@ class SquazzleBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
   Stream<GameField> get gameField => _gameFieldSubject.stream;
   final _targetFieldSubject = BehaviorSubject<TargetField>();
   Stream<TargetField> get targetField => _targetFieldSubject.stream;
+  final _correctSubject = BehaviorSubject<bool>();
+  Stream<bool> get correct => _correctSubject.stream;
 
   final _moveSubject = PublishSubject<List<int>>();
   Sink<List<int>> get move => _moveSubject.sink;
@@ -25,6 +27,10 @@ class SquazzleBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
     Move move = Move(from: list[0], dir: list[1]);
     _manager.applyMove(move).listen((field) {
       _gameFieldSubject.add(field);
+      _manager.checkIfCorrect().listen((correct) {
+        if (correct) _correctSubject.add(correct);
+      }
+      );
     }).asFuture();
   }
 

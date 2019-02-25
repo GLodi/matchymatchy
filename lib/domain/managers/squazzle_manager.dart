@@ -16,4 +16,7 @@ class SquazzleManager {
 
   Observable<TargetField> getTarget() =>
       Observable.fromFuture(_logicHelper.getTarget());
+
+  Observable<bool> checkIfCorrect() =>
+      Observable.fromFuture(_logicHelper.checkIfCorrect());
 }

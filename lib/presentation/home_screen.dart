@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   List<Tween> _switchTween = List();
   List<Animation> _switchAnim = List();
   List<AnimationController> _switchAnimCont = List();
-  double fifthWidth, tenthWidth, opacityLevel = 1;
+  double fifthWidth, tenthWidth, opacityLevel = 0;
   GameField field = GameField(grid: [
     [1,1,1,1,1],
     [1,1,1,1,1],
@@ -47,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     bloc = BlocProvider.of<SquazzleBloc>(context);
     bloc.setup();
     bloc.emitEvent(SquazzleEvent(type: SquazzleEventType.start));
+    bloc.correct.listen((correct) => _changeOpacity());
   }
 
   @override
@@ -66,15 +67,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             tenthWidth = fifthWidth/2;
             return Stack(
               children: <Widget>[
-                StreamBuilder<bool>(
-                  stream: bloc.correct,
-                  builder: (context, snapshot) {
-                    return AnimatedOpacity(
-                      opacity: opacityLevel,
-                      child: Container(),
-                    );
-                  },
-                ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -91,7 +83,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       child: fieldWidget(),
                     ),
                   ],
-                )
+                ),
+                AnimatedOpacity(
+                  duration: Duration(seconds: 2),
+                  opacity: opacityLevel,
+                  child: Visibility(
+                    visible: opacityLevel != 0,
+                    child: Container(
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
               ],
             );
           }
@@ -247,44 +249,44 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void moveRight(int index) {
     if (index%5 != 4) {
       _switchTween[index].end = Offset(1, 0);
-      _switchAnimCont[index].forward().then((c) {
+      _switchAnimCont[index].forward();
+      _switchTween[index+1].end = Offset(-1, 0);
+      _switchAnimCont[index+1].forward().then((c) {
         bloc.move.add([index, 1]);
       });
-      _switchTween[index+1].end = Offset(-1, 0);
-      _switchAnimCont[index+1].forward();
     }
   }
 
   void moveLeft(int index) {
     if (index%5 != 0) {
       _switchTween[index].end = Offset(-1, 0);
-      _switchAnimCont[index].forward().then((c) {
+      _switchAnimCont[index].forward();
+      _switchTween[index-1].end = Offset(1, 0);
+      _switchAnimCont[index-1].forward().then((c) {
         bloc.move.add([index, 3]);
       });
-      _switchTween[index-1].end = Offset(1, 0);
-      _switchAnimCont[index-1].forward();
     }
   }
 
   void moveUp(int index) {
     if ((index/5).truncate() != 0) {
       _switchTween[index].end = Offset(0, -1);
-      _switchAnimCont[index].forward().then((c) {
+      _switchAnimCont[index].forward();
+      _switchTween[index-5].end = Offset(0, 1);
+      _switchAnimCont[index-5].forward().then((c) {
         bloc.move.add([index, 0]);
       });
-      _switchTween[index-5].end = Offset(0, 1);
-      _switchAnimCont[index-5].forward();
     }
   }
 
   void moveDown(int index) {
     if ((index/5).truncate() != 4) {
       _switchTween[index].end = Offset(0, 1);
-      _switchAnimCont[index].forward().then((c) {
+      _switchAnimCont[index].forward();
+      _switchTween[index+5].end = Offset(0, -1);
+      _switchAnimCont[index+5].forward().then((c) {
         bloc.move.add([index, 2]);
       });
-      _switchTween[index+5].end = Offset(0, -1);
-      _switchAnimCont[index+5].forward();
     }
   }
 

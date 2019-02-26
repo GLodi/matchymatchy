@@ -3,6 +3,7 @@ import 'package:squazzle/data/models/models.dart';
 class LogicHelper {
   GameField game;
   TargetField target;
+  int movesNumber = 0;
 
   Future<GameField> getGame() async {
     var grid = [
@@ -27,6 +28,7 @@ class LogicHelper {
   }
 
   Future<GameField> applyMove(Move move) async {
+    movesNumber += 1;
     switch(move.dir) {
       case 0: {
         var toMove = game.grid[(move.from/5).truncate()][move.from%5];

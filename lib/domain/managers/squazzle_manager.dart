@@ -19,4 +19,6 @@ class SquazzleManager {
 
   Observable<bool> checkIfCorrect() =>
       Observable.fromFuture(_logicHelper.checkIfCorrect());
+
+  Observable<int> getMovesAmount() => Observable.just(_logicHelper.movesNumber);
 }

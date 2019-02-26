@@ -4,10 +4,10 @@ import 'package:kiwi/kiwi.dart' as kiwi;
 
 import 'package:squazzle/data/data.dart';
 import 'package:squazzle/domain/domain.dart';
-import 'package:squazzle/presentation/home_screen.dart';
+import 'package:squazzle/presentation/presentation.dart';
 
 void main() {
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,]);
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   kiwi.Container container = new kiwi.Container();
   container.registerSingleton((c) =>
     new NetUtils());
@@ -29,10 +29,7 @@ class App extends StatelessWidget {
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: BlocProvider(
-          child: HomeScreen(),
-          bloc: kiwi.Container().resolve<SquazzleBloc>(),
-        ),
+        body: HomeScreen(),
       ),
     );
   }

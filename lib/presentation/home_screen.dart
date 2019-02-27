@@ -55,28 +55,45 @@ class _HomeScreenState extends State<HomeScreen> {
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
           child: Opacity(
-            opacity: 0.1,
+            opacity: 0.5,
             child: Container(
-              color: Colors.white,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  // Add one stop for each color. Stops should increase from 0 to 1
+                  stops: [0.1, 0.3, 0.5, 0.6, 0.7, 0.8, 0.9],
+                  colors: [
+                    Colors.red[300],
+                    Colors.red[400],
+                    Colors.red[500],
+                    Colors.red[600],
+                    Colors.red[700],
+                    Colors.red[800],
+                    Colors.red[900],
+                  ],                ),
+              ),
             ),
           ),
         ),
         Center(
-          child: RaisedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return Scaffold(
-                    body: BlocProvider(
-                      child: GameScreen(),
-                      bloc: kiwi.Container().resolve<SquazzleBloc>(),
-                    )
-                  );}
-                ),
-              );
-            },
-          ),
+          child: InkWell(
+            child: RaisedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return Scaffold(
+                        body: BlocProvider(
+                          child: GameScreen(),
+                          bloc: kiwi.Container().resolve<SquazzleBloc>(),
+                        )
+                    );}
+                  ),
+                );
+              },
+            ),
+          )
         ),
       ],
     );

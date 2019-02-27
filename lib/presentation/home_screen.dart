@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import "dart:math";
 import 'dart:ui';
 import 'package:kiwi/kiwi.dart' as kiwi;
+import 'package:infinite_listview/infinite_listview.dart';
+import 'dart:async';
 
 import 'game_screen.dart';
 import 'package:squazzle/domain/domain.dart';
-
 
 const colors2 = {
   0:Colors.white,
@@ -27,6 +28,15 @@ class _HomeScreenState extends State<HomeScreen> {
   final _random = Random();
   double opacityLevel = 0;
   double fifthWidth;
+  final InfiniteScrollController _infiniteController = InfiniteScrollController(
+    initialScrollOffset: 0.0,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => applyMovement());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,15 +47,17 @@ class _HomeScreenState extends State<HomeScreen> {
           constraints: BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height,
           ),
-          alignment: Alignment.bottomCenter,
-          child: background(),
+          child: InfiniteListView.builder(
+            controller: _infiniteController,
+            itemBuilder: _buildItem,
+          ),
         ),
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
           child: Opacity(
             opacity: 0.1,
             child: Container(
-              color: Colors.black,
+              color: Colors.white,
             ),
           ),
         ),
@@ -70,6 +82,30 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void applyMovement() {
+    const minute = const Duration(seconds:60);
+    _infiniteController.animateTo(
+      _infiniteController.offset + 2000.0,
+      duration: minute,
+      curve: Curves.linear,
+    );
+    new Timer.periodic(minute, (Timer t) {
+      _infiniteController.animateTo(
+        _infiniteController.offset + 2000.0,
+        duration: minute,
+        curve: Curves.linear,
+      );
+    });
+  }
+
+  Widget _buildItem(BuildContext context, int index) {
+    var l = List<Widget>();
+    for (int i=0; i<5; i++) {
+      l.add(square(i, (i%5)*fifthWidth, (i/5).truncate()*fifthWidth));
+    }
+    return Row(children: l);
+  }
+
   Widget background() {
     var l = List<Widget>();
     for (int i=0; i<60; i++) {
@@ -79,9 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget square(int index, double left, double bottom) {
-    return Positioned(
-      left: left,
-      bottom: bottom,
+    return Container(
       width: fifthWidth,
       height: fifthWidth,
       child: Container(

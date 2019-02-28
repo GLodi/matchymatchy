@@ -3,8 +3,8 @@ import 'package:rxdart/rxdart.dart';
 import 'package:squazzle/data/data.dart';
 
 class SquazzleManager {
-  final ApiHelper _apiHelper;
-  final LogicHelper _logicHelper;
+  final ApiRepo _apiHelper;
+  final LogicRepo _logicHelper;
 
   SquazzleManager(this._apiHelper, this._logicHelper);
 
@@ -20,5 +20,6 @@ class SquazzleManager {
   Observable<bool> checkIfCorrect() =>
       Observable.fromFuture(_logicHelper.checkIfCorrect());
 
-  Observable<int> getMovesAmount() => Observable.just(_logicHelper.movesNumber);
+  Observable<int> getMovesAmount() =>
+      Observable.fromFuture(_logicHelper.getMovesNumber());
 }

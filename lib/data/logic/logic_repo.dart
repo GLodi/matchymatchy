@@ -1,10 +1,29 @@
 import 'package:squazzle/data/models/models.dart';
 
-class LogicHelper {
+abstract class LogicRepo {
+
+  Future<GameField> getGame();
+
+  Future<TargetField> getTarget();
+
+  Future<GameField> applyMove(Move move);
+
+  Future<bool> checkIfCorrect();
+
+  Future<int> getMovesNumber();
+
+}
+
+class LogicRepoImpl implements LogicRepo {
   GameField game;
   TargetField target;
   int movesNumber = 0;
 
+  Future<int> getMovesNumber() async {
+    return movesNumber;
+  }
+
+  @override
   Future<GameField> getGame() async {
     var grid = [
       [1,2,3,4,5],
@@ -17,6 +36,7 @@ class LogicHelper {
     return game;
   }
 
+  @override
   Future<TargetField> getTarget() async {
     var grid = [
       [1,2,3],
@@ -27,6 +47,7 @@ class LogicHelper {
     return target;
   }
 
+  @override
   Future<GameField> applyMove(Move move) async {
     movesNumber += 1;
     switch(move.dir) {
@@ -62,6 +83,7 @@ class LogicHelper {
     }
   }
 
+  @override
   Future<bool> checkIfCorrect() async {
     bool result = true;
     for(int i = 1; i < 4; i++) {

@@ -71,29 +71,40 @@ class _HomeScreenState extends State<HomeScreen> {
                     Colors.red[700],
                     Colors.red[800],
                     Colors.red[900],
-                  ],                ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
         Center(
-          child: InkWell(
-            child: RaisedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return Scaffold(
-                        body: BlocProvider(
-                          child: GameScreen(),
-                          bloc: kiwi.Container().resolve<SquazzleBloc>(),
-                        )
-                    );}
-                  ),
-                );
-              },
-            ),
-          )
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              RaisedButton(
+                child: new Text("Singleplayer"),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      return Scaffold(
+                          body: BlocProvider(
+                            child: GameScreen(),
+                            bloc: kiwi.Container().resolve<SquazzleBloc>(),
+                          )
+                      );}
+                    ),
+                  );
+                },
+              ),
+              RaisedButton(
+                child: new Text("Multiplayer"),
+                onPressed: () {
+
+                },
+              ),
+            ],
+          ),
         ),
       ],
     );

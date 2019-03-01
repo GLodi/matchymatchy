@@ -39,7 +39,7 @@ class SquazzleBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
   @override
   Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
     if (event.type == SquazzleEventType.start) {
-      await _manager.getGame().listen((field) {
+      await _manager.getDb().listen((field) {
         _gameFieldSubject.add(field);
       }).asFuture();
       await _manager.getTarget().listen((target) {

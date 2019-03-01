@@ -22,4 +22,8 @@ class SquazzleManager {
 
   Observable<int> getMovesAmount() =>
       Observable.fromFuture(_logicHelper.getMovesNumber());
+
+  Observable<GameField> getDb() =>
+      Observable.fromFuture(_apiHelper.getDb());
+
 }

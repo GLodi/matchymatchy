@@ -4,12 +4,12 @@ import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
 
 const colors = {
-  1:Colors.white,
-  2:Colors.blue,
-  3:Colors.orange,
-  4:Colors.yellow,
-  5:Colors.green,
-  6:Colors.red,
+  0:Colors.white,
+  1:Colors.blue,
+  2:Colors.orange,
+  3:Colors.yellow,
+  4:Colors.green,
+  5:Colors.red,
 };
 
 class GameScreen extends StatefulWidget {

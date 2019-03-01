@@ -26,11 +26,11 @@ class LogicRepoImpl implements LogicRepo {
   @override
   Future<GameField> getGame() async {
     var grid = [
-      [1,2,3,4,5],
-      [1,2,3,4,5],
-      [1,2,3,4,5],
-      [1,2,3,4,5],
-      [1,2,3,4,5],
+      [0,1,2,3,4],
+      [0,1,2,3,4],
+      [0,1,2,3,4],
+      [0,1,2,3,4],
+      [0,1,2,3,4],
     ];
     game = GameField(grid: grid);
     return game;

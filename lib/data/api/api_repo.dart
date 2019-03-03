@@ -13,12 +13,12 @@ class ApiRepoImpl implements ApiRepo {
   final NetUtils _net;
 
   ApiRepoImpl(this._net);
-
+  
+  CollectionReference get collRef => Firestore.instance.collection('gamefields');
+  
   @override
-  Future<GameField> getDb() {
-    return Firestore.instance.collection('gamefields').snapshots()
-        .listen((qs) => GameField.fromMap(qs.documents.first.data))
-        .asFuture();
+  Future<GameField> getDb() async {
+    return collRef.getDocuments().then((qs) =>GameField.fromMap(qs.documents.first.data));
   }
-
+  
 }

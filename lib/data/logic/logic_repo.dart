@@ -19,6 +19,7 @@ class LogicRepoImpl implements LogicRepo {
   TargetField target;
   int movesNumber = 0;
 
+  @override
   Future<int> getMovesNumber() async {
     return movesNumber;
   }
@@ -27,10 +28,10 @@ class LogicRepoImpl implements LogicRepo {
   Future<GameField> getGame() async {
     var grid = [
       [0,1,2,3,4],
-      [0,1,2,3,4],
-      [0,1,2,3,4],
-      [0,1,2,3,4],
-      [0,1,2,3,4],
+      [1,2,3,4,5],
+      [2,3,4,5,0],
+      [3,4,5,0,1],
+      [4,5,0,1,2],
     ];
     game = GameField(grid: grid);
     return game;
@@ -39,9 +40,9 @@ class LogicRepoImpl implements LogicRepo {
   @override
   Future<TargetField> getTarget() async {
     var grid = [
-      [1,2,3],
-      [1,2,3],
-      [1,2,3],
+      [2,3,4],
+      [2,3,4],
+      [2,3,4],
     ];
     target = TargetField(grid: grid);
     return target;

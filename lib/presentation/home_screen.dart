@@ -5,8 +5,8 @@ import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:infinite_listview/infinite_listview.dart';
 import 'dart:async';
 
-import 'game_screen.dart';
 import 'package:squazzle/domain/domain.dart';
+import 'game_screen.dart';
 
 const colors2 = {
   0:Colors.white,

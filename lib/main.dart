@@ -11,14 +11,16 @@ void main() {
   kiwi.Container container = new kiwi.Container();
   container.registerSingleton((c) =>
     new NetUtils());
-  container.registerSingleton<ApiRepo, ApiRepoImpl>((c) =>
-    new ApiRepoImpl(c.resolve<NetUtils>()));
-  container.registerSingleton<LogicRepo, LogicRepoImpl>((c) =>
-    new LogicRepoImpl());
+  container.registerSingleton<ApiProvider, ApiProviderImpl>((c) =>
+    new ApiProviderImpl(c.resolve<NetUtils>()));
+  container.registerSingleton<LogicProvider, LogicProviderImpl>((c) =>
+    new LogicProviderImpl());
   container.registerSingleton((c) =>
-    new SquazzleManager(c.resolve<ApiRepo>(), c.resolve<LogicRepo>()));
+    new SingleRepo(c.resolve<LogicProvider>()));
   container.registerSingleton((c) =>
-    new SquazzleBloc(c.resolve<SquazzleManager>()));
+    new MultiRepo(c.resolve<ApiProvider>()));
+  container.registerSingleton((c) =>
+    new SingleBloc(c.resolve<SingleRepo>()));
   runApp(App());
 }
 

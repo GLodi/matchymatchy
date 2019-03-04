@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
 
 import 'package:squazzle/domain/domain.dart';
-import 'game_field_widget.dart';
-import 'target_field_widget.dart';
+import 'package:squazzle/presentation/widgets/game_field_widget.dart';
+import 'package:squazzle/presentation/widgets/target_field_widget.dart';
 
-class GameScreen extends StatefulWidget {
+class SingleScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _GameScreenState();
+    return _SingleScreenState();
   }
 }
 
-class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
-  SquazzleBloc bloc;
+class _SingleScreenState extends State<SingleScreen> with TickerProviderStateMixin {
+  SingleBloc bloc;
   double fifthWidth, tenthWidth, opacityLevel = 0;
 
   @override
   void initState() {
     super.initState();
-    bloc = BlocProvider.of<SquazzleBloc>(context);
+    bloc = BlocProvider.of<SingleBloc>(context);
     bloc.setup();
     bloc.emitEvent(SquazzleEvent(type: SquazzleEventType.start));
     bloc.correct.listen((correct) => _changeOpacity());
@@ -96,7 +96,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                     alignment: Alignment.topCenter,
                     child: BlocProvider(
                       child: TargetFieldWidget(),
-                      bloc: kiwi.Container().resolve<SquazzleBloc>(),
+                      bloc: kiwi.Container().resolve<SingleBloc>(),
                     ),
                   ),
                 ],
@@ -108,7 +108,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
               alignment: Alignment.bottomCenter,
               child: BlocProvider(
                 child: GameFieldWidget(),
-                bloc: kiwi.Container().resolve<SquazzleBloc>(),
+                bloc: kiwi.Container().resolve<SingleBloc>(),
               ),
             ),
           ],

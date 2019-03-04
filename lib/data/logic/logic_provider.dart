@@ -1,6 +1,6 @@
 import 'package:squazzle/data/models/models.dart';
 
-abstract class LogicRepo {
+abstract class LogicProvider {
 
   Future<GameField> getGame();
 
@@ -14,7 +14,7 @@ abstract class LogicRepo {
 
 }
 
-class LogicRepoImpl implements LogicRepo {
+class LogicProviderImpl implements LogicProvider {
   GameField game;
   TargetField target;
   int movesNumber = 0;

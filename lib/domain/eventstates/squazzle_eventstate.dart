@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:squazzle/data/data.dart';
 import 'package:squazzle/domain/bloc_utils/bloc_utils.dart';
 
 class SquazzleState extends BlocState {

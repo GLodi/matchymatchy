@@ -20,7 +20,7 @@ class TargetFieldWidget extends StatefulWidget {
 }
 
 class _TargetFieldWidgetState extends State<TargetFieldWidget> {
-  SquazzleBloc bloc;
+  SingleBloc bloc;
   double fifthWidth, tenthWidth;
   TargetField target = TargetField(grid: [
     [1,1,1],
@@ -31,7 +31,7 @@ class _TargetFieldWidgetState extends State<TargetFieldWidget> {
   @override
   void initState() {
     super.initState();
-    bloc = BlocProvider.of<SquazzleBloc>(context);
+    bloc = BlocProvider.of<SingleBloc>(context);
   }
 
   @override

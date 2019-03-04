@@ -6,7 +6,8 @@ import 'package:infinite_listview/infinite_listview.dart';
 import 'dart:async';
 
 import 'package:squazzle/domain/domain.dart';
-import 'game_screen.dart';
+import 'package:squazzle/presentation/screens/single_screen.dart';
+import 'package:squazzle/presentation/screens/multi_screen.dart';
 
 const colors2 = {
   0:Colors.white,
@@ -88,10 +89,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     context,
                     MaterialPageRoute(builder: (context) {
                       return Scaffold(
-                          body: BlocProvider(
-                            child: GameScreen(),
-                            bloc: kiwi.Container().resolve<SquazzleBloc>(),
-                          )
+                        body: BlocProvider(
+                          child: SingleScreen(),
+                          bloc: kiwi.Container().resolve<SingleBloc>(),
+                        )
                       );}
                     ),
                   );
@@ -100,7 +101,17 @@ class _HomeScreenState extends State<HomeScreen> {
               RaisedButton(
                 child: new Text("Multiplayer"),
                 onPressed: () {
-
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      return Scaffold(
+                          body: BlocProvider(
+                            child: MultiScreen(),
+                            bloc: kiwi.Container().resolve<SingleBloc>(),
+                          )
+                      );}
+                    ),
+                  );
                 },
               ),
             ],

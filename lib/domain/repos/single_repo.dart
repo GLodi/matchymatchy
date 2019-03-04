@@ -2,11 +2,10 @@ import 'package:rxdart/rxdart.dart';
 
 import 'package:squazzle/data/data.dart';
 
-class SquazzleManager {
-  final ApiRepo _apiHelper;
-  final LogicRepo _logicHelper;
+class SingleRepo {
+  final LogicProvider _logicHelper;
 
-  SquazzleManager(this._apiHelper, this._logicHelper);
+  SingleRepo(this._logicHelper);
 
   Observable<GameField> getGame() =>
       Observable.fromFuture(_logicHelper.getGame());
@@ -22,8 +21,5 @@ class SquazzleManager {
 
   Observable<int> getMovesAmount() =>
       Observable.fromFuture(_logicHelper.getMovesNumber());
-
-  Observable<GameField> getDb() =>
-      Observable.fromFuture(_apiHelper.getDb());
 
 }

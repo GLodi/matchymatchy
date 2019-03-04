@@ -1,1 +1,1 @@
-export 'squazzle_bloc.dart';
+export 'single_bloc.dart';

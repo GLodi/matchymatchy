@@ -3,19 +3,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:squazzle/data/models/models.dart';
 
-abstract class ApiRepo {
+abstract class ApiProvider {
 
   Future<GameField> getDb();
 
 }
 
-class ApiRepoImpl implements ApiRepo {
+class ApiProviderImpl implements ApiProvider {
   final NetUtils _net;
 
-  ApiRepoImpl(this._net);
+  ApiProviderImpl(this._net);
   
   CollectionReference get gameFieldsRef =>
       Firestore.instance.collection('gamefields');
+
+  CollectionReference get matchesRef =>
+      Firestore.instance.collection('matches');
   
   @override
   Future<GameField> getDb() async {

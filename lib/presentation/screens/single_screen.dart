@@ -20,7 +20,6 @@ class _SingleScreenState extends State<SingleScreen> with TickerProviderStateMix
   void initState() {
     super.initState();
     bloc = BlocProvider.of<SingleBloc>(context);
-    bloc.setup();
     bloc.emitEvent(SquazzleEvent(type: SquazzleEventType.start));
     bloc.correct.listen((correct) => _changeOpacity());
   }

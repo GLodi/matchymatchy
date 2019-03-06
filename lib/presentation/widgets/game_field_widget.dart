@@ -20,7 +20,7 @@ class GameFieldWidget extends StatefulWidget {
 }
 
 class _GameFieldWidgetState extends State<GameFieldWidget> with TickerProviderStateMixin {
-  SingleBloc bloc;
+  GameFieldBloc bloc;
   List<GlobalKey> keys = List();
   List<Tween> _switchTween = List();
   List<Animation> _switchAnim = List();
@@ -39,7 +39,8 @@ class _GameFieldWidgetState extends State<GameFieldWidget> with TickerProviderSt
   void initState() {
     super.initState();
     for (int i = 0; i < 25; i++) keys.add(GlobalKey(debugLabel: '$i'));
-    bloc = BlocProvider.of<SingleBloc>(context);
+    bloc = BlocProvider.of<GameFieldBloc>(context);
+
   }
 
   @override

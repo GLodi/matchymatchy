@@ -23,9 +23,7 @@ class SingleBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
   @override
   Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
     if (event.type == SquazzleEventType.start) {
-      await _repo.getGame().listen((field) {
-        _gameFieldSubject.add(field);
-      }).asFuture();
+
       await _repo.getTarget().listen((target) {
         _targetFieldSubject.add(target);
       }).asFuture();

@@ -18,7 +18,7 @@ void main() {
   container.registerSingleton((c) =>
     new SingleRepo(c.resolve<LogicProvider>()));
   container.registerFactory((c) =>
-    new GameFieldBloc(c.resolve<SingleRepo>(), c.resolve<SingleBloc>()));
+    new GameFieldBloc(c.resolve<SingleRepo>(), c.resolve<GameBloc>()));
   container.registerSingleton((c) =>
     new MultiRepo(c.resolve<ApiProvider>()));
   container.registerSingleton((c) =>

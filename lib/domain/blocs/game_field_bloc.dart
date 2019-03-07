@@ -6,7 +6,7 @@ import 'game_bloc.dart';
 
 class GameFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
   final GameRepo _repo;
-  final GameBloc _bloc;
+  final GameBloc _gameBloc;
 
   final _gameFieldSubject = BehaviorSubject<GameField>();
   Stream<GameField> get gameField => _gameFieldSubject.stream;
@@ -14,7 +14,7 @@ class GameFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
   final _moveSubject = PublishSubject<List<int>>();
   Sink<List<int>> get move => _moveSubject.sink;
 
-  GameFieldBloc(this._repo, this._bloc);
+  GameFieldBloc(this._repo, this._gameBloc);
 
   void setup() {
     _moveSubject.listen(_applyMove);
@@ -24,10 +24,10 @@ class GameFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
     Move move = Move(from: list[0], dir: list[1]);
     await _repo.applyMove(move).listen((field) {
       _gameFieldSubject.add(field);
-      _repo.checkIfCorrect().listen((correct) {if (correct) _bloc.correctSubject.add(correct);});
+      _repo.checkIfCorrect().listen((correct) {if (correct) _gameBloc.correctSubject.add(correct);});
     }).asFuture();
     await _repo.getMovesAmount().listen((amount) {
-      _bloc.moveNumberSubject.add(amount);
+      _gameBloc.moveNumberSubject.add(amount);
     }).asFuture();
   }
 
@@ -38,6 +38,13 @@ class GameFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
         _gameFieldSubject.add(field);
       }).asFuture();
     }
+  }
+
+  @override
+  void dispose() {
+    _gameFieldSubject.close();
+    _moveSubject.close();
+    super.dispose();
   }
 
 }

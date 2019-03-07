@@ -40,7 +40,8 @@ class _GameFieldWidgetState extends State<GameFieldWidget> with TickerProviderSt
     super.initState();
     for (int i = 0; i < 25; i++) keys.add(GlobalKey(debugLabel: '$i'));
     bloc = BlocProvider.of<GameFieldBloc>(context);
-
+    bloc.emitEvent(SquazzleEvent(type: SquazzleEventType.start));
+    bloc.setup();
   }
 
   @override

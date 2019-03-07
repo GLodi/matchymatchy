@@ -9,20 +9,29 @@ import 'package:squazzle/presentation/presentation.dart';
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   kiwi.Container container = new kiwi.Container();
+
+  // Providers
   container.registerSingleton((c) =>
     new NetUtils());
   container.registerSingleton<ApiProvider, ApiProviderImpl>((c) =>
     new ApiProviderImpl(c.resolve<NetUtils>()));
   container.registerSingleton<LogicProvider, LogicProviderImpl>((c) =>
     new LogicProviderImpl());
+
+  // Repos
   container.registerSingleton((c) =>
     new SingleRepo(c.resolve<LogicProvider>()));
-  container.registerFactory((c) =>
-    new GameFieldBloc(c.resolve<SingleRepo>(), c.resolve<GameBloc>()));
   container.registerSingleton((c) =>
     new MultiRepo(c.resolve<ApiProvider>()));
+
+  // Blocs
   container.registerSingleton((c) =>
     new SingleBloc(c.resolve<SingleRepo>()));
+  container.registerFactory((c) =>
+    new GameFieldBloc(c.resolve<SingleRepo>(), c.resolve<SingleBloc>()));
+  container.registerFactory((c) =>
+    new TargetBloc(c.resolve<SingleRepo>(), c.resolve<SingleBloc>()));
+
   runApp(App());
 }
 

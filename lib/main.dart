@@ -27,11 +27,16 @@ void main() {
   // Blocs
   container.registerSingleton((c) =>
     new SingleBloc(c.resolve<SingleRepo>()));
+  container.registerSingleton((c) =>
+    new MultiBloc(c.resolve<MultiRepo>()));
   container.registerFactory((c) =>
-    new GameFieldBloc(c.resolve<SingleRepo>(), c.resolve<SingleBloc>()));
+    new GameFieldBloc(c.resolve<SingleRepo>(), c.resolve<SingleBloc>()), name: "Single");
   container.registerFactory((c) =>
-    new TargetBloc(c.resolve<SingleRepo>(), c.resolve<SingleBloc>()));
-
+    new GameFieldBloc(c.resolve<MultiRepo>(), c.resolve<MultiBloc>()), name: "Multi");
+  container.registerFactory((c) =>
+    new TargetBloc(c.resolve<SingleRepo>(), c.resolve<SingleBloc>()), name: "Single");
+  container.registerFactory((c) =>
+    new TargetBloc(c.resolve<MultiRepo>(), c.resolve<MultiBloc>()), name: "Multi");
   runApp(App());
 }
 

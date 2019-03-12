@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       return Scaffold(
                           body: BlocProvider(
                             child: MultiScreen(),
-                            bloc: kiwi.Container().resolve<SingleBloc>(),
+                            bloc: kiwi.Container().resolve<MultiBloc>(),
                           )
                       );}
                     ),

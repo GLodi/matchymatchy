@@ -3,12 +3,12 @@ import 'package:rxdart/rxdart.dart';
 import 'package:squazzle/domain/domain.dart';
 
 class SingleBloc extends GameBloc {
-  final SingleRepo _repo;
+  final SingleRepo repo;
 
   Stream<bool> get correct => correctSubject.stream;
   Stream<int> get moveNumber => moveNumberSubject.stream;
 
-  SingleBloc(this._repo) : super(BehaviorSubject<bool>(), BehaviorSubject<int>());
+  SingleBloc(this.repo) : super(repo);
 
   @override
   Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {

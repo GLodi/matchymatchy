@@ -95,7 +95,7 @@ class _SingleScreenState extends State<SingleScreen> with TickerProviderStateMix
                     alignment: Alignment.topCenter,
                     child: BlocProvider(
                       child: TargetFieldWidget(),
-                      bloc: kiwi.Container().resolve<TargetBloc>("Single"),
+                      bloc: TargetBloc(bloc),
                     ),
                   ),
                 ],
@@ -107,7 +107,7 @@ class _SingleScreenState extends State<SingleScreen> with TickerProviderStateMix
               alignment: Alignment.bottomCenter,
               child: BlocProvider(
                 child: GameFieldWidget(),
-                bloc: kiwi.Container().resolve<GameFieldBloc>("Single"),
+                bloc: GameFieldBloc(bloc),
               ),
             ),
           ],

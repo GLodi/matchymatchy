@@ -25,18 +25,11 @@ void main() {
     new MultiRepo(c.resolve<ApiProvider>()));
 
   // Blocs
-  container.registerSingleton((c) =>
+  container.registerFactory((c) =>
     new SingleBloc(c.resolve<SingleRepo>()));
-  container.registerSingleton((c) =>
+  container.registerFactory((c) =>
     new MultiBloc(c.resolve<MultiRepo>()));
-  container.registerFactory((c) =>
-    new GameFieldBloc(c.resolve<SingleRepo>(), c.resolve<SingleBloc>()), name: "Single");
-  container.registerFactory((c) =>
-    new GameFieldBloc(c.resolve<MultiRepo>(), c.resolve<MultiBloc>()), name: "Multi");
-  container.registerFactory((c) =>
-    new TargetBloc(c.resolve<SingleRepo>(), c.resolve<SingleBloc>()), name: "Single");
-  container.registerFactory((c) =>
-    new TargetBloc(c.resolve<MultiRepo>(), c.resolve<MultiBloc>()), name: "Multi");
+
   runApp(App());
 }
 

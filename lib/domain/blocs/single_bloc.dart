@@ -13,7 +13,7 @@ class SingleBloc extends GameBloc {
   @override
   Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
     if (event.type == SquazzleEventType.start) {
-      yield SquazzleState.init();
+      yield SquazzleState(type: SquazzleStateType.init);
     }
   }
 

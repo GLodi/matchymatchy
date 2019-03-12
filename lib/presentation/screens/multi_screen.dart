@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kiwi/kiwi.dart' as kiwi;
 
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/widgets/game_field_widget.dart';
@@ -66,7 +65,7 @@ class _MultiScreenState extends State<MultiScreen> {
                       return Column(
                         children: <Widget>[
                           Text(
-                            'Moves:',
+                            'Moves',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontFamily: "Roboto",

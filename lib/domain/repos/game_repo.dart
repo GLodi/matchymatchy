@@ -4,11 +4,13 @@ import 'package:squazzle/data/models/models.dart';
 
 abstract class GameRepo {
 
-  Observable<GameField> getGame();
+  Observable<Game> getGame();
+  
+  Observable<GameField> getGameField();
+
+  Observable<TargetField> getTargetField();
 
   Observable<GameField> applyMove(Move move);
-
-  Observable<TargetField> getTarget();
 
   Observable<bool> checkIfCorrect();
 

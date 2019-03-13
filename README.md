@@ -1,16 +1,11 @@
-# squazzle
+# Squazzle
 
 ...a Square Puzzle Flutter game!
 
-## Getting Started
+## Architecture
 
-This project is a starting point for a Flutter application.
+This app implements [Didier Boelens'](https://www.didierboelens.com/2018/12/reactive-programming---streams---bloc---practical-use-cases/) approach to BLoC.
+The idea is show data through widgets that react to a bloc's Stream.
+In order to simplify state management, I've also implemented EventStates: 
+blocs that emit a new widget's state based on an event.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.

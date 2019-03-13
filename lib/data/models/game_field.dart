@@ -1,5 +1,5 @@
 class GameField {
-  List<List<int>> grid;
+  List<int> grid;
 
   GameField({this.grid});
 

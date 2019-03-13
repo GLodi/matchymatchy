@@ -11,10 +11,8 @@ void main() {
   kiwi.Container container = new kiwi.Container();
 
   // Providers
-  container.registerSingleton((c) =>
-    new NetUtils());
   container.registerSingleton<ApiProvider, ApiProviderImpl>((c) =>
-    new ApiProviderImpl(c.resolve<NetUtils>()));
+    new ApiProviderImpl());
   container.registerSingleton<LogicProvider, LogicProviderImpl>((c) =>
     new LogicProviderImpl());
 

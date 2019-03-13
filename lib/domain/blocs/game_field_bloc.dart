@@ -34,7 +34,7 @@ class GameFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
   @override
   Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
     if (event.type == SquazzleEventType.start) {
-      await _gameBloc.gameRepo.getGame().listen((field) {
+      await _gameBloc.gameRepo.getGameField().listen((field) {
         _gameFieldSubject.add(field);
       }).asFuture();
     }

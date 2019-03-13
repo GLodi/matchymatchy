@@ -5,29 +5,27 @@ import 'game_repo.dart';
 
 class MultiRepo extends GameRepo {
   final ApiProvider _apiRepo;
-  LogicProvider _logicHelper;
 
   MultiRepo(this._apiRepo);
 
   @override
-  Observable<GameField> getGame() =>
+  Observable<Game> getGame() => null;
+
+  @override
+  Observable<GameField> getGameField() =>
       Observable.fromFuture(_apiRepo.getDb());
 
   @override
-  Observable<GameField> applyMove(Move move) =>
-      Observable.fromFuture(_logicHelper.applyMove(move));
+  Observable<TargetField> getTargetField() => null;
 
   @override
-  Observable<TargetField> getTarget() =>
-      Observable.fromFuture(_logicHelper.getTarget());
+  Observable<GameField> applyMove(Move move) => null;
 
   @override
-  Observable<bool> checkIfCorrect() =>
-      Observable.fromFuture(_logicHelper.checkIfCorrect());
+  Observable<bool> checkIfCorrect() => null;
 
   @override
-  Observable<int> getMovesAmount() =>
-      Observable.fromFuture(_logicHelper.getMovesNumber());
+  Observable<int> getMovesAmount() => null;
 
 
 }

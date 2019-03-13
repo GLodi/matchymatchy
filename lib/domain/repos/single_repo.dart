@@ -9,16 +9,19 @@ class SingleRepo extends GameRepo {
   SingleRepo(this._logicHelper);
 
   @override
-  Observable<GameField> getGame() =>
+  Observable<Game> getGame() => null;
+
+  @override
+  Observable<GameField> getGameField() =>
       Observable.fromFuture(_logicHelper.getGame());
+
+  @override
+  Observable<TargetField> getTargetField() =>
+      Observable.fromFuture(_logicHelper.getTarget());
 
   @override
   Observable<GameField> applyMove(Move move) =>
       Observable.fromFuture(_logicHelper.applyMove(move));
-
-  @override
-  Observable<TargetField> getTarget() =>
-      Observable.fromFuture(_logicHelper.getTarget());
 
   @override
   Observable<bool> checkIfCorrect() =>

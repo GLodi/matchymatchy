@@ -28,13 +28,7 @@ class LogicProviderImpl implements LogicProvider {
 
   @override
   Future<GameField> getGame() async {
-    var grid = [
-      [0,1,2,3,4],
-      [1,2,3,4,5],
-      [2,3,4,5,0],
-      [3,4,5,0,1],
-      [4,5,0,1,2],
-    ];
+    var grid = [0,1,2,3,4,1,2,3,4,5,2,3,4,5,0,3,4,5,0,1,4,5,0,1,2];
     game = GameField(grid: grid);
     return game;
   }
@@ -54,32 +48,32 @@ class LogicProviderImpl implements LogicProvider {
   Future<GameField> applyMove(Move move) async {
     movesNumber += 1;
     switch(move.dir) {
-      case 0: {
-        var toMove = game.grid[(move.from/5).truncate()][move.from%5];
-        var other = game.grid[(move.from/5).truncate()-1][(move.from%5)];
-        game.grid[(move.from/5).truncate()][move.from%5] = other;
-        game.grid[(move.from/5).truncate()-1][(move.from%5)] = toMove;
+      case 0: { // up
+        var toMove = game.grid[move.from];
+        var other = game.grid[move.from-5];
+        game.grid[move.from] = other;
+        game.grid[move.from-5] = toMove;
         return game;
       }
-      case 1: {
-        var toMove = game.grid[(move.from/5).truncate()][move.from%5];
-        var other = game.grid[(move.from/5).truncate()][(move.from%5)+1];
-        game.grid[(move.from/5).truncate()][move.from%5] = other;
-        game.grid[(move.from/5).truncate()][(move.from%5)+1] = toMove;
+      case 1: { // right
+        var toMove = game.grid[move.from];
+        var other = game.grid[move.from+1];
+        game.grid[move.from] = other;
+        game.grid[move.from+1] = toMove;
         return game;
       }
-      case 2: {
-        var toMove = game.grid[(move.from/5).truncate()][move.from%5];
-        var other = game.grid[(move.from/5).truncate()+1][(move.from%5)];
-        game.grid[(move.from/5).truncate()][move.from%5] = other;
-        game.grid[(move.from/5).truncate()+1][(move.from%5)] = toMove;
+      case 2: { // down
+        var toMove = game.grid[move.from];
+        var other = game.grid[move.from+5];
+        game.grid[move.from] = other;
+        game.grid[move.from+5] = toMove;
         return game;
       }
-      case 3: {
-        var toMove = game.grid[(move.from/5).truncate()][move.from%5];
-        var other = game.grid[(move.from/5).truncate()][(move.from%5)-1];
-        game.grid[(move.from/5).truncate()][move.from%5] = other;
-        game.grid[(move.from/5).truncate()][(move.from%5)-1] = toMove;
+      case 3: { // left
+        var toMove = game.grid[move.from];
+        var other = game.grid[move.from-1];
+        game.grid[move.from] = other;
+        game.grid[move.from-1] = toMove;
         return game;
       }
       default: throw Exception('Wrong direction');
@@ -89,9 +83,9 @@ class LogicProviderImpl implements LogicProvider {
   @override
   Future<bool> checkIfCorrect() async {
     bool result = true;
-    for(int i = 1; i < 4; i++) {
+    for(int i = 5; i < 7; i++) {
       for(int j = 1; j < 4; j++) {
-        if (game.grid[i][j] != target.grid[i-1][j-1]) {
+        if (game.grid[i+j] != target.grid[(i-1)-(j-1)]) {
           result = false;
           break;
         }

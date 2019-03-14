@@ -28,18 +28,14 @@ class LogicProviderImpl implements LogicProvider {
 
   @override
   Future<GameField> getGame() async {
-    var grid = [0,1,2,3,4,1,2,3,4,5,2,3,4,5,0,3,4,5,0,1,4,5,0,1,2];
+    var grid = "0123412345234503450145012";
     game = GameField(grid: grid);
     return game;
   }
 
   @override
   Future<TargetField> getTarget() async {
-    var grid = [
-      [2,3,4],
-      [2,3,4],
-      [2,3,4],
-    ];
+    var grid = "111111111";
     target = TargetField(grid: grid);
     return target;
   }
@@ -51,29 +47,29 @@ class LogicProviderImpl implements LogicProvider {
       case 0: { // up
         var toMove = game.grid[move.from];
         var other = game.grid[move.from-5];
-        game.grid[move.from] = other;
-        game.grid[move.from-5] = toMove;
+        game.grid = game.grid.replaceRange(move.from, move.from+1, other);
+        game.grid = game.grid.replaceRange(move.from-5, move.from-4, toMove);
         return game;
       }
       case 1: { // right
         var toMove = game.grid[move.from];
         var other = game.grid[move.from+1];
-        game.grid[move.from] = other;
-        game.grid[move.from+1] = toMove;
+        game.grid = game.grid.replaceRange(move.from, move.from+1, other);
+        game.grid = game.grid.replaceRange(move.from+1, move.from+2, toMove);
         return game;
       }
       case 2: { // down
         var toMove = game.grid[move.from];
         var other = game.grid[move.from+5];
-        game.grid[move.from] = other;
-        game.grid[move.from+5] = toMove;
+        game.grid = game.grid.replaceRange(move.from, move.from+1, other);
+        game.grid = game.grid.replaceRange(move.from+5, move.from+6, toMove);
         return game;
       }
       case 3: { // left
         var toMove = game.grid[move.from];
         var other = game.grid[move.from-1];
-        game.grid[move.from] = other;
-        game.grid[move.from-1] = toMove;
+        game.grid = game.grid.replaceRange(move.from, move.from+1, other);
+        game.grid = game.grid.replaceRange(move.from-1, move.from, toMove);
         return game;
       }
       default: throw Exception('Wrong direction');

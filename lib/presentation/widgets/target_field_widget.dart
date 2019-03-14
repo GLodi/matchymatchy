@@ -22,11 +22,7 @@ class TargetFieldWidget extends StatefulWidget {
 class _TargetFieldWidgetState extends State<TargetFieldWidget> {
   TargetBloc bloc;
   double fifthWidth, tenthWidth;
-  TargetField target = TargetField(grid: [
-    [1,1,1],
-    [1,1,1],
-    [1,1,1],
-  ]);
+  TargetField target = TargetField(grid: "111111111");
 
   @override
   void initState() {
@@ -70,7 +66,7 @@ class _TargetFieldWidgetState extends State<TargetFieldWidget> {
       child: Container(
         margin: EdgeInsets.all(1),
         decoration: BoxDecoration(
-            color: colors[target.grid[(index/3).truncate()][index%3]],
+            color: colors[int.parse(target.grid[index])],
             borderRadius: BorderRadius.all(Radius.circular(5.0))
         ),
       ),

@@ -24,48 +24,40 @@ abstract class DbProvider {
 class DbProviderImpl extends DbProvider {
   final _databaseName = "squazzle.db";
   final _databaseVersion = 1;
-  Database _db;
+  Database db;
+  bool initialized = false;
 
-  DbProviderImpl() { init(); }
-
-  init() async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, _databaseName);
-    return await openDatabase(path,
-        version: _databaseVersion,
-        onCreate: _onCreate);
-  }
-
-  Future _onCreate(Database db, int version) async {
-    await db.execute('''
-          CREATE TABLE gamefield (
-            _id INTEGER PRIMARY KEY,
-             TEXT NOT NULL,
-            $columnAge INTEGER NOT NULL
-          )
-          ''');
+  _initDatabase() async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String databasePath = join(appDocDir.path, 'asset_squazzle.db');
+    this.db = await openDatabase(databasePath);
+    initialized = true;
   }
 
   @override
-  Future<Game> getRandomGame() {
+  Future<Game> getRandomGame() async {
+    if (!initialized) _initDatabase();
     // TODO: implement getRandomGame
     return null;
   }
 
   @override
-  Future<GameField> getGameField(int id) {
+  Future<GameField> getGameField(int id) async {
+    if (!initialized) _initDatabase();
     // TODO: implement getGameField
     return null;
   }
 
   @override
-  Future<TargetField> getTarget(int id) {
+  Future<TargetField> getTarget(int id) async {
+    if (!initialized) _initDatabase();
     // TODO: implement getTarget
     return null;
   }
 
   @override
-  Future<int> getMovesNumber(int id) {
+  Future<int> getMovesNumber(int id) async {
+    if (!initialized) _initDatabase();
     // TODO: implement getMovesNumber
     return null;
   }

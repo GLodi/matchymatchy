@@ -11,6 +11,8 @@ void main() {
   kiwi.Container container = new kiwi.Container();
 
   // Providers
+  container.registerSingleton<DbProvider, DbProviderImpl>((c) =>
+    new DbProviderImpl());
   container.registerSingleton<ApiProvider, ApiProviderImpl>((c) =>
     new ApiProviderImpl());
   container.registerSingleton<LogicProvider, LogicProviderImpl>((c) =>
@@ -18,7 +20,7 @@ void main() {
 
   // Repos
   container.registerSingleton((c) =>
-    new SingleRepo(c.resolve<LogicProvider>()));
+    new SingleRepo(c.resolve<LogicProvider>(), c.resolve<DbProvider>()));
   container.registerSingleton((c) =>
     new MultiRepo(c.resolve<ApiProvider>()));
 

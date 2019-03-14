@@ -1,9 +1,21 @@
 class TargetField {
-  List<List<int>> grid;
+  int id;
+  String grid;
 
-  TargetField({this.grid});
+  TargetField({this.id, this.grid});
 
-  TargetField.copy(TargetField targetField) {
-    this.grid = targetField.grid;
+  TargetField.fromMap(Map<String, dynamic> map) {
+    assert(map['_id'] != null);
+    assert(map['grid'] != null);
+    assert(map['grid'].toString().length == 9);
+    id = map['_id'];
+    grid = map['grid'];
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      "_id": id,
+      "grid": grid,
+    };
   }
 }

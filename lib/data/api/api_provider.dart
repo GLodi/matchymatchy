@@ -13,15 +13,15 @@ abstract class ApiProvider {
 
 class ApiProviderImpl implements ApiProvider {
 
-  CollectionReference get gameFieldsRef =>
-      Firestore.instance.collection('gamefields');
+  CollectionReference get gameFieldRef =>
+      Firestore.instance.collection('gamefield');
 
-  CollectionReference get matchesRef =>
-      Firestore.instance.collection('matches');
+  CollectionReference get queueRef =>
+      Firestore.instance.collection('queue');
   
   @override
   Future<GameField> getDb() async {
-    return gameFieldsRef.getDocuments().then((qs) =>
+    return gameFieldRef.getDocuments().then((qs) =>
         GameField.fromMap(qs.documents.first.data));
   }
 

@@ -1,14 +1,22 @@
 class GameField {
-  List<int> grid;
+  int id;
+  String grid;
 
-  GameField({this.grid});
+  GameField({this.id, this.grid});
 
   GameField.fromMap(Map<String, dynamic> map){
+    assert(map['_id'] != null);
     assert(map['grid'] != null);
-    this.grid = new List<int>.from(map['grid']);
+    assert(map['grid'].toString().length == 25);
+    id = map['_id'];
+    grid = map['grid'];
   }
 
-  GameField.copy(GameField gameField) {
-    this.grid = gameField.grid;
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      "_id" : id,
+      "grid" : grid,
+    };
   }
+
 }

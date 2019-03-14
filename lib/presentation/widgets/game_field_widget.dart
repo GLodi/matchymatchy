@@ -27,7 +27,7 @@ class _GameFieldWidgetState extends State<GameFieldWidget> with TickerProviderSt
   List<AnimationController> _switchAnimCont = List();
   double fifthWidth;
   String move;
-  GameField field = GameField(grid: [0]);
+  GameField field = GameField(grid: "0000000000000000000000000");
 
   @override
   void initState() {
@@ -132,7 +132,7 @@ class _GameFieldWidgetState extends State<GameFieldWidget> with TickerProviderSt
           child: Container(
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(
-                color: colors[field.grid[index]],
+                color: colors[int.parse(field.grid[index])],
                 borderRadius: BorderRadius.all(Radius.circular(5.0))
             ),
           ),

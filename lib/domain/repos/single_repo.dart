@@ -5,8 +5,9 @@ import 'package:squazzle/data/data.dart';
 
 class SingleRepo extends GameRepo {
   final LogicProvider _logicHelper;
+  final DbProvider _dbProvider;
 
-  SingleRepo(this._logicHelper);
+  SingleRepo(this._logicHelper, this._dbProvider);
 
   @override
   Observable<Game> getGame() => null;

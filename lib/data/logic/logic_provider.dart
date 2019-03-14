@@ -2,10 +2,6 @@ import 'package:squazzle/data/models/models.dart';
 
 abstract class LogicProvider {
 
-  Future<GameField> getGame(); // move to db
-
-  Future<TargetField> getTarget(); // move to db
-
   /// Determines whether a Move is legal.
   Future<GameField> applyMove(Move move); // add gamefield parameter
 

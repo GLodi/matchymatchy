@@ -19,13 +19,9 @@ class MultiRepo extends GameRepo {
   Observable<TargetField> getTargetField() => null;
 
   @override
-  Observable<GameField> applyMove(Move move) => null;
+  Observable<GameField> applyMove(GameField gameField, Move move) => null;
 
   @override
-  Observable<bool> checkIfCorrect() => null;
-
-  @override
-  Observable<int> getMovesAmount() => null;
-
+  Observable<bool> checkIfCorrect(GameField gameField, TargetField targetField) => null;
 
 }

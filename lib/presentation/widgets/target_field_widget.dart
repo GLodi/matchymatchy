@@ -42,15 +42,15 @@ class _TargetFieldWidgetState extends State<TargetFieldWidget> {
         target = snapshot.data;
         return Stack(
           children: <Widget>[
-            squareTarget(0, 0, 0),
-            squareTarget(1, tenthWidth, 0),
-            squareTarget(2, 2*tenthWidth, 0),
+            squareTarget(0, 0, 2*tenthWidth),
+            squareTarget(1, tenthWidth, 2*tenthWidth),
+            squareTarget(2, 2*tenthWidth, 2*tenthWidth),
             squareTarget(3, 0, tenthWidth),
             squareTarget(4, tenthWidth, tenthWidth),
             squareTarget(5, 2*tenthWidth, tenthWidth),
-            squareTarget(6, 0, 2*tenthWidth),
-            squareTarget(7, tenthWidth, 2*tenthWidth),
-            squareTarget(8, 2*tenthWidth, 2*tenthWidth),
+            squareTarget(6, 0, 0),
+            squareTarget(7, tenthWidth, 0),
+            squareTarget(8, 2*tenthWidth, 0),
           ],
         );
       },

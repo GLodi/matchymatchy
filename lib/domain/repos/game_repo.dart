@@ -10,10 +10,8 @@ abstract class GameRepo {
 
   Observable<TargetField> getTargetField();
 
-  Observable<GameField> applyMove(Move move);
+  Observable<GameField> applyMove(GameField gameField, Move move);
 
-  Observable<bool> checkIfCorrect();
-
-  Observable<int> getMovesAmount();
+  Observable<bool> checkIfCorrect(GameField gameField, TargetField targetField);
 
 }

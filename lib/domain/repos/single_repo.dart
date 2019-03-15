@@ -23,18 +23,13 @@ class SingleRepo extends GameRepo {
         .handleError((e) => throw e);
 
   @override
-  Observable<GameField> applyMove(Move move) =>
-      Observable.fromFuture(_logicHelper.applyMove(move))
+  Observable<GameField> applyMove(GameField gameField, Move move) =>
+      Observable.fromFuture(_logicHelper.applyMove(gameField, move))
         .handleError((e) => throw e);
 
   @override
-  Observable<bool> checkIfCorrect() =>
-      Observable.fromFuture(_logicHelper.checkIfCorrect())
-        .handleError((e) => throw e);
-
-  @override
-  Observable<int> getMovesAmount() =>
-      Observable.fromFuture(_logicHelper.getMovesNumber())
+  Observable<bool> checkIfCorrect(GameField gameField, TargetField targetField) =>
+      Observable.fromFuture(_logicHelper.checkIfCorrect(gameField, targetField))
         .handleError((e) => throw e);
 
 }

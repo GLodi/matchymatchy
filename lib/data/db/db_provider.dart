@@ -24,27 +24,33 @@ abstract class DbProvider {
 class DbProviderImpl extends DbProvider {
   final _databaseName = "squazzle.db";
   final _databaseVersion = 1;
-  Database db;
-  bool initialized = false;
+  static Database _db;
+
+  Future<Database> get db async {
+      if(_db != null)
+        return _db;
+      _db = await _initDatabase();
+      return _db;
+  }
 
   _initDatabase() async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String databasePath = join(appDocDir.path, 'asset_squazzle.db');
-    this.db = await openDatabase(databasePath);
-    initialized = true;
+    var thedb = await openDatabase(databasePath);
+    print('object');
+    return thedb;
   }
 
   @override
   Future<Game> getRandomGame() async {
-    if (!initialized) await _initDatabase();
     // TODO: implement getRandomGame
     return null;
   }
 
   @override
   Future<GameField> getGameField(int id) async {
-    if (!initialized) await _initDatabase();
-    List<Map> maps = await db.query('gamefield',
+    var dbClient = await db;
+    List<Map> maps = await dbClient.query('gamefield',
         columns: ['_id', 'grid'],
         where: '_id = ?',
         whereArgs: [id]);
@@ -53,8 +59,8 @@ class DbProviderImpl extends DbProvider {
 
   @override
   Future<TargetField> getTargetField(int id) async {
-    if (!initialized) await _initDatabase();
-    List<Map> maps = await db.query('targetfield',
+    var dbClient = await db;
+    List<Map> maps = await dbClient.query('targetfield',
         columns: ['_id', 'grid'],
         where: '_id = ?',
         whereArgs: [id]);
@@ -63,7 +69,6 @@ class DbProviderImpl extends DbProvider {
 
   @override
   Future<int> getMovesNumber(int id) async {
-    if (!initialized) await _initDatabase();
     // TODO: implement getMovesNumber
     return null;
   }

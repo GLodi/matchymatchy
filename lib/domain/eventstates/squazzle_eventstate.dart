@@ -17,8 +17,8 @@ class SquazzleState extends BlocState {
   factory SquazzleState.notInit() =>
       SquazzleState(type: SquazzleStateType.notInit);
 
-  factory SquazzleState.error() =>
-      SquazzleState(type: SquazzleStateType.error);
+  factory SquazzleState.error(String message) =>
+      SquazzleState(type: SquazzleStateType.error, message: message);
 }
 
 enum SquazzleStateType {
@@ -37,4 +37,5 @@ class SquazzleEvent extends BlocEvent {
 
 enum SquazzleEventType {
   start,
+  error,
 }

@@ -15,6 +15,7 @@ class TargetBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
   Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
     if (event.type == SquazzleEventType.start) {
       await _gameBloc.gameRepo.getTargetField().listen((target) {
+        _gameBloc.targetField = target;
         _targetFieldSubject.add(target);
       }).asFuture();
     }

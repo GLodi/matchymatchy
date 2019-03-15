@@ -14,22 +14,27 @@ class SingleRepo extends GameRepo {
 
   @override
   Observable<GameField> getGameField() =>
-      Observable.fromFuture(_dbProvider.getGameField(1));
+      Observable.fromFuture(_dbProvider.getGameField(1))
+        .handleError((e) => throw e);
 
   @override
   Observable<TargetField> getTargetField() =>
-      Observable.fromFuture(_dbProvider.getTargetField(1));
+      Observable.fromFuture(_dbProvider.getTargetField(1))
+        .handleError((e) => throw e);
 
   @override
   Observable<GameField> applyMove(Move move) =>
-      Observable.fromFuture(_logicHelper.applyMove(move));
+      Observable.fromFuture(_logicHelper.applyMove(move))
+        .handleError((e) => throw e);
 
   @override
   Observable<bool> checkIfCorrect() =>
-      Observable.fromFuture(_logicHelper.checkIfCorrect());
+      Observable.fromFuture(_logicHelper.checkIfCorrect())
+        .handleError((e) => throw e);
 
   @override
   Observable<int> getMovesAmount() =>
-      Observable.fromFuture(_logicHelper.getMovesNumber());
+      Observable.fromFuture(_logicHelper.getMovesNumber())
+        .handleError((e) => throw e);
 
 }

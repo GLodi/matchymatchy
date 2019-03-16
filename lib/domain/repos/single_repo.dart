@@ -10,9 +10,6 @@ class SingleRepo extends GameRepo {
   SingleRepo(this._logicHelper, this._dbProvider);
 
   @override
-  Observable<Game> getGame() => null;
-
-  @override
   Observable<GameField> getGameField() =>
       Observable.fromFuture(_dbProvider.getGameField(1))
         .handleError((e) => throw e);

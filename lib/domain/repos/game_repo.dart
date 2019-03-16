@@ -4,8 +4,6 @@ import 'package:squazzle/data/models/models.dart';
 
 abstract class GameRepo {
 
-  Observable<Game> getGame();
-  
   Observable<GameField> getGameField();
 
   Observable<TargetField> getTargetField();

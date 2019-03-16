@@ -9,9 +9,6 @@ class MultiRepo extends GameRepo {
   MultiRepo(this._apiRepo);
 
   @override
-  Observable<Game> getGame() => null;
-
-  @override
   Observable<GameField> getGameField() =>
       Observable.fromFuture(_apiRepo.getDb());
 

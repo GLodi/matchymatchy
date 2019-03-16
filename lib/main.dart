@@ -4,6 +4,8 @@ import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'package:squazzle/data/data.dart';
 import 'package:squazzle/domain/domain.dart';
@@ -35,22 +37,59 @@ void main() {
 
   initDb();
 
+  //initRemoteDb();
+
   runApp(App());
 }
 
 void initDb() async {
-    // Construct a file path to copy database to
   Directory documentsDirectory = await getApplicationDocumentsDirectory();
   String path = join(documentsDirectory.path, "asset_squazzle.db");
 
   // Only copy if the database doesn't exist
-  if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound){
+  if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
     // Load database from asset and copy
     ByteData data = await rootBundle.load(join('assets', 'squazzle.db'));
     List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
     // Save copied asset to documents
     await new File(path).writeAsBytes(bytes);
+  }
+}
+
+void initRemoteDb() async {
+    // Construct a file path to copy database to
+  Directory documentsDirectory = await getApplicationDocumentsDirectory();
+  String path = join(documentsDirectory.path, "asset_squazzle_fire.db");
+
+  // Only copy if the database doesn't exist
+  if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound){
+    // Load database from asset and copy
+    ByteData data = await rootBundle.load(join('assets', 'squazzlefire.db'));
+    List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+
+    // Save copied asset to documents
+    await new File(path).writeAsBytes(bytes);
+
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String databasePath = join(appDocDir.path, 'asset_squazzle_fire.db');
+    var thedb = await openDatabase(databasePath);
+
+    for(int id = 1; id<1001; id++) {
+      var dbClient = await thedb;
+      List<Map> maps = await dbClient.query('gamefields',
+          columns: ['_id', 'grid', 'target'],
+          where: '_id = ?',
+          whereArgs: [id]);
+      var a = GameField.fromMap(maps.first);
+      Firestore.instance.runTransaction((transactionHandler) async {
+        await transactionHandler.set(Firestore.instance.collection('gamefields').document(id.toString()), {
+              'grid': a.grid,
+              'target' : a.target,
+          },
+        );
+      });
+    }
 
   }
 }

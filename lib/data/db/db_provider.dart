@@ -8,7 +8,7 @@ import 'package:squazzle/data/models/models.dart';
 abstract class DbProvider {
 
   /// Returns a Game with a random GameField and TargetField.
-  Future<Game> getRandomGame();
+  Future<GameField> getRandomGame();
 
   /// Returns GameField with given id.
   Future<GameField> getGameField(int id);
@@ -22,7 +22,6 @@ abstract class DbProvider {
 }
 
 class DbProviderImpl extends DbProvider {
-  final _databaseName = "squazzle.db";
   final _databaseVersion = 1;
   static Database _db;
 
@@ -37,12 +36,10 @@ class DbProviderImpl extends DbProvider {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String databasePath = join(appDocDir.path, 'asset_squazzle.db');
     var thedb = await openDatabase(databasePath);
-    print('object');
     return thedb;
   }
 
-  @override
-  Future<Game> getRandomGame() async {
+  Future<GameField> getRandomGame() async {
     // TODO: implement getRandomGame
     return null;
   }
@@ -50,7 +47,7 @@ class DbProviderImpl extends DbProvider {
   @override
   Future<GameField> getGameField(int id) async {
     var dbClient = await db;
-    List<Map> maps = await dbClient.query('gamefield',
+    List<Map> maps = await dbClient.query('gamefields',
         columns: ['_id', 'grid'],
         where: '_id = ?',
         whereArgs: [id]);

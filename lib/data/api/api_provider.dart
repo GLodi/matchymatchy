@@ -14,7 +14,7 @@ abstract class ApiProvider {
 class ApiProviderImpl implements ApiProvider {
 
   CollectionReference get gameFieldRef =>
-      Firestore.instance.collection('gamefield');
+      Firestore.instance.collection('gamefields');
 
   CollectionReference get queueRef =>
       Firestore.instance.collection('queue');
@@ -23,6 +23,17 @@ class ApiProviderImpl implements ApiProvider {
   Future<GameField> getDb() async {
     return gameFieldRef.getDocuments().then((qs) =>
         GameField.fromMap(qs.documents.first.data));
+  }
+
+  void prova() async {
+    Firestore.instance.runTransaction((transactionHandler) async {
+      await transactionHandler.set(gameFieldRef.document(), {
+            'id': 2,
+            'grid': '0123401234012340123401234',
+            'target' : '111111111',
+        },
+      );
+    });
   }
 
   @override

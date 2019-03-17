@@ -1,10 +1,12 @@
 import 'package:rxdart/rxdart.dart';
+import 'dart:math';
 
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
 
 class SingleBloc extends GameBloc {
   final SingleRepo repo;
+  var ran = Random();
   GameField _gameField;
   TargetField _targetField;
 
@@ -21,7 +23,27 @@ class SingleBloc extends GameBloc {
   @override
   Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
     if (event.type == SquazzleEventType.start) {
-      yield SquazzleState(type: SquazzleStateType.init);
+      SquazzleState result;
+      int t = ran.nextInt(1000)+1;
+
+      
+      //repo.getRandomGame
+      //set gamefield
+      //set targetfield
+      //yield result
+
+      await repo.getGameField(t)
+      .handleError((e) => result = SquazzleState.error('error retrieving gamefield from db'))
+      .listen((field) {
+        gameField = field;
+      }).asFuture();
+      await repo.getTargetField(t)
+      .handleError((e) => result = SquazzleState.error('error retrieving targetfield from db'))
+      .listen((target) {
+        targetField = target;
+        result = SquazzleState.init();
+      }).asFuture();
+      yield result;
     }
     if (event.type == SquazzleEventType.error) {
       yield SquazzleState(type: SquazzleStateType.error, message: "Error retrieving data.");

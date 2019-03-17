@@ -9,11 +9,14 @@ class MultiRepo extends GameRepo {
   MultiRepo(this._apiRepo);
 
   @override
-  Observable<GameField> getGameField() =>
-      Observable.fromFuture(_apiRepo.getDb());
+  Observable<Game> getRandomGame() => null;
 
   @override
-  Observable<TargetField> getTargetField() => null;
+  Observable<GameField> getGameField(int id) =>
+      Observable.fromFuture(_apiRepo.getRandomGameField());
+
+  @override
+  Observable<TargetField> getTargetField(int id) => null;
 
   @override
   Observable<GameField> applyMove(GameField gameField, Move move) => null;

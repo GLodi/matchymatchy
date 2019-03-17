@@ -21,6 +21,7 @@ class MultiBloc extends GameBloc {
   @override
   Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
     if (event.type == SquazzleEventType.start) {
+      // retrieve gamefield from firebase, store field and target and yield state
     }
     if (event.type == SquazzleEventType.error) {
       yield SquazzleState(type: SquazzleStateType.error, message: "Error fetching data.");

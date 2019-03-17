@@ -7,9 +7,6 @@ import 'package:squazzle/data/models/models.dart';
 
 abstract class DbProvider {
 
-  /// Returns a Game with a random GameField and TargetField.
-  Future<GameField> getRandomGame();
-
   /// Returns GameField with given id.
   Future<GameField> getGameField(int id);
 
@@ -22,7 +19,6 @@ abstract class DbProvider {
 }
 
 class DbProviderImpl extends DbProvider {
-  final _databaseVersion = 1;
   static Database _db;
 
   Future<Database> get db async {
@@ -39,11 +35,6 @@ class DbProviderImpl extends DbProvider {
     return thedb;
   }
 
-  Future<GameField> getRandomGame() async {
-    // TODO: implement getRandomGame
-    return null;
-  }
-
   @override
   Future<GameField> getGameField(int id) async {
     var dbClient = await db;
@@ -57,8 +48,8 @@ class DbProviderImpl extends DbProvider {
   @override
   Future<TargetField> getTargetField(int id) async {
     var dbClient = await db;
-    List<Map> maps = await dbClient.query('targetfield',
-        columns: ['_id', 'grid'],
+    List<Map> maps = await dbClient.query('gamefields',
+        columns: ['_id', 'target'],
         where: '_id = ?',
         whereArgs: [id]);
     return maps.length > 0 ? TargetField.fromMap(maps.first) : null;

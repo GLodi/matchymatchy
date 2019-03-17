@@ -1,17 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:math';
 
 import 'package:squazzle/data/models/models.dart';
 
 abstract class ApiProvider {
 
-  Future<GameField> getDb();
+  Future<GameField> getRandomGameField();
 
-  /// Signal backend that player is available to play.
   Future<void> queuePlayer();
 
 }
 
 class ApiProviderImpl implements ApiProvider {
+  var ran = Random();
 
   CollectionReference get gameFieldRef =>
       Firestore.instance.collection('gamefields');
@@ -20,27 +21,20 @@ class ApiProviderImpl implements ApiProvider {
       Firestore.instance.collection('queue');
   
   @override
-  Future<GameField> getDb() async {
-    return gameFieldRef.getDocuments().then((qs) =>
-        GameField.fromMap(qs.documents.first.data));
-  }
-
-  void prova() async {
-    Firestore.instance.runTransaction((transactionHandler) async {
-      await transactionHandler.set(gameFieldRef.document(), {
-            'id': 2,
-            'grid': '0123401234012340123401234',
-            'target' : '111111111',
-        },
-      );
-    });
+  Future<GameField> getRandomGameField() async {
+    return gameFieldRef.document((ran.nextInt(1000)+1).toString()).get().then((doc) => 
+      GameField.fromMap(doc.data) // Game.fromMap
+    );
   }
 
   @override
-  Future<void> queuePlayer() {
-
-    // Future has to return void, otherwise callers can't await on it.
-    return null;
+  Future<void> queuePlayer() async {
+    return Firestore.instance.runTransaction((transactionHandler) async {
+      await transactionHandler.set(queueRef.document(DateTime.now().millisecondsSinceEpoch.toString()), {
+            'userId': '0123401234012340123401234',
+        },
+      );
+    });
   }
   
 }

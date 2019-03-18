@@ -5,14 +5,14 @@ import 'package:squazzle/data/models/models.dart';
 
 abstract class ApiProvider {
 
-  Future<GameField> getRandomGameField();
+  // Returns GameField and TargetField with given id.
+  Future<Game> getGame(int id);
 
   Future<void> queuePlayer();
 
 }
 
 class ApiProviderImpl implements ApiProvider {
-  var ran = Random();
 
   CollectionReference get gameFieldRef =>
       Firestore.instance.collection('gamefields');
@@ -21,10 +21,9 @@ class ApiProviderImpl implements ApiProvider {
       Firestore.instance.collection('queue');
   
   @override
-  Future<GameField> getRandomGameField() async {
-    return gameFieldRef.document((ran.nextInt(1000)+1).toString()).get().then((doc) => 
-      GameField.fromMap(doc.data) // Game.fromMap
-    );
+  Future<Game> getGame(int id) async {
+    return gameFieldRef.document(id.toString()).get()
+      .then((doc) => Game.fromMap(doc.data));
   }
 
   @override

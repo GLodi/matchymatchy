@@ -4,7 +4,7 @@ class GameField {
 
   GameField({this.id, this.grid});
 
-  GameField.fromMap(Map<String, dynamic> map){
+  GameField.fromMap(Map<String,dynamic> map){
     assert(map['_id'] != null);
     assert(map['grid'] != null);
     assert(map['grid'].toString().length == 25);

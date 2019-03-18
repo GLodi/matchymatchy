@@ -7,11 +7,8 @@ import 'package:squazzle/data/models/models.dart';
 
 abstract class DbProvider {
 
-  /// Returns GameField with given id.
-  Future<GameField> getGameField(int id);
-
-  /// Returns TargetField with given id.
-  Future<TargetField> getTargetField(int id);
+  // Returns a GameField and TargetField with given id.
+  Future<Game> getGame(int id);
 
   /// Returns amount of moves played on specified game.
   Future<int> getMovesNumber(int id);
@@ -36,23 +33,13 @@ class DbProviderImpl extends DbProvider {
   }
 
   @override
-  Future<GameField> getGameField(int id) async {
+  Future<Game> getGame(int id) async {
     var dbClient = await db;
     List<Map> maps = await dbClient.query('gamefields',
-        columns: ['_id', 'grid'],
+        columns: ['_id', 'grid', 'target'],
         where: '_id = ?',
         whereArgs: [id]);
-    return maps.length > 0 ? GameField.fromMap(maps.first) : null;
-  }
-
-  @override
-  Future<TargetField> getTargetField(int id) async {
-    var dbClient = await db;
-    List<Map> maps = await dbClient.query('gamefields',
-        columns: ['_id', 'target'],
-        where: '_id = ?',
-        whereArgs: [id]);
-    return maps.length > 0 ? TargetField.fromMap(maps.first) : null;
+    return maps.length > 0 ? Game.fromMap(maps.first) : null;
   }
 
   @override

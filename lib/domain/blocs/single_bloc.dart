@@ -24,23 +24,12 @@ class SingleBloc extends GameBloc {
   Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
     if (event.type == SquazzleEventType.start) {
       SquazzleState result;
-      int t = ran.nextInt(1000)+1;
-
-      
-      //repo.getRandomGame
-      //set gamefield
-      //set targetfield
-      //yield result
-
-      await repo.getGameField(t)
-      .handleError((e) => result = SquazzleState.error('error retrieving gamefield from db'))
-      .listen((field) {
-        gameField = field;
-      }).asFuture();
-      await repo.getTargetField(t)
-      .handleError((e) => result = SquazzleState.error('error retrieving targetfield from db'))
-      .listen((target) {
-        targetField = target;
+      int t = ran.nextInt(500)+1;
+      await repo.getGame(t)
+      .handleError((e) => result = SquazzleState.error('error retrieving data from db'))
+      .listen((game) {
+        gameField = game.gameField;
+        targetField = game.targetField;
         result = SquazzleState.init();
       }).asFuture();
       yield result;

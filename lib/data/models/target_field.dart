@@ -4,7 +4,7 @@ class TargetField {
 
   TargetField({this.id, this.grid});
 
-  TargetField.fromMap(Map<String, dynamic> map) {
+  TargetField.fromMap(Map<String,dynamic> map) {
     assert(map['_id'] != null);
     assert(map['target'] != null);
     assert(map['target'].toString().length == 9);

@@ -25,7 +25,7 @@ void main() {
   container.registerSingleton((c) =>
     new SingleRepo(c.resolve<LogicProvider>(), c.resolve<DbProvider>()));
   container.registerSingleton((c) =>
-    new MultiRepo(c.resolve<ApiProvider>()));
+    new MultiRepo(c.resolve<LogicProvider>(), c.resolve<ApiProvider>()));
 
   // Blocs
   container.registerFactory((c) =>

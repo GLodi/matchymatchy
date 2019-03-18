@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:math';
 
 import 'package:squazzle/data/models/models.dart';
 
@@ -8,6 +7,7 @@ abstract class ApiProvider {
   // Returns GameField and TargetField with given id.
   Future<Game> getGame(int id);
 
+  // Add player to server queue.
   Future<void> queuePlayer();
 
 }
@@ -23,7 +23,10 @@ class ApiProviderImpl implements ApiProvider {
   @override
   Future<Game> getGame(int id) async {
     return gameFieldRef.document(id.toString()).get()
-      .then((doc) => Game.fromMap(doc.data));
+      .then((doc) {
+        doc.data['_id'] = id;
+        return Game.fromMap(doc.data);
+      });
   }
 
   @override

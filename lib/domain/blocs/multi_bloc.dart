@@ -26,7 +26,7 @@ class MultiBloc extends GameBloc {
       SquazzleState result;
       int t = ran.nextInt(1000)+1;
       await repo.getGame(t)
-      .handleError((e) => result = SquazzleState.error('error fetching data from server'))
+      .handleError((e) => result = SquazzleState.error('Error fetching data from server'))
       .listen((game) {
         gameField = game.gameField;
         targetField = game.targetField;
@@ -35,10 +35,10 @@ class MultiBloc extends GameBloc {
       yield result;
     }
     if (event.type == SquazzleEventType.error) {
-      yield SquazzleState(type: SquazzleStateType.error, message: "Error fetching data.");
+      yield SquazzleState(type: SquazzleStateType.error, message: 'Error fetching data');
     }
   }
-  
+
   @override
   void dispose() {
     correctSubject.close();

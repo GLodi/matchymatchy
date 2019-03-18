@@ -6,9 +6,7 @@ import 'package:squazzle/presentation/widgets/target_field_widget.dart';
 
 class SingleScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return _SingleScreenState();
-  }
+  State<StatefulWidget> createState() => _SingleScreenState();
 }
 
 class _SingleScreenState extends State<SingleScreen> with TickerProviderStateMixin {
@@ -68,78 +66,78 @@ class _SingleScreenState extends State<SingleScreen> with TickerProviderStateMix
         return Transform(
           transform: Matrix4.translationValues(0, _entryAnim.value * height, 0),
           child: Stack(
-           children: <Widget>[
-             Column(
-               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-               children: <Widget>[
-                 Container(
-                   margin: EdgeInsets.only(top: 50),
-                   child: Row(
-                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                     children: <Widget>[
-                       StreamBuilder<int>(
-                         stream: bloc.moveNumber,
-                         initialData: 0,
-                         builder: (context, snapshot) {
-                           return Column(
-                             children: <Widget>[
-                               Text(
-                                 'Moves',
-                                 textAlign: TextAlign.center,
-                                 style: TextStyle(
-                                   fontFamily: "Roboto",
-                                   fontSize: 20.0,
-                                 ),
-                               ),
-                               Text(
-                                 snapshot.data.toString(),
-                                 textAlign: TextAlign.center,
-                                 style: TextStyle(
-                                   fontFamily: "Roboto",
-                                   fontSize: 25.0,
-                                 ),
-                               )
-                             ],
-                           );
-                         },
-                       ),
-                       Container(
-                         constraints: BoxConstraints(
-                             maxHeight: 3*tenthWidth,
-                             maxWidth: 3*tenthWidth
-                         ),
-                         alignment: Alignment.topCenter,
-                         child: BlocProvider(
-                           child: TargetFieldWidget(),
-                           bloc: TargetBloc(bloc),
-                         ),
-                       ),
-                     ],
-                   ),
-                 ),
-                 Container(
-                   constraints: BoxConstraints(maxHeight: 5*fifthWidth),
-                   margin: EdgeInsets.only(bottom: 40),
-                   alignment: Alignment.bottomCenter,
-                   child: BlocProvider(
-                     child: GameFieldWidget(),
-                     bloc: GameFieldBloc(bloc),
-                   ),
-                 ),
-               ],
-             ),
-             AnimatedOpacity(
-               duration: Duration(seconds: 2),
-               opacity: opacityLevel,
-               child: Visibility(
-                 visible: opacityLevel != 0,
-                 child: Container(
-                   color: Colors.blue,
-                 ),
-               ),
-             ),
-           ],
-       ),
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(top: 50),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        StreamBuilder<int>(
+                          stream: bloc.moveNumber,
+                          initialData: 0,
+                          builder: (context, snapshot) {
+                            return Column(
+                              children: <Widget>[
+                                Text(
+                                  'Moves',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: "Roboto",
+                                    fontSize: 20.0,
+                                  ),
+                                ),
+                                Text(
+                                  snapshot.data.toString(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: "Roboto",
+                                    fontSize: 25.0,
+                                  ),
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                        Container(
+                          constraints: BoxConstraints(
+                              maxHeight: 3*tenthWidth,
+                              maxWidth: 3*tenthWidth
+                          ),
+                          alignment: Alignment.topCenter,
+                          child: BlocProvider(
+                            child: TargetFieldWidget(),
+                            bloc: TargetBloc(bloc),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    constraints: BoxConstraints(maxHeight: 5*fifthWidth),
+                    margin: EdgeInsets.only(bottom: 40),
+                    alignment: Alignment.bottomCenter,
+                    child: BlocProvider(
+                      child: GameFieldWidget(),
+                      bloc: GameFieldBloc(bloc),
+                    ),
+                  ),
+                ],
+              ),
+              AnimatedOpacity(
+                duration: Duration(seconds: 2),
+                opacity: opacityLevel,
+                child: Visibility(
+                  visible: opacityLevel != 0,
+                  child: Container(
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
+            ],
+          ),
         );
       }
     );

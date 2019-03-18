@@ -5,15 +5,21 @@ import 'game_repo.dart';
 
 class MultiRepo extends GameRepo {
   final ApiProvider _apiRepo;
+  final LogicProvider _logicProvider;
 
-  MultiRepo(this._apiRepo);
+  MultiRepo(this._logicProvider, this._apiRepo);
 
   @override
   Observable<Game> getGame(int id) =>
-      Observable.fromFuture(_apiRepo.getGame(id));
+      Observable.fromFuture(_apiRepo.getGame(id))
+        .handleError((e) => throw e);
 
   @override
-  Observable<GameField> applyMove(GameField gameField, Move move) => null;
+  Observable<GameField> applyMove(GameField gameField, Move move) => 
+      Observable.concat([
+        Observable.fromFuture(_logicProvider.applyMove(gameField, move)),
+        // send move to server
+      ]).handleError((e) => throw e);
 
   @override
   Observable<bool> checkIfCorrect(GameField gameField, TargetField targetField) => null;

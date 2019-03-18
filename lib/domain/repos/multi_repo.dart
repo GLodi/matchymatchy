@@ -22,6 +22,8 @@ class MultiRepo extends GameRepo {
       ]).handleError((e) => throw e);
 
   @override
-  Observable<bool> checkIfCorrect(GameField gameField, TargetField targetField) => null;
+  Observable<bool> checkIfCorrect(GameField gameField, TargetField targetField) => 
+      Observable.fromFuture(_logicProvider.checkIfCorrect(gameField, targetField))
+        .handleError((e) => throw e);
 
 }

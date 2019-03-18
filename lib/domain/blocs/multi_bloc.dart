@@ -34,6 +34,10 @@ class MultiBloc extends GameBloc {
       }).asFuture();
       yield result;
     }
+    if (event.type == SquazzleEventType.victory) {
+      correctSubject.add(true);
+      // TODO handle victory
+    }
     if (event.type == SquazzleEventType.error) {
       yield SquazzleState(type: SquazzleStateType.error, message: 'Error fetching data');
     }

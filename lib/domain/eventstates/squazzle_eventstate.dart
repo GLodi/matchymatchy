@@ -38,4 +38,5 @@ class SquazzleEvent extends BlocEvent {
 enum SquazzleEventType {
   start,
   error,
+  victory,
 }

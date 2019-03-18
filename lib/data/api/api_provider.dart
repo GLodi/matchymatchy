@@ -32,7 +32,7 @@ class ApiProviderImpl implements ApiProvider {
   @override
   Future<void> queuePlayer() async {
     return Firestore.instance.runTransaction((transactionHandler) async {
-      await transactionHandler.set(queueRef.document(DateTime.now().millisecondsSinceEpoch.toString()), {
+      await transactionHandler.set(queueRef.document(FieldValueType.serverTimestamp.toString()), {
             'userId': '0123401234012340123401234',
         },
       );

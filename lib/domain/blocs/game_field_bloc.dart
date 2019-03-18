@@ -30,7 +30,10 @@ class GameFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
       moveAmount += 1;
       _gameBloc.moveNumberSubject.add(moveAmount);
       _gameBloc.gameRepo.checkIfCorrect(_gameBloc.gameField, _gameBloc.targetField).listen((correct) {
-        if (correct) _gameBloc.correctSubject.add(correct);});
+        if (correct) {
+          _gameBloc.emitEvent(SquazzleEvent(type: SquazzleEventType.victory));
+        }
+      });
     }).asFuture();
   }
 

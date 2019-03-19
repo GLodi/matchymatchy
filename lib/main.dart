@@ -26,12 +26,16 @@ void main() {
     new SingleRepo(c.resolve<LogicProvider>(), c.resolve<DbProvider>()));
   container.registerSingleton((c) =>
     new MultiRepo(c.resolve<LogicProvider>(), c.resolve<ApiProvider>()));
+  container.registerSingleton<MultiLobbyRepo, MultiLobbyRepoImpl>((c) =>
+    new MultiLobbyRepoImpl(c.resolve<ApiProvider>()));
 
   // Blocs
   container.registerFactory((c) =>
     new SingleBloc(c.resolve<SingleRepo>()));
   container.registerFactory((c) =>
     new MultiBloc(c.resolve<MultiRepo>()));
+  container.registerSingleton((c) => 
+    new MultiLobbyBloc(c.resolve<MultiLobbyRepo>()));
 
   initDb();
 

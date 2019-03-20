@@ -45,7 +45,14 @@ class _MultiScreenState extends State<MultiScreen> with TickerProviderStateMixin
             return Center(child: Text(state.message));
           }
           case SquazzleStateType.notInit : {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: Column(
+                children: <Widget>[
+                  CircularProgressIndicator(),
+                  Text('Waiting for players...'),
+                ],
+              ),
+            );
           }
           case SquazzleStateType.init : {
             fifthWidth = MediaQuery.of(context).size.width/5;

@@ -26,8 +26,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  HomeBloc bloc;
   final _random = Random();
-  double opacityLevel = 0;
   double fifthWidth;
   final InfiniteScrollController _infiniteController = InfiniteScrollController(
     initialScrollOffset: 0.0,
@@ -37,6 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => applyMovement());
+    bloc = BlocProvider.of<HomeBloc>(context);
+    bloc.emitEvent(SquazzleEvent(type: SquazzleEventType.start));
   }
 
   @override

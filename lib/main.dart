@@ -14,28 +14,30 @@ void main() {
   kiwi.Container container = new kiwi.Container();
 
   // Providers
-  container.registerSingleton<DbProvider, DbProviderImpl>((c) =>
+  container.registerSingleton<DbProvider,DbProviderImpl>((c) =>
     new DbProviderImpl());
-  container.registerSingleton<ApiProvider, ApiProviderImpl>((c) =>
+  container.registerSingleton<ApiProvider,ApiProviderImpl>((c) =>
     new ApiProviderImpl());
-  container.registerSingleton<LogicProvider, LogicProviderImpl>((c) =>
+  container.registerSingleton<LogicProvider,LogicProviderImpl>((c) =>
     new LogicProviderImpl());
+  container.registerSingleton<LoginProvider,LoginProviderImpl>((c) =>
+    new LoginProviderImpl());
 
   // Repos
   container.registerSingleton((c) =>
     new SingleRepo(c.resolve<LogicProvider>(), c.resolve<DbProvider>()));
   container.registerSingleton((c) =>
     new MultiRepo(c.resolve<LogicProvider>(), c.resolve<ApiProvider>()));
-  container.registerSingleton<MultiLobbyRepo, MultiLobbyRepoImpl>((c) =>
-    new MultiLobbyRepoImpl(c.resolve<ApiProvider>()));
+  container.registerSingleton((c) => 
+    new HomeRepo(c.resolve<LoginProvider>()));
 
   // Blocs
   container.registerFactory((c) =>
     new SingleBloc(c.resolve<SingleRepo>()));
   container.registerFactory((c) =>
     new MultiBloc(c.resolve<MultiRepo>()));
-  container.registerSingleton((c) => 
-    new MultiLobbyBloc(c.resolve<MultiLobbyRepo>()));
+  container.registerFactory((c) =>
+    new HomeBloc(c.resolve<HomeRepo>()));
 
   initDb();
 
@@ -64,7 +66,10 @@ class App extends StatelessWidget {
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: HomeScreen(),
+        body: BlocProvider(
+          child: HomeScreen(),
+          bloc: kiwi.Container().resolve<HomeBloc>(),
+        ),
       ),
     );
   }

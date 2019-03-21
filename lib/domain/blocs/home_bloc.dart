@@ -1,4 +1,6 @@
 
+import 'package:rxdart/rxdart.dart';
+
 import 'package:squazzle/domain/domain.dart';
 
 class HomeBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
@@ -9,7 +11,10 @@ class HomeBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
   @override
   Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
     if (event.type == SquazzleEventType.start) {
-      _repo.loginWithGoogle();
+      await _repo.loginWithGoogle()
+        .listen((user) {})
+        .onError((e) {})
+        .asFuture();
       yield SquazzleState.init();
     }
   }

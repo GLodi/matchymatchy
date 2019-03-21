@@ -12,6 +12,5 @@ abstract class GameBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState>
   TargetField get targetField;
   set targetField(TargetField targetField);
 
-  GameBloc(this.gameRepo) :
-        super(initialState: SquazzleState.notInit());
+  GameBloc(this.gameRepo) : super(initialState: SquazzleState.notInit());
 }

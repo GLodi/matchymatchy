@@ -7,7 +7,7 @@ class HomeRepo {
 
   HomeRepo(this._loginProvider);
 
-  Observable<FirebaseUser> login() => 
+  Observable<FirebaseUser> loginWithGoogle() => 
       Observable.fromFuture(_loginProvider.loginWithGoogle())
         .handleError((e) => throw e);
 

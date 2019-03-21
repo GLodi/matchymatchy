@@ -44,6 +44,25 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     fifthWidth = MediaQuery.of(context).size.width/5;
+    return BlocEventStateBuilder<SquazzleEvent, SquazzleState>(
+      bloc: bloc,
+      builder: (context, state) {
+        switch (state.type) {
+          case SquazzleStateType.init:
+            return mainScreen();
+            break;
+          case SquazzleStateType.notInit:
+            return CircularProgressIndicator();
+            break;
+          case SquazzleStateType.error:
+            return CircularProgressIndicator();
+            break;
+        }
+      },
+    );
+  }
+
+  Widget mainScreen() {
     return Stack(
       children: <Widget>[
         Container(

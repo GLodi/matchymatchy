@@ -38,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => applyMovement());
     bloc = BlocProvider.of<HomeBloc>(context);
-    bloc.emitEvent(SquazzleEvent(type: SquazzleEventType.start));
   }
 
   @override
@@ -122,17 +121,8 @@ class _HomeScreenState extends State<HomeScreen> {
               RaisedButton(
                 child: new Text("Multiplayer"),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return Scaffold(
-                          body: BlocProvider(
-                            child: MultiScreen(),
-                            bloc: kiwi.Container().resolve<MultiBloc>(),
-                          )
-                      );}
-                    ),
-                  );
+                  bloc.emitEvent(SquazzleEvent(type: SquazzleEventType.start));
+                  openMultiScreen();
                 },
               ),
             ],
@@ -187,4 +177,19 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  void openMultiScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) {
+        return Scaffold(
+            body: BlocProvider(
+              child: MultiScreen(),
+              bloc: kiwi.Container().resolve<MultiBloc>(),
+            )
+        );}
+      ),
+    );
+  }
+
 }

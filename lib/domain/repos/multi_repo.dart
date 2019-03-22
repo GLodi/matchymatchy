@@ -16,6 +16,8 @@ class MultiRepo extends GameRepo {
 
   @override
   Observable<GameField> applyMove(GameField gameField, Move move) => 
+      //Observable.fromFuture(_logicProvider.applyMove(gameField, move))
+      //  .flatMap((gf) {});
       Observable.concat([
         Observable.fromFuture(_logicProvider.applyMove(gameField, move)),
         // send move to server

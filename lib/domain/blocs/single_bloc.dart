@@ -26,12 +26,13 @@ class SingleBloc extends GameBloc {
       SquazzleState result;
       int t = ran.nextInt(500)+1;
       await repo.getGame(t)
-        .handleError((e) => result = SquazzleState.error('error retrieving data from db'))
         .listen((game) {
           gameField = game.gameField;
           targetField = game.targetField;
           result = SquazzleState.init();
-        }).asFuture();
+        }, onError: (e) => 
+          result = SquazzleState.error('error retrieving data from db')
+        ).asFuture();
       yield result;
     }
     if (event.type == SquazzleEventType.victory) {

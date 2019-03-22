@@ -12,9 +12,13 @@ class HomeBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
   Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
     if (event.type == SquazzleEventType.start) {
       await _repo.loginWithGoogle()
-        .listen((user) {})
-        .onError((e) {})
-        .asFuture();
+        .listen((user) {
+
+        }, onError: (e) {
+
+        }, onDone: () {
+
+        }).asFuture();
       yield SquazzleState.init();
     }
   }

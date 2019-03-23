@@ -27,13 +27,22 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
           .handleError((e) { nextState = HomeState.error(e.toString()); })
           .listen((user) { user = user; })
           .asFuture();
+        if (nextState?.type == HomeStateType.error) {
+          yield nextState;
+          break;
+        }
         if (user != null) {
           _intentToMultiScreenSubject.add((null));
+          break;
         } else {
           await _repo.loginWithGoogle()
             .handleError((e) { nextState = HomeState.error(e.toString()); })
             .listen((_) {})
             .asFuture();
+          if (nextState?.type == HomeStateType.error) {
+            yield nextState;
+            break;
+          }
           yield await checkIfUserLogged();
           _intentToMultiScreenSubject.add((null));
         }

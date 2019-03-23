@@ -40,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => applyMovement());
     bloc = BlocProvider.of<HomeBloc>(context);
     bloc.emitEvent(HomeEvent(type: HomeEventType.checkIfUserLogged));
+    bloc.intentToMultiScreen.listen((_) => openMultiScreen());
   }
 
   @override
@@ -95,8 +96,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 return Center(child: CircularProgressIndicator());
                 break;
               case HomeStateType.error:
-                return CircularProgressIndicator();
+                return Center(child: Text('${state.message}'));
                 break;
+              default:
             }
           },
         ),
@@ -126,7 +128,10 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           RaisedButton(
-            child: new Text("Multiplayer\nLogged in as ${user.username}"),
+            child: Text(
+              "Multiplayer\nLogged in as ${user.username}", 
+              textAlign: TextAlign.center,
+            ),
             onPressed: () { bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress)); }
           ),
         ],
@@ -156,7 +161,10 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           RaisedButton(
-            child: new Text("Multiplayer\nLog in"),
+            child: Text(
+              "Multiplayer\nLog in",
+              textAlign: TextAlign.center,
+            ),
             onPressed: () { bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress)); }
           ),
         ],

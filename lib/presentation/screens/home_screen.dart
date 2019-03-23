@@ -5,6 +5,7 @@ import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:infinite_listview/infinite_listview.dart';
 import 'dart:async';
 
+import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/screens/single_screen.dart';
 import 'package:squazzle/presentation/screens/multi_screen.dart';
@@ -38,30 +39,12 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => applyMovement());
     bloc = BlocProvider.of<HomeBloc>(context);
+    bloc.emitEvent(HomeEvent(type: HomeEventType.checkIfUserLogged));
   }
 
   @override
   Widget build(BuildContext context) {
     fifthWidth = MediaQuery.of(context).size.width/5;
-    return BlocEventStateBuilder<SquazzleEvent, SquazzleState>(
-      bloc: bloc,
-      builder: (context, state) {
-        switch (state.type) {
-          case SquazzleStateType.init:
-            return mainScreen();
-            break;
-          case SquazzleStateType.notInit:
-            return CircularProgressIndicator();
-            break;
-          case SquazzleStateType.error:
-            return CircularProgressIndicator();
-            break;
-        }
-      },
-    );
-  }
-
-  Widget mainScreen() {
     return Stack(
       children: <Widget>[
         Container(
@@ -98,37 +81,86 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              RaisedButton(
-                child: new Text("Singleplayer"),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return Scaffold(
-                        body: BlocProvider(
-                          child: SingleScreen(),
-                          bloc: kiwi.Container().resolve<SingleBloc>(),
-                        )
-                      );}
-                    ),
-                  );
-                },
-              ),
-              RaisedButton(
-                child: new Text("Multiplayer"),
-                onPressed: () {
-                  bloc.emitEvent(SquazzleEvent(type: SquazzleEventType.start));
-                  openMultiScreen();
-                },
-              ),
-            ],
-          ),
+        BlocEventStateBuilder<HomeEvent, HomeState>(
+          bloc: bloc,
+          builder: (context, state) {
+            switch (state.type) {
+              case HomeStateType.initLogged:
+                return initLogged(state.user);
+                break;
+              case HomeStateType.initNotLogged:
+                return initNotLogged();
+                break;
+              case HomeStateType.notInit:
+                return Center(child: CircularProgressIndicator());
+                break;
+              case HomeStateType.error:
+                return CircularProgressIndicator();
+                break;
+            }
+          },
         ),
       ],
+    );
+  }
+
+  Widget initLogged(User user) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          RaisedButton(
+            child: new Text("Singleplayer"),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return Scaffold(
+                    body: BlocProvider(
+                      child: SingleScreen(),
+                      bloc: kiwi.Container().resolve<SingleBloc>(),
+                    )
+                  );}
+                ),
+              );
+            },
+          ),
+          RaisedButton(
+            child: new Text("Multiplayer\nLogged in as ${user.username}"),
+            onPressed: () { bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress)); }
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget initNotLogged() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          RaisedButton(
+            child: new Text("Singleplayer"),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return Scaffold(
+                    body: BlocProvider(
+                      child: SingleScreen(),
+                      bloc: kiwi.Container().resolve<SingleBloc>(),
+                    )
+                  );}
+                ),
+              );
+            },
+          ),
+          RaisedButton(
+            child: new Text("Multiplayer\nLog in"),
+            onPressed: () { bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress)); }
+          ),
+        ],
+      ),
     );
   }
 

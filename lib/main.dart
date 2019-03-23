@@ -22,6 +22,8 @@ void main() {
     new LogicProviderImpl());
   container.registerSingleton<LoginProvider,LoginProviderImpl>((c) =>
     new LoginProviderImpl());
+  container.registerSingleton<SharedPreferencesProvider,SharedPreferencesProviderImpl>((c) =>
+    new SharedPreferencesProviderImpl());
 
   // Repos
   container.registerSingleton((c) =>
@@ -29,7 +31,7 @@ void main() {
   container.registerSingleton((c) =>
     new MultiRepo(c.resolve<LogicProvider>(), c.resolve<ApiProvider>()));
   container.registerSingleton((c) => 
-    new HomeRepo(c.resolve<LoginProvider>()));
+    new HomeRepo(c.resolve<LoginProvider>(), c.resolve<SharedPreferencesProvider>()));
 
   // Blocs
   container.registerFactory((c) =>

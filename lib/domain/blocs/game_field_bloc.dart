@@ -23,6 +23,7 @@ class GameFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
   void _applyMove(List<int> list) async {
     Move move = Move(from: list[0], dir: list[1]);
     await _gameBloc.gameRepo.applyMove(_gameBloc.gameField, move)
+    .handleError((e) => _gameBloc.emitEvent(SquazzleEvent(type: SquazzleEventType.error)))
     .listen((field) {
       _gameBloc.gameField = field;
       _gameFieldSubject.add(field);
@@ -33,9 +34,8 @@ class GameFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
           _gameBloc.emitEvent(SquazzleEvent(type: SquazzleEventType.victory));
         }
       });
-    }, onError: (e) => 
-      _gameBloc.emitEvent(SquazzleEvent(type: SquazzleEventType.error))
-    ).asFuture();
+    })
+    .asFuture();
   }
 
   @override

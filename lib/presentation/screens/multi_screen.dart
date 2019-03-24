@@ -82,6 +82,7 @@ class _MultiScreenState extends State<MultiScreen> with TickerProviderStateMixin
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
+                        // insert enemy map
                         StreamBuilder<int>(
                           stream: bloc.moveNumber,
                           initialData: 0,

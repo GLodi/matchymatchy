@@ -9,6 +9,7 @@ class MultiBloc extends GameBloc {
   var ran = Random();
   GameField _gameField;
   TargetField _targetField;
+  GameField enemyField;
 
   Stream<bool> get correct => correctSubject.stream;
   Stream<int> get moveNumber => moveNumberSubject.stream;

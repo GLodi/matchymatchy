@@ -13,4 +13,12 @@ abstract class GameBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState>
   set targetField(TargetField targetField);
 
   GameBloc(this.gameRepo) : super(initialState: SquazzleState.notInit());
+
+  @override
+  void dispose() {
+    correctSubject.close();
+    moveNumberSubject.close();
+    super.dispose();
+  }
+  
 }

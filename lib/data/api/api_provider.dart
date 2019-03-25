@@ -4,11 +4,14 @@ import 'package:squazzle/data/models/models.dart';
 
 abstract class ApiProvider {
 
-  // Returns GameField and TargetField with given id.
+  // Returns GameField and TargetField with given id
   Future<Game> getGame(int id);
 
-  // Add player to server queue.
-  Future<void> queuePlayer();
+  // Add player to server queue with GameField id
+  Future<void> queuePlayer(int uid, int gfid, int matchId);
+
+  // Subscribes to EnemyField changes
+  Future<EnemyField> getEnemyField(int matchId);
 
 }
 
@@ -19,6 +22,9 @@ class ApiProviderImpl implements ApiProvider {
 
   CollectionReference get queueRef =>
       Firestore.instance.collection('queue');
+
+  CollectionReference get matchesRef =>
+      Firestore.instance.collection('matches');
   
   @override
   Future<Game> getGame(int id) async {
@@ -30,13 +36,24 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<void> queuePlayer() async {
+  Future<void> queuePlayer(int uid, int gfid, int matchId) async {
     return Firestore.instance.runTransaction((transactionHandler) async {
       await transactionHandler.set(queueRef.document(FieldValueType.serverTimestamp.toString()), {
-            'userId': '0123401234012340123401234',
+            'time' : '${FieldValueType.serverTimestamp.toString()}',
+            'uid' : uid,
+            'gfid' : gfid,
+            'matchid' : matchId,
         },
       );
     });
+  }
+
+  @override
+  Future<EnemyField> getEnemyField(int matchId) {
+    return matchesRef.document(matchId.toString())
+      .snapshots()
+      .listen((ds) => EnemyField.fromMap(ds.data))
+      .asFuture();
   }
   
 }

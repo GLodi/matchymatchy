@@ -1,23 +1,19 @@
-import 'package:rxdart/rxdart.dart';
 import 'dart:math';
+import 'package:uuid/uuid.dart';
 
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
 
 class MultiBloc extends GameBloc {
   final MultiRepo repo;
-  var ran = Random();
-  GameField _gameField;
-  TargetField _targetField;
-  GameField enemyField;
+  final ran = Random();
+  final uuid = Uuid();
+  GameField gameField;
+  TargetField targetField;
+  EnemyField enemyField;
 
   Stream<bool> get correct => correctSubject.stream;
   Stream<int> get moveNumber => moveNumberSubject.stream;
-
-  @override GameField get gameField => _gameField;
-  @override set gameField(GameField gameField) => _gameField = gameField;  
-  @override TargetField get targetField => _targetField;
-  @override set targetField(TargetField targetField) => _targetField = targetField;
 
   MultiBloc(this.repo) : super(repo);
 
@@ -27,6 +23,7 @@ class MultiBloc extends GameBloc {
       case SquazzleEventType.start:
         SquazzleState result;
         int t = ran.nextInt(1000)+1;
+        // TODO repo.queue
         await repo.getGame(t)
           .handleError((e) => result = SquazzleState.error('error retrieving data from server'))
           .listen((game) {
@@ -41,17 +38,8 @@ class MultiBloc extends GameBloc {
         correctSubject.add(true);
         // TODO handle victory
         break;
-      case SquazzleEventType.error:
-        // TODO handle error
-        break;
       default:
     }
   }
 
-  @override
-  void dispose() {
-    correctSubject.close();
-    moveNumberSubject.close();
-    super.dispose();
-  }
 }

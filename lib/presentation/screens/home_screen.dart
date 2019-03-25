@@ -41,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     bloc = BlocProvider.of<HomeBloc>(context);
     bloc.emitEvent(HomeEvent(type: HomeEventType.checkIfUserLogged));
     bloc.intentToMultiScreen.listen((_) => openMultiScreen());
+    // TODO check if player has ever opened the app, if not show tutorial
   }
 
   @override

@@ -2,7 +2,6 @@
 import 'package:rxdart/rxdart.dart';
 
 import 'package:squazzle/domain/domain.dart';
-import 'package:squazzle/data/models/models.dart';
 
 class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   final HomeRepo _repo;
@@ -20,21 +19,11 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
         yield await checkIfUserLogged();
         break;
       case HomeEventType.multiButtonPress:
-        yield HomeState.notInit();
-        HomeState nextState;
-        User user;
-        await _repo.checkIfLoggedIn()
-          .handleError((e) { nextState = HomeState.error(e.toString()); })
-          .listen((user) { user = user; })
-          .asFuture();
-        if (nextState?.type == HomeStateType.error) {
-          yield nextState;
-          break;
-        }
-        if (user != null) {
+        if (currentState?.type == HomeStateType.initLogged) {
           _intentToMultiScreenSubject.add((null));
-          break;
         } else {
+          yield HomeState.notInit();
+          HomeState nextState;
           await _repo.loginWithGoogle()
             .handleError((e) { nextState = HomeState.error(e.toString()); })
             .listen((_) {})

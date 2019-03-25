@@ -4,3 +4,4 @@ export 'game_field_bloc.dart';
 export 'game_bloc.dart';
 export 'target_bloc.dart';
 export 'home_bloc.dart';
+export 'enemy_field_bloc.dart';

@@ -45,8 +45,11 @@ class _MultiScreenState extends State<MultiScreen> with TickerProviderStateMixin
             return Center(child: Text(state.message));
           }
           case SquazzleStateType.notInit : {
-            return Center(
+            return Align(
+              alignment: Alignment.center,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   CircularProgressIndicator(),
                   Text('Waiting for players...'),

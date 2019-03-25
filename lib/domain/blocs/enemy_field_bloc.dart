@@ -2,22 +2,20 @@ import 'package:rxdart/rxdart.dart';
 
 import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
-import 'game_bloc.dart';
 
 class EnemyFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState>  {
-  final GameBloc _gameBloc;
+  final MultiBloc _multiBloc;
 
-  final _enemyFieldSubject = BehaviorSubject<GameField>();
-  Stream<GameField> get enemyField => _enemyFieldSubject.stream;
+  final _enemyFieldSubject = BehaviorSubject<EnemyField>();
+  Stream<EnemyField> get enemyField => _enemyFieldSubject.stream;
   
-  EnemyFieldBloc(this._gameBloc);
-
-  
+  EnemyFieldBloc(this._multiBloc);
 
   @override
-  Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) {
-    // TODO: implement eventHandler
-    return null;
+  Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
+    if (event.type == SquazzleEventType.start) {
+      _enemyFieldSubject.add(_multiBloc.enemyField);
+    }
   }
 
   @override

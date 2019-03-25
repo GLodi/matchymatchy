@@ -7,10 +7,10 @@ import 'package:squazzle/data/models/models.dart';
 
 abstract class DbProvider {
 
-  // Returns a GameField and TargetField with given id.
+  // Returns a GameField and TargetField with given id
   Future<Game> getGame(int id);
 
-  /// Returns amount of moves played on specified game.
+  /// Returns amount of moves played on specified game
   Future<int> getMovesNumber(int id);
 
 }

@@ -17,8 +17,7 @@ class LoginProviderImpl extends LoginProvider {
   @override
   Future<FirebaseUser> loginWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
@@ -39,13 +38,17 @@ class LoginProviderImpl extends LoginProvider {
       final QuerySnapshot result = 
         await Firestore.instance
           .collection('users')
-          .where('id', isEqualTo: user.uid)
+          .where('uid', isEqualTo: user.uid)
           .getDocuments();
       final List<DocumentSnapshot> documents = result.documents;
       if (documents.length == 0) {
         // Update data to server if new user
-        Firestore.instance.collection('users').document(user.uid).setData(
-            {'nickname': user.displayName, 'photoUrl': user.photoUrl, 'id': user.uid});
+        Firestore.instance.collection('users').document(user.uid).setData({
+          'username': user.displayName, 
+          'photoUrl': user.photoUrl, 
+          'uid': user.uid,
+          'matchesWon' : 0,
+        });
       }
     }
 

@@ -29,8 +29,8 @@ void main() {
   // Repos
   container.registerSingleton((c) =>
       new SingleRepo(c.resolve<LogicProvider>(), c.resolve<DbProvider>()));
-  container.registerSingleton((c) =>
-      new MultiRepo(c.resolve<LogicProvider>(), c.resolve<ApiProvider>()));
+  container.registerSingleton((c) => new MultiRepo(c.resolve<LogicProvider>(),
+      c.resolve<ApiProvider>(), c.resolve<SharedPreferencesProvider>()));
   container.registerSingleton((c) => new HomeRepo(
       c.resolve<LoginProvider>(), c.resolve<SharedPreferencesProvider>()));
 

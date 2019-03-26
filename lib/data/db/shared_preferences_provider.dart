@@ -8,6 +8,9 @@ abstract class SharedPreferencesProvider {
 
   // Return logged user information
   Future<User> getUser();
+
+  // Return uid of logged user
+  Future<String> getUid();
 }
 
 class SharedPreferencesProviderImpl extends SharedPreferencesProvider {
@@ -31,4 +34,12 @@ class SharedPreferencesProviderImpl extends SharedPreferencesProvider {
       return User(username: username, uid: uid, imageUrl: imageUrl);
     return null;
   }
+
+  @override
+  Future<String> getUid() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.getString('uid');
+  }
+
+
 }

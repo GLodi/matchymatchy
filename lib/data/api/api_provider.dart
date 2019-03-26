@@ -7,7 +7,7 @@ abstract class ApiProvider {
   Future<Game> getGame(int id);
 
   // Add player to server queue with GameField id
-  Future<void> queuePlayer(int uid, int gfid, int matchId);
+  Future<void> queuePlayer(String uid, int gfid, String matchId);
 
   // Subscribes to EnemyField changes
   Future<EnemyField> getEnemyField(int matchId);
@@ -31,12 +31,12 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<void> queuePlayer(int uid, int gfid, int matchId) async {
+  Future<void> queuePlayer(String uid, int gfid, String matchId) async {
     return Firestore.instance.runTransaction((transactionHandler) async {
       await transactionHandler.set(
-        queueRef.document(FieldValueType.serverTimestamp.toString()),
+        queueRef.document(/*TODO metti qualcosa */),
         {
-          'time': '${FieldValueType.serverTimestamp.toString()}',
+          'time': '${FieldValue.serverTimestamp().toString()}',
           'uid': uid,
           'gfid': gfid,
           'matchid': matchId,

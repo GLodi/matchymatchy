@@ -4,14 +4,16 @@ import 'package:squazzle/data/data.dart';
 import 'game_repo.dart';
 
 class MultiRepo extends GameRepo {
-  final ApiProvider _apiRepo;
+  final ApiProvider _apiProvider;
   final LogicProvider _logicProvider;
+  final SharedPreferencesProvider _prefsProvider;
 
-  MultiRepo(this._logicProvider, this._apiRepo);
+  MultiRepo(this._logicProvider, this._apiProvider, this._prefsProvider);
 
   @override
   Observable<Game> getGame(int id) =>
-      Observable.fromFuture(_apiRepo.getGame(id)).handleError((e) => throw e);
+      Observable.fromFuture(_apiProvider.getGame(id))
+          .handleError((e) => throw e);
 
   @override
   Observable<GameField> applyMove(GameField gameField, Move move) =>
@@ -26,4 +28,10 @@ class MultiRepo extends GameRepo {
       Observable.fromFuture(
               _logicProvider.checkIfCorrect(gameField, targetField))
           .handleError((e) => throw e);
+
+  Observable<void> queuePlayer(int gfid, String matchId) {
+    return Observable.fromFuture(_prefsProvider.getUid())
+        .map((uid) => _apiProvider.queuePlayer(uid, gfid, matchId))
+        .handleError((e) => throw e);
+  }
 }

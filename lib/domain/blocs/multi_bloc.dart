@@ -24,7 +24,12 @@ class MultiBloc extends GameBloc {
       case SquazzleEventType.start:
         SquazzleState result;
         int t = ran.nextInt(1000) + 1;
-        // TODO repo.queue
+        await repo
+            .queuePlayer(t, uuid.v1())
+            .handleError((e) => result =
+                SquazzleState.error('error queueing data from server'))
+            .listen((_) {})
+            .asFuture();
         await repo
             .getGame(t)
             .handleError((e) => result =

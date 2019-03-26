@@ -6,18 +6,16 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = GoogleSignIn();
 
 abstract class LoginProvider {
-
   // Try login through Google services
-  Future<FirebaseUser> loginWithGoogle(); 
-
+  Future<FirebaseUser> loginWithGoogle();
 }
 
 class LoginProviderImpl extends LoginProvider {
-
   @override
   Future<FirebaseUser> loginWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
@@ -35,8 +33,7 @@ class LoginProviderImpl extends LoginProvider {
 
     if (user != null) {
       // Check is already sign up
-      final QuerySnapshot result = 
-        await Firestore.instance
+      final QuerySnapshot result = await Firestore.instance
           .collection('users')
           .where('uid', isEqualTo: user.uid)
           .getDocuments();
@@ -44,15 +41,14 @@ class LoginProviderImpl extends LoginProvider {
       if (documents.length == 0) {
         // Update data to server if new user
         Firestore.instance.collection('users').document(user.uid).setData({
-          'username': user.displayName, 
-          'photoUrl': user.photoUrl, 
+          'username': user.displayName,
+          'photoUrl': user.photoUrl,
           'uid': user.uid,
-          'matchesWon' : 0,
+          'matchesWon': 0,
         });
       }
     }
 
     return user;
   }
-  
 }

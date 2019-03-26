@@ -4,7 +4,7 @@ class EnemyField {
 
   EnemyField({this.uid, this.grid});
 
-  EnemyField.fromMap(Map<String,dynamic> map) {
+  EnemyField.fromMap(Map<String, dynamic> map) {
     assert(map['uid'] != null);
     assert(map['enemy'] != null);
     assert(map['enemy'].toString().length == 9);
@@ -15,7 +15,7 @@ class EnemyField {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'uid': uid,
-      'enemy' : grid,
+      'enemy': grid,
     };
   }
 }

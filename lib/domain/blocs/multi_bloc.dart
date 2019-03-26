@@ -18,20 +18,22 @@ class MultiBloc extends GameBloc {
   MultiBloc(this.repo) : super(repo);
 
   @override
-  Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
+  Stream<SquazzleState> eventHandler(
+      SquazzleEvent event, SquazzleState currentState) async* {
     switch (event.type) {
       case SquazzleEventType.start:
         SquazzleState result;
-        int t = ran.nextInt(1000)+1;
+        int t = ran.nextInt(1000) + 1;
         // TODO repo.queue
-        await repo.getGame(t)
-          .handleError((e) => result = SquazzleState.error('error retrieving data from server'))
-          .listen((game) {
-            gameField = game.gameField;
-            targetField = game.targetField;
-            result = SquazzleState.init();
-          })
-          .asFuture();
+        await repo
+            .getGame(t)
+            .handleError((e) => result =
+                SquazzleState.error('error retrieving data from server'))
+            .listen((game) {
+          gameField = game.gameField;
+          targetField = game.targetField;
+          result = SquazzleState.init();
+        }).asFuture();
         yield result;
         break;
       case SquazzleEventType.victory:
@@ -41,5 +43,4 @@ class MultiBloc extends GameBloc {
       default:
     }
   }
-
 }

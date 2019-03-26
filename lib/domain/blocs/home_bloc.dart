@@ -1,4 +1,3 @@
-
 import 'package:rxdart/rxdart.dart';
 
 import 'package:squazzle/domain/domain.dart';
@@ -8,11 +7,12 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
 
   final _intentToMultiScreenSubject = BehaviorSubject<void>();
   Stream<void> get intentToMultiScreen => _intentToMultiScreenSubject.stream;
- 
+
   HomeBloc(this._repo) : super(initialState: HomeState.notInit());
 
   @override
-  Stream<HomeState> eventHandler(HomeEvent event, HomeState currentState) async* {
+  Stream<HomeState> eventHandler(
+      HomeEvent event, HomeState currentState) async* {
     switch (event.type) {
       case HomeEventType.checkIfUserLogged:
         yield HomeState.notInit();
@@ -24,10 +24,13 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
         } else {
           yield HomeState.notInit();
           HomeState nextState;
-          await _repo.loginWithGoogle()
-            .handleError((e) { nextState = HomeState.error(e.toString()); })
-            .listen((_) {})
-            .asFuture();
+          await _repo
+              .loginWithGoogle()
+              .handleError((e) {
+                nextState = HomeState.error(e.toString());
+              })
+              .listen((_) {})
+              .asFuture();
           if (nextState?.type == HomeStateType.error) {
             yield nextState;
             break;
@@ -45,13 +48,13 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
 
   Future<HomeState> checkIfUserLogged() async {
     HomeState nextState;
-    await _repo.checkIfLoggedIn()
-      .handleError((e) { nextState = HomeState.error(e.toString()); })
-      .listen((user) { 
-        user != null ? 
-          nextState = HomeState.initLogged(user) : 
-          nextState = HomeState.initNotLogged();
-      }).asFuture();
+    await _repo.checkIfLoggedIn().handleError((e) {
+      nextState = HomeState.error(e.toString());
+    }).listen((user) {
+      user != null
+          ? nextState = HomeState.initLogged(user)
+          : nextState = HomeState.initNotLogged();
+    }).asFuture();
     return nextState;
   }
 
@@ -60,5 +63,4 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     _intentToMultiScreenSubject.close();
     super.dispose();
   }
-
 }

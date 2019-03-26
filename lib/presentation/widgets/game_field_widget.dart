@@ -4,12 +4,12 @@ import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
 
 const colors = {
-  0:Colors.white,
-  1:Colors.blue,
-  2:Colors.orange,
-  3:Colors.yellow,
-  4:Colors.green,
-  5:Colors.red,
+  0: Colors.white,
+  1: Colors.blue,
+  2: Colors.orange,
+  3: Colors.yellow,
+  4: Colors.green,
+  5: Colors.red,
 };
 
 class GameFieldWidget extends StatefulWidget {
@@ -19,7 +19,8 @@ class GameFieldWidget extends StatefulWidget {
   }
 }
 
-class _GameFieldWidgetState extends State<GameFieldWidget> with TickerProviderStateMixin {
+class _GameFieldWidgetState extends State<GameFieldWidget>
+    with TickerProviderStateMixin {
   GameFieldBloc bloc;
   List<GlobalKey> keys = List();
   List<Tween> _switchTween = List();
@@ -40,7 +41,7 @@ class _GameFieldWidgetState extends State<GameFieldWidget> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    fifthWidth = MediaQuery.of(context).size.width/5;
+    fifthWidth = MediaQuery.of(context).size.width / 5;
     return StreamBuilder<GameField>(
       stream: bloc.gameField,
       initialData: field,
@@ -56,41 +57,42 @@ class _GameFieldWidgetState extends State<GameFieldWidget> with TickerProviderSt
             vsync: this,
             duration: const Duration(milliseconds: 100),
           ));
-          _switchTween.add(Tween<Offset>(begin: Offset.zero, end: Offset(0, 1)));
+          _switchTween
+              .add(Tween<Offset>(begin: Offset.zero, end: Offset(0, 1)));
           _switchAnim.add(_switchTween[i].animate(_switchAnimCont[i]));
         }
         return Stack(
           children: <Widget>[
             // Top row
-            square(0, 0, 4*fifthWidth),
-            square(1, fifthWidth, 4*fifthWidth),
-            square(2, 2*fifthWidth, 4*fifthWidth),
-            square(3, 3*fifthWidth, 4*fifthWidth),
-            square(4, 4*fifthWidth, 4*fifthWidth),
+            square(0, 0, 4 * fifthWidth),
+            square(1, fifthWidth, 4 * fifthWidth),
+            square(2, 2 * fifthWidth, 4 * fifthWidth),
+            square(3, 3 * fifthWidth, 4 * fifthWidth),
+            square(4, 4 * fifthWidth, 4 * fifthWidth),
             // First row
-            square(5, 0, 3*fifthWidth),
-            square(6, fifthWidth, 3*fifthWidth),
-            square(7, 2*fifthWidth, 3*fifthWidth),
-            square(8, 3*fifthWidth, 3*fifthWidth),
-            square(9, 4*fifthWidth, 3*fifthWidth),
+            square(5, 0, 3 * fifthWidth),
+            square(6, fifthWidth, 3 * fifthWidth),
+            square(7, 2 * fifthWidth, 3 * fifthWidth),
+            square(8, 3 * fifthWidth, 3 * fifthWidth),
+            square(9, 4 * fifthWidth, 3 * fifthWidth),
             // Second row
-            square(10, 0, 2*fifthWidth),
-            square(11, fifthWidth, 2*fifthWidth),
-            square(12, 2*fifthWidth, 2*fifthWidth),
-            square(13, 3*fifthWidth, 2*fifthWidth),
-            square(14, 4*fifthWidth, 2*fifthWidth),
+            square(10, 0, 2 * fifthWidth),
+            square(11, fifthWidth, 2 * fifthWidth),
+            square(12, 2 * fifthWidth, 2 * fifthWidth),
+            square(13, 3 * fifthWidth, 2 * fifthWidth),
+            square(14, 4 * fifthWidth, 2 * fifthWidth),
             // Third row
-            square(15, 0, 1*fifthWidth),
-            square(16, fifthWidth, 1*fifthWidth),
-            square(17, 2*fifthWidth, 1*fifthWidth),
-            square(18, 3*fifthWidth, 1*fifthWidth),
-            square(19, 4*fifthWidth, 1*fifthWidth),
+            square(15, 0, 1 * fifthWidth),
+            square(16, fifthWidth, 1 * fifthWidth),
+            square(17, 2 * fifthWidth, 1 * fifthWidth),
+            square(18, 3 * fifthWidth, 1 * fifthWidth),
+            square(19, 4 * fifthWidth, 1 * fifthWidth),
             // Fourth row
             square(20, 0, 0),
             square(21, fifthWidth, 0),
-            square(22, 2*fifthWidth, 0),
-            square(23, 3*fifthWidth, 0),
-            square(24, 4*fifthWidth, 0),
+            square(22, 2 * fifthWidth, 0),
+            square(23, 3 * fifthWidth, 0),
+            square(24, 4 * fifthWidth, 0),
           ],
         );
       },
@@ -117,24 +119,39 @@ class _GameFieldWidgetState extends State<GameFieldWidget> with TickerProviderSt
           },
           onVerticalDragEnd: (drag) {
             print('$index: $move');
-            switch(move) {
-              case 'up' : {moveUp(index);break;}
-              case 'down' : {moveDown(index);break;}
+            switch (move) {
+              case 'up':
+                {
+                  moveUp(index);
+                  break;
+                }
+              case 'down':
+                {
+                  moveDown(index);
+                  break;
+                }
             }
           },
           onHorizontalDragEnd: (drag) {
             print('$index: $move');
-            switch(move) {
-              case 'right' : {moveRight(index); break;}
-              case 'left' : {moveLeft(index); break;}
+            switch (move) {
+              case 'right':
+                {
+                  moveRight(index);
+                  break;
+                }
+              case 'left':
+                {
+                  moveLeft(index);
+                  break;
+                }
             }
           },
           child: Container(
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(
                 color: colors[int.parse(field.grid[index])],
-                borderRadius: BorderRadius.all(Radius.circular(5.0))
-            ),
+                borderRadius: BorderRadius.all(Radius.circular(5.0))),
           ),
         ),
       ),
@@ -142,44 +159,44 @@ class _GameFieldWidgetState extends State<GameFieldWidget> with TickerProviderSt
   }
 
   void moveRight(int index) {
-    if (index%5 != 4) {
+    if (index % 5 != 4) {
       _switchTween[index].end = Offset(1, 0);
       _switchAnimCont[index].forward();
-      _switchTween[index+1].end = Offset(-1, 0);
-      _switchAnimCont[index+1].forward().then((c) {
+      _switchTween[index + 1].end = Offset(-1, 0);
+      _switchAnimCont[index + 1].forward().then((c) {
         bloc.move.add([index, 1]);
       });
     }
   }
 
   void moveLeft(int index) {
-    if (index%5 != 0) {
+    if (index % 5 != 0) {
       _switchTween[index].end = Offset(-1, 0);
       _switchAnimCont[index].forward();
-      _switchTween[index-1].end = Offset(1, 0);
-      _switchAnimCont[index-1].forward().then((c) {
+      _switchTween[index - 1].end = Offset(1, 0);
+      _switchAnimCont[index - 1].forward().then((c) {
         bloc.move.add([index, 3]);
       });
     }
   }
 
   void moveUp(int index) {
-    if ((index/5).truncate() != 0) {
+    if ((index / 5).truncate() != 0) {
       _switchTween[index].end = Offset(0, -1);
       _switchAnimCont[index].forward();
-      _switchTween[index-5].end = Offset(0, 1);
-      _switchAnimCont[index-5].forward().then((c) {
+      _switchTween[index - 5].end = Offset(0, 1);
+      _switchAnimCont[index - 5].forward().then((c) {
         bloc.move.add([index, 0]);
       });
     }
   }
 
   void moveDown(int index) {
-    if ((index/5).truncate() != 4) {
+    if ((index / 5).truncate() != 4) {
       _switchTween[index].end = Offset(0, 1);
       _switchAnimCont[index].forward();
-      _switchTween[index+5].end = Offset(0, -1);
-      _switchAnimCont[index+5].forward().then((c) {
+      _switchTween[index + 5].end = Offset(0, -1);
+      _switchAnimCont[index + 5].forward().then((c) {
         bloc.move.add([index, 2]);
       });
     }
@@ -190,5 +207,4 @@ class _GameFieldWidgetState extends State<GameFieldWidget> with TickerProviderSt
     super.dispose();
     _switchAnimCont.forEach((c) => c.dispose());
   }
-
 }

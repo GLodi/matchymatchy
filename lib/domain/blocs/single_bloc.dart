@@ -15,19 +15,21 @@ class SingleBloc extends GameBloc {
   SingleBloc(this.repo) : super(repo);
 
   @override
-  Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
+  Stream<SquazzleState> eventHandler(
+      SquazzleEvent event, SquazzleState currentState) async* {
     switch (event.type) {
       case SquazzleEventType.start:
         SquazzleState result;
-        int t = ran.nextInt(500)+1;
-        await repo.getGame(t)
-          .handleError((e) => result = SquazzleState.error('error retrieving data from db'))
-          .listen((game) {
-            gameField = game.gameField;
-            targetField = game.targetField;
-            result = SquazzleState.init();
-          })
-          .asFuture();
+        int t = ran.nextInt(500) + 1;
+        await repo
+            .getGame(t)
+            .handleError((e) =>
+                result = SquazzleState.error('error retrieving data from db'))
+            .listen((game) {
+          gameField = game.gameField;
+          targetField = game.targetField;
+          result = SquazzleState.init();
+        }).asFuture();
         yield result;
         break;
       case SquazzleEventType.victory:
@@ -37,5 +39,4 @@ class SingleBloc extends GameBloc {
       default:
     }
   }
-
 }

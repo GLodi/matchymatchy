@@ -11,8 +11,7 @@ class SquazzleState extends BlocState {
     this.message,
   });
 
-  factory SquazzleState.init() =>
-      SquazzleState(type: SquazzleStateType.init);
+  factory SquazzleState.init() => SquazzleState(type: SquazzleStateType.init);
 
   factory SquazzleState.notInit() =>
       SquazzleState(type: SquazzleStateType.notInit);
@@ -30,9 +29,7 @@ enum SquazzleStateType {
 class SquazzleEvent extends BlocEvent {
   final SquazzleEventType type;
 
-  SquazzleEvent({
-    this.type : SquazzleEventType.start
-  }) : assert(type != null);
+  SquazzleEvent({this.type: SquazzleEventType.start}) : assert(type != null);
 }
 
 enum SquazzleEventType {

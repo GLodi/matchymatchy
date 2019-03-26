@@ -8,7 +8,7 @@ class Game {
 
   Game({this.id, this.gameField, this.targetField});
 
-  Game.fromMap(Map<String,dynamic> map) {
+  Game.fromMap(Map<String, dynamic> map) {
     assert(map['_id'] != null);
     assert(map['grid'] != null);
     assert(map['target'] != null);
@@ -18,5 +18,4 @@ class Game {
     gameField = GameField.fromMap(map);
     targetField = TargetField.fromMap(map);
   }
-
 }

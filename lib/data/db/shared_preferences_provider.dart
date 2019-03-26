@@ -3,13 +3,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:squazzle/data/models/models.dart';
 
 abstract class SharedPreferencesProvider {
-
   // Store logged user information
   Future<void> storeUser(String username, String uid, String imageUrl);
 
   // Return logged user information
   Future<User> getUser();
-
 }
 
 class SharedPreferencesProviderImpl extends SharedPreferencesProvider {
@@ -33,5 +31,4 @@ class SharedPreferencesProviderImpl extends SharedPreferencesProvider {
       return User(username: username, uid: uid, imageUrl: imageUrl);
     return null;
   }
-
 }

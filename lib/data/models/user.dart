@@ -6,7 +6,7 @@ class User {
 
   User({this.username, this.uid, this.imageUrl});
 
-  User.fromMap(Map<String,dynamic> map){
+  User.fromMap(Map<String, dynamic> map) {
     assert(map['username'] != null);
     assert(map['uid'] != null);
     assert(map['imageUrl'] != null);
@@ -18,11 +18,10 @@ class User {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'username' : username,
-      'uid' : uid,
-      'imageUrl' : imageUrl,
-      'matchesWon' :matchesWon,
+      'username': username,
+      'uid': uid,
+      'imageUrl': imageUrl,
+      'matchesWon': matchesWon,
     };
   }
-
 }

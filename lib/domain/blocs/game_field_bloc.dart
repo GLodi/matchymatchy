@@ -22,25 +22,29 @@ class GameFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
 
   void _applyMove(List<int> list) async {
     Move move = Move(from: list[0], dir: list[1]);
-    await _gameBloc.gameRepo.applyMove(_gameBloc.gameField, move)
-    .handleError((e) => _gameBloc.emitEvent(SquazzleEvent(type: SquazzleEventType.error)))
-    .listen((field) {
+    await _gameBloc.gameRepo
+        .applyMove(_gameBloc.gameField, move)
+        .handleError((e) =>
+            _gameBloc.emitEvent(SquazzleEvent(type: SquazzleEventType.error)))
+        .listen((field) {
       _gameBloc.gameField = field;
       _gameFieldSubject.add(field);
       moveAmount += 1;
       _gameBloc.moveNumberSubject.add(moveAmount);
-      _gameBloc.gameRepo.checkIfCorrect(_gameBloc.gameField, _gameBloc.targetField).listen((correct) {
+      _gameBloc.gameRepo
+          .checkIfCorrect(_gameBloc.gameField, _gameBloc.targetField)
+          .listen((correct) {
         if (correct) {
           _gameBloc.emitEvent(SquazzleEvent(type: SquazzleEventType.victory));
         }
       });
-    })
-    .asFuture();
+    }).asFuture();
   }
 
   @override
-  Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
-    if (event.type == SquazzleEventType.start) {        
+  Stream<SquazzleState> eventHandler(
+      SquazzleEvent event, SquazzleState currentState) async* {
+    if (event.type == SquazzleEventType.start) {
       _gameFieldSubject.add(_gameBloc.gameField);
     }
   }
@@ -51,5 +55,4 @@ class GameFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
     _moveSubject.close();
     super.dispose();
   }
-
 }

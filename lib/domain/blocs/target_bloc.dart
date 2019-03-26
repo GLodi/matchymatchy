@@ -12,7 +12,8 @@ class TargetBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
   TargetBloc(this._gameBloc);
 
   @override
-  Stream<SquazzleState> eventHandler(SquazzleEvent event, SquazzleState currentState) async* {
+  Stream<SquazzleState> eventHandler(
+      SquazzleEvent event, SquazzleState currentState) async* {
     if (event.type == SquazzleEventType.start) {
       _targetFieldSubject.add(_gameBloc.targetField);
     }
@@ -23,5 +24,4 @@ class TargetBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
     _targetFieldSubject.close();
     super.dispose();
   }
-
 }

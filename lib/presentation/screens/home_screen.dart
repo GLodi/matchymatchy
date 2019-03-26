@@ -11,12 +11,12 @@ import 'package:squazzle/presentation/screens/single_screen.dart';
 import 'package:squazzle/presentation/screens/multi_screen.dart';
 
 const colors2 = {
-  0:Colors.white,
-  1:Colors.blue,
-  2:Colors.orange,
-  3:Colors.yellow,
-  4:Colors.green,
-  5:Colors.red,
+  0: Colors.white,
+  1: Colors.blue,
+  2: Colors.orange,
+  3: Colors.yellow,
+  4: Colors.green,
+  5: Colors.red,
 };
 
 class HomeScreen extends StatefulWidget {
@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    fifthWidth = MediaQuery.of(context).size.width/5;
+    fifthWidth = MediaQuery.of(context).size.width / 5;
     return Stack(
       children: <Widget>[
         Container(
@@ -119,22 +119,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 MaterialPageRoute(builder: (context) {
                   return Scaffold(
-                    body: BlocProvider(
-                      child: SingleScreen(),
-                      bloc: kiwi.Container().resolve<SingleBloc>(),
-                    )
-                  );}
-                ),
+                      body: BlocProvider(
+                    child: SingleScreen(),
+                    bloc: kiwi.Container().resolve<SingleBloc>(),
+                  ));
+                }),
               );
             },
           ),
           RaisedButton(
-            child: Text(
-              "Multiplayer\nLogged in as ${user.username}", 
-              textAlign: TextAlign.center,
-            ),
-            onPressed: () { bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress)); }
-          ),
+              child: Text(
+                "Multiplayer\nLogged in as ${user.username}",
+                textAlign: TextAlign.center,
+              ),
+              onPressed: () {
+                bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress));
+              }),
         ],
       ),
     );
@@ -152,29 +152,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 MaterialPageRoute(builder: (context) {
                   return Scaffold(
-                    body: BlocProvider(
-                      child: SingleScreen(),
-                      bloc: kiwi.Container().resolve<SingleBloc>(),
-                    )
-                  );}
-                ),
+                      body: BlocProvider(
+                    child: SingleScreen(),
+                    bloc: kiwi.Container().resolve<SingleBloc>(),
+                  ));
+                }),
               );
             },
           ),
           RaisedButton(
-            child: Text(
-              "Multiplayer\nLog in",
-              textAlign: TextAlign.center,
-            ),
-            onPressed: () { bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress)); }
-          ),
+              child: Text(
+                "Multiplayer\nLog in",
+                textAlign: TextAlign.center,
+              ),
+              onPressed: () {
+                bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress));
+              }),
         ],
       ),
     );
   }
 
   void applyMovement() {
-    const minute = const Duration(seconds:60);
+    const minute = const Duration(seconds: 60);
     _infiniteController.animateTo(
       _infiniteController.offset + 2000.0,
       duration: minute,
@@ -191,16 +191,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildItem(BuildContext context, int index) {
     var l = List<Widget>();
-    for (int i=0; i<5; i++) {
-      l.add(square(i, (i%5)*fifthWidth, (i/5).truncate()*fifthWidth));
+    for (int i = 0; i < 5; i++) {
+      l.add(square(i, (i % 5) * fifthWidth, (i / 5).truncate() * fifthWidth));
     }
     return Row(children: l);
   }
 
   Widget background() {
     var l = List<Widget>();
-    for (int i=0; i<60; i++) {
-      l.add(square(i, (i%5)*fifthWidth, (i/5).truncate()*fifthWidth));
+    for (int i = 0; i < 60; i++) {
+      l.add(square(i, (i % 5) * fifthWidth, (i / 5).truncate() * fifthWidth));
     }
     return Stack(children: l);
   }
@@ -212,9 +212,8 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         margin: EdgeInsets.all(2),
         decoration: BoxDecoration(
-          color: colors2[_random.nextInt(colors2.length)],
-          borderRadius: BorderRadius.all(Radius.circular(5.0))
-        ),
+            color: colors2[_random.nextInt(colors2.length)],
+            borderRadius: BorderRadius.all(Radius.circular(5.0))),
       ),
     );
   }
@@ -225,12 +224,10 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute(builder: (context) {
         return Scaffold(
             body: BlocProvider(
-              child: MultiScreen(),
-              bloc: kiwi.Container().resolve<MultiBloc>(),
-            )
-        );}
-      ),
+          child: MultiScreen(),
+          bloc: kiwi.Container().resolve<MultiBloc>(),
+        ));
+      }),
     );
   }
-
 }

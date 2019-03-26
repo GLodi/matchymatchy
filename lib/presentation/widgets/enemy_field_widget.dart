@@ -4,13 +4,13 @@ import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
 
 const colors = {
-  0:Colors.white,
-  1:Colors.blue,
-  2:Colors.orange,
-  3:Colors.yellow,
-  4:Colors.green,
-  5:Colors.red,
-  6:Colors.transparent,
+  0: Colors.white,
+  1: Colors.blue,
+  2: Colors.orange,
+  3: Colors.yellow,
+  4: Colors.green,
+  5: Colors.red,
+  6: Colors.transparent,
 };
 
 class EnemyWidget extends StatefulWidget {
@@ -32,8 +32,8 @@ class _EnemyWidgetState extends State<EnemyWidget> {
 
   @override
   Widget build(BuildContext context) {
-    fifthWidth = MediaQuery.of(context).size.width/5;
-    tenthWidth = fifthWidth/2;
+    fifthWidth = MediaQuery.of(context).size.width / 5;
+    tenthWidth = fifthWidth / 2;
     return StreamBuilder<EnemyField>(
       stream: bloc.enemyField,
       initialData: enemyField,
@@ -41,15 +41,15 @@ class _EnemyWidgetState extends State<EnemyWidget> {
         enemyField = snapshot.data;
         return Stack(
           children: <Widget>[
-            squareEnemy(0, 0, 2*tenthWidth),
-            squareEnemy(1, tenthWidth, 2*tenthWidth),
-            squareEnemy(2, 2*tenthWidth, 2*tenthWidth),
+            squareEnemy(0, 0, 2 * tenthWidth),
+            squareEnemy(1, tenthWidth, 2 * tenthWidth),
+            squareEnemy(2, 2 * tenthWidth, 2 * tenthWidth),
             squareEnemy(3, 0, tenthWidth),
             squareEnemy(4, tenthWidth, tenthWidth),
-            squareEnemy(5, 2*tenthWidth, tenthWidth),
+            squareEnemy(5, 2 * tenthWidth, tenthWidth),
             squareEnemy(6, 0, 0),
             squareEnemy(7, tenthWidth, 0),
-            squareEnemy(8, 2*tenthWidth, 0),
+            squareEnemy(8, 2 * tenthWidth, 0),
           ],
         );
       },
@@ -66,8 +66,7 @@ class _EnemyWidgetState extends State<EnemyWidget> {
         margin: EdgeInsets.all(1),
         decoration: BoxDecoration(
             color: colors[int.parse(enemyField.grid[index])],
-            borderRadius: BorderRadius.all(Radius.circular(5.0))
-        ),
+            borderRadius: BorderRadius.all(Radius.circular(5.0))),
       ),
     );
   }

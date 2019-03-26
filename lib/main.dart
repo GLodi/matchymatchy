@@ -14,32 +14,30 @@ void main() {
   kiwi.Container container = new kiwi.Container();
 
   // Providers
-  container.registerSingleton<DbProvider,DbProviderImpl>((c) =>
-    new DbProviderImpl());
-  container.registerSingleton<ApiProvider,ApiProviderImpl>((c) =>
-    new ApiProviderImpl());
-  container.registerSingleton<LogicProvider,LogicProviderImpl>((c) =>
-    new LogicProviderImpl());
-  container.registerSingleton<LoginProvider,LoginProviderImpl>((c) =>
-    new LoginProviderImpl());
-  container.registerSingleton<SharedPreferencesProvider,SharedPreferencesProviderImpl>((c) =>
-    new SharedPreferencesProviderImpl());
+  container.registerSingleton<DbProvider, DbProviderImpl>(
+      (c) => new DbProviderImpl());
+  container.registerSingleton<ApiProvider, ApiProviderImpl>(
+      (c) => new ApiProviderImpl());
+  container.registerSingleton<LogicProvider, LogicProviderImpl>(
+      (c) => new LogicProviderImpl());
+  container.registerSingleton<LoginProvider, LoginProviderImpl>(
+      (c) => new LoginProviderImpl());
+  container.registerSingleton<SharedPreferencesProvider,
+          SharedPreferencesProviderImpl>(
+      (c) => new SharedPreferencesProviderImpl());
 
   // Repos
   container.registerSingleton((c) =>
-    new SingleRepo(c.resolve<LogicProvider>(), c.resolve<DbProvider>()));
+      new SingleRepo(c.resolve<LogicProvider>(), c.resolve<DbProvider>()));
   container.registerSingleton((c) =>
-    new MultiRepo(c.resolve<LogicProvider>(), c.resolve<ApiProvider>()));
-  container.registerSingleton((c) => 
-    new HomeRepo(c.resolve<LoginProvider>(), c.resolve<SharedPreferencesProvider>()));
+      new MultiRepo(c.resolve<LogicProvider>(), c.resolve<ApiProvider>()));
+  container.registerSingleton((c) => new HomeRepo(
+      c.resolve<LoginProvider>(), c.resolve<SharedPreferencesProvider>()));
 
   // Blocs
-  container.registerFactory((c) =>
-    new SingleBloc(c.resolve<SingleRepo>()));
-  container.registerFactory((c) =>
-    new MultiBloc(c.resolve<MultiRepo>()));
-  container.registerFactory((c) =>
-    new HomeBloc(c.resolve<HomeRepo>()));
+  container.registerFactory((c) => new SingleBloc(c.resolve<SingleRepo>()));
+  container.registerFactory((c) => new MultiBloc(c.resolve<MultiRepo>()));
+  container.registerFactory((c) => new HomeBloc(c.resolve<HomeRepo>()));
 
   initDb();
 
@@ -54,7 +52,8 @@ void initDb() async {
   if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
     // Load database from asset and copy
     ByteData data = await rootBundle.load(join('assets', 'squazzle.db'));
-    List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    List<int> bytes =
+        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
     // Save copied asset to documents
     await new File(path).writeAsBytes(bytes);

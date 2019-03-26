@@ -17,12 +17,12 @@ class SingleRepo extends GameRepo {
   @override
   Observable<GameField> applyMove(GameField gameField, Move move) =>
       Observable.fromFuture(_logicHelper.applyMove(gameField, move))
-          // TODO save to db after checking move legality 
+          // TODO save to db after checking move legality
           .handleError((e) => throw e);
 
   @override
-  Observable<bool> checkIfCorrect(GameField gameField, TargetField targetField) =>
+  Observable<bool> checkIfCorrect(
+          GameField gameField, TargetField targetField) =>
       Observable.fromFuture(_logicHelper.checkIfCorrect(gameField, targetField))
           .handleError((e) => throw e);
-
 }

@@ -9,7 +9,8 @@ class MultiScreen extends StatefulWidget {
   _MultiScreenState createState() => _MultiScreenState();
 }
 
-class _MultiScreenState extends State<MultiScreen> with TickerProviderStateMixin {
+class _MultiScreenState extends State<MultiScreen>
+    with TickerProviderStateMixin {
   MultiBloc bloc;
   AnimationController _entryAnimCont;
   Animation _entryAnim;
@@ -19,9 +20,7 @@ class _MultiScreenState extends State<MultiScreen> with TickerProviderStateMixin
   void initState() {
     super.initState();
     _entryAnimCont = AnimationController(
-        vsync: this,
-        duration: Duration(milliseconds: 2000)
-    );
+        vsync: this, duration: Duration(milliseconds: 2000));
     _entryAnim = Tween(begin: -1.0, end: 0.0).animate(CurvedAnimation(
       parent: _entryAnimCont,
       curve: Curves.bounceOut,
@@ -40,28 +39,31 @@ class _MultiScreenState extends State<MultiScreen> with TickerProviderStateMixin
     return BlocEventStateBuilder<SquazzleEvent, SquazzleState>(
       bloc: bloc,
       builder: (context, state) {
-        switch(state.type) {
-          case SquazzleStateType.error : {
-            return Center(child: Text(state.message));
-          }
-          case SquazzleStateType.notInit : {
-            return Align(
-              alignment: Alignment.center,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  CircularProgressIndicator(),
-                  Text('Waiting for players...'),
-                ],
-              ),
-            );
-          }
-          case SquazzleStateType.init : {
-            fifthWidth = MediaQuery.of(context).size.width/5;
-            tenthWidth = fifthWidth/2;
-            return initScreen();
-          }
+        switch (state.type) {
+          case SquazzleStateType.error:
+            {
+              return Center(child: Text(state.message));
+            }
+          case SquazzleStateType.notInit:
+            {
+              return Align(
+                alignment: Alignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    CircularProgressIndicator(),
+                    Text('Waiting for players...'),
+                  ],
+                ),
+              );
+            }
+          case SquazzleStateType.init:
+            {
+              fifthWidth = MediaQuery.of(context).size.width / 5;
+              tenthWidth = fifthWidth / 2;
+              return initScreen();
+            }
         }
       },
     );
@@ -114,8 +116,8 @@ class _MultiScreenState extends State<MultiScreen> with TickerProviderStateMixin
                         ),
                         Container(
                           constraints: BoxConstraints(
-                            maxHeight: 3*tenthWidth,
-                            maxWidth: 3*tenthWidth,
+                            maxHeight: 3 * tenthWidth,
+                            maxWidth: 3 * tenthWidth,
                           ),
                           alignment: Alignment.topCenter,
                           child: BlocProvider(
@@ -127,7 +129,7 @@ class _MultiScreenState extends State<MultiScreen> with TickerProviderStateMixin
                     ),
                   ),
                   Container(
-                    constraints: BoxConstraints(maxHeight: 5*fifthWidth),
+                    constraints: BoxConstraints(maxHeight: 5 * fifthWidth),
                     margin: EdgeInsets.only(bottom: 40),
                     alignment: Alignment.bottomCenter,
                     child: BlocProvider(
@@ -153,5 +155,4 @@ class _MultiScreenState extends State<MultiScreen> with TickerProviderStateMixin
       },
     );
   }
-
 }

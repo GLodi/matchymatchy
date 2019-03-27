@@ -14,6 +14,8 @@ abstract class ApiProvider {
 }
 
 class ApiProviderImpl implements ApiProvider {
+  final baseUrl = ' https://europe-west1-squazzle-40ea9.cloudfunctions.net/';
+
   CollectionReference get gameFieldRef =>
       Firestore.instance.collection('gamefields');
 

@@ -4,6 +4,7 @@ abstract class LogicProvider {
   /// Determines whether a Move is legal.
   Future<GameField> applyMove(GameField gameField, Move move);
 
+  // TODO copy this into index.js for multiplayer
   /// Checks if current player has won.
   Future<bool> checkIfCorrect(GameField gameField, TargetField targetField);
 }

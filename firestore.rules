@@ -1,0 +1,23 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if request.auth.uid == userId
+    }
+    
+    match /matches/{gameId} {
+      allow read: if true;
+      allow write: if false
+    }
+
+    match /queue/{userId} {
+      allow read: if true;
+      allow write: if false
+    }
+
+    match /gamefields/{gameFieldId} {
+      allow read: if true;
+      allow write: if false
+    }
+  }
+}

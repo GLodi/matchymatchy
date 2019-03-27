@@ -4,7 +4,7 @@ import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
 
 class SingleBloc extends GameBloc {
-  final SingleRepo repo;
+  final SingleManager manager;
   var ran = Random();
   GameField gameField;
   TargetField targetField;
@@ -12,7 +12,7 @@ class SingleBloc extends GameBloc {
   Stream<bool> get correct => correctSubject.stream;
   Stream<int> get moveNumber => moveNumberSubject.stream;
 
-  SingleBloc(this.repo) : super(repo);
+  SingleBloc(this.manager) : super(manager);
 
   @override
   Stream<SquazzleState> eventHandler(
@@ -21,7 +21,7 @@ class SingleBloc extends GameBloc {
       case SquazzleEventType.start:
         SquazzleState result;
         int t = ran.nextInt(500) + 1;
-        await repo
+        await manager
             .getGame(t)
             .handleError((e) =>
                 result = SquazzleState.error('error retrieving data from db'))

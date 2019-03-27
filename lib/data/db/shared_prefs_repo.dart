@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:squazzle/data/models/models.dart';
 
-abstract class SharedPreferencesProvider {
+abstract class SharedPrefsRepo {
   // Store logged user information
   Future<void> storeUser(String username, String uid, String imageUrl);
 
@@ -13,7 +13,7 @@ abstract class SharedPreferencesProvider {
   Future<String> getUid();
 }
 
-class SharedPreferencesProviderImpl extends SharedPreferencesProvider {
+class SharedPrefsRepoImpl extends SharedPrefsRepo {
   SharedPreferences prefs;
 
   @override
@@ -40,6 +40,4 @@ class SharedPreferencesProviderImpl extends SharedPreferencesProvider {
     prefs = await SharedPreferences.getInstance();
     return prefs.getString('uid');
   }
-
-
 }

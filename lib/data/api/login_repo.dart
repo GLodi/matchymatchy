@@ -5,12 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-abstract class LoginProvider {
+abstract class LoginRepo {
   // Try login through Google services
   Future<FirebaseUser> loginWithGoogle();
 }
 
-class LoginProviderImpl extends LoginProvider {
+class LoginRepoImpl extends LoginRepo {
   @override
   Future<FirebaseUser> loginWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();

@@ -1,11 +1,11 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:squazzle/data/data.dart';
 
-class HomeManager {
-  final LoginRepo _loginProvider;
-  final SharedPrefsRepo _preferencesProvider;
+class HomeRepo {
+  final LoginProvider _loginProvider;
+  final SharedPreferencesProvider _preferencesProvider;
 
-  HomeManager(this._loginProvider, this._preferencesProvider);
+  HomeRepo(this._loginProvider, this._preferencesProvider);
 
   Observable<void> loginWithGoogle() =>
       Observable.fromFuture(_loginProvider.loginWithGoogle()).map((user) {

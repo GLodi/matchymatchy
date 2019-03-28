@@ -14,27 +14,30 @@ void main() {
   kiwi.Container container = new kiwi.Container();
 
   // Providers
-  container.registerSingleton<DbRepo, DbRepoImpl>((c) => new DbRepoImpl());
-  container.registerSingleton<ApiRepo, ApiRepoImpl>((c) => new ApiRepoImpl());
-  container
-      .registerSingleton<LogicRepo, LogicRepoImpl>((c) => new LogicRepoImpl());
-  container
-      .registerSingleton<LoginRepo, LoginRepoImpl>((c) => new LoginRepoImpl());
-  container.registerSingleton<SharedPrefsRepo, SharedPrefsRepoImpl>(
-      (c) => new SharedPrefsRepoImpl());
+  container.registerSingleton<DbProvider, DbProviderImpl>(
+      (c) => new DbProviderImpl());
+  container.registerSingleton<ApiProvider, ApiProviderImpl>(
+      (c) => new ApiProviderImpl());
+  container.registerSingleton<LogicProvider, LogicProviderImpl>(
+      (c) => new LogicProviderImpl());
+  container.registerSingleton<LoginProvider, LoginProviderImpl>(
+      (c) => new LoginProviderImpl());
+  container.registerSingleton<SharedPreferencesProvider,
+          SharedPreferencesProviderImpl>(
+      (c) => new SharedPreferencesProviderImpl());
 
   // Repos
-  container.registerSingleton(
-      (c) => new SingleManager(c.resolve<LogicRepo>(), c.resolve<DbRepo>()));
-  container.registerSingleton((c) => new MultiManager(c.resolve<LogicRepo>(),
-      c.resolve<ApiRepo>(), c.resolve<SharedPrefsRepo>()));
   container.registerSingleton((c) =>
-      new HomeManager(c.resolve<LoginRepo>(), c.resolve<SharedPrefsRepo>()));
+      new SingleRepo(c.resolve<LogicProvider>(), c.resolve<DbProvider>()));
+  container.registerSingleton((c) => new MultiRepo(c.resolve<LogicProvider>(),
+      c.resolve<ApiProvider>(), c.resolve<SharedPreferencesProvider>()));
+  container.registerSingleton((c) => new HomeRepo(
+      c.resolve<LoginProvider>(), c.resolve<SharedPreferencesProvider>()));
 
   // Blocs
-  container.registerFactory((c) => new SingleBloc(c.resolve<SingleManager>()));
-  container.registerFactory((c) => new MultiBloc(c.resolve<MultiManager>()));
-  container.registerFactory((c) => new HomeBloc(c.resolve<HomeManager>()));
+  container.registerFactory((c) => new SingleBloc(c.resolve<SingleRepo>()));
+  container.registerFactory((c) => new MultiBloc(c.resolve<MultiRepo>()));
+  container.registerFactory((c) => new HomeBloc(c.resolve<HomeRepo>()));
 
   initDb();
 

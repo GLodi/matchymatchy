@@ -1,14 +1,14 @@
 import 'package:rxdart/rxdart.dart';
 
 import 'package:squazzle/data/data.dart';
-import 'game_manager.dart';
+import 'game_repo.dart';
 
-class MultiManager extends GameManager {
-  final ApiRepo _apiProvider;
-  final LogicRepo _logicProvider;
-  final SharedPrefsRepo _prefsProvider;
+class MultiRepo extends GameRepo {
+  final ApiProvider _apiProvider;
+  final LogicProvider _logicProvider;
+  final SharedPreferencesProvider _prefsProvider;
 
-  MultiManager(this._logicProvider, this._apiProvider, this._prefsProvider);
+  MultiRepo(this._logicProvider, this._apiProvider, this._prefsProvider);
 
   @override
   Observable<Game> getGame(int id) =>
@@ -29,11 +29,9 @@ class MultiManager extends GameManager {
               _logicProvider.checkIfCorrect(gameField, targetField))
           .handleError((e) => throw e);
 
-  Observable<String> getStoredUid() =>
-      Observable.fromFuture(_prefsProvider.getUid())
-          .handleError((e) => throw e);
-
-  Observable<void> queuePlayer(String uid) =>
-      Observable.fromFuture(_apiProvider.queuePlayer(uid))
-          .handleError((e) => throw e);
+  Observable<void> queuePlayer(int gfid, String matchId) {
+    return Observable.fromFuture(_prefsProvider.getUid())
+        .map((uid) => _apiProvider.queuePlayer(uid, gfid, matchId))
+        .handleError((e) => throw e);
+  }
 }

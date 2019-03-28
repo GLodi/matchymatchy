@@ -3,12 +3,12 @@ import 'package:rxdart/rxdart.dart';
 import 'package:squazzle/domain/domain.dart';
 
 class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
-  final HomeManager _manager;
+  final HomeRepo _repo;
 
   final _intentToMultiScreenSubject = BehaviorSubject<void>();
   Stream<void> get intentToMultiScreen => _intentToMultiScreenSubject.stream;
 
-  HomeBloc(this._manager) : super(initialState: HomeState.notInit());
+  HomeBloc(this._repo) : super(initialState: HomeState.notInit());
 
   @override
   Stream<HomeState> eventHandler(
@@ -24,7 +24,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
         } else {
           yield HomeState.notInit();
           HomeState nextState;
-          await _manager
+          await _repo
               .loginWithGoogle()
               .handleError((e) {
                 nextState = HomeState.error(e.toString());
@@ -48,7 +48,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
 
   Future<HomeState> checkIfUserLogged() async {
     HomeState nextState;
-    await _manager.checkIfLoggedIn().handleError((e) {
+    await _repo.checkIfLoggedIn().handleError((e) {
       nextState = HomeState.error(e.toString());
     }).listen((user) {
       user != null

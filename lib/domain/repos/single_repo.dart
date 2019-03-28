@@ -1,13 +1,13 @@
 import 'package:rxdart/rxdart.dart';
 
-import 'game_manager.dart';
+import 'game_repo.dart';
 import 'package:squazzle/data/data.dart';
 
-class SingleManager extends GameManager {
-  final LogicRepo _logicHelper;
-  final DbRepo _dbProvider;
+class SingleRepo extends GameRepo {
+  final LogicProvider _logicHelper;
+  final DbProvider _dbProvider;
 
-  SingleManager(this._logicHelper, this._dbProvider);
+  SingleRepo(this._logicHelper, this._dbProvider);
 
   @override
   Observable<Game> getGame(int id) =>

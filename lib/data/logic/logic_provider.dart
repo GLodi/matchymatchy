@@ -1,6 +1,6 @@
 import 'package:squazzle/data/models/models.dart';
 
-abstract class LogicRepo {
+abstract class LogicProvider {
   /// Determines whether a Move is legal.
   Future<GameField> applyMove(GameField gameField, Move move);
 
@@ -9,7 +9,7 @@ abstract class LogicRepo {
   Future<bool> checkIfCorrect(GameField gameField, TargetField targetField);
 }
 
-class LogicRepoImpl implements LogicRepo {
+class LogicProviderImpl implements LogicProvider {
   @override
   Future<GameField> applyMove(GameField gameField, Move move) async {
     switch (move.dir) {

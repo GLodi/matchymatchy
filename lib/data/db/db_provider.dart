@@ -5,7 +5,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:squazzle/data/models/models.dart';
 
-abstract class DbRepo {
+abstract class DbProvider {
   // Returns a GameField and TargetField with given id
   Future<Game> getGame(int id);
 
@@ -13,7 +13,7 @@ abstract class DbRepo {
   Future<int> getMovesNumber(int id);
 }
 
-class DbRepoImpl extends DbRepo {
+class DbProviderImpl extends DbProvider {
   static Database _db;
 
   Future<Database> get db async {

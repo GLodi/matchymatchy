@@ -14,7 +14,5 @@ exports.queuePlayer = functions
     .https
     .onRequest((request, response) => {
         admin.firestore().FieldValue.serverTimestamp();
-        let docSnapshot = admin.firestore().collection('a').doc('SVNNFoT5JcEJrtqL4D6B').get();
-        docSnapshot.set({a: 'sdfsd'});
         response.send("Hello from Firebase!");
     });

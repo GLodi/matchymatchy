@@ -22,17 +22,16 @@ void main() {
       (c) => new LogicProviderImpl());
   container.registerSingleton<LoginProvider, LoginProviderImpl>(
       (c) => new LoginProviderImpl());
-  container.registerSingleton<SharedPreferencesProvider,
-          SharedPreferencesProviderImpl>(
-      (c) => new SharedPreferencesProviderImpl());
+  container.registerSingleton<SharedPrefsProvider, SharedPrefsProviderImpl>(
+      (c) => new SharedPrefsProviderImpl());
 
   // Repos
   container.registerSingleton((c) =>
       new SingleRepo(c.resolve<LogicProvider>(), c.resolve<DbProvider>()));
   container.registerSingleton((c) => new MultiRepo(c.resolve<LogicProvider>(),
-      c.resolve<ApiProvider>(), c.resolve<SharedPreferencesProvider>()));
+      c.resolve<ApiProvider>(), c.resolve<SharedPrefsProvider>()));
   container.registerSingleton((c) => new HomeRepo(
-      c.resolve<LoginProvider>(), c.resolve<SharedPreferencesProvider>()));
+      c.resolve<LoginProvider>(), c.resolve<SharedPrefsProvider>()));
 
   // Blocs
   container.registerFactory((c) => new SingleBloc(c.resolve<SingleRepo>()));

@@ -3,7 +3,7 @@ import 'package:squazzle/data/data.dart';
 
 class HomeRepo {
   final LoginProvider _loginProvider;
-  final SharedPreferencesProvider _preferencesProvider;
+  final SharedPrefsProvider _preferencesProvider;
 
   HomeRepo(this._loginProvider, this._preferencesProvider);
 

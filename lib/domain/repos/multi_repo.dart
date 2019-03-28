@@ -6,7 +6,7 @@ import 'game_repo.dart';
 class MultiRepo extends GameRepo {
   final ApiProvider _apiProvider;
   final LogicProvider _logicProvider;
-  final SharedPreferencesProvider _prefsProvider;
+  final SharedPrefsProvider _prefsProvider;
 
   MultiRepo(this._logicProvider, this._apiProvider, this._prefsProvider);
 

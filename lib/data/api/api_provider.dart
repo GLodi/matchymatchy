@@ -36,8 +36,7 @@ class ApiProviderImpl implements ApiProvider {
 
   @override
   Future<void> queuePlayer(String uid) async {
-    var a = await _net.get(baseUrl + 'queuePlayer');
-    var sdf = 0;
+    await _net.get(baseUrl + 'queuePlayer?userId=' + uid);
   }
 
   @override

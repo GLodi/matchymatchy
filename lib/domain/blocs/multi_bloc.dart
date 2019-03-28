@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:uuid/uuid.dart';
 
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
@@ -7,7 +6,6 @@ import 'package:squazzle/data/models/models.dart';
 class MultiBloc extends GameBloc {
   final MultiRepo repo;
   final ran = Random();
-  final uuid = Uuid();
   GameField gameField;
   TargetField targetField;
   EnemyField enemyField;
@@ -23,22 +21,21 @@ class MultiBloc extends GameBloc {
     switch (event.type) {
       case SquazzleEventType.start:
         SquazzleState result;
-        int t = ran.nextInt(1000) + 1;
+        String uid;
         await repo
-            .queuePlayer(t, uuid.v1())
+            .getStoredUid()
             .handleError((e) => result =
-                SquazzleState.error('error queueing data from server'))
-            .listen((_) {})
+                SquazzleState.error('error retrieving uid from shared prefs'))
+            .listen((uuid) => uid = uuid)
             .asFuture();
-        await repo
-            .getGame(t)
-            .handleError((e) => result =
-                SquazzleState.error('error retrieving data from server'))
-            .listen((game) {
-          gameField = game.gameField;
-          targetField = game.targetField;
-          result = SquazzleState.init();
-        }).asFuture();
+        if (uid != null) {
+          await repo
+              .queuePlayer(uid)
+              .handleError((e) =>
+                  result = SquazzleState.error('error queueing to server'))
+              .listen((_) {})
+              .asFuture();
+        }
         yield result;
         break;
       case SquazzleEventType.victory:

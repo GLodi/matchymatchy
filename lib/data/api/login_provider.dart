@@ -32,7 +32,7 @@ class LoginProviderImpl extends LoginProvider {
     print("signed in " + user.displayName);
 
     if (user != null) {
-      // Check is already sign up
+      // Check if already signed up
       final QuerySnapshot result = await Firestore.instance
           .collection('users')
           .where('uid', isEqualTo: user.uid)

@@ -1,5 +1,6 @@
-const functions = require('firebase-functions');
-var admin = require('firebase-admin');
+import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
+
 admin.initializeApp(functions.config().firebase);
 
 let queue = admin.firestore().collection('queue');
@@ -19,7 +20,7 @@ exports.queuePlayer = functions
         let userId = request.query.userId;
         let gfid = Math.floor(Math.random() * 1000) + 1;
         
-        queue.get().then((qs) => {
+        queue.get().then(qs => {
             if (qs.empty) {
                 queue.add({
                     time : admin.firestore.Timestamp.now(),
@@ -27,10 +28,9 @@ exports.queuePlayer = functions
                     gfid : gfid,
                 });
             } else {
-                initGame();
+                initGame(userId, gfid);
             }
         });
-
 
         const users = admin.firestore().collection('a');
         users.doc('SVNNFoT5JcEJrtqL4D6B').set({
@@ -38,11 +38,17 @@ exports.queuePlayer = functions
         });
     });
 
-function initGame(userId, gfid) {
-    let hostuid = queue.orderBy("time","desc").get().uid;
+function initGame(userId : String, gfid : number) {
+    queue.orderBy("time","desc").limit(1).get().then(q => {
+        q.docs.forEach(doc => {
+            console.log(doc.data().uid);
+        });
+    });
+    /*
     matches.add({
         hostuid : hostuid,
         joinuid : userId,
         gfid : gfid
     });
+    */
 }

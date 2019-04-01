@@ -5,6 +5,7 @@ admin.initializeApp(functions.config().firebase);
 
 let queue = admin.firestore().collection('queue');
 let matches = admin.firestore().collection('matches');
+let gamefields = admin.firestore().collection('gamefields');
 
 exports.helloWorld = functions
     .region('europe-west1')
@@ -18,17 +19,16 @@ exports.queuePlayer = functions
     .https
     .onRequest((request, response) => {
         let userId = request.query.userId;
-        let gfid = Math.floor(Math.random() * 1000) + 1;
-        
+        let gfid: number = Math.floor(Math.random() * 1000) + 1;
         queue.get().then(qs => {
             if (qs.empty) {
                 queue.add({
-                    time : admin.firestore.Timestamp.now(),
-                    uid : userId,
-                    gfid : gfid,
+                    time: admin.firestore.Timestamp.now(),
+                    uid: userId,
+                    gfid: gfid,
                 });
             } else {
-                initGame(userId, gfid);
+                initGame(userId, String(gfid));
             }
         });
 
@@ -38,17 +38,30 @@ exports.queuePlayer = functions
         });
     });
 
-function initGame(userId : String, gfid : number) {
-    queue.orderBy("time","desc").limit(1).get().then(q => {
+async function initGame(userId: string, gfid: string) {
+    let initialGf: string =
+        await gamefields.doc(gfid).get()
+            .then(gf => gf.data()!.grid)
+            .catch(e => console.log(e));
+    let initialTarget = await getCurrentTarget(initialGf);
+    queue.orderBy("time", "asc").limit(1).get().then(q => {
         q.docs.forEach(doc => {
-            console.log(doc.data().uid);
+            matches.add({
+                hostuid: doc.data().uid,
+                joinuid: userId,
+                gfid: gfid,
+                hosttarget: initialTarget,
+                jointarget: initialTarget,
+            });
         });
     });
-    /*
-    matches.add({
-        hostuid : hostuid,
-        joinuid : userId,
-        gfid : gfid
-    });
-    */
+}
+
+async function getCurrentTarget(gf: string) {
+    let initialTarget: string = "";
+    let array = [6, 7, 8, 11, 12, 13, 16, 17, 18];
+    for (var c of array) {
+        initialTarget = initialTarget.concat(gf.charAt(c));
+    }
+    return initialTarget;
 }

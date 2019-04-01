@@ -7,16 +7,17 @@ abstract class ApiProvider {
   // Returns GameField and TargetField with given id
   Future<Game> getGame(int id);
 
-  // Add player to server queue 
+  // Add player to server queue
   Future<void> queuePlayer(String uid);
 
   // Subscribes to EnemyField changes
-  Future<EnemyField> getEnemyField(int matchId);
+  Future<TargetField> getEnemyField(int matchId);
 }
 
 class ApiProviderImpl implements ApiProvider {
-  final _net = NetUtils(); 
+  final _net = NetUtils();
   final baseUrl = 'https://europe-west1-squazzle-40ea9.cloudfunctions.net/';
+  bool hostOrJoin = true;
 
   CollectionReference get gameFieldRef =>
       Firestore.instance.collection('gamefields');
@@ -40,11 +41,12 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<EnemyField> getEnemyField(int matchId) async {
-    return matchesRef
-        .document(matchId.toString())
-        .snapshots()
-        .listen((ds) => EnemyField.fromMap(ds.data))
-        .asFuture();
+  Future<TargetField> getEnemyField(int matchId) async {
+    return matchesRef.document(matchId.toString()).snapshots().listen((ds) {
+      hostOrJoin
+          ? ds.data['target'] = ds.data['jointarget']
+          : ds.data['target'] = ds.data['hosttarget'];
+      return TargetField.fromMap(ds.data);
+    }).asFuture();
   }
 }

@@ -20,7 +20,7 @@ class EnemyWidget extends StatefulWidget {
 
 class _EnemyWidgetState extends State<EnemyWidget> {
   EnemyFieldBloc bloc;
-  EnemyField enemyField = EnemyField(grid: "000000000");
+  TargetField enemyField = TargetField(grid: "666666666");
   double fifthWidth, tenthWidth;
 
   @override
@@ -34,7 +34,7 @@ class _EnemyWidgetState extends State<EnemyWidget> {
   Widget build(BuildContext context) {
     fifthWidth = MediaQuery.of(context).size.width / 5;
     tenthWidth = fifthWidth / 2;
-    return StreamBuilder<EnemyField>(
+    return StreamBuilder<TargetField>(
       stream: bloc.enemyField,
       initialData: enemyField,
       builder: (context, snapshot) {

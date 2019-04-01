@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/widgets/game_field_widget.dart';
 import 'package:squazzle/presentation/widgets/target_field_widget.dart';
+import 'package:squazzle/presentation/widgets/enemy_field_widget.dart';
 
 class MultiScreen extends StatefulWidget {
   @override
@@ -87,7 +88,17 @@ class _MultiScreenState extends State<MultiScreen>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
-                        // insert enemy map
+                        Container(
+                          constraints: BoxConstraints(
+                            maxHeight: 3 * tenthWidth,
+                            maxWidth: 3 * tenthWidth,
+                          ),
+                          alignment: Alignment.topCenter,
+                          child: BlocProvider(
+                            child: EnemyWidget(),
+                            bloc: EnemyFieldBloc(bloc),
+                          ),
+                        ),
                         StreamBuilder<int>(
                           stream: bloc.moveNumber,
                           initialData: 0,

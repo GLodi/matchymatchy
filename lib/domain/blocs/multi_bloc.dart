@@ -8,7 +8,7 @@ class MultiBloc extends GameBloc {
   final ran = Random();
   GameField gameField;
   TargetField targetField;
-  EnemyField enemyField;
+  TargetField enemyField;
 
   Stream<bool> get correct => correctSubject.stream;
   Stream<int> get moveNumber => moveNumberSubject.stream;
@@ -21,14 +21,14 @@ class MultiBloc extends GameBloc {
     switch (event.type) {
       case SquazzleEventType.start:
         SquazzleState result;
-        String uid;
-        await repo
+        String uid = await repo
             .getStoredUid()
             .handleError((e) => result =
                 SquazzleState.error('error retrieving uid from shared prefs'))
-            .listen((uuid) => uid = uuid)
+            .listen((uuid) => uuid)
             .asFuture();
         if (uid != null) {
+          // TODO retrieve fields
           await repo
               .queuePlayer(uid)
               .handleError((e) =>
@@ -37,6 +37,10 @@ class MultiBloc extends GameBloc {
               .asFuture();
         }
         yield result;
+        gameField = GameField(grid: "1111111111111111111111111");
+        targetField = TargetField(grid: "222222222");
+        enemyField = TargetField(grid: "111111111");
+        yield SquazzleState.init();
         break;
       case SquazzleEventType.victory:
         correctSubject.add(true);

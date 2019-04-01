@@ -6,8 +6,8 @@ import 'package:squazzle/domain/domain.dart';
 class EnemyFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
   final MultiBloc _multiBloc;
 
-  final _enemyFieldSubject = BehaviorSubject<EnemyField>();
-  Stream<EnemyField> get enemyField => _enemyFieldSubject.stream;
+  final _enemyFieldSubject = BehaviorSubject<TargetField>();
+  Stream<TargetField> get enemyField => _enemyFieldSubject.stream;
 
   EnemyFieldBloc(this._multiBloc);
 

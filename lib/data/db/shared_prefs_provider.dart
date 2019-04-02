@@ -11,6 +11,9 @@ abstract class SharedPrefsProvider {
 
   // Return uid of logged user
   Future<String> getUid();
+
+  // Returns true if first time that user opens app
+  Future<bool> isFirstOpen();
 }
 
 class SharedPrefsProviderImpl extends SharedPrefsProvider {
@@ -41,5 +44,13 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
     return prefs.getString('uid');
   }
 
-
+  @override
+  Future<bool> isFirstOpen() async {
+    prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool('first') == null || prefs.getBool('first') == true) {
+      prefs.setBool('first', false);
+      return true;
+    }
+    return false;
+  }
 }

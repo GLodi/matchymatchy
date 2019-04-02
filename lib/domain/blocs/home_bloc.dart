@@ -8,7 +8,21 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   final _intentToMultiScreenSubject = BehaviorSubject<void>();
   Stream<void> get intentToMultiScreen => _intentToMultiScreenSubject.stream;
 
+  final _showSlidesSubject = BehaviorSubject<bool>();
+  Stream<bool> get showSlides => _showSlidesSubject.stream;
+
+  final _doneSlidesButtonSubject = PublishSubject<bool>();
+  Sink<bool> get doneSlidesButton => _doneSlidesButtonSubject.sink;
+
   HomeBloc(this._repo) : super(initialState: HomeState.notInit());
+
+  void setup() {
+    _doneSlidesButtonSubject.listen(_doneSlidesButtonPressed);
+  }
+
+  void _doneSlidesButtonPressed(bool input) {
+    _showSlidesSubject.add(input);
+  }
 
   @override
   Stream<HomeState> eventHandler(
@@ -17,6 +31,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
       case HomeEventType.checkIfUserLogged:
         yield HomeState.notInit();
         yield await checkIfUserLogged();
+        _repo.isFirstOpen().listen((b) => _showSlidesSubject.add(b));
         break;
       case HomeEventType.multiButtonPress:
         if (currentState?.type == HomeStateType.initLogged) {
@@ -36,7 +51,6 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
             break;
           }
           yield await checkIfUserLogged();
-          _intentToMultiScreenSubject.add((null));
         }
         break;
       case HomeEventType.error:
@@ -61,6 +75,8 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   @override
   void dispose() {
     _intentToMultiScreenSubject.close();
+    _showSlidesSubject.close();
+    _doneSlidesButtonSubject.close();
     super.dispose();
   }
 }

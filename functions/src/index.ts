@@ -28,6 +28,7 @@ exports.queuePlayer = functions
                     gfid: gfid,
                 });
             } else {
+                // TODO check that user is not going to play with itself
                 initGame(userId, String(gfid));
             }
         });

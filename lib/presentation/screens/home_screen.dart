@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:infinite_listview/infinite_listview.dart';
 import 'dart:async';
+import 'package:intro_slider/intro_slider.dart';
 
 import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
@@ -33,15 +34,42 @@ class _HomeScreenState extends State<HomeScreen> {
   final InfiniteScrollController _infiniteController = InfiniteScrollController(
     initialScrollOffset: 0.0,
   );
+  List<Slide> slides = new List();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => applyMovement());
+
+    slides.add(
+      new Slide(
+        title: "ERASER",
+        description:
+            "Allow miles wound place the leave had. To sitting subject no improve studied limited",
+        backgroundColor: Color(0xfff5a623),
+      ),
+    );
+    slides.add(
+      new Slide(
+        title: "PENCIL",
+        description:
+            "Ye indulgence unreserved connection alteration appearance",
+        backgroundColor: Color(0xff203152),
+      ),
+    );
+    slides.add(
+      new Slide(
+        title: "RULER",
+        description:
+            "Much evil soon high in hope do view. Out may few northward believing attempted. Yet timed being songs marry one defer men our. Although finished blessing do of",
+        backgroundColor: Color(0xff9932CC),
+      ),
+    );
+
     bloc = BlocProvider.of<HomeBloc>(context);
-    bloc.emitEvent(HomeEvent(type: HomeEventType.checkIfUserLogged));
+    bloc.setup();
     bloc.intentToMultiScreen.listen((_) => openMultiScreen());
-    // TODO check if player has ever opened the app, if not show tutorial
+    bloc.emitEvent(HomeEvent(type: HomeEventType.checkIfUserLogged));
   }
 
   @override
@@ -141,36 +169,60 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget initNotLogged() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          RaisedButton(
-            child: new Text("Singleplayer"),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return Scaffold(
-                      body: BlocProvider(
-                    child: SingleScreen(),
-                    bloc: kiwi.Container().resolve<SingleBloc>(),
-                  ));
-                }),
-              );
-            },
-          ),
-          RaisedButton(
-              child: Text(
-                "Multiplayer\nLog in",
-                textAlign: TextAlign.center,
+    return Stack(
+      children: <Widget>[
+        Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              RaisedButton(
+                child: new Text("Singleplayer"),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      return Scaffold(
+                          body: BlocProvider(
+                        child: SingleScreen(),
+                        bloc: kiwi.Container().resolve<SingleBloc>(),
+                      ));
+                    }),
+                  );
+                },
               ),
-              onPressed: () {
-                bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress));
-              }),
-        ],
-      ),
+              RaisedButton(
+                  child: Text(
+                    "Log in",
+                    textAlign: TextAlign.center,
+                  ),
+                  onPressed: () {
+                    bloc.emitEvent(
+                        HomeEvent(type: HomeEventType.multiButtonPress));
+                  }),
+            ],
+          ),
+        ),
+        StreamBuilder<bool>(
+          stream: bloc.showSlides,
+          initialData: false,
+          builder: (context, snapshot) {
+            return Visibility(
+              visible: snapshot.data,
+              replacement: Container(),
+              maintainInteractivity: false,
+              child: IntroSlider(
+                slides: slides,
+                onDonePress: introDonePressed,
+              ),
+            );
+          },
+        ),
+      ],
     );
+  }
+
+  void introDonePressed() {
+    bloc.doneSlidesButton.add(false);
   }
 
   void applyMovement() {
@@ -195,14 +247,6 @@ class _HomeScreenState extends State<HomeScreen> {
       l.add(square(i, (i % 5) * fifthWidth, (i / 5).truncate() * fifthWidth));
     }
     return Row(children: l);
-  }
-
-  Widget background() {
-    var l = List<Widget>();
-    for (int i = 0; i < 60; i++) {
-      l.add(square(i, (i % 5) * fifthWidth, (i / 5).truncate() * fifthWidth));
-    }
-    return Stack(children: l);
   }
 
   Widget square(int index, double left, double bottom) {

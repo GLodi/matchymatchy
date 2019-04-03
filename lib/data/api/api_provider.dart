@@ -36,7 +36,6 @@ class ApiProviderImpl implements ApiProvider {
 
   @override
   Future<String> queuePlayer(String uid) async {
-    // TODO listen to changes in document for start of game
     return await _net
         .get(baseUrl + 'queuePlayer?userId=' + uid)
         .then((response) => response);

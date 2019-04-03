@@ -5,8 +5,8 @@ service cloud.firestore {
       allow write: if request.auth.uid == userId
     }
     
-    match /matches/{gameId} {
-      allow read: if request.auth.uid == userId;
+    match /matches/{matchId} {
+      allow read: if true;
       allow write: if false;
     }
 
@@ -16,7 +16,7 @@ service cloud.firestore {
     }
 
     match /gamefields/{gameFieldId} {
-      allow read: if request.auth.uid == userId;
+      allow read: if true;
       allow write: if false;
     }
   }

@@ -9,12 +9,17 @@ let matches = admin.firestore().collection('matches');
 exports.queuePlayer = functions
     .region('europe-west1')
     .https
-    .onRequest(async (request, response) =>  {
+    .onRequest(async (request, response) => {
         let userId = request.query.userId;
         let gfid: number = Math.floor(Math.random() * 1000) + 1;
         queue.get().then(async qs => {
             if (qs.empty) {
                 let newMatchRef = matches.doc();
+                newMatchRef.set({
+                    gfid: gfid,
+                    hostuid: userId,
+                    hosttarget: "666666666",
+                });
                 queue.add({
                     time: admin.firestore.Timestamp.now(),
                     uid: userId,
@@ -24,19 +29,21 @@ exports.queuePlayer = functions
                 response.send(newMatchRef.id);
             } else {
                 // TODO check that user is not going to play with itself
-                await queue.orderBy("time", "asc").limit(1).get().then(async q => {
-                    await q.docs.forEach(async doc => {
-                        queue.doc(doc.id).delete();
-                        matches.doc(doc.data().matchid).set({
-                            gfid: gfid,
-                            hostuid: doc.data().uid,
-                            hosttarget: "666666666",
+                let query = await queue.orderBy("time", "asc").limit(1).get();
+                await query.docs.forEach(async doc => {
+                    queue.doc(doc.id).delete();
+                    let match = await matches.doc(doc.data().matchid).get();
+                    if (match.exists) {
+                        matches.doc(match.id).set({
+                            gfid: match.data()!.gfid,
+                            hostuid: match.data()!.userId,
+                            hosttarget: match.data()!.hosttarget,
                             joinuid: userId,
                             jointarget: "666666666",
                             time: admin.firestore.Timestamp.now(),
                         });
-                        response.send(doc.data().matchid);
-                    });
+                    }
+                    response.send(doc.data().matchid);
                 });
             }
         });

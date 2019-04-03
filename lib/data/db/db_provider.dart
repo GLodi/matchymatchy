@@ -8,9 +8,6 @@ import 'package:squazzle/data/models/models.dart';
 abstract class DbProvider {
   // Returns a GameField and TargetField with given id
   Future<Game> getGame(int id);
-
-  /// Returns amount of moves played on specified game
-  Future<int> getMovesNumber(int id);
 }
 
 class DbProviderImpl extends DbProvider {
@@ -37,9 +34,4 @@ class DbProviderImpl extends DbProvider {
     return maps.length > 0 ? Game.fromMap(maps.first) : null;
   }
 
-  @override
-  Future<int> getMovesNumber(int id) async {
-    // TODO: implement getMovesNumber
-    return null;
-  }
 }

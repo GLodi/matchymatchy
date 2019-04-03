@@ -6,18 +6,18 @@ service cloud.firestore {
     }
     
     match /matches/{gameId} {
-      allow read: if true;
-      allow write: if false
+      allow read: if request.auth.uid == userId;
+      allow write: if false;
     }
 
     match /queue/{userId} {
-      allow read: if true;
-      allow write: if false
+      allow read: if false;
+      allow write: if false;
     }
 
     match /gamefields/{gameFieldId} {
-      allow read: if true;
-      allow write: if false
+      allow read: if request.auth.uid == userId;
+      allow write: if false;
     }
   }
 }

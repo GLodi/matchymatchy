@@ -8,16 +8,15 @@ abstract class ApiProvider {
   Future<Game> getGame(int id);
 
   // Add player to server queue
-  Future<void> queuePlayer(String uid);
+  Future<String> queuePlayer(String uid);
 
   // Subscribes to EnemyField changes
-  Future<TargetField> getEnemyField(int matchId);
+  Future<MatchUpdate> listenToMatchUpdates(int matchId);
 }
 
 class ApiProviderImpl implements ApiProvider {
   final _net = NetUtils();
   final baseUrl = 'https://europe-west1-squazzle-40ea9.cloudfunctions.net/';
-  bool hostOrJoin = true;
 
   CollectionReference get gameFieldRef =>
       Firestore.instance.collection('gamefields');
@@ -36,17 +35,19 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<void> queuePlayer(String uid) async {
-    await _net.get(baseUrl + 'queuePlayer?userId=' + uid);
+  Future<String> queuePlayer(String uid) async {
+    // TODO listen to changes in document for start of game
+    return await _net
+        .get(baseUrl + 'queuePlayer?userId=' + uid)
+        .then((response) => response);
   }
 
   @override
-  Future<TargetField> getEnemyField(int matchId) async {
-    return matchesRef.document(matchId.toString()).snapshots().listen((ds) {
-      hostOrJoin
-          ? ds.data['target'] = ds.data['jointarget']
-          : ds.data['target'] = ds.data['hosttarget'];
-      return TargetField.fromMap(ds.data);
-    }).asFuture();
+  Future<MatchUpdate> listenToMatchUpdates(int matchId) async {
+    return matchesRef
+        .document(matchId.toString())
+        .snapshots()
+        .listen((snapshot) => MatchUpdate.fromMap(snapshot.data))
+        .asFuture();
   }
 }

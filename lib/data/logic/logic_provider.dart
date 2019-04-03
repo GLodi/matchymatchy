@@ -7,6 +7,10 @@ abstract class LogicProvider {
   // TODO copy this into index.js for multiplayer
   /// Checks if current player has won.
   Future<bool> checkIfCorrect(GameField gameField, TargetField targetField);
+
+  // Checks whether user needs to update enemy player
+  Future<bool> needToSendMove(
+      TargetField current, TargetField previous, TargetField target);
 }
 
 class LogicProviderImpl implements LogicProvider {
@@ -75,5 +79,17 @@ class LogicProviderImpl implements LogicProvider {
       }
     }
     return result;
+  }
+
+  @override
+  Future<bool> needToSendMove(
+      TargetField current, TargetField previous, TargetField target) async {
+    for (int i = 0; i < current.grid.length; i++) {
+      var c = current.grid[i];
+      if (c != previous.grid[i] && c == target.grid[i]) {
+        return true;
+      }
+    }
+    return false;
   }
 }

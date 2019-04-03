@@ -21,19 +21,19 @@ class MultiBloc extends GameBloc {
     switch (event.type) {
       case SquazzleEventType.start:
         SquazzleState result;
-        String uid = await repo
+        String uid;
+        await repo
             .getStoredUid()
             .handleError((e) => result =
                 SquazzleState.error('error retrieving uid from shared prefs'))
-            .listen((uuid) => uuid)
+            .listen((uuid) => uid = uuid)
             .asFuture();
         if (uid != null) {
-          // TODO retrieve fields
           await repo
               .queuePlayer(uid)
               .handleError((e) =>
                   result = SquazzleState.error('error queueing to server'))
-              .listen((_) {})
+              .listen((response) => print(response))
               .asFuture();
         }
         yield result;

@@ -1,5 +1,5 @@
 class MatchUpdate {
-  String gfid;
+  int gfid;
   String hosttarget;
   String jointarget;
 

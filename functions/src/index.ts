@@ -19,6 +19,8 @@ exports.queuePlayer = functions
                     gfid: gfid,
                     hostuid: userId,
                     hosttarget: "666666666",
+                    joinuid: "",
+                    jointarget: "666666666",
                 });
                 queue.add({
                     time: admin.firestore.Timestamp.now(),
@@ -36,9 +38,9 @@ exports.queuePlayer = functions
                     if (match.exists) {
                         matches.doc(match.id).set({
                             gfid: match.data()!.gfid,
-                            hostuid: match.data()!.userId,
+                            hostuid: match.data()!.hostuid,
                             hosttarget: match.data()!.hosttarget,
-                            joinuid: userId,
+                            joinuid: "666666666",
                             jointarget: "666666666",
                             time: admin.firestore.Timestamp.now(),
                         });

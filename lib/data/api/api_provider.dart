@@ -43,10 +43,10 @@ class ApiProviderImpl implements ApiProvider {
 
   @override
   Future<MatchUpdate> listenToMatchUpdates(String matchId) async {
-    return matchesRef
-        .document(matchId)
-        .snapshots()
-        .listen((snapshot) => MatchUpdate.fromMap(snapshot.data))
-        .asFuture();
+    // TODO use FCM here
+    return matchesRef.document(matchId).snapshots().listen((snapshot) {
+      print(snapshot.data);
+      return MatchUpdate.fromMap(snapshot.data);
+    }).asFuture();
   }
 }

@@ -21,7 +21,7 @@ exports.queuePlayer = functions
                     gfid: gfid,
                     matchid: newMatchRef.id,
                 });
-                response.send("queue:"+newMatchRef.id);
+                response.send(newMatchRef.id);
             } else {
                 // TODO check that user is not going to play with itself
                 await queue.orderBy("time", "asc").limit(1).get().then(async q => {
@@ -35,7 +35,7 @@ exports.queuePlayer = functions
                             jointarget: "666666666",
                             time: admin.firestore.Timestamp.now(),
                         });
-                        response.send("start:"+doc.data().matchid);
+                        response.send(doc.data().matchid);
                     });
                 });
             }

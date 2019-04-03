@@ -29,10 +29,16 @@ class MultiBloc extends GameBloc {
             .listen((uuid) => uid = uuid)
             .asFuture();
         if (uid != null) {
-          await repo
+          String matchId = await repo
               .queuePlayer(uid)
               .handleError((e) =>
                   result = SquazzleState.error('error queueing to server'))
+              .map((matchId) async {
+                await repo
+                    .listenToMatchUpdates(matchId)
+                    .listen((matchUpdate) => print(matchUpdate.toMap()))
+                    .asFuture();
+              })
               .listen((response) => print(response))
               .asFuture();
         }

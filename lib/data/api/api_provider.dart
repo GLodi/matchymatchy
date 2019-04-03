@@ -11,7 +11,7 @@ abstract class ApiProvider {
   Future<String> queuePlayer(String uid);
 
   // Subscribes to EnemyField changes
-  Future<MatchUpdate> listenToMatchUpdates(int matchId);
+  Future<MatchUpdate> listenToMatchUpdates(String matchId);
 }
 
 class ApiProviderImpl implements ApiProvider {
@@ -43,9 +43,9 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<MatchUpdate> listenToMatchUpdates(int matchId) async {
+  Future<MatchUpdate> listenToMatchUpdates(String matchId) async {
     return matchesRef
-        .document(matchId.toString())
+        .document(matchId)
         .snapshots()
         .listen((snapshot) => MatchUpdate.fromMap(snapshot.data))
         .asFuture();

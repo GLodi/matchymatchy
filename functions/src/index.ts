@@ -14,21 +14,8 @@ exports.queuePlayer = functions
         let gfid: number = Math.floor(Math.random() * 1000) + 1;
         queue.get().then(async qs => {
             if (qs.empty) {
-                let newMatchRef = matches.doc();
-                newMatchRef.set({
-                    gfid: gfid,
-                    hostuid: userId,
-                    hosttarget: "666666666",
-                    joinuid: "",
-                    jointarget: "666666666",
-                });
-                queue.add({
-                    time: admin.firestore.Timestamp.now(),
-                    uid: userId,
-                    gfid: gfid,
-                    matchid: newMatchRef.id,
-                });
-                response.send(newMatchRef.id);
+                let id : string = await empty(gfid, userId);
+                response.send(id);
             } else {
                 // TODO check that user is not going to play with itself
                 let query = await queue.orderBy("time", "asc").limit(1).get();
@@ -50,3 +37,21 @@ exports.queuePlayer = functions
             }
         });
     });
+    
+async function empty(gfid : number, userId : string) : Promise<string> {
+    let newMatchRef = matches.doc();
+    newMatchRef.set({
+        gfid: gfid,
+        hostuid: userId,
+        hosttarget: "666666666",
+        joinuid: "",
+        jointarget: "666666666",
+    });
+    queue.add({
+        time: admin.firestore.Timestamp.now(),
+        uid: userId,
+        gfid: gfid,
+        matchid: newMatchRef.id,
+    });
+    return new Promise<string>((resolve) => {resolve(newMatchRef.id);});
+}

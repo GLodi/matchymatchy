@@ -12,7 +12,7 @@ abstract class ApiProvider {
   Future<String> queuePlayer(String uid);
 
   // Subscribes to match changes
-  Stream<MatchUpdate> listenToMatchUpdates();
+  Future<MatchUpdate> listenToMatchUpdates();
 }
 
 class ApiProviderImpl implements ApiProvider {
@@ -43,7 +43,7 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Stream<MatchUpdate> listenToMatchUpdates() async* {
+  Future<MatchUpdate> listenToMatchUpdates() async {
     _messaging.configure(
     onMessage: (Map<String, dynamic> message) async {
       print('on message $message');

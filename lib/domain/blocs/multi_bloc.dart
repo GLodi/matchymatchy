@@ -33,15 +33,13 @@ class MultiBloc extends GameBloc {
               .listenToMatchUpdates()
               .handleError((e) =>
                   result = SquazzleState.error('error queueing to server'))
-              .listen((update) => {
-                print(update.toMap())
-              })
+              .listen((update) => {})
               .asFuture();
           await repo
               .queuePlayer(uid)
               .handleError((e) =>
                   result = SquazzleState.error('error queueing to server'))
-              .listen((id) => print(id))
+              .listen((id) => {})
               .asFuture();
         }
         yield result;

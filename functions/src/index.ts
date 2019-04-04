@@ -21,19 +21,21 @@ exports.queuePlayer = functions
             if (qs.empty) {
                 await populateQueue(gfid, userId, userFcmToken);
                 response.send(true);
+                console.log('----------------end queuePlayer new queue--------------------')
             } else {
                 // TODO check that user is not going to play with itself
                 let query: QuerySnapshot = await queue.orderBy('time', 'asc').limit(1).get();
                 let match: DocumentSnapshot = await delQueueStartMatch(query.docs[0], userId, userFcmToken);
-                await notifyMatchStarted(match);
+                await notifyPlayersMatchStarted(match.id);
                 console.log('match started: ' + match.id);
                 response.send(true);
+                console.log('----------------end queuePlayer match started--------------------')
             }
         });
-        console.log('----------------end queuePlayer--------------------')
     });
 
-async function notifyMatchStarted(match: DocumentSnapshot) {
+async function notifyPlayersMatchStarted(matchId: string) {
+    let match = await matches.doc(matchId).get();
     let hostDoc = await users.where('uid', '==', match.data()!.hostuid).get();
     let hostName = await hostDoc.docs[0].data().username;
     let joinDoc = await users.where('uid', '==', match.data()!.joinuid).get();
@@ -100,20 +102,11 @@ async function populateQueue(gfid: number, userId: string, userFcmToken: string)
 async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, joinFcmToken: string): Promise<DocumentSnapshot> {
     queue.doc(doc.id).delete();
     console.log('queue deleted: ' + doc.id);
-    let match = await matches.doc(doc.data().matchid).get();
-    if (match.exists) {
-        await matches.doc(match.id).set({
-            gfid: match.data()!.gfid,
-            hostuid: match.data()!.hostuid,
-            hosttarget: '666666666',
-            hostfcmtoken: match.data()!.hostfcmtoken,
-            joinuid: joinUid,
-            jointarget: '666666666',
-            joinfcmtoken: joinFcmToken,
-            time: admin.firestore.Timestamp.now(),
-        });
-    }
-    // TODO handle user non existence
+    await matches.doc(doc.data().matchid).update({
+        joinuid: joinUid,
+        joinfcmtoken: joinFcmToken,
+        time: admin.firestore.Timestamp.now(),
+    });
     return await matches.doc(doc.data().matchid).get();
 }
 
@@ -126,5 +119,42 @@ exports.playMove = functions
         let userId = request.query.userId;
         let matchId = request.query.matchId;
         let match = await matches.doc(matchId).get();
-        console.log('----------------end queuePlayer--------------------')
+        if (match.exists) {
+            if (userId == match.data()!.hostuid) {
+                await matches.doc(matchId).update({
+                    hosttarget: newTarget
+                });
+                let messageToJoin = {
+                    data: {
+                        matchId: match.id,
+                        newTarget: newTarget,
+                    },
+                    token: match.data()!.joinfcmtoken
+                };
+                await admin.messaging().send(messageToJoin);
+                response.send(true);
+                console.log('----------------end queuePlayer--------------------')
+            }
+            else if (userId == match.data()!.joinuid) {
+                await matches.doc(matchId).update({
+                    jointarget: newTarget
+                });
+                let messageToHost = {
+                    data: {
+                        matchId: match.id,
+                        newTarget: newTarget,
+                    },
+                    token: match.data()!.hostfcmtoken
+                };
+                await admin.messaging().send(messageToHost);
+                response.send(true);
+                console.log('----------------end queuePlayer--------------------')
+            }
+            else {
+                console.log('error: user neither host nor join')
+                response.send(false);
+            }
+        }
+        console.log('error: no match with specified matchId')
+        response.send(false);
     })

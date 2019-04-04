@@ -35,7 +35,6 @@ class MultiRepo extends GameRepo {
       Observable.fromFuture(_apiProvider.queuePlayer(uid))
           .handleError((e) => throw e);
 
-  Observable<MatchUpdate> listenToMatchUpdates(String matchId) =>
-      Observable.fromFuture(_apiProvider.listenToMatchUpdates(matchId))
-          .handleError((e) => throw e);
+  BehaviorSubject<MatchUpdate> listenToMatchUpdates() =>
+      _apiProvider.listenToMatchUpdates();
 }

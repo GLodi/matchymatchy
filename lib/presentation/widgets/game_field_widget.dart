@@ -36,7 +36,7 @@ class _GameFieldWidgetState extends State<GameFieldWidget>
     for (int i = 0; i < 25; i++) keys.add(GlobalKey(debugLabel: '$i'));
     bloc = BlocProvider.of<GameFieldBloc>(context);
     bloc.setup();
-    bloc.emitEvent(SquazzleEvent(type: SquazzleEventType.start));
+    bloc.emitEvent(WidgetEvent(type: WidgetEventType.start));
   }
 
   @override

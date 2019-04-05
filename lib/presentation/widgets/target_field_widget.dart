@@ -28,7 +28,7 @@ class _TargetFieldWidgetState extends State<TargetFieldWidget> {
   void initState() {
     super.initState();
     bloc = BlocProvider.of<TargetBloc>(context);
-    bloc.emitEvent(SquazzleEvent(type: SquazzleEventType.start));
+    bloc.emitEvent(WidgetEvent(type: WidgetEventType.start));
   }
 
   @override

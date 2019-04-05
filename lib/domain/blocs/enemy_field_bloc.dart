@@ -3,7 +3,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
 
-class EnemyFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
+class EnemyFieldBloc extends BlocEventStateBase<GameEvent, GameState> {
   final MultiBloc _multiBloc;
 
   final _enemyFieldSubject = BehaviorSubject<TargetField>();
@@ -12,9 +12,9 @@ class EnemyFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
   EnemyFieldBloc(this._multiBloc);
 
   @override
-  Stream<SquazzleState> eventHandler(
-      SquazzleEvent event, SquazzleState currentState) async* {
-    if (event.type == SquazzleEventType.start) {
+  Stream<GameState> eventHandler(
+      GameEvent event, GameState currentState) async* {
+    if (event.type == GameEventType.start) {
       _enemyFieldSubject.add(_multiBloc.enemyField);
     }
   }

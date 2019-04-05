@@ -4,7 +4,7 @@ import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'game_bloc.dart';
 
-class GameFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
+class GameFieldBloc extends BlocEventStateBase<WidgetEvent, WidgetState> {
   final GameBloc _gameBloc;
   int moveAmount = 0;
 
@@ -25,7 +25,7 @@ class GameFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
     await _gameBloc.gameRepo
         .applyMove(_gameBloc.gameField, move)
         .handleError((e) =>
-            _gameBloc.emitEvent(SquazzleEvent(type: SquazzleEventType.error)))
+            _gameBloc.emitEvent(GameEvent(type: GameEventType.error)))
         .listen((field) {
       _gameBloc.gameField = field;
       _gameFieldSubject.add(field);
@@ -35,16 +35,16 @@ class GameFieldBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
           .checkIfCorrect(_gameBloc.gameField, _gameBloc.targetField)
           .listen((correct) {
         if (correct) {
-          _gameBloc.emitEvent(SquazzleEvent(type: SquazzleEventType.victory));
+          _gameBloc.emitEvent(GameEvent(type: GameEventType.victory));
         }
       });
     }).asFuture();
   }
 
   @override
-  Stream<SquazzleState> eventHandler(
-      SquazzleEvent event, SquazzleState currentState) async* {
-    if (event.type == SquazzleEventType.start) {
+  Stream<WidgetState> eventHandler(
+      WidgetEvent event, WidgetState currentState) async* {
+    if (event.type == WidgetEventType.start) {
       _gameFieldSubject.add(_gameBloc.gameField);
     }
   }

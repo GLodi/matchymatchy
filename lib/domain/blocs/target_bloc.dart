@@ -3,7 +3,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
 
-class TargetBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
+class TargetBloc extends BlocEventStateBase<WidgetEvent, WidgetState> {
   final GameBloc _gameBloc;
 
   final _targetFieldSubject = BehaviorSubject<TargetField>();
@@ -12,9 +12,9 @@ class TargetBloc extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
   TargetBloc(this._gameBloc);
 
   @override
-  Stream<SquazzleState> eventHandler(
-      SquazzleEvent event, SquazzleState currentState) async* {
-    if (event.type == SquazzleEventType.start) {
+  Stream<WidgetState> eventHandler(
+      WidgetEvent event, WidgetState currentState) async* {
+    if (event.type == GameEventType.start) {
       _targetFieldSubject.add(_gameBloc.targetField);
     }
   }

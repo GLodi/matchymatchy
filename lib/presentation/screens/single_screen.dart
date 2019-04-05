@@ -26,7 +26,7 @@ class _SingleScreenState extends State<SingleScreen>
       curve: Curves.bounceOut,
     ));
     bloc = BlocProvider.of<SingleBloc>(context);
-    bloc.emitEvent(SquazzleEvent(type: SquazzleEventType.start));
+    bloc.emitEvent(GameEvent(type: GameEventType.start));
     bloc.correct.listen((correct) => _changeOpacity());
   }
 
@@ -36,19 +36,19 @@ class _SingleScreenState extends State<SingleScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BlocEventStateBuilder<SquazzleEvent, SquazzleState>(
+    return BlocEventStateBuilder<GameEvent, GameState>(
       bloc: bloc,
       builder: (context, state) {
         switch (state.type) {
-          case SquazzleStateType.error:
+          case GameStateType.error:
             {
               return Center(child: Text(state.message));
             }
-          case SquazzleStateType.notInit:
+          case GameStateType.notInit:
             {
               return Center(child: CircularProgressIndicator());
             }
-          case SquazzleStateType.init:
+          case GameStateType.init:
             {
               fifthWidth = MediaQuery.of(context).size.width / 5;
               tenthWidth = fifthWidth / 2;

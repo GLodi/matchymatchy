@@ -4,7 +4,7 @@ import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
 
 abstract class GameBloc
-    extends BlocEventStateBase<SquazzleEvent, SquazzleState> {
+    extends BlocEventStateBase<GameEvent, GameState> {
   final GameRepo gameRepo;
   final BehaviorSubject<bool> correctSubject = new BehaviorSubject<bool>();
   final BehaviorSubject<int> moveNumberSubject = new BehaviorSubject<int>();
@@ -13,7 +13,7 @@ abstract class GameBloc
   TargetField get targetField;
   set targetField(TargetField targetField);
 
-  GameBloc(this.gameRepo) : super(initialState: SquazzleState.notInit());
+  GameBloc(this.gameRepo) : super(initialState: GameState.notInit());
 
   @override
   void dispose() {

@@ -9,10 +9,10 @@ abstract class ApiProvider {
   Future<Game> getGame(int id);
 
   // Add player to server queue
-  Future<String> queuePlayer(String uid);
+  Future<bool> queuePlayer(String uid);
 
   // Subscribes to match changes
-  Future<MatchUpdate> listenToMatchUpdates();
+  Stream<MatchUpdate> listenToMatchUpdates();
 }
 
 class ApiProviderImpl implements ApiProvider {
@@ -34,7 +34,8 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<String> queuePlayer(String uid) async {
+  Future<bool> queuePlayer(String uid) async {
+    // TODO set to return first gamefield and target
     String token = await _messaging.getToken();
     return await _net
         .get(baseUrl + 'queuePlayer?userId=' + uid + '&userFcmToken=' + token)
@@ -43,7 +44,7 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<MatchUpdate> listenToMatchUpdates() async {
+  Stream<MatchUpdate> listenToMatchUpdates() async* {
     _messaging.configure(
     onMessage: (Map<String, dynamic> message) async {
       print('on message $message');

@@ -14,7 +14,7 @@ class TargetBloc extends BlocEventStateBase<WidgetEvent, WidgetState> {
   @override
   Stream<WidgetState> eventHandler(
       WidgetEvent event, WidgetState currentState) async* {
-    if (event.type == GameEventType.start) {
+    if (event.type == WidgetEventType.start) {
       _targetFieldSubject.add(_gameBloc.targetField);
     }
   }

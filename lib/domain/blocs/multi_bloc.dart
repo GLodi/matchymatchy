@@ -36,21 +36,22 @@ class MultiBloc extends GameBloc {
           repo
               .listenToMatchUpdates()
               .handleError((e) => print(e))
-              .doOnData((update) => _matchUpdateSubject.add(update));
-          // TODO should store first field and target, then show "waiting for players"
+              .doOnData((update) {
+            print(update);
+            _matchUpdateSubject.add(update);
+          });
           await repo
               .queuePlayer(uid)
-              .handleError((e) =>
-                  result = GameState.error('error queueing to server'))
-              .listen((boolean) {
-            if (boolean) result = GameState.init();
+              .handleError(
+                  (e) => result = GameState.error('error queueing to server'))
+              .listen((game) {
+            gameField = game.gameField;
+            targetField = game.targetField;
+            enemyField = game.targetField;
+            result = GameState.init();
           }).asFuture();
         }
         yield result;
-        gameField = GameField(grid: "1111111111111111111111111");
-        targetField = TargetField(grid: "222222222");
-        enemyField = TargetField(grid: "111111111");
-        yield GameState.init();
         break;
       case GameEventType.victory:
         correctSubject.add(true);

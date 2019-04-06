@@ -9,7 +9,7 @@ abstract class ApiProvider {
   Future<Game> getGame(int id);
 
   // Add player to server queue
-  Future<bool> queuePlayer(String uid);
+  Future<Game> queuePlayer(String uid);
 
   // Subscribes to match changes
   Stream<MatchUpdate> listenToMatchUpdates();
@@ -34,27 +34,25 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<bool> queuePlayer(String uid) async {
-    // TODO set to return first gamefield and target
+  Future<Game> queuePlayer(String uid) async {
     String token = await _messaging.getToken();
-    return await _net
+    return _net
         .get(baseUrl + 'queuePlayer?userId=' + uid + '&userFcmToken=' + token)
-        .then((response) {
-          print(response);});
+        .then((response) => Game.fromMap(response));
   }
 
   @override
   Stream<MatchUpdate> listenToMatchUpdates() async* {
     _messaging.configure(
-    onMessage: (Map<String, dynamic> message) async {
-      print('on message $message');
-    },
-    onResume: (Map<String, dynamic> message) async {
-      print('on resume $message');
-    },
-    onLaunch: (Map<String, dynamic> message) async {
-      print('on launch $message');
-    },
-  );
+      onMessage: (Map<String, dynamic> message) async {
+        print('on message $message');
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('on resume $message');
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('on launch $message');
+      },
+    );
   }
 }

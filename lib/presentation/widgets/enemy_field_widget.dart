@@ -27,7 +27,7 @@ class _EnemyWidgetState extends State<EnemyWidget> {
   void initState() {
     super.initState();
     bloc = BlocProvider.of<EnemyFieldBloc>(context);
-    bloc.emitEvent(GameEvent(type: GameEventType.start));
+    bloc.emitEvent(WidgetEvent(type: WidgetEventType.start));
   }
 
   @override

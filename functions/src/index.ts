@@ -1,11 +1,11 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { QueryDocumentSnapshot, QuerySnapshot } from '@google-cloud/firestore';
-import { DocumentSnapshot } from 'firebase-functions/lib/providers/firestore';
+import { QueryDocumentSnapshot } from '@google-cloud/firestore';
 
 admin.initializeApp(functions.config().firebase);
 
 let queue = admin.firestore().collection('queue');
+let gamefields = admin.firestore().collection('gamefields');
 let matches = admin.firestore().collection('matches');
 let users = admin.firestore().collection('users');
 
@@ -16,19 +16,24 @@ exports.queuePlayer = functions
         console.log('----------------start queuePlayer--------------------')
         let userId = request.query.userId;
         let userFcmToken = request.query.userFcmToken;
-        let gfid: number = Math.floor(Math.random() * 1000) + 1;
         queue.get().then(async qs => {
             if (qs.empty) {
+                let gfid: number = Math.floor(Math.random() * 1000) + 1;
                 await populateQueue(gfid, userId, userFcmToken);
-                response.send(true);
+                let gf = await gamefields.doc(String(gfid)).get();
+                console.log(gf.data());
+                response.send(gf.data());
                 console.log('----------------end queuePlayer new queue--------------------')
             } else {
                 // TODO check that user is not going to play with itself
-                let query: QuerySnapshot = await queue.orderBy('time', 'asc').limit(1).get();
-                let match: DocumentSnapshot = await delQueueStartMatch(query.docs[0], userId, userFcmToken);
-                await notifyPlayersMatchStarted(match.id);
-                console.log('match started: ' + match.id);
-                response.send(true);
+                let query = await queue.orderBy('time', 'asc').limit(1).get();
+                let matchId = await delQueueStartMatch(query.docs[0], userId, userFcmToken);
+                await notifyPlayersMatchStarted(matchId);
+                console.log('match started: ' + matchId);
+                let match = await matches.doc(matchId).get();
+                let gf = await gamefields.doc(String(match.data()!.gfid)).get();
+                console.log(gf.data());
+                response.send(gf.data());
                 console.log('----------------end queuePlayer match started--------------------')
             }
         });
@@ -78,7 +83,7 @@ async function notifyPlayersMatchStarted(matchId: string) {
     }
 }
 
-async function populateQueue(gfid: number, userId: string, userFcmToken: string): Promise<string> {
+async function populateQueue(gfid: number, userId: string, userFcmToken: string) {
     let newMatchRef = matches.doc();
     newMatchRef.set({
         gfid: gfid,
@@ -96,18 +101,18 @@ async function populateQueue(gfid: number, userId: string, userFcmToken: string)
         matchid: newMatchRef.id,
         ufcmtoken: userFcmToken,
     });
-    return new Promise<string>((resolve) => { resolve(newMatchRef.id); });
 }
 
-async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, joinFcmToken: string): Promise<DocumentSnapshot> {
+async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, joinFcmToken: string): Promise<string> {
     queue.doc(doc.id).delete();
     console.log('queue deleted: ' + doc.id);
-    await matches.doc(doc.data().matchid).update({
+    let matchId = doc.data().matchid;
+    await matches.doc(matchId).update({
         joinuid: joinUid,
         joinfcmtoken: joinFcmToken,
         time: admin.firestore.Timestamp.now(),
     });
-    return await matches.doc(doc.data().matchid).get();
+    return matchId;
 }
 
 exports.playMove = functions

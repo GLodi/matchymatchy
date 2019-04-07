@@ -1,12 +1,12 @@
-import 'dart:math';
 import 'package:rxdart/rxdart.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
 
 class MultiBloc extends GameBloc {
   final MultiRepo repo;
-  final ran = Random();
+  final messaging = FirebaseMessaging();
   GameField gameField;
   TargetField targetField;
   TargetField enemyField;
@@ -14,8 +14,11 @@ class MultiBloc extends GameBloc {
   Stream<bool> get correct => correctSubject.stream;
   Stream<int> get moveNumber => moveNumberSubject.stream;
 
-  final _matchUpdateSubject = BehaviorSubject<MatchUpdate>();
-  Stream<MatchUpdate> get matchUpdate => _matchUpdateSubject.stream;
+  final _waitMessageSubject = BehaviorSubject<String>();
+  Stream<String> get waitMessage => _waitMessageSubject.stream;
+  final _matchUpdatesSubject = BehaviorSubject<MatchUpdate>();
+  Stream<MatchUpdate> get matchUpdates => _matchUpdatesSubject.stream;
+
 
   MultiBloc(this.repo) : super(repo);
 
@@ -23,35 +26,35 @@ class MultiBloc extends GameBloc {
   Stream<GameState> eventHandler(
       GameEvent event, GameState currentState) async* {
     switch (event.type) {
-      case GameEventType.start:
+      case GameEventType.queue:
         GameState result;
         String uid;
-        await repo
-            .getStoredUid()
-            .handleError((e) => result =
-                GameState.error('error retrieving uid from shared prefs'))
-            .listen((uuid) => uid = uuid)
-            .asFuture();
+        await repo.getStoredUid().handleError((e) {
+          print(e);
+          result = GameState.error('error retrieving uid from shared prefs');
+        }).listen((uuid) {
+          uid = uuid;
+        }).asFuture();
         if (uid != null) {
-          repo
-              .listenToMatchUpdates()
-              .handleError((e) => print(e))
-              .doOnData((update) {
-            print(update);
-            _matchUpdateSubject.add(update);
-          });
+          String token = await messaging.getToken();
           await repo
-              .queuePlayer(uid)
-              .handleError(
-                  (e) => result = GameState.error('error queueing to server'))
-              .listen((game) {
-            gameField = game.gameField;
-            targetField = game.targetField;
-            enemyField = game.targetField;
-            result = GameState.init();
-          }).asFuture();
+              .queuePlayer(uid, token)
+              .handleError((e) {
+                print(e);
+                result = GameState.error('error queueing to server');
+              })
+              .listen((game) => storeGameInfo(game))
+              .asFuture();
+          listenToMatchUpdates();
         }
-        yield result;
+        if (result != null && result.type == GameStateType.error) {
+          yield result;
+        }
+        break;
+      case GameEventType.start:
+        if (currentState.type == GameStateType.notInit) {
+          yield GameState(type: GameStateType.init);
+        }
         break;
       case GameEventType.victory:
         correctSubject.add(true);
@@ -61,9 +64,34 @@ class MultiBloc extends GameBloc {
     }
   }
 
+  void listenToMatchUpdates() {
+    messaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print('on message $message');
+        _matchUpdatesSubject
+            .add(MatchUpdate.fromMap(message['data'].cast<String, dynamic>()));
+        emitEvent(GameEvent(type: GameEventType.start));
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('on resume $message');
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('on launch $message');
+      },
+    );
+  }
+
+  void storeGameInfo(Game game) {
+    _waitMessageSubject.add('Waiting for opponent...');
+    gameField = game.gameField;
+    targetField = game.targetField;
+    enemyField = game.targetField;
+  }
+
   @override
   void dispose() {
-    _matchUpdateSubject.close();
+    _matchUpdatesSubject.close();
+    _waitMessageSubject.close();
     super.dispose();
   }
 }

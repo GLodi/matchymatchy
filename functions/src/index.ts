@@ -28,12 +28,12 @@ exports.queuePlayer = functions
                 // TODO check that user is not going to play with itself
                 let query = await queue.orderBy('time', 'asc').limit(1).get();
                 let matchId = await delQueueStartMatch(query.docs[0], userId, userFcmToken);
-                await notifyPlayersMatchStarted(matchId);
                 console.log('match started: ' + matchId);
                 let match = await matches.doc(matchId).get();
                 let gf = await gamefields.doc(String(match.data()!.gfid)).get();
                 console.log(gf.data());
-                response.send(gf.data());
+                await response.send(gf.data());
+                await notifyPlayersMatchStarted(matchId);
                 console.log('----------------end queuePlayer match started--------------------')
             }
         });
@@ -47,7 +47,8 @@ async function notifyPlayersMatchStarted(matchId: string) {
     let joinName = await joinDoc.docs[0].data().username;
     let messageToHost = {
         data: {
-            matchId: match.id,
+            matchid: match.id,
+            enemytarget: '666666666',
             click_action: 'FLUTTER_NOTIFICATION_CLICK',
             notificationType: 'challenge',
         },
@@ -59,7 +60,8 @@ async function notifyPlayersMatchStarted(matchId: string) {
     };
     let messageToJoin = {
         data: {
-            matchId: match.id,
+            matchid: match.id,
+            enemytarget: '666666666',
             click_action: 'FLUTTER_NOTIFICATION_CLICK',
             notificationType: 'challenge',
         },
@@ -120,7 +122,7 @@ exports.playMove = functions
     .https
     .onRequest(async (request, response) => {
         console.log('----------------start playMove--------------------')
-        let newTarget = request.query.newToken;
+        let newTarget = request.query.newTarget;
         let userId = request.query.userId;
         let matchId = request.query.matchId;
         let match = await matches.doc(matchId).get();
@@ -131,8 +133,8 @@ exports.playMove = functions
                 });
                 let messageToJoin = {
                     data: {
-                        matchId: match.id,
-                        newTarget: newTarget,
+                        matchid: match.id,
+                        enemytarget: newTarget,
                     },
                     token: match.data()!.joinfcmtoken
                 };
@@ -146,8 +148,8 @@ exports.playMove = functions
                 });
                 let messageToHost = {
                     data: {
-                        matchId: match.id,
-                        newTarget: newTarget,
+                        matchid: match.id,
+                        enemytarget: newTarget,
                     },
                     token: match.data()!.hostfcmtoken
                 };

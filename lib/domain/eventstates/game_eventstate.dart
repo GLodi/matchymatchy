@@ -34,6 +34,7 @@ class GameEvent extends BlocEvent {
 
 enum GameEventType {
   start,
+  queue,
   error,
   victory,
 }

@@ -27,7 +27,7 @@ class _MultiScreenState extends State<MultiScreen>
       curve: Curves.bounceOut,
     ));
     bloc = BlocProvider.of<MultiBloc>(context);
-    bloc.emitEvent(GameEvent(type: GameEventType.start));
+    bloc.emitEvent(GameEvent(type: GameEventType.queue));
     bloc.correct.listen((correct) => _changeOpacity());
   }
 
@@ -54,7 +54,13 @@ class _MultiScreenState extends State<MultiScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     CircularProgressIndicator(),
-                    Text('Waiting for players...'),
+                    StreamBuilder<String>(
+                      initialData: 'Connecting to server...',
+                      stream: bloc.waitMessage,
+                      builder: (context, snapshot) {
+                        return Text(snapshot.data);
+                      },
+                    ),
                   ],
                 ),
               );

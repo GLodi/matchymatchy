@@ -1,24 +1,20 @@
 class MatchUpdate {
-  int gfid;
-  String hosttarget;
-  String jointarget;
+  String matchId;
+  String enemyTarget;
 
-  MatchUpdate({this.gfid, this.hosttarget, this.jointarget});
+  MatchUpdate({this.matchId, this.enemyTarget});
 
   MatchUpdate.fromMap(Map<String, dynamic> map) {
-    assert(map['gfid'] != null);
-    assert(map['hosttarget'] != null);
-    assert(map['jointarget'] != null);
-    gfid = map['gfid'];
-    hosttarget = map['hosttarget'];
-    jointarget = map['jointarget'];
+    assert(map['matchid'] != null);
+    assert(map['enemytarget'] != null);
+    matchId = map['matchid'];
+    enemyTarget = map['enemytarget'];
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'gfid': gfid,
-      'hosttarget': hosttarget,
-      'jointarget': jointarget,
+      'matchid': matchId,
+      'enemytarget': enemyTarget,
     };
   }
 }

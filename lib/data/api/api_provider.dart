@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -9,15 +10,11 @@ abstract class ApiProvider {
   Future<Game> getGame(int id);
 
   // Add player to server queue
-  Future<Game> queuePlayer(String uid);
-
-  // Subscribes to match changes
-  Stream<MatchUpdate> listenToMatchUpdates();
+  Future<Game> queuePlayer(String uid, String token);
 }
 
 class ApiProviderImpl implements ApiProvider {
   final _net = NetUtils();
-  final _messaging = FirebaseMessaging();
   final baseUrl = 'https://europe-west1-squazzle-40ea9.cloudfunctions.net/';
 
   CollectionReference get gameFieldRef =>
@@ -34,25 +31,9 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<Game> queuePlayer(String uid) async {
-    String token = await _messaging.getToken();
+  Future<Game> queuePlayer(String uid, String token) async {
     return _net
         .get(baseUrl + 'queuePlayer?userId=' + uid + '&userFcmToken=' + token)
         .then((response) => Game.fromMap(response));
-  }
-
-  @override
-  Stream<MatchUpdate> listenToMatchUpdates() async* {
-    _messaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print('on message $message');
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print('on resume $message');
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print('on launch $message');
-      },
-    );
   }
 }

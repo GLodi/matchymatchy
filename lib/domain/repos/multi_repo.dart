@@ -34,4 +34,9 @@ class MultiRepo extends GameRepo {
   Observable<Game> queuePlayer(String uid, String token) =>
       Observable.fromFuture(_apiProvider.queuePlayer(uid, token))
           .handleError((e) => throw e);
+
+  Observable<TargetField> diffToSend(
+          GameField gameField, TargetField targetField) =>
+      Observable.fromFuture(_logicProvider.diffToSend(gameField, targetField))
+          .handleError((e) => throw e);
 }

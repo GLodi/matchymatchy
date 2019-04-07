@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 
 class NetUtils {
-  final client = Dio(BaseOptions(connectTimeout: 5000));
+  final client = Dio();
 
   Future<dynamic> get(String url) {
     return client.get(url).catchError((e) => throw e).then((Response response) {

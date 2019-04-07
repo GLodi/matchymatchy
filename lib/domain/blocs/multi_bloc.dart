@@ -19,7 +19,6 @@ class MultiBloc extends GameBloc {
   final _matchUpdatesSubject = BehaviorSubject<MatchUpdate>();
   Stream<MatchUpdate> get matchUpdates => _matchUpdatesSubject.stream;
 
-
   MultiBloc(this.repo) : super(repo);
 
   @override
@@ -81,11 +80,14 @@ class MultiBloc extends GameBloc {
     );
   }
 
-  void storeGameInfo(Game game) {
+  void storeGameInfo(Game game) async {
     _waitMessageSubject.add('Waiting for opponent...');
     gameField = game.gameField;
     targetField = game.targetField;
-    enemyField = game.targetField;
+    enemyField = await repo
+        .diffToSend(gameField, targetField)
+        .listen((diff) => diff)
+        .asFuture();
   }
 
   @override

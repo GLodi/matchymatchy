@@ -2,6 +2,8 @@ import 'package:rxdart/rxdart.dart';
 
 import 'package:squazzle/domain/domain.dart';
 
+/// HomeScreen's bloc.
+/// Handles profile info and user authentication.
 class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   final HomeRepo _repo;
 

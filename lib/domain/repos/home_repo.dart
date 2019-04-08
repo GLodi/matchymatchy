@@ -1,6 +1,7 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:squazzle/data/data.dart';
 
+/// HomeBloc's repository.
 class HomeRepo {
   final LoginProvider _loginProvider;
   final SharedPrefsProvider _prefsProvider;

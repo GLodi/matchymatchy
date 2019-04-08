@@ -6,9 +6,8 @@ import 'package:squazzle/data/models/models.dart';
 class SingleBloc extends GameBloc {
   final SingleRepo repo;
   var ran = Random();
-  GameField gameField;
-  TargetField targetField;
 
+  // Streams extracted from GameBloc's subjects
   Stream<bool> get correct => correctSubject.stream;
   Stream<int> get moveNumber => moveNumberSubject.stream;
 

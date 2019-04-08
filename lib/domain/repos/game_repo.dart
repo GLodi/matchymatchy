@@ -2,6 +2,7 @@ import 'package:rxdart/rxdart.dart';
 
 import 'package:squazzle/data/models/models.dart';
 
+/// Methods available for both Singleplayer and Multiplayer.
 abstract class GameRepo {
   Observable<Game> getGame(int id);
 

@@ -48,7 +48,6 @@ async function notifyPlayersMatchStarted(matchId: string) {
     let messageToHost = {
         data: {
             matchid: match.id,
-            enemytarget: '666666666',
             click_action: 'FLUTTER_NOTIFICATION_CLICK',
             notificationType: 'challenge',
         },
@@ -61,7 +60,6 @@ async function notifyPlayersMatchStarted(matchId: string) {
     let messageToJoin = {
         data: {
             matchid: match.id,
-            enemytarget: '666666666',
             click_action: 'FLUTTER_NOTIFICATION_CLICK',
             notificationType: 'challenge',
         },
@@ -140,7 +138,8 @@ exports.playMove = functions
                 };
                 await admin.messaging().send(messageToJoin);
                 response.send(true);
-                console.log('----------------end queuePlayer--------------------')
+                console.log('--- move from host received, sent to join');
+                console.log('----------------end playMove--------------------');
             }
             else if (userId == match.data()!.joinuid) {
                 await matches.doc(matchId).update({
@@ -155,13 +154,15 @@ exports.playMove = functions
                 };
                 await admin.messaging().send(messageToHost);
                 response.send(true);
-                console.log('----------------end queuePlayer--------------------')
+                console.log('--- move from join received, sent to host');
+                console.log('----------------end playMove--------------------');
             }
             else {
-                console.log('error: user neither host nor join')
+                console.log('error: user neither host nor join');
                 response.send(false);
             }
+        } else {
+            console.log('error: no match with specified matchId');
+            response.send(false);
         }
-        console.log('error: no match with specified matchId')
-        response.send(false);
     })

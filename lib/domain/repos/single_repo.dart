@@ -3,6 +3,7 @@ import 'package:rxdart/rxdart.dart';
 import 'game_repo.dart';
 import 'package:squazzle/data/data.dart';
 
+/// SingleBloc's repository.
 class SingleRepo extends GameRepo {
   final LogicProvider _logicHelper;
   final DbProvider _dbProvider;

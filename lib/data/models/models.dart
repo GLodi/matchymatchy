@@ -4,3 +4,4 @@ export 'move.dart';
 export 'game.dart';
 export 'user.dart';
 export 'match_update.dart';
+export 'message.dart';

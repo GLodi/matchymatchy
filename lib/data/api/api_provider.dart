@@ -11,11 +11,18 @@ abstract class ApiProvider {
 
   // Add player to server queue
   Future<Game> queuePlayer(String uid, String token);
+
+  // Send updated target to server
+  Future<bool> sendNewTarget(TargetField target, String uid);
+
+  // Set matchId sent through Firebase Cloud Messaging
+  void setMatchId(String matchId);
 }
 
 class ApiProviderImpl implements ApiProvider {
   final _net = NetUtils();
-  final baseUrl = 'https://europe-west1-squazzle-40ea9.cloudfunctions.net/';
+  final _baseUrl = 'https://europe-west1-squazzle-40ea9.cloudfunctions.net/';
+  String _matchId;
 
   CollectionReference get gameFieldRef =>
       Firestore.instance.collection('gamefields');
@@ -33,7 +40,25 @@ class ApiProviderImpl implements ApiProvider {
   @override
   Future<Game> queuePlayer(String uid, String token) async {
     return _net
-        .get(baseUrl + 'queuePlayer?userId=' + uid + '&userFcmToken=' + token)
+        .get(_baseUrl + 'queuePlayer?userId=' + uid + '&userFcmToken=' + token)
         .then((response) => Game.fromMap(response));
+  }
+
+  @override
+  Future<bool> sendNewTarget(TargetField target, String uid) async {
+    return _net
+        .get(_baseUrl +
+            'playMove?userId=' +
+            uid +
+            '&matchId=' +
+            _matchId +
+            '&newTarget=' +
+            target.grid)
+        .then((response) => response);
+  }
+
+  @override
+  void setMatchId(String matchId) {
+    this._matchId = matchId;
   }
 }

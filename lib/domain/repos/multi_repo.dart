@@ -3,6 +3,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:squazzle/data/data.dart';
 import 'game_repo.dart';
 
+/// MultiBloc's repository.
 class MultiRepo extends GameRepo {
   final ApiProvider _apiProvider;
   final LogicProvider _logicProvider;
@@ -23,7 +24,13 @@ class MultiRepo extends GameRepo {
   @override
   Observable<bool> checkIfCorrect(
           GameField gameField, TargetField targetField) =>
-      Observable.fromFuture(
+          // TODO needToSend doesn't work correctly
+      Observable.fromFuture(_logicProvider.needToSendMove(gameField))
+          .asyncMap(
+              (boolean) => _logicProvider.diffToSend(gameField, targetField))
+          .zipWith(_prefsProvider.getUid().asStream(),
+              (target, uid) => _apiProvider.sendNewTarget(target, uid))
+          .asyncMap((boolean) =>
               _logicProvider.checkIfCorrect(gameField, targetField))
           .handleError((e) => throw e);
 
@@ -39,4 +46,6 @@ class MultiRepo extends GameRepo {
           GameField gameField, TargetField targetField) =>
       Observable.fromFuture(_logicProvider.diffToSend(gameField, targetField))
           .handleError((e) => throw e);
+
+  void setMatchId(String matchId) => _apiProvider.setMatchId(matchId);
 }

@@ -4,20 +4,23 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
 
+/// In addition to the functionalities available through Gamebloc,
+/// the Multiplayer version of the game needs an Enem
 class MultiBloc extends GameBloc {
   final MultiRepo repo;
-  final messaging = FirebaseMessaging();
-  GameField gameField;
-  TargetField targetField;
-  TargetField enemyField;
+  final _messaging = FirebaseMessaging();
 
+  // Streams extracted from GameBloc's subjects
   Stream<bool> get correct => correctSubject.stream;
   Stream<int> get moveNumber => moveNumberSubject.stream;
 
+  // Shows waiting for players message after connecting to server
   final _waitMessageSubject = BehaviorSubject<String>();
   Stream<String> get waitMessage => _waitMessageSubject.stream;
-  final _matchUpdatesSubject = BehaviorSubject<MatchUpdate>();
-  Stream<MatchUpdate> get matchUpdates => _matchUpdatesSubject.stream;
+
+  // Updates enemy target
+  final _matchUpdatesSubject = BehaviorSubject<TargetField>();
+  Stream<TargetField> get matchUpdates => _matchUpdatesSubject.stream;
 
   MultiBloc(this.repo) : super(repo);
 
@@ -35,7 +38,7 @@ class MultiBloc extends GameBloc {
           uid = uuid;
         }).asFuture();
         if (uid != null) {
-          String token = await messaging.getToken();
+          String token = await _messaging.getToken();
           await repo
               .queuePlayer(uid, token)
               .handleError((e) {
@@ -64,12 +67,17 @@ class MultiBloc extends GameBloc {
   }
 
   void listenToMatchUpdates() {
-    messaging.configure(
+    _messaging.setAutoInitEnabled(false);
+    _messaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print('on message $message');
-        _matchUpdatesSubject
-            .add(MatchUpdate.fromMap(message['data'].cast<String, dynamic>()));
-        emitEvent(GameEvent(type: GameEventType.start));
+        Message mesObj = Message.fromMap(message);
+        if (mesObj.notiBody != null && mesObj.notiTitle != null) {
+          repo.setMatchId(mesObj.matchId);
+          emitEvent(GameEvent(type: GameEventType.start));
+        } else {
+          _matchUpdatesSubject.add(TargetField(grid: mesObj.enemyTarget));
+        }
       },
       onResume: (Map<String, dynamic> message) async {
         print('on resume $message');
@@ -84,16 +92,16 @@ class MultiBloc extends GameBloc {
     _waitMessageSubject.add('Waiting for opponent...');
     gameField = game.gameField;
     targetField = game.targetField;
-    enemyField = await repo
-        .diffToSend(gameField, targetField)
-        .listen((diff) => diff)
-        .asFuture();
+    await repo.diffToSend(gameField, targetField).listen((diff) {
+          _matchUpdatesSubject.add(diff);
+    }).asFuture();
   }
 
   @override
   void dispose() {
     _matchUpdatesSubject.close();
     _waitMessageSubject.close();
+    _messaging.deleteInstanceID();
     super.dispose();
   }
 }

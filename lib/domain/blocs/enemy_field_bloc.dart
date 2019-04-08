@@ -3,6 +3,10 @@ import 'package:rxdart/rxdart.dart';
 import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
 
+/// EnemyFieldWidget's bloc. 
+/// As this Widget is used only in Multiplayer, it depends
+/// on MultiBloc's notification stream (matchUpdates) to 
+/// update the enemy field when necessary.
 class EnemyFieldBloc extends BlocEventStateBase<WidgetEvent, WidgetState> {
   final MultiBloc _multiBloc;
 
@@ -15,7 +19,9 @@ class EnemyFieldBloc extends BlocEventStateBase<WidgetEvent, WidgetState> {
   Stream<WidgetState> eventHandler(
       WidgetEvent event, WidgetState currentState) async* {
     if (event.type == WidgetEventType.start) {
-      _enemyFieldSubject.add(_multiBloc.enemyField);
+      _multiBloc.matchUpdates.listen((update) { 
+      _enemyFieldSubject.add(update);
+      });
     }
   }
 

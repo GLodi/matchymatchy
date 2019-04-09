@@ -13,7 +13,7 @@ void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   kiwi.Container container = new kiwi.Container();
 
-  // Providers
+  // Providers (Model)
   container.registerSingleton<DbProvider, DbProviderImpl>(
       (c) => new DbProviderImpl());
   container.registerSingleton<ApiProvider, ApiProviderImpl>(
@@ -25,7 +25,7 @@ void main() {
   container.registerSingleton<SharedPrefsProvider, SharedPrefsProviderImpl>(
       (c) => new SharedPrefsProviderImpl());
 
-  // Repos
+  // Repos (Controller)
   container.registerSingleton((c) =>
       new SingleRepo(c.resolve<LogicProvider>(), c.resolve<DbProvider>()));
   container.registerSingleton((c) => new MultiRepo(c.resolve<LogicProvider>(),
@@ -33,7 +33,7 @@ void main() {
   container.registerSingleton((c) => new HomeRepo(
       c.resolve<LoginProvider>(), c.resolve<SharedPrefsProvider>()));
 
-  // Blocs
+  // Blocs (Controller, every View(Widget) has its own Bloc)
   container.registerFactory((c) => new SingleBloc(c.resolve<SingleRepo>()));
   container.registerFactory((c) => new MultiBloc(c.resolve<MultiRepo>()));
   container.registerFactory((c) => new HomeBloc(c.resolve<HomeRepo>()));

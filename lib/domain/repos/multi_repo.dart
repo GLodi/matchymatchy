@@ -24,7 +24,7 @@ class MultiRepo extends GameRepo {
   @override
   Observable<bool> checkIfCorrect(
           GameField gameField, TargetField targetField) =>
-          // TODO needToSend doesn't work correctly
+      // TODO needToSend doesn't work correctly
       Observable.fromFuture(_logicProvider.needToSendMove(gameField))
           .asyncMap(
               (boolean) => _logicProvider.diffToSend(gameField, targetField))

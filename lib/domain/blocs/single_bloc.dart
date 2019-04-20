@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:squazzle/domain/domain.dart';
-import 'package:squazzle/data/models/models.dart';
 
 class SingleBloc extends GameBloc {
   final SingleRepo repo;

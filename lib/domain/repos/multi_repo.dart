@@ -23,16 +23,27 @@ class MultiRepo extends GameRepo {
 
   @override
   Observable<bool> checkIfCorrect(
-          GameField gameField, TargetField targetField) =>
-      // TODO needToSend doesn't work correctly
-      Observable.fromFuture(_logicProvider.needToSendMove(gameField))
-          .asyncMap(
-              (boolean) => _logicProvider.diffToSend(gameField, targetField))
-          .zipWith(_prefsProvider.getUid().asStream(),
-              (target, uid) => _apiProvider.sendNewTarget(target, uid))
+      GameField gameField, TargetField targetField) {
+    // TODO needToSend doesn't work correctly
+    var need = _logicProvider.needToSendMove(gameField);
+    if (need) {
+      var targetDiff = _logicProvider.diffToSend(gameField, targetField);
+      return Observable.fromFuture(_prefsProvider.getUid())
+          .asyncMap((uid) => _apiProvider.sendNewTarget(targetDiff, uid))
           .asyncMap((boolean) =>
-              _logicProvider.checkIfCorrect(gameField, targetField))
-          .handleError((e) => throw e);
+              _logicProvider.checkIfCorrect(gameField, targetField));
+    }
+    return null;
+    // Observable.fromFuture(_logicProvider.needToSendMove(gameField))
+    //     .asyncMap((boolean) {
+    //       if (boolean) _logicProvider.diffToSend(gameField, targetField);
+    //     })
+    //     .zipWith(_prefsProvider.getUid().asStream(),
+    //         (target, uid) => _apiProvider.sendNewTarget(target, uid))
+    //     .asyncMap((boolean) =>
+    //         _logicProvider.checkIfCorrect(gameField, targetField))
+    //     .handleError((e) => throw e);
+  }
 
   Observable<String> getStoredUid() =>
       Observable.fromFuture(_prefsProvider.getUid())
@@ -42,10 +53,8 @@ class MultiRepo extends GameRepo {
       Observable.fromFuture(_apiProvider.queuePlayer(uid, token))
           .handleError((e) => throw e);
 
-  Observable<TargetField> diffToSend(
-          GameField gameField, TargetField targetField) =>
-      Observable.fromFuture(_logicProvider.diffToSend(gameField, targetField))
-          .handleError((e) => throw e);
+  TargetField diffToSend(GameField gameField, TargetField targetField) =>
+      _logicProvider.diffToSend(gameField, targetField);
 
   void setMatchId(String matchId) => _apiProvider.setMatchId(matchId);
 }

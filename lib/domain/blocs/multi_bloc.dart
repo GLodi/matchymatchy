@@ -92,9 +92,8 @@ class MultiBloc extends GameBloc {
     _waitMessageSubject.add('Waiting for opponent...');
     gameField = game.gameField;
     targetField = game.targetField;
-    await repo.diffToSend(gameField, targetField).listen((diff) {
-          _matchUpdatesSubject.add(diff);
-    }).asFuture();
+    var diff = repo.diffToSend(gameField, targetField);
+    _matchUpdatesSubject.add(diff);
   }
 
   @override

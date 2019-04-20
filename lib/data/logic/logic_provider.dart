@@ -8,10 +8,10 @@ abstract class LogicProvider {
   Future<bool> checkIfCorrect(GameField gameField, TargetField targetField);
 
   // Checks whether user needs to update enemy player
-  Future<bool> needToSendMove(GameField gameField);
+  bool needToSendMove(GameField gameField);
 
   // Creates the new TargetField to send to server
-  Future<TargetField> diffToSend(GameField gameField, TargetField targetField);
+  TargetField diffToSend(GameField gameField, TargetField targetField);
 }
 
 class LogicProviderImpl implements LogicProvider {
@@ -95,21 +95,22 @@ class LogicProviderImpl implements LogicProvider {
   }
 
   @override
-  Future<bool> needToSendMove(GameField gameField) async {
+  bool needToSendMove(GameField gameField) {
     var a = [6, 7, 8, 11, 12, 13, 16, 17, 18];
     for (var b in a) {
       var c = current.grid[b];
       if (previous == null) return true;
       if (c != previous.grid[b] && c == gameField.grid[b]) {
+        print(true);
         return true;
       }
     }
+    print(false);
     return false;
   }
 
   @override
-  Future<TargetField> diffToSend(
-      GameField gameField, TargetField targetField) async {
+  TargetField diffToSend(GameField gameField, TargetField targetField) {
     var enemy = "";
     var a = [6, 7, 8, 11, 12, 13, 16, 17, 18];
     var b = [0, 1, 2, 3, 4, 5, 6, 7, 8];

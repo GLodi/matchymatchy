@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import "dart:math";
 import 'dart:ui';
+import 'dart:async';
 import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:infinite_listview/infinite_listview.dart';
-import 'dart:async';
 import 'package:intro_slider/intro_slider.dart';
 
 import 'package:squazzle/data/models/models.dart';
@@ -243,13 +243,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildItem(BuildContext context, int index) {
     var l = List<Widget>();
-    for (int i = 0; i < 5; i++) {
-      l.add(square(i, (i % 5) * fifthWidth, (i / 5).truncate() * fifthWidth));
-    }
+    for (int i = 0; i < 5; i++) l.add(square());
     return Row(children: l);
   }
 
-  Widget square(int index, double left, double bottom) {
+  Widget square() {
     return Container(
       width: fifthWidth,
       height: fifthWidth,

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:squazzle/data/models/models.dart';
+
 import 'net_utils.dart';
 
 abstract class ApiProvider {

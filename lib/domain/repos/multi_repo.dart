@@ -24,25 +24,16 @@ class MultiRepo extends GameRepo {
   @override
   Observable<bool> checkIfCorrect(
       GameField gameField, TargetField targetField) {
-    // TODO needToSend doesn't work correctly
-    var need = _logicProvider.needToSendMove(gameField);
+    var need = _logicProvider.needToSendMove(gameField, targetField);
     if (need) {
       var targetDiff = _logicProvider.diffToSend(gameField, targetField);
       return Observable.fromFuture(_prefsProvider.getUid())
           .asyncMap((uid) => _apiProvider.sendNewTarget(targetDiff, uid))
           .asyncMap((boolean) =>
-              _logicProvider.checkIfCorrect(gameField, targetField));
+              _logicProvider.checkIfCorrect(gameField, targetField))
+          .handleError((e) => throw e);
     }
-    return null;
-    // Observable.fromFuture(_logicProvider.needToSendMove(gameField))
-    //     .asyncMap((boolean) {
-    //       if (boolean) _logicProvider.diffToSend(gameField, targetField);
-    //     })
-    //     .zipWith(_prefsProvider.getUid().asStream(),
-    //         (target, uid) => _apiProvider.sendNewTarget(target, uid))
-    //     .asyncMap((boolean) =>
-    //         _logicProvider.checkIfCorrect(gameField, targetField))
-    //     .handleError((e) => throw e);
+    return Observable.just(false);
   }
 
   Observable<String> getStoredUid() =>

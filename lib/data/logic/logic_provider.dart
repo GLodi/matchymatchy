@@ -8,7 +8,7 @@ abstract class LogicProvider {
   Future<bool> checkIfCorrect(GameField gameField, TargetField targetField);
 
   // Checks whether user needs to update enemy player
-  bool needToSendMove(GameField gameField);
+  bool needToSendMove(GameField gameField, TargetField targetField);
 
   // Creates the new TargetField to send to server
   TargetField diffToSend(GameField gameField, TargetField targetField);
@@ -16,7 +16,6 @@ abstract class LogicProvider {
 
 class LogicProviderImpl implements LogicProvider {
   GameField current;
-  GameField previous;
 
   @override
   Future<GameField> applyMove(GameField gameField, Move move) async {
@@ -24,49 +23,49 @@ class LogicProviderImpl implements LogicProvider {
       case 0:
         {
           // up
+          current = GameField(grid: gameField.grid);
           var toMove = gameField.grid[move.from];
           var other = gameField.grid[move.from - 5];
           gameField.grid =
               gameField.grid.replaceRange(move.from, move.from + 1, other);
           gameField.grid =
               gameField.grid.replaceRange(move.from - 5, move.from - 4, toMove);
-          _storeDiff(gameField);
           return gameField;
         }
       case 1:
         {
           // right
+          current = GameField(grid: gameField.grid);
           var toMove = gameField.grid[move.from];
           var other = gameField.grid[move.from + 1];
           gameField.grid =
               gameField.grid.replaceRange(move.from, move.from + 1, other);
           gameField.grid =
               gameField.grid.replaceRange(move.from + 1, move.from + 2, toMove);
-          _storeDiff(gameField);
           return gameField;
         }
       case 2:
         {
           // down
+          current = GameField(grid: gameField.grid);
           var toMove = gameField.grid[move.from];
           var other = gameField.grid[move.from + 5];
           gameField.grid =
               gameField.grid.replaceRange(move.from, move.from + 1, other);
           gameField.grid =
               gameField.grid.replaceRange(move.from + 5, move.from + 6, toMove);
-          _storeDiff(gameField);
           return gameField;
         }
       case 3:
         {
           // left
+          current = GameField(grid: gameField.grid);
           var toMove = gameField.grid[move.from];
           var other = gameField.grid[move.from - 1];
           gameField.grid =
               gameField.grid.replaceRange(move.from, move.from + 1, other);
           gameField.grid =
               gameField.grid.replaceRange(move.from - 1, move.from, toMove);
-          _storeDiff(gameField);
           return gameField;
         }
       default:
@@ -74,19 +73,13 @@ class LogicProviderImpl implements LogicProvider {
     }
   }
 
-  void _storeDiff(GameField gameField) {
-    previous = current;
-    current = gameField;
-  }
-
   @override
   Future<bool> checkIfCorrect(
       GameField gameField, TargetField targetField) async {
     bool result = true;
     var a = [6, 7, 8, 11, 12, 13, 16, 17, 18];
-    var b = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     for (int i = 0; i < 9; i++) {
-      if (gameField.grid[a[i]] != targetField.grid[b[i]]) {
+      if (gameField.grid[a[i]] != targetField.grid[i]) {
         result = false;
         break;
       }
@@ -95,17 +88,14 @@ class LogicProviderImpl implements LogicProvider {
   }
 
   @override
-  bool needToSendMove(GameField gameField) {
+  bool needToSendMove(GameField gameField, TargetField targetField) {
     var a = [6, 7, 8, 11, 12, 13, 16, 17, 18];
-    for (var b in a) {
-      var c = current.grid[b];
-      if (previous == null) return true;
-      if (c != previous.grid[b] && c == gameField.grid[b]) {
-        print(true);
+    for (int i = 0; i < 9; i++) {
+      if (current.grid[a[i]] != gameField.grid[a[i]] &&
+          gameField.grid[a[i]] == targetField.grid[i]) {
         return true;
       }
     }
-    print(false);
     return false;
   }
 
@@ -113,9 +103,8 @@ class LogicProviderImpl implements LogicProvider {
   TargetField diffToSend(GameField gameField, TargetField targetField) {
     var enemy = "";
     var a = [6, 7, 8, 11, 12, 13, 16, 17, 18];
-    var b = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     for (int i = 0; i < 9; i++) {
-      if (gameField.grid[a[i]] == targetField.grid[b[i]])
+      if (gameField.grid[a[i]] == targetField.grid[i])
         enemy += gameField.grid[a[i]];
       else
         enemy += '6';

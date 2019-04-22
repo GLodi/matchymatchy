@@ -27,10 +27,12 @@ class HomeScreen extends StatefulWidget {
   }
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   HomeBloc bloc;
   final _random = Random();
   double fifthWidth;
+  AnimationController _entryAnimCont;
+  Animation _entryAnim;
   final InfiniteScrollController _infiniteController = InfiniteScrollController(
     initialScrollOffset: 0.0,
   );
@@ -40,6 +42,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => applyMovement());
+
+    _entryAnimCont = AnimationController(
+        vsync: this, duration: Duration(milliseconds: 2000));
+    _entryAnim = Tween(begin: 1.0, end: 0.0).animate(CurvedAnimation(
+      parent: _entryAnimCont,
+      curve: Curves.fastOutSlowIn,
+    ));
 
     slides.add(
       new Slide(
@@ -136,12 +145,39 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget initLogged(User user) {
-    return Center(
-      child: Column(
+    final double height = MediaQuery.of(context).size.height;
+    _entryAnimCont.forward();
+    return Stack(children: <Widget>[
+      AnimatedBuilder(
+          animation: _entryAnimCont,
+          builder: (context, child) {
+            return Transform(
+              transform:
+                  Matrix4.translationValues(0, _entryAnim.value * height, 0),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: 120.0,
+                  color: Colors.transparent,
+                  child: new Container(
+                      decoration: new BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: new BorderRadius.only(
+                              topLeft: const Radius.circular(20.0),
+                              topRight: const Radius.circular(20.0))),
+                      child: new Center(
+                        child: new Text("Hi modal sheet"),
+                      )),
+                ),
+              ),
+            );
+          }),
+      Center(
+          child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           RaisedButton(
-            child: new Text("Singleplayer"),
+            child: Text("Singleplayer"),
             onPressed: () {
               Navigator.push(
                 context,
@@ -164,8 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress));
               }),
         ],
-      ),
-    );
+      )),
+    ]);
   }
 
   Widget initNotLogged() {

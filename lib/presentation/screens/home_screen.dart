@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:infinite_listview/infinite_listview.dart';
 import 'package:intro_slider/intro_slider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final InfiniteScrollController _infiniteController = InfiniteScrollController(
     initialScrollOffset: 0.0,
   );
-  List<Slide> slides = new List();
+  List<Slide> slides = List();
 
   @override
   void initState() {
@@ -51,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     ));
 
     slides.add(
-      new Slide(
+      Slide(
         title: "ERASER",
         description:
             "Allow miles wound place the leave had. To sitting subject no improve studied limited",
@@ -59,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     );
     slides.add(
-      new Slide(
+      Slide(
         title: "PENCIL",
         description:
             "Ye indulgence unreserved connection alteration appearance",
@@ -67,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     );
     slides.add(
-      new Slide(
+      Slide(
         title: "RULER",
         description:
             "Much evil soon high in hope do view. Out may few northward believing attempted. Yet timed being songs marry one defer men our. Although finished blessing do of",
@@ -145,33 +146,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget initLogged(User user) {
-    final double height = MediaQuery.of(context).size.height;
     _entryAnimCont.forward();
     return Stack(children: <Widget>[
-      AnimatedBuilder(
-          animation: _entryAnimCont,
-          builder: (context, child) {
-            return Transform(
-              transform:
-                  Matrix4.translationValues(0, _entryAnim.value * height, 0),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  height: 120.0,
-                  color: Colors.transparent,
-                  child: new Container(
-                      decoration: new BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: new BorderRadius.only(
-                              topLeft: const Radius.circular(20.0),
-                              topRight: const Radius.circular(20.0))),
-                      child: new Center(
-                        child: new Text("Hi modal sheet"),
-                      )),
-                ),
-              ),
-            );
-          }),
+      userInfo(user),
       Center(
           child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -193,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           RaisedButton(
               child: Text(
-                "Multiplayer\nLogged in as ${user.username}",
+                "Multiplayer",
                 textAlign: TextAlign.center,
               ),
               onPressed: () {
@@ -204,6 +181,64 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     ]);
   }
 
+  Widget userInfo(User user) {
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
+    return AnimatedBuilder(
+        animation: _entryAnimCont,
+        builder: (context, child) {
+          return Transform(
+            transform:
+                Matrix4.translationValues(0, _entryAnim.value * height, 0),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 100.0,
+                width: width,
+                color: Colors.transparent,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.only(
+                        topLeft: const Radius.circular(20.0),
+                        topRight: const Radius.circular(20.0)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black,
+                        blurRadius: 10.0,
+                      )
+                    ],
+                  ),
+                  child: Stack(
+                    children: <Widget>[
+                      Positioned(
+                        left: width / 3,
+                        child: Text(user.username, textAlign: TextAlign.right),
+                      ),
+                      Center(
+                        child: Container(
+                          margin: EdgeInsets.all(10),
+                          child: ClipOval(
+                            child: CachedNetworkImage(
+                              imageUrl: user.imageUrl,
+                              placeholder: (context, url) =>
+                                  CircularProgressIndicator(),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text('Wins: 0'),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   Widget initNotLogged() {
     return Stack(
       children: <Widget>[
@@ -212,7 +247,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               RaisedButton(
-                child: new Text("Singleplayer"),
+                child: Text("Singleplayer"),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -268,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       duration: minute,
       curve: Curves.linear,
     );
-    new Timer.periodic(minute, (Timer t) {
+    Timer.periodic(minute, (Timer t) {
       _infiniteController.animateTo(
         _infiniteController.offset + 2000.0,
         duration: minute,

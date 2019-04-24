@@ -26,6 +26,7 @@ dependencies:
   intro_slider: ^1.2.0
   shared_preferences: ^0.5.1+2
   firebase_messaging: ^4.0.0+1
+  cached_network_image: ^0.7.0
 
   flutter:
     sdk: flutter

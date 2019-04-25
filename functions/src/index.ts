@@ -121,6 +121,9 @@ async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, j
     console.log('queue deleted: ' + doc.id)
     let matchId = doc.data().matchid
     await matches.doc(matchId).update({
+        winner: '',
+        hostmoves: false,
+        joinmoves: false,
         joinuid: joinUid,
         joinfcmtoken: joinFcmToken,
         time: admin.firestore.Timestamp.now(),
@@ -179,3 +182,63 @@ exports.playMove = functions
             response.send(false)
         }
     })
+
+exports.winSignal = functions
+    .region('europe-west1')
+    .https
+    .onRequest(async (request, response) => {
+        let userId = request.query.userId
+        let matchId = request.query.matchId
+        let moves = request.query.moves
+        let match = await matches.doc(matchId).get()
+        if (match.exists) {
+            if (match.data()!.winner == '') {
+                userId == match.data()!.hostuid ?
+                    match.data()!.hostmoves = moves :
+                    match.data()!.joinmoves = moves
+                let has1Won = await checkWinners(matchId)
+                if (has1Won) {
+                    await declareWinner(matchId)
+                }
+            } else {
+                console.log('error: match was already won')
+                response.send(false)
+            }
+        } else {
+            console.log('error: no match with specified matchId')
+            response.send(false)
+        }
+    })
+
+async function checkWinners(matchId: string) {
+    let match = await matches.doc(matchId).get()
+    if (match.data()!.winner == '') {
+        match.data()!.hostmoves > match.data()!.joinmoves ?
+            match.data()!.winner = match.data()!.hostuid :
+            match.data()!.winner = match.data()!.joinuid
+        return true
+    }
+    return false
+}
+
+async function declareWinner(matchId: string) {
+    let match = await matches.doc(matchId).get()
+    let messageToJoin = {
+        data: {
+            matchid: match.id,
+            winner: match.data()!.winner,
+        },
+        type: 'winner',
+        token: match.data()!.joinfcmtoken
+    }
+    await admin.messaging().send(messageToJoin)
+    let messageToHost = {
+        data: {
+            matchid: match.id,
+            winner: match.data()!.winner,
+        },
+        type: 'winner',
+        token: match.data()!.hostfcmtoken
+    }
+    await admin.messaging().send(messageToHost)
+}

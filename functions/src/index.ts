@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import { QueryDocumentSnapshot } from '@google-cloud/firestore'
+import { uptime } from 'os';
 
 admin.initializeApp(functions.config().firebase)
 
@@ -214,11 +215,21 @@ async function checkWinners(matchId: string) {
     let match = await matches.doc(matchId).get()
     if (match.data()!.winner == '') {
         match.data()!.hostmoves > match.data()!.joinmoves ?
-            match.data()!.winner = match.data()!.hostuid :
-            match.data()!.winner = match.data()!.joinuid
+            upWinAmount(matchId, true) : upWinAmount(matchId, false)
         return true
     }
     return false
+}
+
+async function upWinAmount(matchId: string, hostOrJoin: boolean) {
+    let match = await matches.doc(matchId).get()
+    if (hostOrJoin) {
+        match.data()!.winner = match.data()!.hostuid
+        let result = await users.where('uid', '==', match.data()!.hostuid).get()
+        let hostDoc = await result.docs[0]
+    } else {
+        match.data()!.winner = match.data()!.joinuid
+    }
 }
 
 async function declareWinner(matchId: string) {

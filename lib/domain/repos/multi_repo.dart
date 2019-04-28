@@ -5,6 +5,7 @@ import 'game_repo.dart';
 
 /// MultiBloc's repository.
 class MultiRepo extends GameRepo {
+  String _matchId;
   final ApiProvider _apiProvider;
   final LogicProvider _logicProvider;
   final SharedPrefsProvider _prefsProvider;
@@ -28,13 +29,21 @@ class MultiRepo extends GameRepo {
     if (need) {
       var targetDiff = _logicProvider.diffToSend(gameField, targetField);
       return Observable.fromFuture(_prefsProvider.getUid())
-          .asyncMap((uid) => _apiProvider.sendNewTarget(targetDiff, uid))
+          .asyncMap(
+              (uid) => _apiProvider.sendNewTarget(targetDiff, uid, _matchId))
           .asyncMap((boolean) =>
               _logicProvider.checkIfCorrect(gameField, targetField))
           .handleError((e) => throw e);
     }
-    return Observable.just(false);
+    return Observable.fromFuture(
+            _logicProvider.checkIfCorrect(gameField, targetField))
+        .handleError((e) => throw e);
   }
+
+  Observable<bool> sendWinSignal(int moves) =>
+      Observable.fromFuture(_prefsProvider.getUid())
+          .asyncMap((uid) => _apiProvider.sendWinSignal(uid, _matchId, moves))
+          .handleError((e) => throw e);
 
   Observable<String> getStoredUid() =>
       Observable.fromFuture(_prefsProvider.getUid())
@@ -47,5 +56,5 @@ class MultiRepo extends GameRepo {
   TargetField diffToSend(GameField gameField, TargetField targetField) =>
       _logicProvider.diffToSend(gameField, targetField);
 
-  void setMatchId(String matchId) => _apiProvider.setMatchId(matchId);
+  void setMatchId(String matchId) => _matchId = matchId;
 }

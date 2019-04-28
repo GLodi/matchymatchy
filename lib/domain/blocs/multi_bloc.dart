@@ -60,7 +60,10 @@ class MultiBloc extends GameBloc {
         break;
       case GameEventType.victory:
         correctSubject.add(true);
-        // TODO handle victory
+        // TODO show info until other player has finished
+        await repo.sendWinSignal(moves).listen((e) {
+          print(e);
+        }).asFuture();
         break;
       default:
     }
@@ -71,12 +74,17 @@ class MultiBloc extends GameBloc {
     _messaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print('on message $message');
-        Message mesObj = Message.fromMap(message);
-        if (mesObj.notiBody != null && mesObj.notiTitle != null) {
-          repo.setMatchId(mesObj.matchId);
-          emitEvent(GameEvent(type: GameEventType.start));
-        } else {
-          _matchUpdatesSubject.add(TargetField(grid: mesObj.enemyTarget));
+        var typ = message['data'].cast<String, dynamic>()['messType'];
+        switch (typ) {
+          case 'challenge':
+            handleChallengeMessage(ChallengeMessage.fromMap(message));
+            break;
+          case 'move':
+            handleMoveMessage(MoveMessage.fromMap(message));
+            break;
+          case 'winner':
+            handleWinnerMessage(WinnerMessage.fromMap(message));
+            break;
         }
       },
       onResume: (Map<String, dynamic> message) async {
@@ -87,6 +95,17 @@ class MultiBloc extends GameBloc {
       },
     );
   }
+
+  void handleChallengeMessage(ChallengeMessage challengeMessage) {
+    repo.setMatchId(challengeMessage.matchId);
+    emitEvent(GameEvent(type: GameEventType.start));
+  }
+
+  void handleMoveMessage(MoveMessage moveMessage) {
+    _matchUpdatesSubject.add(TargetField(grid: moveMessage.enemyTarget));
+  }
+
+  void handleWinnerMessage(WinnerMessage winnerMessage) {}
 
   void storeGameInfo(Game game) async {
     _waitMessageSubject.add('Waiting for opponent...');

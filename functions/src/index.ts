@@ -1,7 +1,6 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import { QueryDocumentSnapshot } from '@google-cloud/firestore'
-import { uptime } from 'os';
 
 admin.initializeApp(functions.config().firebase)
 
@@ -63,7 +62,7 @@ async function notifyPlayersMatchStarted(matchId: string) {
         data: {
             matchid: match.id,
             click_action: 'FLUTTER_NOTIFICATION_CLICK',
-            notificationType: 'challenge',
+            messType: 'challenge',
         },
         notification: {
             title: 'Match started!',
@@ -75,7 +74,7 @@ async function notifyPlayersMatchStarted(matchId: string) {
         data: {
             matchid: match.id,
             click_action: 'FLUTTER_NOTIFICATION_CLICK',
-            notificationType: 'challenge',
+            messType: 'challenge',
         },
         notification: {
             title: 'Match started!',
@@ -85,13 +84,13 @@ async function notifyPlayersMatchStarted(matchId: string) {
     }
     try {
         await admin.messaging().send(messageToHost)
-        console.log('message sent to: ' + match.data()!.hostfcmtoken)
+        console.log('message sent to host: ' + match.data()!.hostfcmtoken)
     } catch (error) {
         console.log('error sending message: ' + error)
     }
     try {
         await admin.messaging().send(messageToJoin)
-        console.log('message sent to: ' + match.data()!.joinfcmtoken)
+        console.log('message sent to join: ' + match.data()!.joinfcmtoken)
     } catch (error) {
         console.log('error sending message: ' + error)
     }
@@ -123,8 +122,8 @@ async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, j
     let matchId = doc.data().matchid
     await matches.doc(matchId).update({
         winner: '',
-        hostmoves: false,
-        joinmoves: false,
+        hostmoves: 1000,
+        joinmoves: 1000,
         joinuid: joinUid,
         joinfcmtoken: joinFcmToken,
         time: admin.firestore.Timestamp.now(),
@@ -150,6 +149,7 @@ exports.playMove = functions
                     data: {
                         matchid: match.id,
                         enemytarget: newTarget,
+                        messType: 'move',
                     },
                     token: match.data()!.joinfcmtoken
                 }
@@ -166,6 +166,7 @@ exports.playMove = functions
                     data: {
                         matchid: match.id,
                         enemytarget: newTarget,
+                        messType: 'move',
                     },
                     token: match.data()!.hostfcmtoken
                 }
@@ -188,6 +189,7 @@ exports.winSignal = functions
     .region('europe-west1')
     .https
     .onRequest(async (request, response) => {
+        console.log('----------------start winSignal--------------------')
         let userId = request.query.userId
         let matchId = request.query.matchId
         let moves = request.query.moves
@@ -201,6 +203,8 @@ exports.winSignal = functions
                 if (has1Won) {
                     await declareWinner(matchId)
                 }
+                console.log('----------------end winSignal--------------------')
+                response.send(true)
             } else {
                 console.log('error: match was already won')
                 response.send(false)
@@ -223,13 +227,14 @@ async function checkWinners(matchId: string) {
 
 async function upWinAmount(matchId: string, hostOrJoin: boolean) {
     let match = await matches.doc(matchId).get()
-    if (hostOrJoin) {
-        match.data()!.winner = match.data()!.hostuid
-        let result = await users.where('uid', '==', match.data()!.hostuid).get()
-        let hostDoc = await result.docs[0]
-    } else {
-        match.data()!.winner = match.data()!.joinuid
-    }
+    match.data()!.winner = hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid
+    let userRef = await users.doc(
+        hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid
+    )
+    let user = await userRef.get()
+    userRef.update({
+        matchesWon: user.data()!.matchesWon + 1
+    })
 }
 
 async function declareWinner(matchId: string) {
@@ -238,18 +243,26 @@ async function declareWinner(matchId: string) {
         data: {
             matchid: match.id,
             winner: match.data()!.winner,
+            messType: 'winner',
         },
-        type: 'winner',
         token: match.data()!.joinfcmtoken
     }
-    await admin.messaging().send(messageToJoin)
+    try {
+        await admin.messaging().send(messageToJoin)
+    } catch (e) {
+        console.log(e)
+    }
     let messageToHost = {
         data: {
             matchid: match.id,
             winner: match.data()!.winner,
+            messType: 'winner',
         },
-        type: 'winner',
         token: match.data()!.hostfcmtoken
     }
-    await admin.messaging().send(messageToHost)
+    try {
+        await admin.messaging().send(messageToHost)
+    } catch (e) {
+        console.log(e)
+    }
 }

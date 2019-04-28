@@ -12,16 +12,15 @@ abstract class ApiProvider {
   Future<Game> queuePlayer(String uid, String token);
 
   // Send updated target to server
-  Future<bool> sendNewTarget(TargetField target, String uid);
+  Future<bool> sendNewTarget(TargetField target, String uid, String matchId);
 
-  // Set matchId sent through Firebase Cloud Messaging
-  void setMatchId(String matchId);
+  // Send win signal to server
+  Future<bool> sendWinSignal(String uid, String matchId, int moves);
 }
 
 class ApiProviderImpl implements ApiProvider {
   final _net = NetUtils();
   final _baseUrl = 'https://europe-west1-squazzle-40ea9.cloudfunctions.net/';
-  String _matchId;
 
   CollectionReference get gameFieldRef =>
       Firestore.instance.collection('gamefields');
@@ -44,20 +43,29 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<bool> sendNewTarget(TargetField target, String uid) async {
+  Future<bool> sendNewTarget(
+      TargetField target, String uid, String matchId) async {
     return _net
         .get(_baseUrl +
             'playMove?userId=' +
             uid +
             '&matchId=' +
-            _matchId +
+            matchId +
             '&newTarget=' +
             target.grid)
         .then((response) => response);
   }
 
   @override
-  void setMatchId(String matchId) {
-    this._matchId = matchId;
+  Future<bool> sendWinSignal(String uid, String matchId, int moves) {
+    return _net
+        .get(_baseUrl +
+            'winSignal?userId=' +
+            uid +
+            '&matchId=' +
+            matchId +
+            '&moves=' +
+            moves.toString())
+        .then((response) => response);
   }
 }

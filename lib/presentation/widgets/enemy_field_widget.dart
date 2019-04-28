@@ -38,6 +38,7 @@ class _EnemyWidgetState extends State<EnemyWidget> {
       stream: bloc.enemyField,
       initialData: enemyField,
       builder: (context, snapshot) {
+        print('asdas' + snapshot.data.grid);
         enemyField = snapshot.data;
         return Stack(
           children: <Widget>[

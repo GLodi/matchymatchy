@@ -63,7 +63,6 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   }
 
   Future<HomeState> checkIfUserLogged() async {
-    // TODO update user info if logged in
     HomeState nextState;
     await _repo.checkIfLoggedIn().handleError((e) {
       nextState = HomeState.error(e.toString());

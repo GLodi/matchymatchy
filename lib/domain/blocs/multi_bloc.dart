@@ -105,7 +105,12 @@ class MultiBloc extends GameBloc {
     _matchUpdatesSubject.add(TargetField(grid: moveMessage.enemyTarget));
   }
 
-  void handleWinnerMessage(WinnerMessage winnerMessage) {}
+  void handleWinnerMessage(WinnerMessage winnerMessage) async {
+    String uid = await repo.getStoredUid().listen((uid) => uid).asFuture();
+    if (winnerMessage.winner == uid) {
+      repo.updateUserInfo();
+    }
+  }
 
   void storeGameInfo(Game game) async {
     _waitMessageSubject.add('Waiting for opponent...');

@@ -28,6 +28,7 @@ class HomeScreen extends StatefulWidget {
   }
 }
 
+// TODO split up methods into own widgets
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   HomeBloc bloc;
   final _random = Random();
@@ -105,7 +106,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
-                  // Add one stop for each color. Stops should increase from 0 to 1
                   stops: [0.1, 0.3, 0.5, 0.6, 0.7, 0.8, 0.9],
                   colors: [
                     Colors.red[300],

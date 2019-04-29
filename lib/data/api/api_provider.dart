@@ -16,6 +16,9 @@ abstract class ApiProvider {
 
   // Send win signal to server
   Future<bool> sendWinSignal(String uid, String matchId, int moves);
+
+  // Request user info
+  Future<User> getUser(String uid);
 }
 
 class ApiProviderImpl implements ApiProvider {
@@ -27,12 +30,19 @@ class ApiProviderImpl implements ApiProvider {
 
   CollectionReference get queueRef => Firestore.instance.collection('queue');
 
+  CollectionReference get usersRef => Firestore.instance.collection('users');
+
   @override
   Future<Game> getGame(int id) async {
     return gameFieldRef.document(id.toString()).get().then((doc) {
       doc.data['_id'] = id;
       return Game.fromMap(doc.data);
     });
+  }
+
+  @override
+  Future<User> getUser(String uid) {
+    return usersRef.document(uid).get().then((doc) => User.fromMap(doc.data));
   }
 
   @override

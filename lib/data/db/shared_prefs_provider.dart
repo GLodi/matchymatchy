@@ -6,6 +6,9 @@ abstract class SharedPrefsProvider {
   // Store logged user information
   Future<void> storeUser(String username, String uid, String imageUrl);
 
+  // Updates user info from User object
+  Future<void> updateUser(User user);
+
   // Return logged user information
   Future<User> getUser();
 
@@ -52,5 +55,13 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
       return true;
     }
     return false;
+  }
+
+  @override
+  Future<void> updateUser(User user) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString('username', user.username);
+    prefs.setString('uid', user.uid);
+    prefs.setString('imageUrl', user.imageUrl);
   }
 }

@@ -4,10 +4,7 @@ import 'package:squazzle/data/models/models.dart';
 
 abstract class SharedPrefsProvider {
   // Store logged user information
-  Future<void> storeUser(String username, String uid, String imageUrl);
-
-  // Updates user info from User object
-  Future<void> updateUser(User user);
+  Future<void> storeUser(User user);
 
   // Return logged user information
   Future<User> getUser();
@@ -23,11 +20,12 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
   SharedPreferences prefs;
 
   @override
-  Future<void> storeUser(String username, String uid, String imageUrl) async {
+  Future<void> storeUser(User user) async {
     prefs = await SharedPreferences.getInstance();
-    prefs.setString('username', username);
-    prefs.setString('uid', uid);
-    prefs.setString('imageUrl', imageUrl);
+    prefs.setString('username', user.username);
+    prefs.setString('uid', user.uid);
+    prefs.setString('imageUrl', user.imageUrl);
+    prefs.setInt('matchesWon', user.matchesWon);
   }
 
   @override
@@ -36,8 +34,13 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
     String username = prefs.getString('username');
     String uid = prefs.getString('uid');
     String imageUrl = prefs.getString('imageUrl');
-    if (username != null && uid != null && imageUrl != null)
-      return User(username: username, uid: uid, imageUrl: imageUrl);
+    int matchesWon = prefs.getInt('matchesWon');
+    if (username != null && uid != null && imageUrl != null && imageUrl != null)
+      return User(
+          username: username,
+          uid: uid,
+          imageUrl: imageUrl,
+          matchesWon: matchesWon);
     return null;
   }
 
@@ -55,13 +58,5 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
       return true;
     }
     return false;
-  }
-
-  @override
-  Future<void> updateUser(User user) async {
-    prefs = await SharedPreferences.getInstance();
-    prefs.setString('username', user.username);
-    prefs.setString('uid', user.uid);
-    prefs.setString('imageUrl', user.imageUrl);
   }
 }

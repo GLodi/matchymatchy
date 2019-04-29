@@ -39,6 +39,7 @@ class MultiBloc extends GameBloc {
         }).asFuture();
         if (uid != null) {
           String token = await _messaging.getToken();
+          listenToMatchUpdates();
           await repo
               .queuePlayer(uid, token)
               .handleError((e) {
@@ -47,7 +48,6 @@ class MultiBloc extends GameBloc {
               })
               .listen((game) => storeGameInfo(game))
               .asFuture();
-          listenToMatchUpdates();
         }
         if (result != null && result.type == GameStateType.error) {
           yield result;
@@ -69,6 +69,7 @@ class MultiBloc extends GameBloc {
     }
   }
 
+  // Listen for Firebase Cloud Messages
   void listenToMatchUpdates() {
     _messaging.setAutoInitEnabled(false);
     _messaging.configure(

@@ -1,25 +1,16 @@
 import 'package:flutter/material.dart';
-import "dart:math";
 import 'dart:ui';
 import 'dart:async';
 import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:infinite_listview/infinite_listview.dart';
 import 'package:intro_slider/intro_slider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/screens/single_screen.dart';
 import 'package:squazzle/presentation/screens/multi_screen.dart';
-
-const colors2 = {
-  0: Colors.white,
-  1: Colors.blue,
-  2: Colors.orange,
-  3: Colors.yellow,
-  4: Colors.green,
-  5: Colors.red,
-};
+import 'package:squazzle/presentation/widgets/row_square_widget.dart';
+import 'package:squazzle/presentation/widgets/user_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -28,13 +19,8 @@ class HomeScreen extends StatefulWidget {
   }
 }
 
-// TODO split up methods into own widgets
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   HomeBloc bloc;
-  final _random = Random();
-  double fifthWidth;
-  AnimationController _entryAnimCont;
-  Animation _entryAnim;
   final InfiniteScrollController _infiniteController = InfiniteScrollController(
     initialScrollOffset: 0.0,
   );
@@ -44,13 +30,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => applyMovement());
-
-    _entryAnimCont = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 2000));
-    _entryAnim = Tween(begin: 1.0, end: 0.0).animate(CurvedAnimation(
-      parent: _entryAnimCont,
-      curve: Curves.fastOutSlowIn,
-    ));
 
     slides.add(
       Slide(
@@ -85,7 +64,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    fifthWidth = MediaQuery.of(context).size.width / 5;
     return Stack(
       children: <Widget>[
         Container(
@@ -94,7 +72,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           child: InfiniteListView.builder(
             controller: _infiniteController,
-            itemBuilder: _buildItem,
+            itemBuilder: (context, inte) =>
+                RowSquareWidget(width: MediaQuery.of(context).size.width / 5),
           ),
         ),
         BackdropFilter(
@@ -146,9 +125,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget initLogged(User user) {
-    _entryAnimCont.forward();
+    final double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
     return Stack(children: <Widget>[
-      userInfo(user),
+      UserWidget(user: user, height: height, width: width),
       Center(
           child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -179,64 +159,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ],
       )),
     ]);
-  }
-
-  Widget userInfo(User user) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
-    return AnimatedBuilder(
-        animation: _entryAnimCont,
-        builder: (context, child) {
-          return Transform(
-            transform:
-                Matrix4.translationValues(0, _entryAnim.value * height, 0),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 100.0,
-                width: width,
-                color: Colors.transparent,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(20.0),
-                        topRight: const Radius.circular(20.0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                        blurRadius: 10.0,
-                      )
-                    ],
-                  ),
-                  child: Stack(
-                    children: <Widget>[
-                      Positioned(
-                        left: width / 3,
-                        child: Text(user.username, textAlign: TextAlign.right),
-                      ),
-                      Center(
-                        child: Container(
-                          margin: EdgeInsets.all(10),
-                          child: ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl: user.imageUrl,
-                              placeholder: (context, url) =>
-                                  CircularProgressIndicator(),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Text('Wins: ' + user.matchesWon.toString()),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        });
   }
 
   Widget initNotLogged() {
@@ -310,25 +232,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         curve: Curves.linear,
       );
     });
-  }
-
-  Widget _buildItem(BuildContext context, int index) {
-    var l = List<Widget>();
-    for (int i = 0; i < 5; i++) l.add(square());
-    return Row(children: l);
-  }
-
-  Widget square() {
-    return Container(
-      width: fifthWidth,
-      height: fifthWidth,
-      child: Container(
-        margin: EdgeInsets.all(2),
-        decoration: BoxDecoration(
-            color: colors2[_random.nextInt(colors2.length)],
-            borderRadius: BorderRadius.all(Radius.circular(5.0))),
-      ),
-    );
   }
 
   void openMultiScreen() {

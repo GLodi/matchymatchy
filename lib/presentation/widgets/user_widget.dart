@@ -27,7 +27,6 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _entryAnimCont = AnimationController(
         vsync: this, duration: Duration(milliseconds: 2000));

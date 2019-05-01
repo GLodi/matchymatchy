@@ -205,17 +205,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               maintainInteractivity: false,
               child: IntroSlider(
                 slides: slides,
-                onDonePress: introDonePressed,
+                onDonePress: () => bloc.doneSlidesButton.add(false),
               ),
             );
           },
         ),
       ],
     );
-  }
-
-  void introDonePressed() {
-    bloc.doneSlidesButton.add(false);
   }
 
   void applyMovement() {

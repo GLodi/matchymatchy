@@ -25,7 +25,6 @@ void main() {
   container.registerSingleton<SharedPrefsProvider, SharedPrefsProviderImpl>(
       (c) => new SharedPrefsProviderImpl());
 
-
   // Repos (Controller)
   container.registerSingleton((c) =>
       new SingleRepo(c.resolve<LogicProvider>(), c.resolve<DbProvider>()));

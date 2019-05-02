@@ -63,6 +63,7 @@ async function notifyPlayersMatchStarted(matchId: string) {
             matchid: match.id,
             click_action: 'FLUTTER_NOTIFICATION_CLICK',
             messType: 'challenge',
+            enemyName: joinName,
         },
         notification: {
             title: 'Match started!',
@@ -75,6 +76,7 @@ async function notifyPlayersMatchStarted(matchId: string) {
             matchid: match.id,
             click_action: 'FLUTTER_NOTIFICATION_CLICK',
             messType: 'challenge',
+            enemyName: hostName,
         },
         notification: {
             title: 'Match started!',
@@ -122,6 +124,7 @@ async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, j
     let matchId = doc.data().matchid
     await matches.doc(matchId).update({
         winner: '',
+        winnerName: '',
         hostmoves: 1000,
         joinmoves: 1000,
         joinuid: joinUid,
@@ -217,7 +220,7 @@ exports.winSignal = functions
 
 async function checkWinners(matchId: string) {
     let match = await matches.doc(matchId).get()
-    if (match.data()!.winner == '') {
+    if (match.data()!.winner != '') {
         match.data()!.hostmoves > match.data()!.joinmoves ?
             upWinAmount(matchId, true) : upWinAmount(matchId, false)
         return true
@@ -227,13 +230,16 @@ async function checkWinners(matchId: string) {
 
 async function upWinAmount(matchId: string, hostOrJoin: boolean) {
     let match = await matches.doc(matchId).get()
-    match.data()!.winner = hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid
     let userRef = await users.doc(
         hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid
     )
     let user = await userRef.get()
     userRef.update({
         matchesWon: user.data()!.matchesWon + 1
+    })
+    matches.doc(matchId).update({
+        winner: hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid,
+        winnerName: user.data()!.username,
     })
 }
 
@@ -244,6 +250,7 @@ async function declareWinner(matchId: string) {
             matchid: match.id,
             winner: match.data()!.winner,
             messType: 'winner',
+            winnerName: match.data()!.winnerName,
         },
         token: match.data()!.joinfcmtoken
     }
@@ -257,6 +264,7 @@ async function declareWinner(matchId: string) {
             matchid: match.id,
             winner: match.data()!.winner,
             messType: 'winner',
+            winnerName: match.data()!.winnerName,
         },
         token: match.data()!.hostfcmtoken
     }

@@ -11,12 +11,18 @@ class MultiScreen extends StatefulWidget {
 class _MultiScreenState extends State<MultiScreen>
     with TickerProviderStateMixin {
   MultiBloc bloc;
+  double opacityLevel = 0;
 
   @override
   void initState() {
     super.initState();
     bloc = BlocProvider.of<MultiBloc>(context);
     bloc.emitEvent(GameEvent(type: GameEventType.queue));
+    bloc.correct.listen((correct) => _changeOpacity());
+  }
+
+  void _changeOpacity() {
+    setState(() => opacityLevel = opacityLevel == 0 ? 1.0 : 0.0);
   }
 
   @override
@@ -51,10 +57,25 @@ class _MultiScreenState extends State<MultiScreen>
             }
           case GameStateType.init:
             {
-              return MultiGameWidget(
-                  bloc: bloc,
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width);
+              return Stack(
+                children: <Widget>[
+                  MultiGameWidget(
+                      bloc: bloc,
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width),
+                  // TODO show waiting for results
+                  AnimatedOpacity(
+                    duration: Duration(seconds: 2),
+                    opacity: opacityLevel,
+                    child: Visibility(
+                      visible: opacityLevel != 0,
+                      child: Container(
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ],
+              );
             }
         }
       },

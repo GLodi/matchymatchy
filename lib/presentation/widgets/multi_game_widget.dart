@@ -17,7 +17,6 @@ class MultiGameWidget extends StatefulWidget {
       _MultiGameWidgetState(bloc: bloc, height: height, width: width);
 }
 
-// TODO bring opacity layer to multi_screen and create new win gamestate there
 class _MultiGameWidgetState extends State<MultiGameWidget>
     with TickerProviderStateMixin {
   final MultiBloc bloc;
@@ -25,7 +24,6 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
   final double width;
   AnimationController _entryAnimCont;
   Animation _entryAnim;
-  double opacityLevel = 0;
 
   _MultiGameWidgetState({this.bloc, this.height, this.width});
 
@@ -38,11 +36,6 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
       parent: _entryAnimCont,
       curve: Curves.bounceOut,
     ));
-    bloc.correct.listen((correct) => _changeOpacity());
-  }
-
-  void _changeOpacity() {
-    setState(() => opacityLevel = opacityLevel == 0 ? 1.0 : 0.0);
   }
 
   @override
@@ -126,16 +119,6 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
                     ),
                   ),
                 ],
-              ),
-              AnimatedOpacity(
-                duration: Duration(seconds: 2),
-                opacity: opacityLevel,
-                child: Visibility(
-                  visible: opacityLevel != 0,
-                  child: Container(
-                    color: Colors.blue,
-                  ),
-                ),
               ),
             ],
           ),

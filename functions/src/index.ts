@@ -200,12 +200,14 @@ exports.winSignal = functions
         if (match.exists) {
             if (match.data()!.winner == '') {
                 userId == match.data()!.hostuid ?
-                    match.data()!.hostmoves = moves :
-                    match.data()!.joinmoves = moves
+                    await matches.doc(matchId).update({
+                        hostmoves: +moves
+                    }) :
+                    await matches.doc(matchId).update({
+                        joinmoves: +moves
+                    })
                 let has1Won = await checkWinners(matchId)
-                if (has1Won) {
-                    await declareWinner(matchId)
-                }
+                if (has1Won) await declareWinner(matchId)
                 console.log('----------------end winSignal--------------------')
                 response.send(true)
             } else {
@@ -220,7 +222,8 @@ exports.winSignal = functions
 
 async function checkWinners(matchId: string) {
     let match = await matches.doc(matchId).get()
-    if (match.data()!.winner != '') {
+    console.log(match.data()!.hostmoves != '' && match.data()!.joinmoves)
+    if (match.data()!.hostmoves != '' && match.data()!.joinmoves) {
         match.data()!.hostmoves > match.data()!.joinmoves ?
             upWinAmount(matchId, true) : upWinAmount(matchId, false)
         return true
@@ -228,6 +231,7 @@ async function checkWinners(matchId: string) {
     return false
 }
 
+// TODO never called
 async function upWinAmount(matchId: string, hostOrJoin: boolean) {
     let match = await matches.doc(matchId).get()
     let userRef = await users.doc(
@@ -237,6 +241,7 @@ async function upWinAmount(matchId: string, hostOrJoin: boolean) {
     userRef.update({
         matchesWon: user.data()!.matchesWon + 1
     })
+    console.log('QUA ' + hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid)
     matches.doc(matchId).update({
         winner: hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid,
         winnerName: user.data()!.username,

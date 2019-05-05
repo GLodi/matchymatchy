@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/widgets/multi_game_widget.dart';
+import 'package:squazzle/presentation/widgets/win_widget.dart';
 
 class MultiScreen extends StatefulWidget {
   @override
@@ -63,15 +64,12 @@ class _MultiScreenState extends State<MultiScreen>
                       bloc: bloc,
                       height: MediaQuery.of(context).size.height,
                       width: MediaQuery.of(context).size.width),
-                  // TODO show waiting for results
                   AnimatedOpacity(
-                    duration: Duration(seconds: 2),
+                    duration: Duration(milliseconds: 500),
                     opacity: opacityLevel,
                     child: Visibility(
                       visible: opacityLevel != 0,
-                      child: Container(
-                        color: Colors.blue,
-                      ),
+                      child: WinWidget(),
                     ),
                   ),
                 ],

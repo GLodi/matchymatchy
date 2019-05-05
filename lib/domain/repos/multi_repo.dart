@@ -28,12 +28,11 @@ class MultiRepo extends GameRepo {
     var need = _logicProvider.needToSendMove(gameField, targetField);
     if (need) {
       var targetDiff = _logicProvider.diffToSend(gameField, targetField);
-      return Observable.fromFuture(_prefsProvider.getUid())
+      Observable.fromFuture(_prefsProvider.getUid())
           .asyncMap(
               (uid) => _apiProvider.sendNewTarget(targetDiff, uid, _matchId))
-          .asyncMap((boolean) =>
-              _logicProvider.checkIfCorrect(gameField, targetField))
-          .handleError((e) => throw e);
+          .handleError((e) => throw e)
+          .listen((_) {});
     }
     return Observable.fromFuture(
             _logicProvider.checkIfCorrect(gameField, targetField))

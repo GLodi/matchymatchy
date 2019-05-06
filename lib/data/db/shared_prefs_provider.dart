@@ -18,12 +18,15 @@ abstract class SharedPrefsProvider {
 
 class SharedPrefsProviderImpl extends SharedPrefsProvider {
   SharedPreferences prefs;
+  var test;
+
+  SharedPrefsProviderImpl({this.test: false});
 
   @override
   Future<void> storeUser(User user) async {
     prefs = await SharedPreferences.getInstance();
     prefs.setString('username', user.username);
-    prefs.setString('uid', user.uid);
+    if (!test) prefs.setString('uid', user.uid);
     prefs.setString('imageUrl', user.imageUrl);
     prefs.setInt('matchesWon', user.matchesWon);
   }
@@ -47,7 +50,10 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
   @override
   Future<String> getUid() async {
     prefs = await SharedPreferences.getInstance();
-    return prefs.getString('uid');
+    if (!test)
+      return prefs.getString('uid');
+    else
+      return 'iG00CwdtEscbX1WeqDtl3Qi6E552';
   }
 
   @override

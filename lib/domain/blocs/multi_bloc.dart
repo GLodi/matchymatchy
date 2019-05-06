@@ -30,25 +30,16 @@ class MultiBloc extends GameBloc {
     switch (event.type) {
       case GameEventType.queue:
         GameState result;
-        String uid;
-        await repo.getStoredUid().handleError((e) {
-          print(e);
-          result = GameState.error('error retrieving uid from shared prefs');
-        }).listen((uuid) {
-          uid = uuid;
-        }).asFuture();
-        if (uid != null) {
-          String token = await _messaging.getToken();
-          listenToMatchUpdates();
-          await repo
-              .queuePlayer(uid, token)
-              .handleError((e) {
-                print(e);
-                result = GameState.error('error queueing to server');
-              })
-              .listen((game) => storeGameInfo(game))
-              .asFuture();
-        }
+        String token = await _messaging.getToken();
+        listenToMatchUpdates();
+        await repo
+            .queuePlayer(token)
+            .handleError((e) {
+              print(e);
+              result = GameState.error('error queueing to server');
+            })
+            .listen((game) => storeGameInfo(game))
+            .asFuture();
         if (result != null && result.type == GameStateType.error) {
           yield result;
         }

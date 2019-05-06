@@ -208,7 +208,7 @@ exports.winSignal = functions
                     })
                 let has1Won = await checkWinners(matchId)
                 if (has1Won) await declareWinner(matchId)
-                console.log('----------------end winSignal--------------------')
+                console.log('----------------end winSignal-----------------')
                 response.send(true)
             } else {
                 console.log('error: match was already won')
@@ -223,7 +223,7 @@ exports.winSignal = functions
 async function checkWinners(matchId: string) {
     let match = await matches.doc(matchId).get()
     console.log(match.data()!.hostmoves != '' && match.data()!.joinmoves)
-    if (match.data()!.hostmoves != '' && match.data()!.joinmoves) {
+    if (match.data()!.hostmoves != '' && match.data()!.joinmoves != '') {
         match.data()!.hostmoves > match.data()!.joinmoves ?
             upWinAmount(matchId, true) : upWinAmount(matchId, false)
         return true

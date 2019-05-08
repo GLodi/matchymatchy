@@ -52,6 +52,7 @@ class ApiProviderImpl implements ApiProvider {
             '&matchId=' +
             matchId +
             '&newTarget=' +
+            // TODO add won or not
             target.grid)
         .then((response) => response);
   }

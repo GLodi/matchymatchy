@@ -23,7 +23,7 @@ void main() {
   container.registerSingleton<LoginProvider, LoginProviderImpl>(
       (c) => new LoginProviderImpl());
   container.registerSingleton<SharedPrefsProvider, SharedPrefsProviderImpl>(
-      (c) => new SharedPrefsProviderImpl());
+      (c) => new SharedPrefsProviderImpl(test: false));
 
   // Repos
   container.registerSingleton((c) =>

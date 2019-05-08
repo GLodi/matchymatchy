@@ -13,11 +13,6 @@ class MultiRepo extends GameRepo {
   MultiRepo(this._logicProvider, this._apiProvider, this._prefsProvider);
 
   @override
-  Observable<Game> getGame(int id) =>
-      Observable.fromFuture(_apiProvider.getGame(id))
-          .handleError((e) => throw e);
-
-  @override
   Observable<GameField> applyMove(GameField gameField, Move move) =>
       Observable.fromFuture(_logicProvider.applyMove(gameField, move))
           .handleError((e) => throw e);

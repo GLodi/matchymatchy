@@ -5,9 +5,6 @@ import 'package:squazzle/data/models/models.dart';
 import 'net_utils.dart';
 
 abstract class ApiProvider {
-  // Returns GameField and TargetField with given id
-  Future<Game> getGame(int id);
-
   // Add player to server queue
   Future<Game> queuePlayer(String uid, String token);
 
@@ -33,14 +30,6 @@ class ApiProviderImpl implements ApiProvider {
   CollectionReference get usersRef => Firestore.instance.collection('users');
 
   @override
-  Future<Game> getGame(int id) async {
-    return gameFieldRef.document(id.toString()).get().then((doc) {
-      doc.data['_id'] = id;
-      return Game.fromMap(doc.data);
-    });
-  }
-
-  @override
   Future<User> getUser(String uid) {
     return usersRef.document(uid).get().then((doc) => User.fromMap(doc.data));
   }
@@ -52,6 +41,7 @@ class ApiProviderImpl implements ApiProvider {
         .then((response) => Game.fromMap(response));
   }
 
+  // TODO put newTarget and winSignal together
   @override
   Future<bool> sendNewTarget(
       TargetField target, String uid, String matchId) async {

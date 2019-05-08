@@ -125,8 +125,8 @@ async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, j
     await matches.doc(matchId).update({
         winner: '',
         winnerName: '',
-        hostmoves: 1000,
-        joinmoves: 1000,
+        hostmoves: null,
+        joinmoves: null,
         joinuid: joinUid,
         joinfcmtoken: joinFcmToken,
         time: admin.firestore.Timestamp.now(),
@@ -134,6 +134,7 @@ async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, j
     return matchId
 }
 
+// TODO put newTarget and winSignal together
 exports.playMove = functions
     .region('europe-west1')
     .https
@@ -222,8 +223,8 @@ exports.winSignal = functions
 
 async function checkWinners(matchId: string) {
     let match = await matches.doc(matchId).get()
-    console.log(match.data()!.hostmoves != '' && match.data()!.joinmoves)
-    if (match.data()!.hostmoves != '' && match.data()!.joinmoves != '') {
+    console.log(match.data()!.hostmoves != '' && match.data()!.joinmoves != '')
+    if (match.data()!.hostmoves != null && match.data()!.joinmoves != null) {
         match.data()!.hostmoves > match.data()!.joinmoves ?
             upWinAmount(matchId, true) : upWinAmount(matchId, false)
         return true

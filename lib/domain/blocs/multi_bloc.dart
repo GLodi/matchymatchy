@@ -5,7 +5,7 @@ import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
 
 /// In addition to the functionalities available through Gamebloc,
-/// the Multiplayer version of the game needs an Enem
+/// the Multiplayer version of the game needs an Enemy
 class MultiBloc extends GameBloc {
   final MultiRepo repo;
   final _messaging = FirebaseMessaging();
@@ -97,6 +97,7 @@ class MultiBloc extends GameBloc {
 
   void handleWinnerMessage(WinnerMessage winnerMessage) async {
     String uid = await repo.getStoredUid().listen((uid) => uid).asFuture();
+    // TODO does work, but home_screen is not refreshed
     if (winnerMessage.winner == uid) {
       repo.updateUserInfo();
     }

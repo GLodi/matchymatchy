@@ -128,6 +128,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     return Stack(children: <Widget>[
+      // TODO refresh at end of game
       UserWidget(user: user, height: height, width: width),
       Center(
           child: Column(

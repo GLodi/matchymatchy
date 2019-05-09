@@ -13,19 +13,19 @@ exports.queuePlayer = functions
     .region('europe-west1')
     .https
     .onRequest(async (request, response) => {
-        console.log('----------------start queuePlayer--------------------')
+        console.log('--- start queuePlayer')
         let userId = request.query.userId
         let userFcmToken = request.query.userFcmToken
         queue.get().then(async qs => {
             if (qs.empty) {
                 let gf = await queueEmpty(userId, userFcmToken)
                 response.send(gf.data())
-                console.log('----------------end queuePlayer new queue--------------------')
+                console.log('--- end queuePlayer new queue')
             } else {
                 let result = await queueNotEmpty(userId, userFcmToken)
                 await response.send(result[0].data())
                 await notifyPlayersMatchStarted(result[1])
-                console.log('----------------end queuePlayer match started--------------------')
+                console.log('---- end queuePlayer match started')
             }
         })
     })
@@ -42,7 +42,6 @@ async function queueNotEmpty(userId: string, userFcmToken: string) {
     let query = await queue.orderBy('time', 'asc').limit(1).get()
     if (query.docs[0].exists && query.docs[0].data().uid == userId) {
         // TODO check that user is not going to play with itself
-
     }
     let matchId = await delQueueStartMatch(query.docs[0], userId, userFcmToken)
     console.log('match started: ' + matchId)
@@ -85,13 +84,13 @@ async function notifyPlayersMatchStarted(matchId: string) {
         token: match.data()!.joinfcmtoken,
     }
     try {
-        await admin.messaging().send(messageToHost)
+        admin.messaging().send(messageToHost)
         console.log('message sent to host: ' + match.data()!.hostfcmtoken)
     } catch (error) {
         console.log('error sending message: ' + error)
     }
     try {
-        await admin.messaging().send(messageToJoin)
+        admin.messaging().send(messageToJoin)
         console.log('message sent to join: ' + match.data()!.joinfcmtoken)
     } catch (error) {
         console.log('error sending message: ' + error)
@@ -139,87 +138,62 @@ exports.playMove = functions
     .region('europe-west1')
     .https
     .onRequest(async (request, response) => {
-        console.log('----------------start playMove--------------------')
         let newTarget = request.query.newTarget
         let userId = request.query.userId
+        let moves = request.query.moves
+        let won = request.query.won
         let matchId = request.query.matchId
+        console.log('--- start playMove: ' + matchId)
         let match = await matches.doc(matchId).get()
         if (match.exists) {
-            if (userId == match.data()!.hostuid) {
-                await matches.doc(matchId).update({
-                    hosttarget: newTarget
-                })
-                let messageToJoin = {
+            if (userId == match.data()!.hostuid ||
+                userId == match.data()!.joinuid) {
+                userId == match.data()!.hostuid ?
+                    await matches.doc(matchId).update({
+                        hosttarget: newTarget
+                    }) :
+                    await matches.doc(matchId).update({
+                        jointarget: newTarget
+                    })
+                let message = {
                     data: {
                         matchid: match.id,
                         enemytarget: newTarget,
                         messType: 'move',
                     },
-                    token: match.data()!.joinfcmtoken
+                    token: userId == match.data()!.hostuid ?
+                        match.data()!.hostfcmtoken :
+                        match.data()!.joinfcmtoken
                 }
-                await admin.messaging().send(messageToJoin)
+                admin.messaging().send(message)
+                if (won) await handleWon(matchId, moves, userId)
                 response.send(true)
                 console.log('--- move from host received, sent to join')
-                console.log('----------------end playMove--------------------')
-            }
-            else if (userId == match.data()!.joinuid) {
-                await matches.doc(matchId).update({
-                    jointarget: newTarget
-                })
-                let messageToHost = {
-                    data: {
-                        matchid: match.id,
-                        enemytarget: newTarget,
-                        messType: 'move',
-                    },
-                    token: match.data()!.hostfcmtoken
-                }
-                await admin.messaging().send(messageToHost)
-                response.send(true)
-                console.log('--- move from join received, sent to host')
-                console.log('----------------end playMove--------------------')
+                console.log('--- end playMove: ' + matchId)
             }
             else {
-                console.log('error: user neither host nor join')
+                console.log('--- error: user neither host nor join')
                 response.send(false)
             }
         } else {
-            console.log('error: no match with specified matchId')
+            console.log('--- error: no match with specified matchId')
             response.send(false)
         }
     })
 
-exports.winSignal = functions
-    .region('europe-west1')
-    .https
-    .onRequest(async (request, response) => {
-        console.log('----------------start winSignal--------------------')
-        let userId = request.query.userId
-        let matchId = request.query.matchId
-        let moves = request.query.moves
-        let match = await matches.doc(matchId).get()
-        if (match.exists) {
-            if (match.data()!.winner == '') {
-                userId == match.data()!.hostuid ?
-                    await matches.doc(matchId).update({
-                        hostmoves: +moves
-                    }) :
-                    await matches.doc(matchId).update({
-                        joinmoves: +moves
-                    })
-                let has1Won = await checkWinners(matchId)
-                if (has1Won) await declareWinner(matchId)
-                console.log('----------------end winSignal-----------------')
-                response.send(true)
-            } else {
-                console.log('error: match was already won')
-                response.send(false)
-            }
-        } else {
-            console.log('error: no match with specified matchId')
-            response.send(false)
-        }
-    })
+async function handleWon(matchId: string, moves: number, userId: string) {
+    let match = await matches.doc(matchId).get()
+    userId == match.data()!.hostuid ?
+        await matches.doc(matchId).update({
+            hostmoves: +moves
+        }) :
+        await matches.doc(matchId).update({
+            joinmoves: +moves
+        })
+    let has1Won = await checkWinners(matchId)
+    if (has1Won) await declareWinner(matchId)
+    console.log('handlewon fine')
+}
 
 async function checkWinners(matchId: string) {
     let match = await matches.doc(matchId).get()
@@ -227,8 +201,10 @@ async function checkWinners(matchId: string) {
     if (match.data()!.hostmoves != null && match.data()!.joinmoves != null) {
         match.data()!.hostmoves > match.data()!.joinmoves ?
             upWinAmount(matchId, true) : upWinAmount(matchId, false)
+        console.log('checkWinners true')
         return true
     }
+    console.log('checkWinners false')
     return false
 }
 
@@ -247,6 +223,7 @@ async function upWinAmount(matchId: string, hostOrJoin: boolean) {
         winner: hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid,
         winnerName: user.data()!.username,
     })
+    console.log('upWinAmount fine')
 }
 
 async function declareWinner(matchId: string) {
@@ -261,7 +238,7 @@ async function declareWinner(matchId: string) {
         token: match.data()!.joinfcmtoken
     }
     try {
-        await admin.messaging().send(messageToJoin)
+        admin.messaging().send(messageToJoin)
     } catch (e) {
         console.log(e)
     }
@@ -275,8 +252,9 @@ async function declareWinner(matchId: string) {
         token: match.data()!.hostfcmtoken
     }
     try {
-        await admin.messaging().send(messageToHost)
+        admin.messaging().send(messageToHost)
     } catch (e) {
         console.log(e)
     }
+    console.log('declareWinner fine')
 }

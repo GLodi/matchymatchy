@@ -5,7 +5,8 @@ import 'game_repo.dart';
 
 /// MultiBloc's repository.
 class MultiRepo extends GameRepo {
-  String _matchId;
+  String _matchId; // TODO store this in db
+  // TODO also store moves
   final ApiProvider _apiProvider;
   final LogicProvider _logicProvider;
   final SharedPrefsProvider _prefsProvider;

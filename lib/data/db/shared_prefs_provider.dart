@@ -14,6 +14,18 @@ abstract class SharedPrefsProvider {
 
   // Returns true if first time that user opens app
   Future<bool> isFirstOpen();
+
+  // Stores amounto of moves in current game
+  Future<void> storeMoves(int moves);
+
+  // Returns amount of moves in current game
+  Future<int> getMoves();
+
+  // Stores current matchId
+  Future<void> storeMatchId(String matchId);
+
+  // Returns current matchId
+  Future<String> getMatchId();
 }
 
 class SharedPrefsProviderImpl extends SharedPrefsProvider {
@@ -64,5 +76,29 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
       return true;
     }
     return false;
+  }
+
+  @override
+  Future<void> storeMatchId(String matchId) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString('matchId', matchId);
+  }
+
+  @override
+  Future<String> getMatchId() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.getString('matchId');
+  }
+
+  @override
+  Future<void> storeMoves(int moves) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setInt('matchId', moves);
+  }
+
+  @override
+  Future<int> getMoves() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('moves');
   }
 }

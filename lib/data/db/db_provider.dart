@@ -13,6 +13,7 @@ abstract class DbProvider {
 class DbProviderImpl extends DbProvider {
   static Database _db;
 
+  // TODO put all multi player games played in here
   Future<Database> get db async {
     if (_db != null) return _db;
     _db = await _initDatabase();
@@ -33,5 +34,4 @@ class DbProviderImpl extends DbProvider {
         columns: ['_id', 'grid', 'target'], where: '_id = ?', whereArgs: [id]);
     return maps.length > 0 ? Game.fromMap(maps.first) : null;
   }
-
 }

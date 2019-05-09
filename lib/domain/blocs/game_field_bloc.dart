@@ -36,9 +36,8 @@ class GameFieldBloc extends BlocEventStateBase<WidgetEvent, WidgetState> {
       _gameBloc.gameRepo
           .checkIfCorrect(_gameBloc.gameField, _gameBloc.targetField)
           .listen((correct) {
-        if (correct) {
+        if (correct)
           _gameBloc.emitEvent(GameEvent(type: GameEventType.victory));
-        }
       });
     }).asFuture();
   }

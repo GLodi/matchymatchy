@@ -19,27 +19,23 @@ class GameFieldBloc extends BlocEventStateBase<WidgetEvent, WidgetState> {
 
   void setup() {
     _moveSubject.listen(_applyMove);
-    _gameBloc.moves = 0;
   }
 
   void _applyMove(List<int> list) async {
     Move move = Move(from: list[0], dir: list[1]);
-    await _gameBloc.gameRepo
+    GameField field = await _gameBloc.gameRepo
         .applyMove(_gameBloc.gameField, move)
-        .handleError(
-            (e) => _gameBloc.emitEvent(GameEvent(type: GameEventType.error)))
-        .listen((field) {
-      _gameBloc.gameField = field;
-      _gameFieldSubject.add(field);
-      _gameBloc.moves += 1;
-      _gameBloc.moveNumberSubject.add(_gameBloc.moves);
-      _gameBloc.gameRepo
-          .checkIfCorrect(_gameBloc.gameField, _gameBloc.targetField)
-          .listen((correct) {
-        if (correct)
-          _gameBloc.emitEvent(GameEvent(type: GameEventType.victory));
-      });
-    }).asFuture();
+        .listen((field) => field)
+        .asFuture();
+    _gameBloc.gameField = field;
+    _gameFieldSubject.add(field);
+    int moves = await _gameBloc.gameRepo.getMoves().listen((a) => a).asFuture();
+    _gameBloc.moveNumberSubject.add(moves);
+    _gameBloc.gameRepo
+        .checkIfCorrect(_gameBloc.gameField, _gameBloc.targetField)
+        .listen((correct) {
+      if (correct) _gameBloc.emitEvent(GameEvent(type: GameEventType.victory));
+    });
   }
 
   @override

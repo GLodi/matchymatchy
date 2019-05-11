@@ -13,7 +13,6 @@ abstract class DbProvider {
 class DbProviderImpl extends DbProvider {
   static Database _db;
 
-  // TODO put all multi player games played in here
   Future<Database> get db async {
     if (_db != null) return _db;
     _db = await _initDatabase();

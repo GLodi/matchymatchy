@@ -1,5 +1,4 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
@@ -8,7 +7,6 @@ import 'package:squazzle/data/models/models.dart';
 /// the Multiplayer version of the game needs an Enemy
 class MultiBloc extends GameBloc {
   final MultiRepo repo;
-  final _messaging = FirebaseMessaging();
 
   // Streams extracted from GameBloc's subjects
   Stream<bool> get correct => correctSubject.stream;
@@ -30,10 +28,12 @@ class MultiBloc extends GameBloc {
     switch (event.type) {
       case GameEventType.queue:
         GameState result;
-        String token = await _messaging.getToken();
-        listenToMatchUpdates();
+        repo.listenToMatchUpdates();
+        listenToChallengeMessages();
+        listenToMoveMessages();
+        listenToWinnerMessages();
         await repo
-            .queuePlayer(token)
+            .queuePlayer()
             .handleError((e) {
               print(e);
               result = GameState.error('error queueing to server');
@@ -52,55 +52,31 @@ class MultiBloc extends GameBloc {
       case GameEventType.victory:
         correctSubject.add(true);
         // TODO show info until other player has finished
-        repo.sendWinSignal(moves).listen((_) {});
+        repo.sendWinSignal().listen((_) {});
         break;
       default:
     }
   }
 
-  // Listen for Firebase Cloud Messages
-  void listenToMatchUpdates() {
-    _messaging.setAutoInitEnabled(false);
-    _messaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print('on message $message');
-        var typ = message['data'].cast<String, dynamic>()['messType'];
-        switch (typ) {
-          case 'challenge':
-            handleChallengeMessage(ChallengeMessage.fromMap(message));
-            break;
-          case 'move':
-            handleMoveMessage(MoveMessage.fromMap(message));
-            break;
-          case 'winner':
-            handleWinnerMessage(WinnerMessage.fromMap(message));
-            break;
-        }
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print('on resume $message');
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print('on launch $message');
-      },
-    );
+  void listenToChallengeMessages() {
+    repo.challengeMessages.listen((mess) {
+      repo.storeMatchId(mess.matchId);
+      emitEvent(GameEvent(type: GameEventType.start));
+    });
   }
 
-  void handleChallengeMessage(ChallengeMessage challengeMessage) {
-    repo.setMatchId(challengeMessage.matchId);
-    emitEvent(GameEvent(type: GameEventType.start));
+  void listenToMoveMessages() {
+    repo.moveMessages.listen((mess) {
+      _matchUpdatesSubject.add(TargetField(grid: mess.enemyTarget));
+    });
   }
 
-  void handleMoveMessage(MoveMessage moveMessage) {
-    _matchUpdatesSubject.add(TargetField(grid: moveMessage.enemyTarget));
-  }
-
-  void handleWinnerMessage(WinnerMessage winnerMessage) async {
+  void listenToWinnerMessages() async {
     String uid = await repo.getStoredUid().listen((uid) => uid).asFuture();
     // TODO does work, but home_screen is not refreshed
-    if (winnerMessage.winner == uid) {
-      repo.updateUserInfo();
-    }
+    repo.winnerMessages.listen((mess) {
+      if (mess.winner == uid) repo.updateUserInfo();
+    });
   }
 
   void storeGameInfo(Game game) async {
@@ -115,7 +91,6 @@ class MultiBloc extends GameBloc {
   void dispose() {
     _matchUpdatesSubject.close();
     _waitMessageSubject.close();
-    _messaging.deleteInstanceID();
     super.dispose();
   }
 }

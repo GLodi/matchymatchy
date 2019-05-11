@@ -7,12 +7,9 @@ import 'package:squazzle/data/data.dart';
 class SingleRepo extends GameRepo {
   final LogicProvider _logicHelper;
   final DbProvider _dbProvider;
+  final SharedPrefsProvider _prefsProvider;
 
-  SingleRepo(this._logicHelper, this._dbProvider);
-
-  Observable<Game> getGame(int id) =>
-      Observable.fromFuture(_dbProvider.getGame(id))
-          .handleError((e) => throw e);
+  SingleRepo(this._logicHelper, this._dbProvider, this._prefsProvider);
 
   @override
   Observable<GameField> applyMove(GameField gameField, Move move) =>
@@ -23,5 +20,13 @@ class SingleRepo extends GameRepo {
   Observable<bool> checkIfCorrect(
           GameField gameField, TargetField targetField) =>
       Observable.fromFuture(_logicHelper.checkIfCorrect(gameField, targetField))
+          .handleError((e) => throw e);
+
+  @override
+  Observable<int> getMoves() => Observable.fromFuture(_prefsProvider.getMoves())
+      .handleError((e) => throw e);
+
+  Observable<Game> getGame(int id) =>
+      Observable.fromFuture(_dbProvider.getGame(id))
           .handleError((e) => throw e);
 }

@@ -26,7 +26,6 @@ abstract class GameBloc extends BlocEventStateBase<GameEvent, GameState> {
   // Used by respective blocs to store the game state and do endgame checks.
   GameField gameField;
   TargetField targetField;
-  int moves;
 
   GameBloc(this.gameRepo) : super(initialState: GameState.notInit());
 

@@ -5,17 +5,18 @@ import 'game_repo.dart';
 
 /// MultiBloc's repository.
 class MultiRepo extends GameRepo {
-  String _matchId; // TODO store this in db
-  // TODO also store moves
   final ApiProvider _apiProvider;
   final LogicProvider _logicProvider;
   final SharedPrefsProvider _prefsProvider;
+  final MessagingProvider _messagingProvider;
 
-  MultiRepo(this._logicProvider, this._apiProvider, this._prefsProvider);
+  MultiRepo(this._logicProvider, this._apiProvider, this._prefsProvider,
+      this._messagingProvider);
 
   @override
   Observable<GameField> applyMove(GameField gameField, Move move) =>
       Observable.fromFuture(_logicProvider.applyMove(gameField, move))
+          .asyncMap((gf) => _prefsProvider.increaseMoves())
           .handleError((e) => throw e);
 
   @override
@@ -25,29 +26,41 @@ class MultiRepo extends GameRepo {
     if (need) {
       var targetDiff = _logicProvider.diffToSend(gameField, targetField);
       Observable.fromFuture(_prefsProvider.getUid())
-          .asyncMap(
-              (uid) => _apiProvider.sendNewTarget(targetDiff, uid, _matchId))
+          .zipWith(Observable.fromFuture(_prefsProvider.getMatchId()),
+              (uid, matchId) {
+            _apiProvider.sendNewTarget(targetDiff, uid, matchId);
+          })
           .handleError((e) => throw e)
-          .listen((_) {});
+          .listen((_) => print('successfully sent move to server'));
     }
     return Observable.fromFuture(
             _logicProvider.checkIfCorrect(gameField, targetField))
         .handleError((e) => throw e);
   }
 
-  Observable<bool> sendWinSignal(int moves) =>
-      Observable.fromFuture(_prefsProvider.getUid())
-          .asyncMap((uid) => _apiProvider.sendWinSignal(uid, _matchId, moves))
-          .handleError((e) => throw e);
+  @override
+  Observable<int> getMoves() => Observable.fromFuture(_prefsProvider.getMoves())
+      .handleError((e) => throw e);
+
+  Observable<bool> sendWinSignal() =>
+      // TODO need to zip moves as well
+      Observable.zip([
+        Observable.fromFuture(_prefsProvider.getUid()),
+        Observable.fromFuture(_prefsProvider.getMatchId()),
+        Observable.fromFuture(_prefsProvider.getMoves()),
+      ], (values) {
+        _apiProvider.sendWinSignal(values[0], values[1], values[2]);
+      }).handleError((e) => throw e);
 
   Observable<String> getStoredUid() =>
       Observable.fromFuture(_prefsProvider.getUid())
           .handleError((e) => throw e);
 
-  Observable<Game> queuePlayer(String token) =>
-      Observable.fromFuture(_prefsProvider.getUid())
-          .asyncMap((uid) => _apiProvider.queuePlayer(uid, token))
-          .handleError((e) => throw e);
+  Observable<Game> queuePlayer() =>
+      Observable.fromFuture(_prefsProvider.getUid()).zipWith(
+          Observable.fromFuture(_messagingProvider.getToken()), (uid, token) {
+        _apiProvider.queuePlayer(uid, token);
+      }).handleError((e) => throw e);
 
   Observable<void> updateUserInfo() =>
       Observable.fromFuture(_prefsProvider.getUid())
@@ -55,8 +68,17 @@ class MultiRepo extends GameRepo {
           .map((user) => _prefsProvider.storeUser(user))
           .handleError((e) => throw e);
 
+  void listenToMatchUpdates() => _messagingProvider.listenToMatchUpdates();
+
   TargetField diffToSend(GameField gameField, TargetField targetField) =>
       _logicProvider.diffToSend(gameField, targetField);
 
-  void setMatchId(String matchId) => _matchId = matchId;
+  Stream<ChallengeMessage> get challengeMessages =>
+      _messagingProvider.challengeMessages;
+
+  Stream<MoveMessage> get moveMessages => _messagingProvider.moveMessages;
+
+  Stream<WinnerMessage> get winnerMessages => _messagingProvider.winnerMessages;
+
+  void storeMatchId(String matchId) => _prefsProvider.storeMatchId(matchId);
 }

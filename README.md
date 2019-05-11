@@ -2,6 +2,8 @@
 
 ...a Square Puzzle Flutter game!
 
+![](https://raw.githubusercontent.com/GLodi/master/gfx/screen.jpg)
+
 ## Architecture
 
 This app implements [Didier Boelens'](https://www.didierboelens.com/2018/12/reactive-programming---streams---bloc---practical-use-cases/) approach to BLoC.

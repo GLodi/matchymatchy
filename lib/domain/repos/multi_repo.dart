@@ -42,9 +42,7 @@ class MultiRepo extends GameRepo {
   Observable<int> getMoves() => Observable.fromFuture(_prefsProvider.getMoves())
       .handleError((e) => throw e);
 
-  Observable<bool> sendWinSignal() =>
-      // TODO need to zip moves as well
-      Observable.zip([
+  Observable<bool> sendWinSignal() => Observable.zip([
         Observable.fromFuture(_prefsProvider.getUid()),
         Observable.fromFuture(_prefsProvider.getMatchId()),
         Observable.fromFuture(_prefsProvider.getMoves()),

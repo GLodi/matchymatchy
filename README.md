@@ -2,7 +2,7 @@
 
 ...a Square Puzzle Flutter game!
 
-![](https://raw.githubusercontent.com/GLodi/squazzle/master/gfx/screen.jpg)
+![](https://raw.githubusercontent.com/GLodi/squazzle/master/gfx/screen.png)
 
 ## Architecture
 

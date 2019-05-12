@@ -28,10 +28,18 @@ class MultiRepo extends GameRepo {
       Observable.fromFuture(_prefsProvider.getUid())
           .zipWith(Observable.fromFuture(_prefsProvider.getMatchId()),
               (uid, matchId) {
-            _apiProvider.sendNewTarget(targetDiff, uid, matchId);
+            _apiProvider.sendMove(targetDiff, uid, matchId);
           })
           .handleError((e) => throw e)
           .listen((_) => print('successfully sent move to server'));
+      // TODO substitute with this structure
+      // Observable<bool> sendWinSignal() => Observable.zip([
+      //       Observable.fromFuture(_prefsProvider.getUid()),
+      //       Observable.fromFuture(_prefsProvider.getMatchId()),
+      //       Observable.fromFuture(_prefsProvider.getMoves()),
+      //     ], (values) {
+      //       _apiProvider.sendWinSignal(values[0], values[1], values[2]);
+      //     }).handleError((e) => throw e);
     }
     return Observable.fromFuture(
             _logicProvider.checkIfCorrect(gameField, targetField))
@@ -41,14 +49,6 @@ class MultiRepo extends GameRepo {
   @override
   Observable<int> getMoves() => Observable.fromFuture(_prefsProvider.getMoves())
       .handleError((e) => throw e);
-
-  Observable<bool> sendWinSignal() => Observable.zip([
-        Observable.fromFuture(_prefsProvider.getUid()),
-        Observable.fromFuture(_prefsProvider.getMatchId()),
-        Observable.fromFuture(_prefsProvider.getMoves()),
-      ], (values) {
-        _apiProvider.sendWinSignal(values[0], values[1], values[2]);
-      }).handleError((e) => throw e);
 
   Observable<String> getStoredUid() =>
       Observable.fromFuture(_prefsProvider.getUid())

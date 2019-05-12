@@ -52,7 +52,6 @@ class MultiBloc extends GameBloc {
       case GameEventType.victory:
         correctSubject.add(true);
         // TODO show info until other player has finished
-        repo.sendWinSignal().listen((_) {});
         break;
       default:
     }

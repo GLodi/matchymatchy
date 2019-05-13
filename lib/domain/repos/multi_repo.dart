@@ -5,78 +5,66 @@ import 'game_repo.dart';
 
 /// MultiBloc's repository.
 class MultiRepo extends GameRepo {
-  final ApiProvider _apiProvider;
-  final LogicProvider _logicProvider;
-  final SharedPrefsProvider _prefsProvider;
-  final MessagingProvider _messagingProvider;
+  final ApiProvider apiProvider;
+  final MessagingProvider messProvider;
 
-  MultiRepo(this._logicProvider, this._apiProvider, this._prefsProvider,
-      this._messagingProvider);
-
-  @override
-  Observable<GameField> applyMove(GameField gameField, Move move) =>
-      Observable.fromFuture(_logicProvider.applyMove(gameField, move))
-          .asyncMap((gf) => _prefsProvider.increaseMoves())
-          .handleError((e) => throw e);
+  MultiRepo(this.apiProvider, this.messProvider, LogicProvider logicProvider,
+      DbProvider dbProvider, SharedPrefsProvider prefsProvider)
+      : super(
+            logicProvider: logicProvider,
+            dbProvider: dbProvider,
+            prefsProvider: prefsProvider);
 
   @override
-  Observable<bool> checkIfCorrect(
-      GameField gameField, TargetField targetField) {
-    var need = _logicProvider.needToSendMove(gameField, targetField);
+  Observable<bool> isCorrect(GameField gameField, TargetField targetField) {
+    var need = logicProvider.needToSendMove(gameField, targetField);
     if (need) {
-      var targetDiff = _logicProvider.diffToSend(gameField, targetField);
-      Observable.fromFuture(_prefsProvider.getUid())
-          .zipWith(Observable.fromFuture(_prefsProvider.getMatchId()),
-              (uid, matchId) {
-            _apiProvider.sendMove(targetDiff, uid, matchId);
-          })
+      var targetDiff = logicProvider.diffToSend(gameField, targetField);
+      // TODO most likely wrong
+      Observable.zip([
+        Observable.fromFuture(prefsProvider.getCurrentGameSession()),
+        Observable.fromFuture(
+            logicProvider.checkIfCorrect(gameField, targetField)),
+      ], (values) => apiProvider.sendMove(targetDiff, values[0], values[1]))
           .handleError((e) => throw e)
           .listen((_) => print('successfully sent move to server'));
-      // TODO substitute with this structure
-      // Observable<bool> sendWinSignal() => Observable.zip([
-      //       Observable.fromFuture(_prefsProvider.getUid()),
-      //       Observable.fromFuture(_prefsProvider.getMatchId()),
-      //       Observable.fromFuture(_prefsProvider.getMoves()),
-      //     ], (values) {
-      //       _apiProvider.sendWinSignal(values[0], values[1], values[2]);
-      //     }).handleError((e) => throw e);
     }
     return Observable.fromFuture(
-            _logicProvider.checkIfCorrect(gameField, targetField))
+            logicProvider.checkIfCorrect(gameField, targetField))
         .handleError((e) => throw e);
   }
 
-  @override
-  Observable<int> getMoves() => Observable.fromFuture(_prefsProvider.getMoves())
-      .handleError((e) => throw e);
-
   Observable<String> getStoredUid() =>
-      Observable.fromFuture(_prefsProvider.getUid())
-          .handleError((e) => throw e);
+      Observable.fromFuture(prefsProvider.getUid()).handleError((e) => throw e);
 
-  Observable<Game> queuePlayer() =>
-      Observable.fromFuture(_prefsProvider.getUid()).zipWith(
-          Observable.fromFuture(_messagingProvider.getToken()), (uid, token) {
-        _apiProvider.queuePlayer(uid, token);
-      }).handleError((e) => throw e);
+  Observable<Game> queuePlayer() {
+    prefsProvider.restoreMoves().then((_) {});
+    return Observable.combineLatest3(
+        Observable.fromFuture(prefsProvider.restoreMoves()),
+        Observable.fromFuture(prefsProvider.getUid()),
+        Observable.fromFuture(messProvider.getToken()),
+        (_, uid, token) =>
+            Observable.fromFuture(apiProvider.queuePlayer(uid, token))
+                .listen((game) => game)).handleError((e) => throw e);
+  }
 
   Observable<void> updateUserInfo() =>
-      Observable.fromFuture(_prefsProvider.getUid())
-          .asyncMap((uid) => _apiProvider.getUser(uid))
-          .map((user) => _prefsProvider.storeUser(user))
+      Observable.fromFuture(prefsProvider.getUid())
+          .asyncMap((uid) => apiProvider.getUser(uid))
+          .asyncMap((user) => prefsProvider.storeUser(user))
           .handleError((e) => throw e);
 
-  void listenToMatchUpdates() => _messagingProvider.listenToMatchUpdates();
+  void listenToMatchUpdates() => messProvider.listenToMatchUpdates();
 
   TargetField diffToSend(GameField gameField, TargetField targetField) =>
-      _logicProvider.diffToSend(gameField, targetField);
+      logicProvider.diffToSend(gameField, targetField);
 
   Stream<ChallengeMessage> get challengeMessages =>
-      _messagingProvider.challengeMessages;
+      messProvider.challengeMessages;
 
-  Stream<MoveMessage> get moveMessages => _messagingProvider.moveMessages;
+  Stream<MoveMessage> get moveMessages => messProvider.moveMessages;
 
-  Stream<WinnerMessage> get winnerMessages => _messagingProvider.winnerMessages;
+  Stream<WinnerMessage> get winnerMessages => messProvider.winnerMessages;
 
-  void storeMatchId(String matchId) => _prefsProvider.storeMatchId(matchId);
+  void storeMatchId(String matchId) => prefsProvider.storeMatchId(matchId);
 }

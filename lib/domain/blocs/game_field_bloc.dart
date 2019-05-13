@@ -5,7 +5,6 @@ import 'package:squazzle/domain/domain.dart';
 import 'game_bloc.dart';
 
 /// GameFieldWidget's bloc.
-/// It stores current amount of moves used and reacts to player's swipes.
 class GameFieldBloc extends BlocEventStateBase<WidgetEvent, WidgetState> {
   final GameBloc _gameBloc;
 
@@ -32,7 +31,7 @@ class GameFieldBloc extends BlocEventStateBase<WidgetEvent, WidgetState> {
     int moves = await _gameBloc.gameRepo.getMoves().listen((a) => a).asFuture();
     _gameBloc.moveNumberSubject.add(moves);
     _gameBloc.gameRepo
-        .checkIfCorrect(_gameBloc.gameField, _gameBloc.targetField)
+        .isCorrect(_gameBloc.gameField, _gameBloc.targetField)
         .listen((correct) {
       if (correct) _gameBloc.emitEvent(GameEvent(type: GameEventType.victory));
     });

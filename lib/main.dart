@@ -31,10 +31,11 @@ void main() {
   container.registerSingleton((c) => new SingleRepo(c.resolve<LogicProvider>(),
       c.resolve<DbProvider>(), c.resolve<SharedPrefsProvider>()));
   container.registerSingleton((c) => new MultiRepo(
-      c.resolve<LogicProvider>(),
       c.resolve<ApiProvider>(),
-      c.resolve<SharedPrefsProvider>(),
-      c.resolve<MessagingProvider>()));
+      c.resolve<MessagingProvider>(),
+      c.resolve<LogicProvider>(),
+      c.resolve<DbProvider>(),
+      c.resolve<SharedPrefsProvider>()));
   container.registerSingleton((c) => new HomeRepo(
       c.resolve<LoginProvider>(), c.resolve<SharedPrefsProvider>()));
 

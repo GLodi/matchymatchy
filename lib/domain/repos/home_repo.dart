@@ -3,21 +3,21 @@ import 'package:squazzle/data/data.dart';
 
 /// HomeBloc's repository.
 class HomeRepo {
-  final LoginProvider _loginProvider;
-  final SharedPrefsProvider _prefsProvider;
+  final LoginProvider loginProvider;
+  final SharedPrefsProvider prefsProvider;
 
-  HomeRepo(this._loginProvider, this._prefsProvider);
+  HomeRepo(this.loginProvider, this.prefsProvider);
 
   Observable<void> loginWithGoogle() =>
-      Observable.fromFuture(_loginProvider.loginWithGoogle())
-          .map((user) => _prefsProvider.storeUser(user))
+      Observable.fromFuture(loginProvider.loginWithGoogle())
+          .map((user) => prefsProvider.storeUser(user))
           .handleError((e) => throw e);
 
   Observable<User> checkIfLoggedIn() =>
-      Observable.fromFuture(_prefsProvider.getUser())
+      Observable.fromFuture(prefsProvider.getUser())
           .handleError((e) => throw e);
 
   Observable<bool> isFirstOpen() =>
-      Observable.fromFuture(_prefsProvider.isFirstOpen())
+      Observable.fromFuture(prefsProvider.isFirstOpen())
           .handleError((e) => throw e);
 }

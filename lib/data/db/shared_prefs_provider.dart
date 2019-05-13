@@ -27,8 +27,8 @@ abstract class SharedPrefsProvider {
   // Stores current matchId
   Future<void> storeMatchId(String matchId);
 
-  // Returns current matchId
-  Future<String> getMatchId();
+  // Returns current game's information
+  Future<Session> getCurrentGameSession();
 }
 
 class SharedPrefsProviderImpl extends SharedPrefsProvider {
@@ -88,12 +88,6 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
   }
 
   @override
-  Future<String> getMatchId() async {
-    prefs = await SharedPreferences.getInstance();
-    return prefs.getString('matchId');
-  }
-
-  @override
   Future<void> restoreMoves() async {
     prefs = await SharedPreferences.getInstance();
     prefs.setInt('moves', 0);
@@ -109,5 +103,12 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
   Future<int> getMoves() async {
     prefs = await SharedPreferences.getInstance();
     return prefs.getInt('moves');
+  }
+
+  @override
+  Future<Session> getCurrentGameSession() async {
+    prefs = await SharedPreferences.getInstance();
+    return Session(prefs.getString('uid'), prefs.getString('matchId'),
+        prefs.getInt('moves'));
   }
 }

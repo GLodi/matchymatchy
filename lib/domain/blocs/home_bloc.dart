@@ -41,13 +41,9 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
         } else {
           yield HomeState.notInit();
           HomeState nextState;
-          await _repo
-              .loginWithGoogle()
-              .handleError((e) {
-                nextState = HomeState.error(e.toString());
-              })
-              .listen((_) {})
-              .asFuture();
+          await _repo.loginWithGoogle().catchError((e) {
+            nextState = HomeState.error(e.toString());
+          });
           if (nextState?.type == HomeStateType.error) {
             yield nextState;
             break;

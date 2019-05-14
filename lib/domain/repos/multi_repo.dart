@@ -39,13 +39,11 @@ class MultiRepo extends GameRepo {
 
   Observable<Game> queuePlayer() {
     prefsProvider.restoreMoves().then((_) {});
-    return Observable.combineLatest3(
-        Observable.fromFuture(prefsProvider.restoreMoves()),
-        Observable.fromFuture(prefsProvider.getUid()),
-        Observable.fromFuture(messProvider.getToken()),
-        (_, uid, token) =>
-            Observable.fromFuture(apiProvider.queuePlayer(uid, token))
-                .listen((game) => game)).handleError((e) => throw e);
+    Game a = Observable.zip([
+      Observable.fromFuture(prefsProvider.restoreMoves()),
+      Observable.fromFuture(prefsProvider.getUid()),
+      Observable.fromFuture(messProvider.getToken())
+    ], (values) => apiProvider.queuePlayer(values[1], values[2]));
   }
 
   Observable<void> updateUserInfo() =>

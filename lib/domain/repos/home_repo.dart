@@ -8,10 +8,10 @@ class HomeRepo {
 
   HomeRepo(this.loginProvider, this.prefsProvider);
 
-  Observable<void> loginWithGoogle() =>
-      Observable.fromFuture(loginProvider.loginWithGoogle())
-          .map((user) => prefsProvider.storeUser(user))
-          .handleError((e) => throw e);
+  Future<void> loginWithGoogle() => loginProvider
+      .loginWithGoogle()
+      .catchError((e) => throw e)
+      .then((user) => prefsProvider.storeUser(user));
 
   Observable<User> checkIfLoggedIn() =>
       Observable.fromFuture(prefsProvider.getUser())

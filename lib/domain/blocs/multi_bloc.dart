@@ -67,7 +67,7 @@ class MultiBloc extends GameBloc {
   }
 
   void listenToWinnerMessages() async {
-    String uid = await repo.getStoredUid().then((uid) => uid);
+    String uid = await repo.getStoredUid();
     // TODO does work, but home_screen is not refreshed
     repo.winnerMessages.listen((mess) {
       if (mess.winner == uid) repo.updateUserInfo();

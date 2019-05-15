@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
-import 'dart:async';
 import 'package:kiwi/kiwi.dart' as kiwi;
-import 'package:infinite_listview/infinite_listview.dart';
 import 'package:intro_slider/intro_slider.dart';
 
 import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/screens/single_screen.dart';
 import 'package:squazzle/presentation/screens/multi_screen.dart';
-import 'package:squazzle/presentation/widgets/row_square_widget.dart';
 import 'package:squazzle/presentation/widgets/user_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,15 +18,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   HomeBloc bloc;
-  final InfiniteScrollController _infiniteController = InfiniteScrollController(
-    initialScrollOffset: 0.0,
-  );
   List<Slide> slides = List();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => applyMovement());
 
     slides.add(
       Slide(
@@ -66,40 +59,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height,
-          ),
-          child: InfiniteListView.builder(
-            controller: _infiniteController,
-            itemBuilder: (context, inte) =>
-                RowSquareWidget(width: MediaQuery.of(context).size.width / 5),
-          ),
-        ),
-        BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-          child: Opacity(
-            opacity: 0.5,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  stops: [0.1, 0.3, 0.5, 0.6, 0.7, 0.8, 0.9],
-                  colors: [
-                    Colors.red[300],
-                    Colors.red[400],
-                    Colors.red[500],
-                    Colors.red[600],
-                    Colors.red[700],
-                    Colors.red[800],
-                    Colors.red[900],
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
+        background(),
         BlocEventStateBuilder<HomeEvent, HomeState>(
           bloc: bloc,
           builder: (context, state) {
@@ -124,78 +84,37 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
+  Widget background() {
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.teal[300],
+              Colors.lightGreen[400],
+            ]),
+      ),
+    );
+  }
+
   Widget initLogged(User user) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     return Stack(children: <Widget>[
       // TODO refresh at end of game
       UserWidget(user: user, height: height, width: width),
-      Center(
-          child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          RaisedButton(
-            child: Text("Singleplayer"),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return Scaffold(
-                      body: BlocProvider(
-                    child: SingleScreen(),
-                    bloc: kiwi.Container().resolve<SingleBloc>(),
-                  ));
-                }),
-              );
-            },
-          ),
-          RaisedButton(
-              child: Text(
-                "Multiplayer",
-                textAlign: TextAlign.center,
-              ),
-              onPressed: () {
-                bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress));
-              }),
-        ],
-      )),
+      buttons("Multiplayer"),
     ]);
   }
 
   Widget initNotLogged() {
     return Stack(
       children: <Widget>[
-        Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              RaisedButton(
-                child: Text("Singleplayer"),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return Scaffold(
-                          body: BlocProvider(
-                        child: SingleScreen(),
-                        bloc: kiwi.Container().resolve<SingleBloc>(),
-                      ));
-                    }),
-                  );
-                },
-              ),
-              RaisedButton(
-                  child: Text(
-                    "Log in",
-                    textAlign: TextAlign.center,
-                  ),
-                  onPressed: () {
-                    bloc.emitEvent(
-                        HomeEvent(type: HomeEventType.multiButtonPress));
-                  }),
-            ],
-          ),
-        ),
+        buttons("Log in"),
         StreamBuilder<bool>(
           stream: bloc.showSlides,
           initialData: false,
@@ -215,20 +134,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  void applyMovement() {
-    const minute = const Duration(seconds: 60);
-    _infiniteController.animateTo(
-      _infiniteController.offset + 2000.0,
-      duration: minute,
-      curve: Curves.linear,
-    );
-    Timer.periodic(minute, (Timer t) {
-      _infiniteController.animateTo(
-        _infiniteController.offset + 2000.0,
-        duration: minute,
-        curve: Curves.linear,
-      );
-    });
+  Widget buttons(String multiButton) {
+    return Center(
+        child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        RaisedButton(
+          child: Text("Singleplayer"),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) {
+                return Scaffold(
+                    body: BlocProvider(
+                  child: SingleScreen(),
+                  bloc: kiwi.Container().resolve<SingleBloc>(),
+                ));
+              }),
+            );
+          },
+        ),
+        RaisedButton(
+            child: Text(
+              multiButton,
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () {
+              bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress));
+            }),
+      ],
+    ));
   }
 
   void openMultiScreen() {

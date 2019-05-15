@@ -32,7 +32,7 @@ class GameFieldBloc extends BlocEventStateBase<WidgetEvent, WidgetState> {
     _gameBloc.moveNumberSubject.add(moves);
     _gameBloc.gameRepo
         .isCorrect(_gameBloc.gameField, _gameBloc.targetField)
-        .listen((correct) {
+        .then((correct) {
       if (correct) _gameBloc.emitEvent(GameEvent(type: GameEventType.victory));
     });
   }

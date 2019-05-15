@@ -21,13 +21,13 @@ class SingleBloc extends GameBloc {
         int t = ran.nextInt(500) + 1;
         await repo
             .getGame(t)
-            .handleError((e) =>
+            .catchError((e) =>
                 result = GameState.error('error retrieving data from db'))
-            .listen((game) {
+            .then((game) {
           gameField = game.gameField;
           targetField = game.targetField;
           result = GameState.init();
-        }).asFuture();
+        });
         yield result;
         break;
       case GameEventType.victory:

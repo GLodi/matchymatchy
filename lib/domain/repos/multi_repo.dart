@@ -1,5 +1,3 @@
-import 'package:rxdart/rxdart.dart';
-
 import 'package:squazzle/data/data.dart';
 import 'game_repo.dart';
 
@@ -16,43 +14,35 @@ class MultiRepo extends GameRepo {
             prefsProvider: prefsProvider);
 
   @override
-  Observable<bool> isCorrect(GameField gameField, TargetField targetField) {
+  Future<bool> isCorrect(GameField gameField, TargetField targetField) async {
     var need = logicProvider.needToSendMove(gameField, targetField);
     if (need) {
-      var targetDiff = logicProvider.diffToSend(gameField, targetField);
-      // TODO most likely wrong
-      Observable.zip([
-        Observable.fromFuture(prefsProvider.getCurrentGameSession()),
-        Observable.fromFuture(
-            logicProvider.checkIfCorrect(gameField, targetField)),
-      ], (values) => apiProvider.sendMove(targetDiff, values[0], values[1]))
-          .handleError((e) => throw e)
-          .listen((_) => print('successfully sent move to server'));
+      TargetField targetDiff = logicProvider.diffToSend(gameField, targetField);
+      Session session = await prefsProvider.getCurrentGameSession();
+      bool isCorrect =
+          await logicProvider.checkIfCorrect(gameField, targetField);
+      await apiProvider.sendMove(targetDiff, session, isCorrect);
     }
-    return Observable.fromFuture(
-            logicProvider.checkIfCorrect(gameField, targetField))
-        .handleError((e) => throw e);
+    return logicProvider.checkIfCorrect(gameField, targetField);
   }
 
-  Observable<String> getStoredUid() =>
-      Observable.fromFuture(prefsProvider.getUid()).handleError((e) => throw e);
+  Future<String> getStoredUid() => prefsProvider.getUid();
 
-  Observable<Game> queuePlayer() {
-    prefsProvider.restoreMoves().then((_) {});
-    Game a = Observable.zip([
-      Observable.fromFuture(prefsProvider.restoreMoves()),
-      Observable.fromFuture(prefsProvider.getUid()),
-      Observable.fromFuture(messProvider.getToken())
-    ], (values) => apiProvider.queuePlayer(values[1], values[2]));
+  Future<Game> queuePlayer() async {
+    await prefsProvider.restoreMoves();
+    String uid = await prefsProvider.getUid();
+    String token = await messProvider.getToken();
+    return await apiProvider.queuePlayer(uid, token);
   }
 
-  Observable<void> updateUserInfo() =>
-      Observable.fromFuture(prefsProvider.getUid())
-          .asyncMap((uid) => apiProvider.getUser(uid))
-          .asyncMap((user) => prefsProvider.storeUser(user))
-          .handleError((e) => throw e);
+  Future<void> updateUserInfo() => prefsProvider
+      .getUid()
+      .then((uid) => apiProvider.getUser(uid))
+      .then((user) => prefsProvider.storeUser(user));
 
   void listenToMatchUpdates() => messProvider.listenToMatchUpdates();
+
+  void storeMatchId(String matchId) => prefsProvider.storeMatchId(matchId);
 
   TargetField diffToSend(GameField gameField, TargetField targetField) =>
       logicProvider.diffToSend(gameField, targetField);
@@ -63,6 +53,4 @@ class MultiRepo extends GameRepo {
   Stream<MoveMessage> get moveMessages => messProvider.moveMessages;
 
   Stream<WinnerMessage> get winnerMessages => messProvider.winnerMessages;
-
-  void storeMatchId(String matchId) => prefsProvider.storeMatchId(matchId);
 }

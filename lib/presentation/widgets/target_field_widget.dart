@@ -71,4 +71,10 @@ class _TargetFieldWidgetState extends State<TargetFieldWidget> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
 }

@@ -22,5 +22,5 @@ abstract class GameRepo {
       .handleError((e) => throw e);
 
   // Check whether player has reached end game
-  Observable<bool> isCorrect(GameField gameField, TargetField targetField);
+  Future<bool> isCorrect(GameField gameField, TargetField targetField);
 }

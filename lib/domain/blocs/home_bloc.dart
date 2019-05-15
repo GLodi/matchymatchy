@@ -33,7 +33,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
       case HomeEventType.checkIfUserLogged:
         yield HomeState.notInit();
         yield await checkIfUserLogged();
-        _repo.isFirstOpen().listen((b) => _showSlidesSubject.add(b));
+        _repo.isFirstOpen().then((b) => _showSlidesSubject.add(b));
         break;
       case HomeEventType.multiButtonPress:
         if (currentState?.type == HomeStateType.initLogged) {
@@ -60,13 +60,13 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
 
   Future<HomeState> checkIfUserLogged() async {
     HomeState nextState;
-    await _repo.checkIfLoggedIn().handleError((e) {
+    await _repo.checkIfLoggedIn().catchError((e) {
       nextState = HomeState.error(e.toString());
-    }).listen((user) {
+    }).then((user) {
       user != null
           ? nextState = HomeState.initLogged(user)
           : nextState = HomeState.initNotLogged();
-    }).asFuture();
+    });
     return nextState;
   }
 

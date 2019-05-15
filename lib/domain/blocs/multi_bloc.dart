@@ -32,14 +32,10 @@ class MultiBloc extends GameBloc {
         listenToChallengeMessages();
         listenToMoveMessages();
         listenToWinnerMessages();
-        await repo
-            .queuePlayer()
-            .handleError((e) {
-              print(e);
-              result = GameState.error('error queueing to server');
-            })
-            .listen((game) => storeGameInfo(game))
-            .asFuture();
+        await repo.queuePlayer().catchError((e) {
+          print(e);
+          result = GameState.error('error queueing to server');
+        }).then((game) => storeGameInfo(game));
         if (result != null && result.type == GameStateType.error) {
           yield result;
         }
@@ -71,7 +67,7 @@ class MultiBloc extends GameBloc {
   }
 
   void listenToWinnerMessages() async {
-    String uid = await repo.getStoredUid().listen((uid) => uid).asFuture();
+    String uid = await repo.getStoredUid().then((uid) => uid);
     // TODO does work, but home_screen is not refreshed
     repo.winnerMessages.listen((mess) {
       if (mess.winner == uid) repo.updateUserInfo();

@@ -1,5 +1,3 @@
-import 'package:rxdart/rxdart.dart';
-
 import 'game_repo.dart';
 import 'package:squazzle/data/data.dart';
 
@@ -13,13 +11,9 @@ class SingleRepo extends GameRepo {
             prefsProvider: prefsProvider);
 
   @override
-  Observable<bool> isCorrect(GameField gameField, TargetField targetField) =>
-      Observable.fromFuture(
-              logicProvider.checkIfCorrect(gameField, targetField))
-          .handleError((e) => throw e);
+  Future<bool> isCorrect(GameField gameField, TargetField targetField) =>
+      logicProvider.checkIfCorrect(gameField, targetField);
 
-  Observable<Game> getGame(int id) =>
-      Observable.fromFuture(prefsProvider.restoreMoves())
-          .asyncMap((_) => dbProvider.getGame(id))
-          .handleError((e) => throw e);
+  Future<Game> getGame(int id) =>
+      prefsProvider.restoreMoves().then((_) => dbProvider.getGame(id));
 }

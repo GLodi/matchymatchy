@@ -79,4 +79,10 @@ class _MultiScreenState extends State<MultiScreen>
       },
     );
   }
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
 }

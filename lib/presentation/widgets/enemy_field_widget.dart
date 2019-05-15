@@ -70,4 +70,10 @@ class _EnemyWidgetState extends State<EnemyWidget> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
 }

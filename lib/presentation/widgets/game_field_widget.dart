@@ -204,7 +204,8 @@ class _GameFieldWidgetState extends State<GameFieldWidget>
 
   @override
   void dispose() {
-    super.dispose();
+    bloc.dispose();
     _switchAnimCont.forEach((c) => c.dispose());
+    super.dispose();
   }
 }

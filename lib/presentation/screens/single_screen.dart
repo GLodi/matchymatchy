@@ -143,4 +143,10 @@ class _SingleScreenState extends State<SingleScreen>
           );
         });
   }
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
 }

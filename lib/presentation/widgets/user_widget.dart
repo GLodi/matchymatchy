@@ -39,19 +39,19 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
         builder: (context, child) {
           return Transform(
             transform: Matrix4.translationValues(
-                0, _entryAnim.value * widget.height, 0),
+                0, -_entryAnim.value * widget.height, 0),
             child: Align(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.topCenter,
               child: Container(
                 height: 100.0,
                 width: widget.width,
                 color: Colors.transparent,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: Colors.amber,
                     borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(20.0),
-                        topRight: const Radius.circular(20.0)),
+                        bottomLeft: const Radius.circular(20.0),
+                        bottomRight: const Radius.circular(20.0)),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black,
@@ -59,34 +59,35 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
                       )
                     ],
                   ),
-                  child: Stack(
-                    children: <Widget>[
-                      Positioned(
-                        left: widget.width / 3,
-                        child: Text(widget.user.username,
-                            textAlign: TextAlign.right),
-                      ),
-                      Center(
-                        child: Container(
-                          margin: EdgeInsets.all(10),
-                          child: ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl: widget.user.imageUrl,
-                              placeholder: (context, url) =>
-                                  CircularProgressIndicator(),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Text('Wins: ' + widget.user.matchesWon.toString()),
-                    ],
-                  ),
+                  child: elements(),
                 ),
               ),
             ),
           );
         });
+  }
+
+  Widget elements() {
+    return Stack(
+      children: <Widget>[
+        Positioned(
+          left: widget.width / 3,
+          child: Text(widget.user.username, textAlign: TextAlign.right),
+        ),
+        Center(
+          child: Container(
+            margin: EdgeInsets.all(10),
+            child: ClipOval(
+              child: CachedNetworkImage(
+                imageUrl: widget.user.imageUrl,
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
+            ),
+          ),
+        ),
+        Text('Wins: ' + widget.user.matchesWon.toString()),
+      ],
+    );
   }
 }

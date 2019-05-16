@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 3),
+      duration: Duration(seconds: 6),
     );
     _controller.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
@@ -38,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         _controller.forward();
       }
     });
-    _controller.forward();
 
     slides.add(
       Slide(
@@ -115,20 +114,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       height: MediaQuery.of(context).size.height,
       controller: _controller,
     );
-    // return Container(
-    //   constraints: BoxConstraints(
-    //     maxHeight: MediaQuery.of(context).size.height,
-    //   ),
-    //   decoration: BoxDecoration(
-    //     gradient: LinearGradient(
-    //         begin: Alignment.topLeft,
-    //         end: Alignment.bottomRight,
-    //         colors: [
-    //           Colors.teal[300],
-    //           Colors.lightGreen[400],
-    //         ]),
-    //   ),
-    // );
   }
 
   Widget initLogged(User user) {

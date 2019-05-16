@@ -13,19 +13,13 @@ class MultiGameWidget extends StatefulWidget {
   MultiGameWidget({this.bloc, this.height, this.width});
 
   @override
-  _MultiGameWidgetState createState() =>
-      _MultiGameWidgetState(bloc: bloc, height: height, width: width);
+  _MultiGameWidgetState createState() => _MultiGameWidgetState();
 }
 
 class _MultiGameWidgetState extends State<MultiGameWidget>
     with TickerProviderStateMixin {
-  final MultiBloc bloc;
-  final double height;
-  final double width;
   AnimationController _entryAnimCont;
   Animation _entryAnim;
-
-  _MultiGameWidgetState({this.bloc, this.height, this.width});
 
   @override
   void initState() {
@@ -40,14 +34,15 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
 
   @override
   Widget build(BuildContext context) {
-    double tenthWidth = width / 10;
-    double fifthWidth = width / 5;
+    double tenthWidth = widget.width / 10;
+    double fifthWidth = widget.width / 5;
     _entryAnimCont.forward();
     return AnimatedBuilder(
       animation: _entryAnimCont,
       builder: (context, child) {
         return Transform(
-          transform: Matrix4.translationValues(0, _entryAnim.value * height, 0),
+          transform:
+              Matrix4.translationValues(0, _entryAnim.value * widget.height, 0),
           child: Stack(
             children: <Widget>[
               Column(
@@ -66,11 +61,11 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
                           alignment: Alignment.topCenter,
                           child: BlocProvider(
                             child: EnemyWidget(),
-                            bloc: EnemyFieldBloc(bloc),
+                            bloc: EnemyFieldBloc(widget.bloc),
                           ),
                         ),
                         StreamBuilder<int>(
-                          stream: bloc.moveNumber,
+                          stream: widget.bloc.moveNumber,
                           initialData: 0,
                           builder: (context, snapshot) {
                             return Column(
@@ -103,7 +98,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
                           alignment: Alignment.topCenter,
                           child: BlocProvider(
                             child: TargetFieldWidget(),
-                            bloc: TargetBloc(bloc),
+                            bloc: TargetBloc(widget.bloc),
                           ),
                         ),
                       ],
@@ -115,7 +110,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
                     alignment: Alignment.bottomCenter,
                     child: BlocProvider(
                       child: GameFieldWidget(),
-                      bloc: GameFieldBloc(bloc),
+                      bloc: GameFieldBloc(widget.bloc),
                     ),
                   ),
                 ],
@@ -129,7 +124,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
 
   @override
   void dispose() {
-    bloc.dispose();
+    widget.bloc.dispose();
     super.dispose();
   }
 }

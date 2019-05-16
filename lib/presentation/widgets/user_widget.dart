@@ -12,18 +12,13 @@ class UserWidget extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _UserWidget(user: user, height: height, width: width);
+    return _UserWidget();
   }
 }
 
 class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
-  final User user;
-  final double height;
-  final double width;
   AnimationController _entryAnimCont;
   Animation _entryAnim;
-
-  _UserWidget({this.user, this.height, this.width});
 
   @override
   void initState() {
@@ -43,13 +38,13 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
         animation: _entryAnimCont,
         builder: (context, child) {
           return Transform(
-            transform:
-                Matrix4.translationValues(0, _entryAnim.value * height, 0),
+            transform: Matrix4.translationValues(
+                0, _entryAnim.value * widget.height, 0),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Container(
                 height: 100.0,
-                width: width,
+                width: widget.width,
                 color: Colors.transparent,
                 child: Container(
                   decoration: BoxDecoration(
@@ -67,15 +62,16 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
                   child: Stack(
                     children: <Widget>[
                       Positioned(
-                        left: width / 3,
-                        child: Text(user.username, textAlign: TextAlign.right),
+                        left: widget.width / 3,
+                        child: Text(widget.user.username,
+                            textAlign: TextAlign.right),
                       ),
                       Center(
                         child: Container(
                           margin: EdgeInsets.all(10),
                           child: ClipOval(
                             child: CachedNetworkImage(
-                              imageUrl: user.imageUrl,
+                              imageUrl: widget.user.imageUrl,
                               placeholder: (context, url) =>
                                   CircularProgressIndicator(),
                               errorWidget: (context, url, error) =>
@@ -84,7 +80,7 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      Text('Wins: ' + user.matchesWon.toString()),
+                      Text('Wins: ' + widget.user.matchesWon.toString()),
                     ],
                   ),
                 ),

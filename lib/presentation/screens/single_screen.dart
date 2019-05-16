@@ -78,70 +78,85 @@ class _SingleScreenState extends State<SingleScreen>
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
-                          StreamBuilder<int>(
-                            stream: bloc.moveNumber,
-                            initialData: 0,
-                            builder: (context, snapshot) {
-                              return Column(
-                                children: <Widget>[
-                                  Text(
-                                    'Moves',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: "Roboto",
-                                      fontSize: 20.0,
-                                    ),
-                                  ),
-                                  Text(
-                                    snapshot.data.toString(),
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: "Roboto",
-                                      fontSize: 25.0,
-                                    ),
-                                  )
-                                ],
-                              );
-                            },
-                          ),
-                          Container(
-                            constraints: BoxConstraints(
-                                maxHeight: 3 * tenthWidth,
-                                maxWidth: 3 * tenthWidth),
-                            alignment: Alignment.topCenter,
-                            child: BlocProvider(
-                              child: TargetFieldWidget(),
-                              bloc: TargetBloc(bloc),
-                            ),
-                          ),
+                          moves(),
+                          targetField(),
                         ],
                       ),
                     ),
-                    Container(
-                      constraints: BoxConstraints(maxHeight: 5 * fifthWidth),
-                      margin: EdgeInsets.only(bottom: 40),
-                      alignment: Alignment.bottomCenter,
-                      child: BlocProvider(
-                        child: GameFieldWidget(),
-                        bloc: GameFieldBloc(bloc),
-                      ),
-                    ),
+                    gfWidget(),
                   ],
                 ),
-                AnimatedOpacity(
-                  duration: Duration(seconds: 2),
-                  opacity: opacityLevel,
-                  child: Visibility(
-                    visible: opacityLevel != 0,
-                    child: Container(
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
+                endOpacity(),
               ],
             ),
           );
         });
+  }
+
+  Widget moves() {
+    return StreamBuilder<int>(
+      stream: bloc.moveNumber,
+      initialData: 0,
+      builder: (context, snapshot) {
+        return Column(
+          children: <Widget>[
+            Text(
+              'Moves',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: "Roboto",
+                fontSize: 20.0,
+              ),
+            ),
+            Text(
+              snapshot.data.toString(),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: "Roboto",
+                fontSize: 25.0,
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  Widget targetField() {
+    return Container(
+      constraints:
+          BoxConstraints(maxHeight: 3 * tenthWidth, maxWidth: 3 * tenthWidth),
+      alignment: Alignment.topCenter,
+      child: BlocProvider(
+        child: TargetFieldWidget(),
+        bloc: TargetBloc(bloc),
+      ),
+    );
+  }
+
+  Widget endOpacity() {
+    return AnimatedOpacity(
+      duration: Duration(seconds: 2),
+      opacity: opacityLevel,
+      child: Visibility(
+        visible: opacityLevel != 0,
+        child: Container(
+          color: Colors.blue,
+        ),
+      ),
+    );
+  }
+
+  Widget gfWidget() {
+    return Container(
+      constraints: BoxConstraints(maxHeight: 5 * fifthWidth),
+      margin: EdgeInsets.only(bottom: 40),
+      alignment: Alignment.bottomCenter,
+      child: BlocProvider(
+        child: GameFieldWidget(),
+        bloc: GameFieldBloc(bloc),
+      ),
+    );
   }
 
   @override

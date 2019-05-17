@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:squazzle/data/models/models.dart';
+import 'package:squazzle/utils/custom_oval.dart';
 
 class UserWidget extends StatefulWidget {
   final User user;
@@ -42,25 +43,28 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
                 0, -_entryAnim.value * widget.height, 0),
             child: Align(
               alignment: Alignment.topCenter,
-              child: Container(
-                height: 100.0,
-                width: widget.width,
-                color: Colors.transparent,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.amber,
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: const Radius.circular(20.0),
-                        bottomRight: const Radius.circular(20.0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                        blurRadius: 10.0,
-                      )
-                    ],
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    height: 150.0,
+                    color: Colors.red,
+                    child: SafeArea(
+                      child: elements(),
+                    ),
                   ),
-                  child: elements(),
-                ),
+                  Container(
+                    height: 50.0,
+                    color: Colors.transparent,
+                    child: ClipOval(
+                      clipper: CustomOval(),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           );

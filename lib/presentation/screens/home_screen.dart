@@ -8,7 +8,6 @@ import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/screens/single_screen.dart';
 import 'package:squazzle/presentation/screens/multi_screen.dart';
 import 'package:squazzle/presentation/widgets/user_widget.dart';
-import 'package:squazzle/presentation/widgets/gradient_animation.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -20,24 +19,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   HomeBloc bloc;
   List<Slide> slides = List();
-  AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 6),
-    );
-    _controller.addStatusListener((status) async {
-      if (status == AnimationStatus.completed) {
-        await Future.delayed(Duration(seconds: 3));
-        _controller.reverse();
-      } else if (status == AnimationStatus.dismissed) {
-        await Future.delayed(Duration(seconds: 3));
-        _controller.forward();
-      }
-    });
 
     slides.add(
       Slide(
@@ -100,19 +85,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget background() {
-    return GradientAnimation(
-      begin: LinearGradient(
-        colors: [Colors.tealAccent, Colors.lightBlue],
-        begin: Alignment.topRight,
-        end: Alignment.bottomLeft,
-      ),
-      end: LinearGradient(
-        colors: [Colors.pink, Colors.redAccent],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      height: MediaQuery.of(context).size.height,
-      controller: _controller,
+    return Container(
+      color: Colors.lightBlue,
     );
   }
 

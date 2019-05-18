@@ -8,6 +8,7 @@ import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/screens/single_screen.dart';
 import 'package:squazzle/presentation/screens/multi_screen.dart';
 import 'package:squazzle/presentation/widgets/user_widget.dart';
+import 'package:squazzle/presentation/widgets/gradient_animation.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -86,7 +87,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget background() {
     return Container(
-      color: Colors.lightBlue,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.lightBlue,
+              Colors.tealAccent,
+            ]),
+      ),
     );
   }
 
@@ -96,14 +105,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Stack(children: <Widget>[
       // TODO refresh at end of game
       UserWidget(user: user, height: height, width: width),
-      buttons("Multiplayer"),
+      centerButtons("Multiplayer"),
     ]);
   }
 
   Widget initNotLogged() {
     return Stack(
       children: <Widget>[
-        buttons("Log in"),
+        centerButtons("Log in"),
         StreamBuilder<bool>(
           stream: bloc.showSlides,
           initialData: false,
@@ -123,36 +132,51 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget buttons(String multiButton) {
+  Widget centerButtons(String multiButtonText) {
     return Center(
-        child: Column(
-      mainAxisSize: MainAxisSize.min,
+        child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        RaisedButton(
-          child: Text("Singleplayer"),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) {
-                return Scaffold(
-                    body: BlocProvider(
-                  child: SingleScreen(),
-                  bloc: kiwi.Container().resolve<SingleBloc>(),
-                ));
-              }),
-            );
-          },
-        ),
-        RaisedButton(
-            child: Text(
-              multiButton,
-              textAlign: TextAlign.center,
-            ),
-            onPressed: () {
-              bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress));
+        choiceButton("Singleplayer", true, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) {
+              return Scaffold(
+                  body: BlocProvider(
+                child: SingleScreen(),
+                bloc: kiwi.Container().resolve<SingleBloc>(),
+              ));
             }),
+          );
+        }),
+        choiceButton(multiButtonText, false, () {
+          bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress));
+        })
       ],
     ));
+  }
+
+  Widget choiceButton(String text, bool isOnLeft, Function onPress) {
+    return Expanded(
+      child: Container(
+        margin: isOnLeft
+            ? EdgeInsets.only(left: 10, right: 5)
+            : EdgeInsets.only(right: 10, left: 5),
+        child: MaterialButton(
+          padding: EdgeInsets.all(30),
+          color: Colors.white,
+          child: Text(
+            text,
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          onPressed: onPress,
+        ),
+      ),
+    );
   }
 
   void openMultiScreen() {

@@ -4,7 +4,7 @@ class CustomOval extends CustomClipper<Rect> {
   @override
   Rect getClip(Size size) {
     Rect rect = Rect.fromLTRB(
-        -size.width / 3, -size.height, size.width * (4 / 3), size.height);
+        -size.width / 32, -size.height, size.width * (33 / 32), size.height);
     return rect;
   }
 

@@ -47,19 +47,19 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
                 children: <Widget>[
                   Container(
                     height: 150.0,
-                    color: Colors.red,
+                    color: Colors.blue[900],
                     child: SafeArea(
                       child: elements(),
                     ),
                   ),
                   Container(
-                    height: 50.0,
+                    height: 25.0,
                     color: Colors.transparent,
                     child: ClipOval(
                       clipper: CustomOval(),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.red,
+                          color: Colors.blue[900],
                         ),
                       ),
                     ),

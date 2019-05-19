@@ -158,22 +158,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget choiceButton(String text, bool isOnLeft, Function onPress) {
     return Expanded(
-      child: Container(
-        margin: isOnLeft
-            ? EdgeInsets.only(left: 10, right: 5)
-            : EdgeInsets.only(right: 10, left: 5),
-        child: MaterialButton(
-          padding: EdgeInsets.all(30),
-          color: Colors.white,
-          child: Text(
-            text,
-            style: TextStyle(
-              color: Colors.black,
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Container(
+          margin: isOnLeft
+              ? EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 5)
+              : EdgeInsets.only(top: 10, bottom: 10, right: 10, left: 5),
+          child: MaterialButton(
+            padding: EdgeInsets.all(30),
+            color: Colors.white,
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Colors.black,
+              ),
             ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            onPressed: onPress,
           ),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          onPressed: onPress,
         ),
       ),
     );

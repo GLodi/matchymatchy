@@ -133,37 +133,42 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget centerButtons(String multiButtonText) {
-    return Center(
-        child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Stack(
       children: <Widget>[
-        choiceButton("Singleplayer", true, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) {
-              return Scaffold(
-                  body: BlocProvider(
-                child: SingleScreen(),
-                bloc: kiwi.Container().resolve<SingleBloc>(),
-              ));
-            }),
-          );
-        }),
-        choiceButton(multiButtonText, false, () {
-          bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress));
-        })
+        Align(
+          alignment: Alignment.centerLeft,
+          child: choiceButton("Singleplayer", true, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) {
+                return Scaffold(
+                    body: BlocProvider(
+                  child: SingleScreen(),
+                  bloc: kiwi.Container().resolve<SingleBloc>(),
+                ));
+              }),
+            );
+          }),
+        ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: choiceButton(multiButtonText, false, () {
+            bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress));
+          }),
+        ),
       ],
-    ));
+    );
   }
 
   Widget choiceButton(String text, bool isOnLeft, Function onPress) {
-    return Expanded(
+    return Container(
+      width: MediaQuery.of(context).size.width / 2,
       child: AspectRatio(
         aspectRatio: 1,
         child: Container(
           margin: isOnLeft
-              ? EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 5)
-              : EdgeInsets.only(top: 10, bottom: 10, right: 10, left: 5),
+              ? EdgeInsets.only(left: 10, top: 10, right: 5, bottom: 10)
+              : EdgeInsets.only(left: 5, top: 10, right: 10, bottom: 10),
           child: MaterialButton(
             padding: EdgeInsets.all(30),
             color: Colors.white,

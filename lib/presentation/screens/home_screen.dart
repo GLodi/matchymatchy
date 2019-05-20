@@ -167,11 +167,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           child: MaterialButton(
             padding: EdgeInsets.all(30),
             color: Colors.white,
-            child: Text(
-              text,
-              style: TextStyle(
-                color: Colors.black,
-              ),
+            child: Column(
+              children: <Widget>[
+                Text(text,
+                    style: TextStyle(
+                      color: Colors.black,
+                    )),
+                Expanded(
+                  child: Image(
+                    image: AssetImage(isOnLeft
+                        ? 'assets/icons/console.png'
+                        : 'assets/icons/multiplayer.png'),
+                  ),
+                ),
+              ],
             ),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

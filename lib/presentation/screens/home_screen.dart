@@ -8,7 +8,6 @@ import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/screens/single_screen.dart';
 import 'package:squazzle/presentation/screens/multi_screen.dart';
 import 'package:squazzle/presentation/widgets/user_widget.dart';
-import 'package:squazzle/presentation/widgets/gradient_animation.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -137,30 +136,34 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       children: <Widget>[
         Align(
           alignment: Alignment.centerLeft,
-          child: choiceButton("Singleplayer", true, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) {
-                return Scaffold(
-                    body: BlocProvider(
-                  child: SingleScreen(),
-                  bloc: kiwi.Container().resolve<SingleBloc>(),
-                ));
-              }),
-            );
-          }),
+          child: Hero(
+              tag: 'single',
+              child: choiceButton("Singleplayer", true, () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                            child: SingleScreen(),
+                            bloc: kiwi.Container().resolve<SingleBloc>(),
+                          )),
+                );
+              })),
         ),
         Align(
           alignment: Alignment.centerRight,
-          child: choiceButton(multiButtonText, false, () {
-            bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress));
-          }),
+          child: Hero(
+            tag: 'multi',
+            child: choiceButton(multiButtonText, false, () {
+              bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress));
+            }),
+          ),
         ),
       ],
     );
   }
 
   Widget choiceButton(String text, bool isOnLeft, Function onPress) {
+    // TODO user Hero animation on these
     return Container(
       width: MediaQuery.of(context).size.width / 2,
       child: AspectRatio(

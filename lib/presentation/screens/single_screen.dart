@@ -30,33 +30,46 @@ class _SingleScreenState extends State<SingleScreen>
     bloc.correct.listen((correct) => _changeOpacity());
   }
 
-  void _changeOpacity() {
-    setState(() => opacityLevel = opacityLevel == 0 ? 1.0 : 0.0);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return BlocEventStateBuilder<GameEvent, GameState>(
-      bloc: bloc,
-      builder: (context, state) {
-        switch (state.type) {
-          case GameStateType.error:
-            {
-              return Center(child: Text(state.message));
-            }
-          case GameStateType.notInit:
-            {
-              return Center(child: CircularProgressIndicator());
-            }
-          case GameStateType.init:
-            {
-              fifthWidth = MediaQuery.of(context).size.width / 5;
-              tenthWidth = fifthWidth / 2;
-              return initScreen();
-            }
-        }
-      },
+    return Stack(
+      children: <Widget>[
+        background(),
+        Scaffold(
+          body: BlocEventStateBuilder<GameEvent, GameState>(
+            bloc: bloc,
+            builder: (context, state) {
+              switch (state.type) {
+                case GameStateType.error:
+                  {
+                    return Center(child: Text(state.message));
+                  }
+                case GameStateType.notInit:
+                  {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                case GameStateType.init:
+                  {
+                    fifthWidth = MediaQuery.of(context).size.width / 5;
+                    tenthWidth = fifthWidth / 2;
+                    return initScreen();
+                  }
+              }
+            },
+          ),
+        ),
+      ],
     );
+  }
+
+  Widget background() {
+    return Hero(
+        tag: 'single',
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.black,
+          ),
+        ));
   }
 
   Widget initScreen() {
@@ -134,6 +147,10 @@ class _SingleScreenState extends State<SingleScreen>
     );
   }
 
+  void _changeOpacity() {
+    setState(() => opacityLevel = opacityLevel == 0 ? 1.0 : 0.0);
+  }
+
   Widget endOpacity() {
     return AnimatedOpacity(
       duration: Duration(seconds: 2),
@@ -161,6 +178,7 @@ class _SingleScreenState extends State<SingleScreen>
 
   @override
   void dispose() {
+    _entryAnimCont.dispose();
     bloc.dispose();
     super.dispose();
   }

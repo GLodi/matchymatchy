@@ -48,7 +48,7 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
                 child: Container(
                   child: elements(),
                   decoration: BoxDecoration(
-                    color: Colors.yellow,
+                    color: Colors.orange,
                     borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(20.0),
                       topRight: const Radius.circular(20.0),

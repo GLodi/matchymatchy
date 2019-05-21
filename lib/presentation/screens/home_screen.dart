@@ -163,17 +163,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget choiceButton(String text, bool isOnLeft, Function onPress) {
-    // TODO user Hero animation on these
     return Container(
       width: MediaQuery.of(context).size.width / 2,
       child: AspectRatio(
         aspectRatio: 1,
         child: Container(
           margin: isOnLeft
-              ? EdgeInsets.only(left: 10, top: 10, right: 5, bottom: 10)
-              : EdgeInsets.only(left: 5, top: 10, right: 10, bottom: 10),
+              ? EdgeInsets.only(left: 25, top: 25, right: 15, bottom: 25)
+              : EdgeInsets.only(left: 15, top: 25, right: 25, bottom: 25),
           child: MaterialButton(
-            padding: EdgeInsets.all(30),
+            padding: EdgeInsets.all(20),
             color: Colors.white,
             child: Column(
               children: <Widget>[

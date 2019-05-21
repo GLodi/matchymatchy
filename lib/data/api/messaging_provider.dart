@@ -9,6 +9,9 @@ abstract class MessagingProvider {
   // Activate FCM
   void listenToMatchUpdates();
 
+  // Stop notifications
+  void deleteInstance();
+
   // Stream with Challenge messages
   Stream<ChallengeMessage> get challengeMessages;
 
@@ -63,5 +66,10 @@ class MessagingProviderImpl implements MessagingProvider {
         print('on launch $message');
       },
     );
+  }
+
+  @override
+  void deleteInstance() {
+    _messaging.deleteInstanceID();
   }
 }

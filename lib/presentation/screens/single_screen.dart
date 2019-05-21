@@ -32,11 +32,32 @@ class _SingleScreenState extends State<SingleScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        background(),
-        Scaffold(
-          body: BlocEventStateBuilder<GameEvent, GameState>(
+    return Scaffold(
+      body: Hero(
+        tag: 'single',
+        // This is to prevent a Hero animation workflow
+        // https://github.com/flutter/flutter/issues/27320
+        flightShuttleBuilder: (
+          BuildContext flightContext,
+          Animation<double> animation,
+          HeroFlightDirection flightDirection,
+          BuildContext fromHeroContext,
+          BuildContext toHeroContext,
+        ) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(10.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+            ),
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+          ),
+          child: BlocEventStateBuilder<GameEvent, GameState>(
             bloc: bloc,
             builder: (context, state) {
               switch (state.type) {
@@ -50,26 +71,18 @@ class _SingleScreenState extends State<SingleScreen>
                   }
                 case GameStateType.init:
                   {
-                    fifthWidth = MediaQuery.of(context).size.width / 5;
-                    tenthWidth = fifthWidth / 2;
+                    if (fifthWidth == null && tenthWidth == null) {
+                      fifthWidth = MediaQuery.of(context).size.width / 5;
+                      tenthWidth = fifthWidth / 2;
+                    }
                     return initScreen();
                   }
               }
             },
           ),
         ),
-      ],
+      ),
     );
-  }
-
-  Widget background() {
-    return Hero(
-        tag: 'single',
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.black,
-          ),
-        ));
   }
 
   Widget initScreen() {
@@ -119,6 +132,7 @@ class _SingleScreenState extends State<SingleScreen>
               style: TextStyle(
                 fontFamily: "Roboto",
                 fontSize: 20.0,
+                color: Colors.black,
               ),
             ),
             Text(
@@ -127,6 +141,7 @@ class _SingleScreenState extends State<SingleScreen>
               style: TextStyle(
                 fontFamily: "Roboto",
                 fontSize: 25.0,
+                color: Colors.black,
               ),
             )
           ],
@@ -167,7 +182,6 @@ class _SingleScreenState extends State<SingleScreen>
   Widget gfWidget() {
     return Container(
       constraints: BoxConstraints(maxHeight: 5 * fifthWidth),
-      margin: EdgeInsets.only(bottom: 40),
       alignment: Alignment.bottomCenter,
       child: BlocProvider(
         child: GameFieldWidget(),

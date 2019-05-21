@@ -13,8 +13,8 @@ class MultiScreen extends StatefulWidget {
 class _MultiScreenState extends State<MultiScreen>
     with TickerProviderStateMixin {
   MultiBloc bloc;
-  double opacityLevel = 0;
   AnimationController _controller;
+  double opacityLevel = 0;
 
   @override
   void initState() {
@@ -36,10 +36,6 @@ class _MultiScreenState extends State<MultiScreen>
     bloc = BlocProvider.of<MultiBloc>(context);
     bloc.emitEvent(GameEvent(type: GameEventType.queue));
     bloc.correct.listen((correct) => _changeOpacity());
-  }
-
-  void _changeOpacity() {
-    setState(() => opacityLevel = opacityLevel == 0 ? 1.0 : 0.0);
   }
 
   @override
@@ -100,9 +96,7 @@ class _MultiScreenState extends State<MultiScreen>
           StreamBuilder<String>(
             initialData: 'Connecting to server...',
             stream: bloc.waitMessage,
-            builder: (context, snapshot) {
-              return Text(snapshot.data);
-            },
+            builder: (context, snapshot) => Text(snapshot.data),
           ),
         ],
       ),
@@ -124,6 +118,10 @@ class _MultiScreenState extends State<MultiScreen>
       height: MediaQuery.of(context).size.height,
       controller: _controller,
     );
+  }
+
+  void _changeOpacity() {
+    setState(() => opacityLevel = opacityLevel == 0 ? 1.0 : 0.0);
   }
 
   @override

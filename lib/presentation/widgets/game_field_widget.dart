@@ -150,6 +150,7 @@ class _GameFieldWidgetState extends State<GameFieldWidget>
           child: Container(
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(
+                border: new Border.all(color: Colors.black),
                 color: colors[int.parse(field.grid[index])],
                 borderRadius: BorderRadius.all(Radius.circular(5.0))),
           ),

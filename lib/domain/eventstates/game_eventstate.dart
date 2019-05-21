@@ -13,8 +13,7 @@ class GameState extends BlocState {
 
   factory GameState.init() => GameState(type: GameStateType.init);
 
-  factory GameState.notInit() =>
-      GameState(type: GameStateType.notInit);
+  factory GameState.notInit() => GameState(type: GameStateType.notInit);
 
   factory GameState.error(String message) =>
       GameState(type: GameStateType.error, message: message);

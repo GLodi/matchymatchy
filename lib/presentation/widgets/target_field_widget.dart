@@ -66,6 +66,7 @@ class _TargetFieldWidgetState extends State<TargetFieldWidget> {
       child: Container(
         margin: EdgeInsets.all(1),
         decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
             color: colors[int.parse(target.grid[index])],
             borderRadius: BorderRadius.all(Radius.circular(5.0))),
       ),

@@ -86,6 +86,7 @@ class MultiBloc extends GameBloc {
   void dispose() {
     _matchUpdatesSubject.close();
     _waitMessageSubject.close();
+    repo.deleteInstance();
     super.dispose();
   }
 }

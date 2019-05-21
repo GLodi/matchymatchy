@@ -104,13 +104,14 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
                       ],
                     ),
                   ),
-                  Container(
-                    constraints: BoxConstraints(maxHeight: 5 * fifthWidth),
-                    margin: EdgeInsets.only(bottom: 40),
-                    alignment: Alignment.bottomCenter,
-                    child: BlocProvider(
-                      child: GameFieldWidget(),
-                      bloc: GameFieldBloc(widget.bloc),
+                  SafeArea(
+                    child: Container(
+                      constraints: BoxConstraints(maxHeight: 5 * fifthWidth),
+                      alignment: Alignment.bottomCenter,
+                      child: BlocProvider(
+                        child: GameFieldWidget(),
+                        bloc: GameFieldBloc(widget.bloc),
+                      ),
                     ),
                   ),
                 ],

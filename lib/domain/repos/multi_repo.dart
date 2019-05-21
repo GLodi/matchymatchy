@@ -42,6 +42,8 @@ class MultiRepo extends GameRepo {
 
   void listenToMatchUpdates() => messProvider.listenToMatchUpdates();
 
+  void deleteInstance() => messProvider.deleteInstance();
+
   void storeMatchId(String matchId) => prefsProvider.storeMatchId(matchId);
 
   TargetField diffToSend(GameField gameField, TargetField targetField) =>

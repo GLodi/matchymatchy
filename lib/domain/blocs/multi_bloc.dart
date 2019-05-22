@@ -53,8 +53,18 @@ class MultiBloc extends GameBloc {
     }
   }
 
+  void storeGameInfo(Game game) async {
+    _waitMessageSubject.add('Waiting for opponent...');
+    gameField = game.gameField;
+    targetField = game.targetField;
+    var diff = repo.diffToSend(gameField, targetField);
+    _matchUpdatesSubject.add(diff);
+  }
+
   void listenToChallengeMessages() {
+    print("DEBUG: challenge coming");
     repo.challengeMessages.listen((mess) {
+      print("DEBUG: challenge here");
       repo.storeMatchId(mess.matchId);
       emitEvent(GameEvent(type: GameEventType.start));
     });
@@ -74,19 +84,14 @@ class MultiBloc extends GameBloc {
     });
   }
 
-  void storeGameInfo(Game game) async {
-    _waitMessageSubject.add('Waiting for opponent...');
-    gameField = game.gameField;
-    targetField = game.targetField;
-    var diff = repo.diffToSend(gameField, targetField);
-    _matchUpdatesSubject.add(diff);
-  }
-
   @override
-  void dispose() {
+  void dispose() async {
     _matchUpdatesSubject.close();
     _waitMessageSubject.close();
     repo.deleteInstance();
+    await repo.challengeMessages.drain();
+    await repo.moveMessages.drain();
+    await repo.winnerMessages.drain();
     super.dispose();
   }
 }

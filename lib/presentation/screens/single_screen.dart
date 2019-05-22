@@ -33,6 +33,7 @@ class _SingleScreenState extends State<SingleScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Hero(
         tag: 'single',
         // This is to prevent a Hero animation workflow
@@ -53,33 +54,28 @@ class _SingleScreenState extends State<SingleScreen>
             ),
           );
         },
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-          ),
-          child: BlocEventStateBuilder<GameEvent, GameState>(
-            bloc: bloc,
-            builder: (context, state) {
-              switch (state.type) {
-                case GameStateType.error:
-                  {
-                    return Center(child: Text(state.message));
+        child: BlocEventStateBuilder<GameEvent, GameState>(
+          bloc: bloc,
+          builder: (context, state) {
+            switch (state.type) {
+              case GameStateType.error:
+                {
+                  return Center(child: Text(state.message));
+                }
+              case GameStateType.notInit:
+                {
+                  return Center(child: CircularProgressIndicator());
+                }
+              case GameStateType.init:
+                {
+                  if (fifthWidth == null && tenthWidth == null) {
+                    fifthWidth = MediaQuery.of(context).size.width / 5;
+                    tenthWidth = fifthWidth / 2;
                   }
-                case GameStateType.notInit:
-                  {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                case GameStateType.init:
-                  {
-                    if (fifthWidth == null && tenthWidth == null) {
-                      fifthWidth = MediaQuery.of(context).size.width / 5;
-                      tenthWidth = fifthWidth / 2;
-                    }
-                    return initScreen();
-                  }
-              }
-            },
-          ),
+                  return initScreen();
+                }
+            }
+          },
         ),
       ),
     );
@@ -162,10 +158,6 @@ class _SingleScreenState extends State<SingleScreen>
     );
   }
 
-  void _changeOpacity() {
-    setState(() => opacityLevel = opacityLevel == 0 ? 1.0 : 0.0);
-  }
-
   Widget endOpacity() {
     return AnimatedOpacity(
       duration: Duration(seconds: 2),
@@ -188,6 +180,10 @@ class _SingleScreenState extends State<SingleScreen>
         bloc: GameFieldBloc(bloc),
       ),
     );
+  }
+
+  void _changeOpacity() {
+    setState(() => opacityLevel = opacityLevel == 0 ? 1.0 : 0.0);
   }
 
   @override

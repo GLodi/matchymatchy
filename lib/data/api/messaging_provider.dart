@@ -70,6 +70,9 @@ class MessagingProviderImpl implements MessagingProvider {
 
   @override
   void deleteInstance() {
+    _challengeSubject.close();
+    _moveSubject.close();
+    _winnerSubject.close();
     _messaging.deleteInstanceID();
   }
 }

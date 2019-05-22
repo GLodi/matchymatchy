@@ -11,38 +11,38 @@ import 'package:squazzle/presentation/presentation.dart';
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  kiwi.Container container = new kiwi.Container();
+  kiwi.Container container = kiwi.Container();
 
   // Providers
-  container.registerSingleton<DbProvider, DbProviderImpl>(
-      (c) => new DbProviderImpl());
+  container
+      .registerSingleton<DbProvider, DbProviderImpl>((c) => DbProviderImpl());
   container.registerSingleton<ApiProvider, ApiProviderImpl>(
-      (c) => new ApiProviderImpl());
+      (c) => ApiProviderImpl());
   container.registerSingleton<LogicProvider, LogicProviderImpl>(
-      (c) => new LogicProviderImpl());
+      (c) => LogicProviderImpl());
   container.registerSingleton<LoginProvider, LoginProviderImpl>(
-      (c) => new LoginProviderImpl());
+      (c) => LoginProviderImpl());
   container.registerSingleton<SharedPrefsProvider, SharedPrefsProviderImpl>(
-      (c) => new SharedPrefsProviderImpl(test: false));
+      (c) => SharedPrefsProviderImpl(test: false));
   container.registerSingleton<MessagingProvider, MessagingProviderImpl>(
-      (c) => new MessagingProviderImpl());
+      (c) => MessagingProviderImpl());
 
   // Repos
-  container.registerSingleton((c) => new SingleRepo(c.resolve<LogicProvider>(),
+  container.registerSingleton((c) => SingleRepo(c.resolve<LogicProvider>(),
       c.resolve<DbProvider>(), c.resolve<SharedPrefsProvider>()));
-  container.registerSingleton((c) => new MultiRepo(
+  container.registerSingleton((c) => MultiRepo(
       c.resolve<ApiProvider>(),
       c.resolve<MessagingProvider>(),
       c.resolve<LogicProvider>(),
       c.resolve<DbProvider>(),
       c.resolve<SharedPrefsProvider>()));
-  container.registerSingleton((c) => new HomeRepo(
-      c.resolve<LoginProvider>(), c.resolve<SharedPrefsProvider>()));
+  container.registerSingleton((c) =>
+      HomeRepo(c.resolve<LoginProvider>(), c.resolve<SharedPrefsProvider>()));
 
   // Blocs
-  container.registerFactory((c) => new SingleBloc(c.resolve<SingleRepo>()));
-  container.registerFactory((c) => new MultiBloc(c.resolve<MultiRepo>()));
-  container.registerFactory((c) => new HomeBloc(c.resolve<HomeRepo>()));
+  container.registerFactory((c) => SingleBloc(c.resolve<SingleRepo>()));
+  container.registerFactory((c) => MultiBloc(c.resolve<MultiRepo>()));
+  container.registerFactory((c) => HomeBloc(c.resolve<HomeRepo>()));
 
   initDb();
 
@@ -61,7 +61,7 @@ void initDb() async {
         data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
     // Save copied asset to documents
-    await new File(path).writeAsBytes(bytes);
+    await File(path).writeAsBytes(bytes);
   }
 }
 

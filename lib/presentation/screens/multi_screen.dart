@@ -14,6 +14,7 @@ class _MultiScreenState extends State<MultiScreen>
     with TickerProviderStateMixin {
   MultiBloc bloc;
   AnimationController _controller;
+  AnimationStatusListener statusListener;
   double opacityLevel = 0;
 
   @override
@@ -23,7 +24,7 @@ class _MultiScreenState extends State<MultiScreen>
       vsync: this,
       duration: Duration(seconds: 6),
     );
-    _controller.addStatusListener((status) async {
+    statusListener = (status) async {
       if (status == AnimationStatus.completed) {
         await Future.delayed(Duration(seconds: 3));
         _controller.reverse();
@@ -31,7 +32,8 @@ class _MultiScreenState extends State<MultiScreen>
         await Future.delayed(Duration(seconds: 3));
         _controller.forward();
       }
-    });
+    };
+    _controller.addStatusListener(statusListener);
     _controller.forward();
     bloc = BlocProvider.of<MultiBloc>(context);
     bloc.emitEvent(GameEvent(type: GameEventType.queue));
@@ -40,29 +42,55 @@ class _MultiScreenState extends State<MultiScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        background(),
-        BlocEventStateBuilder<GameEvent, GameState>(
-          bloc: bloc,
-          builder: (context, state) {
-            switch (state.type) {
-              case GameStateType.error:
-                {
-                  return Center(child: Text(state.message));
+    return Scaffold(
+      body: Hero(
+        tag: 'multi',
+        // This is to prevent a Hero animation workflow
+        // https://github.com/flutter/flutter/issues/27320
+        flightShuttleBuilder: (
+          BuildContext flightContext,
+          Animation<double> animation,
+          HeroFlightDirection flightDirection,
+          BuildContext fromHeroContext,
+          BuildContext toHeroContext,
+        ) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(10.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+            ),
+          );
+        },
+        child: Stack(
+          children: <Widget>[
+            background(),
+            BlocEventStateBuilder<GameEvent, GameState>(
+              bloc: bloc,
+              builder: (context, state) {
+                switch (state.type) {
+                  case GameStateType.error:
+                    {
+                      print('DEBUG: error');
+                      return Center(child: Text(state.message));
+                    }
+                  case GameStateType.notInit:
+                    {
+                      print('DEBUG:notInit');
+                      return notInit();
+                    }
+                  case GameStateType.init:
+                    {
+                      print('DEBUG:init');
+                      return init();
+                    }
                 }
-              case GameStateType.notInit:
-                {
-                  return notInit();
-                }
-              case GameStateType.init:
-                {
-                  return init();
-                }
-            }
-          },
+              },
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -127,6 +155,7 @@ class _MultiScreenState extends State<MultiScreen>
   @override
   void dispose() {
     bloc.dispose();
+    _controller.removeStatusListener(statusListener);
     _controller.dispose();
     super.dispose();
   }

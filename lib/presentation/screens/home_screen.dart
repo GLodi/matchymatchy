@@ -201,13 +201,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void openMultiScreen() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) {
-        return Scaffold(
-            body: BlocProvider(
-          child: MultiScreen(),
-          bloc: kiwi.Container().resolve<MultiBloc>(),
-        ));
-      }),
+      MaterialPageRoute(
+          builder: (context) => BlocProvider(
+                child: MultiScreen(),
+                bloc: kiwi.Container().resolve<MultiBloc>(),
+              )),
     );
   }
 

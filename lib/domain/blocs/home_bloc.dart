@@ -7,23 +7,24 @@ import 'package:squazzle/domain/domain.dart';
 class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   final HomeRepo _repo;
 
+  // Trigger home_screen -> multi_screen transition
   final _intentToMultiScreenSubject = BehaviorSubject<void>();
   Stream<void> get intentToMultiScreen => _intentToMultiScreenSubject.stream;
 
+  // Show help slides if first time opening app
   final _showSlidesSubject = BehaviorSubject<bool>();
   Stream<bool> get showSlides => _showSlidesSubject.stream;
 
+  // Listen to done button press on last slide (need to hide them)
   final _doneSlidesButtonSubject = PublishSubject<bool>();
   Sink<bool> get doneSlidesButton => _doneSlidesButtonSubject.sink;
 
   HomeBloc(this._repo) : super(initialState: HomeState.notInit());
 
   void setup() {
-    _doneSlidesButtonSubject.listen(_doneSlidesButtonPressed);
-  }
-
-  void _doneSlidesButtonPressed(bool input) {
-    _showSlidesSubject.add(input);
+    _doneSlidesButtonSubject.listen((input) {
+      _showSlidesSubject.add(input);
+    });
   }
 
   @override

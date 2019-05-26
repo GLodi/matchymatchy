@@ -1,4 +1,5 @@
 import 'package:rxdart/rxdart.dart';
+import 'dart:async';
 
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
@@ -7,6 +8,7 @@ import 'package:squazzle/data/models/models.dart';
 /// the Multiplayer version of the game needs an Enemy
 class MultiBloc extends GameBloc {
   final MultiRepo repo;
+  StreamSubscription moveSub, challengeSub, winnerSub;
 
   // Streams extracted from GameBloc's subjects
   Stream<bool> get correct => correctSubject.stream;
@@ -63,7 +65,7 @@ class MultiBloc extends GameBloc {
 
   void listenToChallengeMessages() {
     print("DEBUG: challenge coming");
-    repo.challengeMessages.listen((mess) {
+    challengeSub = repo.challengeMessages.listen((mess) {
       print("DEBUG: challenge here");
       repo.storeMatchId(mess.matchId);
       emitEvent(GameEvent(type: GameEventType.start));
@@ -71,7 +73,7 @@ class MultiBloc extends GameBloc {
   }
 
   void listenToMoveMessages() {
-    repo.moveMessages.listen((mess) {
+    moveSub = repo.moveMessages.listen((mess) {
       _matchUpdatesSubject.add(TargetField(grid: mess.enemyTarget));
     });
   }
@@ -79,19 +81,19 @@ class MultiBloc extends GameBloc {
   void listenToWinnerMessages() async {
     String uid = await repo.getStoredUid();
     // TODO does work, but home_screen is not refreshed
-    repo.winnerMessages.listen((mess) {
+    winnerSub = repo.winnerMessages.listen((mess) {
       if (mess.winner == uid) repo.updateUserInfo();
     });
   }
 
   @override
   void dispose() async {
+    moveSub.cancel();
+    challengeSub.cancel();
+    winnerSub.cancel();
     _matchUpdatesSubject.close();
     _waitMessageSubject.close();
     repo.deleteInstance();
-    await repo.challengeMessages.drain();
-    await repo.moveMessages.drain();
-    await repo.winnerMessages.drain();
     super.dispose();
   }
 }

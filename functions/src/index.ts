@@ -165,7 +165,11 @@ exports.playMove = functions
                         match.data()!.hostfcmtoken :
                         match.data()!.joinfcmtoken
                 }
-                admin.messaging().send(message)
+                try {
+                    admin.messaging().send(message)
+                } catch (e) {
+                    console.log(e)
+                }
                 if (won) await handleWon(matchId, moves, userId)
                 response.send(true)
                 console.log('--- move from host received, sent to join')

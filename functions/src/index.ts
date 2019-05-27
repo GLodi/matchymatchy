@@ -16,18 +16,21 @@ exports.queuePlayer = functions
         console.log('--- start queuePlayer')
         let userId = request.query.userId
         let userFcmToken = request.query.userFcmToken
-        queue.get().then(async qs => {
-            if (qs.empty) {
-                let gf = await queueEmpty(userId, userFcmToken)
-                response.send(gf.data())
-                console.log('--- end queuePlayer new queue')
-            } else {
+        let qs = await queue.get()
+        if (qs.empty) {
+            let gf = await queueEmpty(userId, userFcmToken)
+            response.send(gf.data())
+            console.log('--- end queuePlayer new queue')
+        } else {
+            try {
                 let result = await queueNotEmpty(userId, userFcmToken)
                 await response.send(result[0].data())
                 await notifyPlayersMatchStarted(result[1])
-                console.log('---- end queuePlayer match started')
+            } catch (e) {
+                console.log('error queueing player, prolly queueing against himself')
             }
-        })
+            console.log('---- end queuePlayer match started')
+        }
     })
 
 async function queueEmpty(userId: string, userFcmToken: string) {
@@ -38,10 +41,31 @@ async function queueEmpty(userId: string, userFcmToken: string) {
     return gf
 }
 
+async function populateQueue(gfid: number, userId: string, userFcmToken: string) {
+    let newMatchRef = matches.doc()
+    newMatchRef.set({
+        gfid: gfid,
+        hostuid: userId,
+        hosttarget: null,
+        hostfcmtoken: userFcmToken,
+        joinuid: null,
+        jointarget: null,
+        joinfcmtoken: null,
+    })
+    queue.add({
+        time: admin.firestore.Timestamp.now(),
+        uid: userId,
+        gfid: gfid,
+        matchid: newMatchRef.id,
+        ufcmtoken: userFcmToken,
+    })
+}
+
 async function queueNotEmpty(userId: string, userFcmToken: string) {
     let query = await queue.orderBy('time', 'asc').limit(1).get()
     if (query.docs[0].exists && query.docs[0].data().uid == userId) {
-        // TODO check that user is not going to play with itself
+        // TODO check that user is not going to play against itself
+
     }
     let matchId = await delQueueStartMatch(query.docs[0], userId, userFcmToken)
     console.log('match started: ' + matchId)
@@ -49,6 +73,22 @@ async function queueNotEmpty(userId: string, userFcmToken: string) {
     let gf = await gamefields.doc(String(match.data()!.gfid)).get()
     console.log(gf.data())
     return [gf, matchId]
+}
+
+async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, joinFcmToken: string) {
+    queue.doc(doc.id).delete()
+    console.log('queue deleted: ' + doc.id)
+    let matchId = doc.data().matchid
+    await matches.doc(matchId).update({
+        winner: '',
+        winnerName: '',
+        hostmoves: null,
+        joinmoves: null,
+        joinuid: joinUid,
+        joinfcmtoken: joinFcmToken,
+        time: admin.firestore.Timestamp.now(),
+    })
+    return matchId
 }
 
 async function notifyPlayersMatchStarted(matchId: string) {
@@ -97,43 +137,7 @@ async function notifyPlayersMatchStarted(matchId: string) {
     }
 }
 
-async function populateQueue(gfid: number, userId: string, userFcmToken: string) {
-    let newMatchRef = matches.doc()
-    newMatchRef.set({
-        gfid: gfid,
-        hostuid: userId,
-        hosttarget: '666666666',
-        hostfcmtoken: userFcmToken,
-        joinuid: '',
-        jointarget: '666666666',
-        joinfcmtoken: '',
-    })
-    queue.add({
-        time: admin.firestore.Timestamp.now(),
-        uid: userId,
-        gfid: gfid,
-        matchid: newMatchRef.id,
-        ufcmtoken: userFcmToken,
-    })
-}
 
-async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, joinFcmToken: string) {
-    queue.doc(doc.id).delete()
-    console.log('queue deleted: ' + doc.id)
-    let matchId = doc.data().matchid
-    await matches.doc(matchId).update({
-        winner: '',
-        winnerName: '',
-        hostmoves: null,
-        joinmoves: null,
-        joinuid: joinUid,
-        joinfcmtoken: joinFcmToken,
-        time: admin.firestore.Timestamp.now(),
-    })
-    return matchId
-}
-
-// TODO put newTarget and winSignal together
 exports.playMove = functions
     .region('europe-west1')
     .https
@@ -168,6 +172,7 @@ exports.playMove = functions
                 try {
                     admin.messaging().send(message)
                 } catch (e) {
+                    console.log('error sending message')
                     console.log(e)
                 }
                 if (won) await handleWon(matchId, moves, userId)
@@ -244,6 +249,7 @@ async function declareWinner(matchId: string) {
     try {
         admin.messaging().send(messageToJoin)
     } catch (e) {
+        console.log('error sending message')
         console.log(e)
     }
     let messageToHost = {
@@ -258,6 +264,7 @@ async function declareWinner(matchId: string) {
     try {
         admin.messaging().send(messageToHost)
     } catch (e) {
+        console.log('error sending message')
         console.log(e)
     }
     console.log('declareWinner fine')

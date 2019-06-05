@@ -50,12 +50,15 @@ class MessagingProviderImpl implements MessagingProvider {
         switch (typ) {
           case 'challenge':
             _challengeSubject.add(ChallengeMessage.fromMap(message));
+            print("DEBUG mp: challenge received");
             break;
           case 'move':
             _moveSubject.add(MoveMessage.fromMap(message));
+            print("DEBUG mp: move received");
             break;
           case 'winner':
             _winnerSubject.add(WinnerMessage.fromMap(message));
+            print("DEBUG mp: winner received");
             break;
         }
       },
@@ -73,6 +76,5 @@ class MessagingProviderImpl implements MessagingProvider {
     _challengeSubject.close();
     _moveSubject.close();
     _winnerSubject.close();
-    _messaging.deleteInstanceID();
   }
 }

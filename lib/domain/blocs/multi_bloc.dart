@@ -40,11 +40,13 @@ class MultiBloc extends GameBloc {
         }).then((game) => storeGameInfo(game));
         if (result != null && result.type == GameStateType.error) {
           yield result;
+          print("DEBUG: yield error from queue event");
         }
         break;
       case GameEventType.start:
         if (currentState.type == GameStateType.notInit) {
           yield GameState(type: GameStateType.init);
+          print("DEBUG: yield init from start event");
         }
         break;
       case GameEventType.victory:
@@ -88,6 +90,7 @@ class MultiBloc extends GameBloc {
 
   @override
   void dispose() async {
+    print("DEBUG: disposed mb");
     moveSub.cancel();
     challengeSub.cancel();
     winnerSub.cancel();

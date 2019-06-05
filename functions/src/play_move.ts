@@ -63,19 +63,20 @@ async function handleWon(matchId: string, moves: number, userId: string) {
         })
     let has1Won = await checkWinners(matchId)
     if (has1Won) await declareWinner(matchId)
-    console.log('handlewon fine')
+    console.log('DEBUG: handlewon fine')
 }
 
 async function checkWinners(matchId: string) {
     let match = await matches.doc(matchId).get()
-    console.log(match.data()!.hostmoves != '' && match.data()!.joinmoves != '')
+    console.log('DEBUG: are both moves not null in checkWinner? ' + match.data()!.hostmoves != '' && match.data()!.joinmoves != '')
     if (match.data()!.hostmoves != null && match.data()!.joinmoves != null) {
         match.data()!.hostmoves > match.data()!.joinmoves ?
             upWinAmount(matchId, true) : upWinAmount(matchId, false)
-        console.log('checkWinners true')
+        console.log('DEBUG: checkWinners true')
         return true
     }
-    console.log('checkWinners false')
+    console.log('DEBUG: checkWinners false')
+    // TODO prova
     return false
 }
 
@@ -89,12 +90,12 @@ async function upWinAmount(matchId: string, hostOrJoin: boolean) {
     userRef.update({
         matchesWon: user.data()!.matchesWon + 1
     })
-    console.log('QUA ' + hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid)
+    console.log('DEBUG: QUA ' + hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid)
     matches.doc(matchId).update({
         winner: hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid,
         winnerName: user.data()!.username,
     })
-    console.log('upWinAmount fine')
+    console.log('DEBUG: upWinAmount fine')
 }
 
 async function declareWinner(matchId: string) {
@@ -129,5 +130,5 @@ async function declareWinner(matchId: string) {
         console.log('error sending message')
         console.log(e)
     }
-    console.log('declareWinner fine')
+    console.log('DEBUG: declareWinner fine')
 }

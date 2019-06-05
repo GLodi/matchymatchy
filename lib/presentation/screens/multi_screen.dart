@@ -16,6 +16,7 @@ class _MultiScreenState extends State<MultiScreen>
   AnimationController _controller;
   AnimationStatusListener statusListener;
   double opacityLevel = 0;
+  bool contrDisposed = false;
 
   @override
   void initState() {
@@ -26,12 +27,13 @@ class _MultiScreenState extends State<MultiScreen>
     );
     statusListener = (status) async {
       try {
-        if (status == AnimationStatus.completed) {
-          await Future.delayed(Duration(seconds: 3));
-          _controller.reverse();
-        } else if (status == AnimationStatus.dismissed) {
-          await Future.delayed(Duration(seconds: 3));
-          _controller.forward();
+        await Future.delayed(Duration(seconds: 3));
+        if (!contrDisposed) {
+          if (status == AnimationStatus.completed) {
+            _controller.reverse();
+          } else if (status == AnimationStatus.dismissed) {
+            _controller.forward();
+          }
         }
       } on TickerCanceled {}
     };
@@ -157,6 +159,7 @@ class _MultiScreenState extends State<MultiScreen>
   @override
   void dispose() {
     bloc.dispose();
+    contrDisposed = true;
     _controller.dispose();
     super.dispose();
   }

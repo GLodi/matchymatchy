@@ -40,8 +40,6 @@ class MultiRepo extends GameRepo {
       .then((uid) => apiProvider.getUser(uid))
       .then((user) => prefsProvider.storeUser(user));
 
-  void deleteInstance() => messProvider.deleteInstance();
-
   void storeMatchId(String matchId) => prefsProvider.storeMatchId(matchId);
 
   TargetField diffToSend(GameField gameField, TargetField targetField) =>

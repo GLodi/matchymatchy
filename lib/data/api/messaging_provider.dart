@@ -1,13 +1,12 @@
 import 'package:rxdart/rxdart.dart';
+import 'dart:async';
+
 import 'package:squazzle/data/models/models.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 abstract class MessagingProvider {
   // Return FCM token
   Future<String> getToken();
-
-  // Stop notifications
-  void deleteInstance();
 
   // Stream with Challenge messages
   Stream<ChallengeMessage> get challengeMessages;
@@ -21,9 +20,12 @@ abstract class MessagingProvider {
 
 class MessagingProviderImpl implements MessagingProvider {
   final _messaging = FirebaseMessaging();
-  final _challengeSubject = BehaviorSubject<ChallengeMessage>();
-  final _moveSubject = BehaviorSubject<MoveMessage>();
-  final _winnerSubject = BehaviorSubject<WinnerMessage>();
+  final StreamController<ChallengeMessage> _challengeSubject =
+      StreamController.broadcast();
+  final StreamController<MoveMessage> _moveSubject =
+      StreamController.broadcast();
+  final StreamController<WinnerMessage> _winnerSubject =
+      StreamController.broadcast();
 
   MessagingProviderImpl() {
     _messaging.setAutoInitEnabled(false);
@@ -31,19 +33,15 @@ class MessagingProviderImpl implements MessagingProvider {
       onMessage: (Map<String, dynamic> message) async {
         print('on message $message');
         var typ = message['data'].cast<String, dynamic>()['messType'];
-        print('DEBUG mp: type of mess: ' + typ);
         switch (typ) {
           case 'challenge':
             _challengeSubject.add(ChallengeMessage.fromMap(message));
-            print("DEBUG mp: challenge received");
             break;
           case 'move':
             _moveSubject.add(MoveMessage.fromMap(message));
-            print("DEBUG mp: move received");
             break;
           case 'winner':
             _winnerSubject.add(WinnerMessage.fromMap(message));
-            print("DEBUG mp: winner received");
             break;
         }
       },
@@ -67,11 +65,4 @@ class MessagingProviderImpl implements MessagingProvider {
 
   @override
   Future<String> getToken() async => await _messaging.getToken();
-
-  @override
-  void deleteInstance() {
-    _challengeSubject.close();
-    _moveSubject.close();
-    _winnerSubject.close();
-  }
 }

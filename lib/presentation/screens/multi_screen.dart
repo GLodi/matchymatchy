@@ -76,17 +76,14 @@ class _MultiScreenState extends State<MultiScreen>
                 switch (state.type) {
                   case GameStateType.error:
                     {
-                      print('DEBUG: error');
                       return Center(child: Text(state.message));
                     }
                   case GameStateType.notInit:
                     {
-                      print('DEBUG:notInit');
                       return notInit();
                     }
                   case GameStateType.init:
                     {
-                      print('DEBUG:init');
                       return init();
                     }
                 }

@@ -30,7 +30,6 @@ class MultiBloc extends GameBloc {
     switch (event.type) {
       case GameEventType.queue:
         GameState result;
-        repo.listenToMatchUpdates();
         listenToChallengeMessages();
         listenToMoveMessages();
         listenToWinnerMessages();

@@ -6,9 +6,6 @@ abstract class MessagingProvider {
   // Return FCM token
   Future<String> getToken();
 
-  // Activate FCM
-  void listenToMatchUpdates();
-
   // Stop notifications
   void deleteInstance();
 
@@ -28,25 +25,13 @@ class MessagingProviderImpl implements MessagingProvider {
   final _moveSubject = BehaviorSubject<MoveMessage>();
   final _winnerSubject = BehaviorSubject<WinnerMessage>();
 
-  @override
-  Stream<ChallengeMessage> get challengeMessages => _challengeSubject.stream;
-
-  @override
-  Stream<MoveMessage> get moveMessages => _moveSubject.stream;
-
-  @override
-  Stream<WinnerMessage> get winnerMessages => _winnerSubject.stream;
-
-  @override
-  Future<String> getToken() async => await _messaging.getToken();
-
-  @override
-  void listenToMatchUpdates() {
+  MessagingProviderImpl() {
     _messaging.setAutoInitEnabled(false);
     _messaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print('on message $message');
         var typ = message['data'].cast<String, dynamic>()['messType'];
+        print('DEBUG mp: type of mess: ' + typ);
         switch (typ) {
           case 'challenge':
             _challengeSubject.add(ChallengeMessage.fromMap(message));
@@ -70,6 +55,18 @@ class MessagingProviderImpl implements MessagingProvider {
       },
     );
   }
+
+  @override
+  Stream<ChallengeMessage> get challengeMessages => _challengeSubject.stream;
+
+  @override
+  Stream<MoveMessage> get moveMessages => _moveSubject.stream;
+
+  @override
+  Stream<WinnerMessage> get winnerMessages => _winnerSubject.stream;
+
+  @override
+  Future<String> getToken() async => await _messaging.getToken();
 
   @override
   void deleteInstance() {

@@ -34,7 +34,6 @@ class MultiBloc extends GameBloc {
         listenToMoveMessages();
         listenToWinnerMessages();
         await repo.queuePlayer().catchError((e) {
-          print(e);
           result = GameState.error('error queueing to server');
         }).then((game) => storeGameInfo(game));
         if (result != null && result.type == GameStateType.error) {

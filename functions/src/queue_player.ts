@@ -8,7 +8,7 @@ let users = admin.firestore().collection('users')
 
 export async function queuePlayer(request: any, response: any) {
     console.log('--- start queuePlayer')
-    let userId: string = request.query.userId
+    let userId = request.query.userId
     let userFcmToken = request.query.userFcmToken
     let qs = await queue.get()
     if (qs.empty) {

@@ -76,7 +76,6 @@ async function checkWinners(matchId: string) {
         return true
     }
     console.log('DEBUG: checkWinners false')
-    // TODO prova
     return false
 }
 

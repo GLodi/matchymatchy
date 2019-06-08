@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:kiwi/kiwi.dart' as kiwi;
-import 'package:intro_slider/intro_slider.dart';
 
 import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
@@ -18,36 +17,36 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   HomeBloc bloc;
-  List<Slide> slides = List();
+  // List<Slide> slides = List();
 
   @override
   void initState() {
     super.initState();
 
-    slides.add(
-      Slide(
-        title: "ERASER",
-        description:
-            "Allow miles wound place the leave had. To sitting subject no improve studied limited",
-        backgroundColor: Color(0xfff5a623),
-      ),
-    );
-    slides.add(
-      Slide(
-        title: "PENCIL",
-        description:
-            "Ye indulgence unreserved connection alteration appearance",
-        backgroundColor: Color(0xff203152),
-      ),
-    );
-    slides.add(
-      Slide(
-        title: "RULER",
-        description:
-            "Much evil soon high in hope do view. Out may few northward believing attempted. Yet timed being songs marry one defer men our. Although finished blessing do of",
-        backgroundColor: Color(0xff9932CC),
-      ),
-    );
+    // slides.add(
+    //   Slide(
+    //     title: "ERASER",
+    //     description:
+    //         "Allow miles wound place the leave had. To sitting subject no improve studied limited",
+    //     backgroundColor: Color(0xfff5a623),
+    //   ),
+    // );
+    // slides.add(
+    //   Slide(
+    //     title: "PENCIL",
+    //     description:
+    //         "Ye indulgence unreserved connection alteration appearance",
+    //     backgroundColor: Color(0xff203152),
+    //   ),
+    // );
+    // slides.add(
+    //   Slide(
+    //     title: "RULER",
+    //     description:
+    //         "Much evil soon high in hope do view. Out may few northward believing attempted. Yet timed being songs marry one defer men our. Although finished blessing do of",
+    //     backgroundColor: Color(0xff9932CC),
+    //   ),
+    // );
 
     bloc = BlocProvider.of<HomeBloc>(context);
     bloc.setup();
@@ -116,15 +115,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           stream: bloc.showSlides,
           initialData: false,
           builder: (context, snapshot) {
-            return Visibility(
-              visible: snapshot.data,
-              replacement: Container(),
-              maintainInteractivity: false,
-              child: IntroSlider(
-                slides: slides,
-                onDonePress: () => bloc.doneSlidesButton.add(false),
-              ),
-            );
+            return Container();
+            // return Visibility(
+            //   visible: snapshot.data,
+            //   replacement: Container(),
+            //   maintainInteractivity: false,
+            //   child: IntroSlider(
+            //     slides: slides,
+            //     onDonePress: () => bloc.doneSlidesButton.add(false),
+            //   ),
+            // );
           },
         ),
       ],

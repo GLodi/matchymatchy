@@ -23,7 +23,7 @@ void main() {
   container.registerSingleton<LoginProvider, LoginProviderImpl>(
       (c) => LoginProviderImpl());
   container.registerSingleton<SharedPrefsProvider, SharedPrefsProviderImpl>(
-      (c) => SharedPrefsProviderImpl(test: false));
+      (c) => SharedPrefsProviderImpl(test: true));
   container.registerSingleton<MessagingProvider, MessagingProviderImpl>(
       (c) => MessagingProviderImpl());
 

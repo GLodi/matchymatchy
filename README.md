@@ -1,6 +1,8 @@
 # Squazzle
 
-...a Square Puzzle Flutter game! The goal is to reproduce the top right pattern
+...a Square Puzzle Flutter game! 
+
+The goal is to reproduce the top right pattern
 on the 9 center squares with as few moves as possible.
 
 STILL IN DEVELOPMENT 
@@ -19,9 +21,11 @@ blocs that emit a new widget's state based on an event.
 ## Features
 
   - Singleplayer
+
  The app comes with a sql db of 500 combinations of target fields + game fields. A random 
  combination is chosen at random.
  
   - Multiplayer
+
 Multiplayer is handled by Firebase. You can find the Firebase project under the directory functions. 
 Still under development, but you can copy it into your Firebase project and give it a try.

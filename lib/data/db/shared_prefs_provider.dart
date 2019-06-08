@@ -53,12 +53,16 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
     String uid = prefs.getString('uid');
     String imageUrl = prefs.getString('imageUrl');
     int matchesWon = prefs.getInt('matchesWon');
-    if (username != null && uid != null && imageUrl != null && imageUrl != null)
+    if (username != null &&
+        uid != null &&
+        imageUrl != null &&
+        matchesWon != null) {
       return User(
           username: username,
           uid: uid,
           imageUrl: imageUrl,
           matchesWon: matchesWon);
+    }
     return null;
   }
 
@@ -108,7 +112,9 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
   @override
   Future<Session> getCurrentGameSession() async {
     prefs = await SharedPreferences.getInstance();
-    return Session(prefs.getString('uid'), prefs.getString('matchId'),
+    return Session(
+        !test ? prefs.getString('uid') : 'iG00CwdtEscbX1WeqDtl3Qi6E552',
+        prefs.getString('matchId'),
         prefs.getInt('moves'));
   }
 }

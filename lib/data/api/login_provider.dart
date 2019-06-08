@@ -46,16 +46,18 @@ class LoginProviderImpl extends LoginProvider {
           .getDocuments();
       final List<DocumentSnapshot> documents = result.documents;
       if (documents.length == 0) {
-        // Update data to server if new user
+        // Update server if new user
         Firestore.instance.collection('users').document(fireUser.uid).setData({
           'username': fireUser.displayName,
           'photoUrl': fireUser.photoUrl,
           'uid': fireUser.uid,
           'matchesWon': 0,
+          'currentMatch': null,
         });
       } else {
         // Retrieve already existing information
         user.matchesWon = documents[0].data['matchesWon'];
+        user.currentMatch = documents[0].data['currentMatch'];
       }
     }
 

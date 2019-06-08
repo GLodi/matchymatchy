@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:squazzle/domain/domain.dart';
+import 'package:squazzle/presentation/widgets/win_widget.dart';
 import 'package:squazzle/presentation/widgets/game_field_widget.dart';
 import 'package:squazzle/presentation/widgets/target_field_widget.dart';
 
@@ -160,13 +161,11 @@ class _SingleScreenState extends State<SingleScreen>
 
   Widget endOpacity() {
     return AnimatedOpacity(
-      duration: Duration(seconds: 2),
+      duration: Duration(milliseconds: 500),
       opacity: opacityLevel,
       child: Visibility(
         visible: opacityLevel != 0,
-        child: Container(
-          color: Colors.blue,
-        ),
+        child: WinWidget(),
       ),
     );
   }

@@ -28,8 +28,8 @@ export async function playMove(request: any, response: any) {
                     messType: 'move',
                 },
                 token: userId == match.data()!.hostuid ?
-                    match.data()!.hostfcmtoken :
-                    match.data()!.joinfcmtoken
+                    match.data()!.joinfcmtoken :
+                    match.data()!.hostfcmtoken
             }
             try {
                 admin.messaging().send(message)
@@ -39,7 +39,7 @@ export async function playMove(request: any, response: any) {
             }
             if (won) await handleWon(matchId, moves, userId)
             response.send(true)
-            console.log('--- move from host received, sent to join')
+            console.log('--- move received')
             console.log('--- end playMove: ' + matchId)
         }
         else {

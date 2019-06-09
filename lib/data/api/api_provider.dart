@@ -21,6 +21,9 @@ class ApiProviderImpl implements ApiProvider {
 
   CollectionReference get queueRef => Firestore.instance.collection('queue');
 
+  CollectionReference get matchesRef =>
+      Firestore.instance.collection('matches');
+
   CollectionReference get usersRef => Firestore.instance.collection('users');
 
   @override

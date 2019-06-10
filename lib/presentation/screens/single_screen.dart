@@ -161,7 +161,7 @@ class _SingleScreenState extends State<SingleScreen>
 
   Widget endOpacity() {
     return AnimatedOpacity(
-      duration: Duration(milliseconds: 500),
+      duration: Duration(milliseconds: 5000),
       opacity: opacityLevel,
       child: Visibility(
         visible: opacityLevel != 0,
@@ -174,10 +174,16 @@ class _SingleScreenState extends State<SingleScreen>
     return Container(
       constraints: BoxConstraints(maxHeight: 5 * fifthWidth),
       alignment: Alignment.bottomCenter,
-      child: BlocProvider(
-        child: GameFieldWidget(),
-        bloc: GameFieldBloc(bloc),
-      ),
+      child: opacityLevel == 0
+          ? BlocProvider(
+              child: GameFieldWidget(),
+              bloc: GameFieldBloc(bloc),
+            )
+          : AbsorbPointer(
+              child: BlocProvider(
+              child: GameFieldWidget(),
+              bloc: GameFieldBloc(bloc),
+            )),
     );
   }
 

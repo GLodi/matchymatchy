@@ -19,11 +19,6 @@ class ApiProviderImpl implements ApiProvider {
   final _net = NetUtils();
   final _baseUrl = 'https://europe-west1-squazzle-40ea9.cloudfunctions.net/';
 
-  CollectionReference get queueRef => Firestore.instance.collection('queue');
-
-  CollectionReference get matchesRef =>
-      Firestore.instance.collection('matches');
-
   CollectionReference get usersRef => Firestore.instance.collection('users');
 
   @override

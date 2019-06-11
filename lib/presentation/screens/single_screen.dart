@@ -174,16 +174,13 @@ class _SingleScreenState extends State<SingleScreen>
     return Container(
       constraints: BoxConstraints(maxHeight: 5 * fifthWidth),
       alignment: Alignment.bottomCenter,
-      child: opacityLevel == 0
-          ? BlocProvider(
-              child: GameFieldWidget(),
-              bloc: GameFieldBloc(bloc),
-            )
-          : AbsorbPointer(
-              child: BlocProvider(
-              child: GameFieldWidget(),
-              bloc: GameFieldBloc(bloc),
-            )),
+      // TODO move field state to absordwidget
+      child: AbsorbPointer(
+          absorbing: opacityLevel != 0,
+          child: BlocProvider(
+            child: GameFieldWidget(),
+            bloc: GameFieldBloc(bloc),
+          )),
     );
   }
 

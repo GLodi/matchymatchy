@@ -98,16 +98,12 @@ class _MultiScreenState extends State<MultiScreen>
   Widget init() {
     return Stack(
       children: <Widget>[
-        opacityLevel == 0
-            ? MultiGameWidget(
+        AbsorbPointer(
+            absorbing: opacityLevel != 0,
+            child: MultiGameWidget(
                 bloc: bloc,
                 height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width)
-            : AbsorbPointer(
-                child: MultiGameWidget(
-                    bloc: bloc,
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width)),
+                width: MediaQuery.of(context).size.width)),
         AnimatedOpacity(
           duration: Duration(milliseconds: 500),
           opacity: opacityLevel,

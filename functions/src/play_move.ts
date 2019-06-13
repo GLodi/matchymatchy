@@ -79,7 +79,6 @@ async function checkWinners(matchId: string) {
     return false
 }
 
-// TODO never called
 async function upWinAmount(matchId: string, hostOrJoin: boolean) {
     let match = await matches.doc(matchId).get()
     let userRef = await users.doc(
@@ -87,7 +86,7 @@ async function upWinAmount(matchId: string, hostOrJoin: boolean) {
     )
     let user = await userRef.get()
     userRef.update({
-        matchesWon: user.data()!.matchesWon + 1
+        matchesWon: +user.data()!.matchesWon + 1
     })
     console.log('DEBUG: QUA ' + hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid)
     matches.doc(matchId).update({

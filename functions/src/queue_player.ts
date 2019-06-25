@@ -76,8 +76,8 @@ async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, j
     await matches.doc(matchId).update({
         winner: '',
         winnerName: '',
-        hostmoves: null,
-        joinmoves: null,
+        hostmoves: 0,
+        joinmoves: 0,
         joinuid: joinUid,
         joinfcmtoken: joinFcmToken,
         time: admin.firestore.Timestamp.now(),

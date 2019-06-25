@@ -14,13 +14,8 @@ export async function playMove(request: any, response: any) {
     if (match.exists) {
         if (userId == match.data()!.hostuid ||
             userId == match.data()!.joinuid) {
-            userId == match.data()!.hostuid ?
-                await matches.doc(matchId).update({
-                    hosttarget: newTarget
-                }) :
-                await matches.doc(matchId).update({
-                    jointarget: newTarget
-                })
+            await updateTarget(userId, matchId, newTarget)
+            await upMoves(matchId, userId, moves)
             let message = {
                 data: {
                     matchid: match.id,
@@ -37,8 +32,8 @@ export async function playMove(request: any, response: any) {
                 console.log('error sending message')
                 console.log(e)
             }
-            if (won) await handleWon(matchId, moves, userId)
             response.send(true)
+            if (won) await declareWinner(matchId)
             console.log('--- move received')
             console.log('--- end playMove: ' + matchId)
         }
@@ -52,7 +47,18 @@ export async function playMove(request: any, response: any) {
     }
 }
 
-async function handleWon(matchId: string, moves: number, userId: string) {
+async function updateTarget(userId: string, matchId: string, newTarget: string) {
+    let match = await matches.doc(matchId).get()
+    userId == match.data()!.hostuid ?
+        await matches.doc(matchId).update({
+            hosttarget: newTarget
+        }) :
+        await matches.doc(matchId).update({
+            jointarget: newTarget
+        })
+}
+
+async function upMoves(matchId: string, userId: string, moves: number) {
     let match = await matches.doc(matchId).get()
     userId == match.data()!.hostuid ?
         await matches.doc(matchId).update({
@@ -61,43 +67,12 @@ async function handleWon(matchId: string, moves: number, userId: string) {
         await matches.doc(matchId).update({
             joinmoves: +moves
         })
-    let has1Won = await checkWinners(matchId)
-    if (has1Won) await declareWinner(matchId)
-    console.log('DEBUG: handlewon fine')
-}
-
-async function checkWinners(matchId: string) {
-    let match = await matches.doc(matchId).get()
-    console.log('DEBUG: are both moves not null in checkWinner? ' + match.data()!.hostmoves != '' && match.data()!.joinmoves != '')
-    if (match.data()!.hostmoves != null && match.data()!.joinmoves != null) {
-        match.data()!.hostmoves > match.data()!.joinmoves ?
-            upWinAmount(matchId, true) : upWinAmount(matchId, false)
-        console.log('DEBUG: checkWinners true')
-        return true
-    }
-    console.log('DEBUG: checkWinners false')
-    return false
-}
-
-async function upWinAmount(matchId: string, hostOrJoin: boolean) {
-    let match = await matches.doc(matchId).get()
-    let userRef = await users.doc(
-        hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid
-    )
-    let user = await userRef.get()
-    userRef.update({
-        matchesWon: +user.data()!.matchesWon + 1
-    })
-    console.log('DEBUG: QUA ' + hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid)
-    matches.doc(matchId).update({
-        winner: hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid,
-        winnerName: user.data()!.username,
-    })
-    console.log('DEBUG: upWinAmount fine')
 }
 
 async function declareWinner(matchId: string) {
     let match = await matches.doc(matchId).get()
+    match.data()!.hostmoves > match.data()!.joinmoves ?
+        upWinAmount(matchId, true) : upWinAmount(matchId, false)
     let messageToJoin = {
         data: {
             matchid: match.id,
@@ -128,5 +103,19 @@ async function declareWinner(matchId: string) {
         console.log('error sending message')
         console.log(e)
     }
-    console.log('DEBUG: declareWinner fine')
+}
+
+async function upWinAmount(matchId: string, hostOrJoin: boolean) {
+    let match = await matches.doc(matchId).get()
+    let userRef = await users.doc(
+        hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid
+    )
+    let user = await userRef.get()
+    userRef.update({
+        matchesWon: +user.data()!.matchesWon + 1
+    })
+    matches.doc(matchId).update({
+        winner: hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid,
+        winnerName: user.data()!.username,
+    })
 }

@@ -9,6 +9,8 @@ import 'package:squazzle/data/data.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/presentation.dart';
 
+final bool isTest = true;
+
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   kiwi.Container container = kiwi.Container();
@@ -23,7 +25,7 @@ void main() {
   container.registerSingleton<LoginProvider, LoginProviderImpl>(
       (c) => LoginProviderImpl());
   container.registerSingleton<SharedPrefsProvider, SharedPrefsProviderImpl>(
-      (c) => SharedPrefsProviderImpl(test: true));
+      (c) => SharedPrefsProviderImpl(test: isTest));
   container.registerSingleton<MessagingProvider, MessagingProviderImpl>(
       (c) => MessagingProviderImpl());
 
@@ -73,7 +75,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: BlocProvider(
-          child: HomeScreen(),
+          child: HomeScreen(isTest),
           bloc: kiwi.Container().resolve<HomeBloc>(),
         ),
       ),

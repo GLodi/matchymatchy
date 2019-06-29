@@ -9,6 +9,8 @@ import 'package:squazzle/presentation/screens/multi_screen.dart';
 import 'package:squazzle/presentation/widgets/user_widget.dart';
 
 class HomeScreen extends StatefulWidget {
+  final bool isTest;
+  HomeScreen(this.isTest);
   @override
   State<StatefulWidget> createState() {
     return _HomeScreenState();
@@ -139,14 +141,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           child: Hero(
               tag: 'single',
               child: choiceButton("Singleplayer", true, () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => BlocProvider(
-                            child: SingleScreen(),
-                            bloc: kiwi.Container().resolve<SingleBloc>(),
-                          )),
-                );
+                widget.isTest
+                    ? openMultiScreen()
+                    : Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => BlocProvider(
+                                  child: SingleScreen(),
+                                  bloc: kiwi.Container().resolve<SingleBloc>(),
+                                )),
+                      );
               })),
         ),
         Align(

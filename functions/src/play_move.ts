@@ -10,7 +10,6 @@ export async function playMove(request: any, response: any) {
     let won: boolean = request.query.won
     let matchId: string = request.query.matchId
     console.log('--- start playMove: ' + matchId)
-    console.log('won' + won)
     let match = await matches.doc(matchId).get()
     if (match.exists) {
         if (userId == match.data()!.hostuid ||
@@ -34,7 +33,8 @@ export async function playMove(request: any, response: any) {
                 console.log(e)
             }
             response.send(true)
-            if (won) {
+            console.log('won' + won)
+            if (won == true) {
                 console.log('declaring')
                 await declareWinner(matchId)
             }

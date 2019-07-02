@@ -47,7 +47,7 @@ class MultiBloc extends GameBloc {
         break;
       case GameEventType.victory:
         correctSubject.add(true);
-        // TODO show info until other player has finished
+        // TODO: show info until other player has finished
         break;
       default:
     }
@@ -76,7 +76,7 @@ class MultiBloc extends GameBloc {
 
   void listenToWinnerMessages() async {
     String uid = await repo.getStoredUid();
-    // TODO does work, but home_screen is not refreshed
+    // TODO: does work, but home_screen is not refreshed
     winnerSub = repo.winnerMessages.listen((mess) {
       if (mess.winner == uid) repo.updateUserInfo();
     });

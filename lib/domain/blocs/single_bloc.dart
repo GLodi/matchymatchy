@@ -32,7 +32,7 @@ class SingleBloc extends GameBloc {
         break;
       case GameEventType.victory:
         correctSubject.add(true);
-        // TODO handle victory
+        // TODO: handle victory
         break;
       default:
     }

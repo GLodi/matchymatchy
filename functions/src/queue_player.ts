@@ -58,7 +58,7 @@ async function populateQueue(gfid: number, userId: string, userFcmToken: string)
 async function queueNotEmpty(userId: string, userFcmToken: string) {
     let query = await queue.orderBy('time', 'asc').limit(1).get()
     if (query.docs[0].exists && query.docs[0].data().uid == userId) {
-        // TODO check that user is not going to play against itself
+        // TODO: check that user is not going to play against itself
 
     }
     let matchId = await delQueueStartMatch(query.docs[0], userId, userFcmToken)

@@ -9,7 +9,7 @@ import 'package:squazzle/data/data.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/presentation.dart';
 
-final bool isTest = true;
+final bool isTest = false;
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);

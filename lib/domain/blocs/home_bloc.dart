@@ -1,4 +1,6 @@
 import 'package:rxdart/rxdart.dart';
+import 'package:connectivity/connectivity.dart';
+import 'dart:async';
 
 import 'package:squazzle/domain/domain.dart';
 
@@ -19,11 +21,24 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   final _doneSlidesButtonSubject = PublishSubject<bool>();
   Sink<bool> get doneSlidesButton => _doneSlidesButtonSubject.sink;
 
+  // Listen to connection changes
+  StreamSubscription _connectivitySub;
+
   HomeBloc(this._repo) : super(initialState: HomeState.notInit());
 
   void setup() {
     _doneSlidesButtonSubject.listen((input) {
       _showSlidesSubject.add(input);
+    });
+    _connectivitySub = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
+      if (result == ConnectivityResult.none) {
+        // TODO: use stream to signal screen of change
+        // prevent multiplayer button
+      } else {
+        // show multiplayer button
+      }
     });
   }
 
@@ -32,7 +47,6 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
       HomeEvent event, HomeState currentState) async* {
     switch (event.type) {
       case HomeEventType.checkIfUserLogged:
-        yield HomeState.notInit();
         yield await checkIfUserLogged();
         _repo.isFirstOpen().then((b) => _showSlidesSubject.add(b));
         break;
@@ -76,6 +90,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     _intentToMultiScreenSubject.close();
     _showSlidesSubject.close();
     _doneSlidesButtonSubject.close();
+    _connectivitySub.cancel();
     super.dispose();
   }
 }

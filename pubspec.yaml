@@ -25,6 +25,7 @@ dependencies:
   firebase_messaging: 5.0.4
   cached_network_image: 1.0.0
   cloud_firestore: 0.12.6
+  connectivity: 0.4.3+2
 
   flutter:
     sdk: flutter

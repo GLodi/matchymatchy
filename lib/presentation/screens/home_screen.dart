@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 import 'package:kiwi/kiwi.dart' as kiwi;
 
 import 'package:squazzle/data/models/models.dart';
@@ -7,6 +6,7 @@ import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/screens/single_screen.dart';
 import 'package:squazzle/presentation/screens/multi_screen.dart';
 import 'package:squazzle/presentation/widgets/user_widget.dart';
+import 'package:squazzle/presentation/widgets/home_background_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool isTest;
@@ -19,37 +19,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   HomeBloc bloc;
-  // List<Slide> slides = List();
-
   @override
   void initState() {
     super.initState();
-
-    // slides.add(
-    //   Slide(
-    //     title: "ERASER",
-    //     description:
-    //         "Allow miles wound place the leave had. To sitting subject no improve studied limited",
-    //     backgroundColor: Color(0xfff5a623),
-    //   ),
-    // );
-    // slides.add(
-    //   Slide(
-    //     title: "PENCIL",
-    //     description:
-    //         "Ye indulgence unreserved connection alteration appearance",
-    //     backgroundColor: Color(0xff203152),
-    //   ),
-    // );
-    // slides.add(
-    //   Slide(
-    //     title: "RULER",
-    //     description:
-    //         "Much evil soon high in hope do view. Out may few northward believing attempted. Yet timed being songs marry one defer men our. Although finished blessing do of",
-    //     backgroundColor: Color(0xff9932CC),
-    //   ),
-    // );
-
     bloc = BlocProvider.of<HomeBloc>(context);
     bloc.setup();
     bloc.intentToMultiScreen.listen((_) => openMultiScreen());
@@ -60,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        background(),
+        HomeBackgroundWidget(),
         BlocEventStateBuilder<HomeEvent, HomeState>(
           bloc: bloc,
           builder: (context, state) {
@@ -82,20 +54,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           },
         ),
       ],
-    );
-  }
-
-  Widget background() {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.lightBlue,
-              Colors.tealAccent,
-            ]),
-      ),
     );
   }
 

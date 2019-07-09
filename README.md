@@ -7,6 +7,9 @@ on the 9 center squares with as few moves as possible.
 
 STILL IN DEVELOPMENT 
 
+If you want to use the online component, you can create a new Firebase project, 
+create your own google-services.json and put it under android/app.
+
 <div align="center">
 	<img src="https://raw.githubusercontent.com/GLodi/squazzle/master/gfx/screen.png" width="256">
 </div>
@@ -23,7 +26,7 @@ blocs that emit a new widget's state based on an event.
   - Singleplayer
 
  The app comes with a sql db of 500 combinations of target fields + game fields. A random 
- combination is chosen at random.
+ combination is chosen.
  
   - Multiplayer
 

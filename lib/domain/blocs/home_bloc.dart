@@ -17,11 +17,14 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   final _showSlidesSubject = BehaviorSubject<bool>();
   Stream<bool> get showSlides => _showSlidesSubject.stream;
 
+  // Listen to connection changes
+  final _connChangeSub = BehaviorSubject<bool>();
+  Stream<bool> get connChange => _connChangeSub.stream;
+
   // Listen to done button press on last slide (need to hide them)
   final _doneSlidesButtonSubject = PublishSubject<bool>();
   Sink<bool> get doneSlidesButton => _doneSlidesButtonSubject.sink;
 
-  // Listen to connection changes
   StreamSubscription _connectivitySub;
 
   HomeBloc(this._repo) : super(initialState: HomeState.notInit());
@@ -34,10 +37,9 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
       if (result == ConnectivityResult.none) {
-        // TODO: use stream to signal screen of change
-        // prevent multiplayer button
+        _connChangeSub.add(false);
       } else {
-        // show multiplayer button
+        _connChangeSub.add(true);
       }
     });
   }

@@ -29,17 +29,22 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
 
   HomeBloc(this._repo) : super(initialState: HomeState.notInit());
 
-  void setup() {
+  void setup() async {
     _doneSlidesButtonSubject.listen((input) {
       _showSlidesSubject.add(input);
     });
+    ConnectivityResult curr = await Connectivity().checkConnectivity();
+    bool prev = curr == ConnectivityResult.none ? false : true;
     _connectivitySub = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
-      if (result == ConnectivityResult.none) {
+      if (result == ConnectivityResult.none && prev) {
         _connChangeSub.add(false);
-      } else {
+        prev = false;
+      }
+      if (result != ConnectivityResult.none && !prev) {
         _connChangeSub.add(true);
+        prev = true;
       }
     });
   }

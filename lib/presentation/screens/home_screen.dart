@@ -19,11 +19,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   HomeBloc bloc;
+
   @override
   void initState() {
     super.initState();
     bloc = BlocProvider.of<HomeBloc>(context);
     bloc.setup();
+    bloc.connChange.listen((connStatus) => connectionChange(connStatus));
     bloc.intentToMultiScreen.listen((_) => openMultiScreen());
     bloc.emitEvent(HomeEvent(type: HomeEventType.checkIfUserLogged));
   }
@@ -169,6 +171,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 bloc: kiwi.Container().resolve<MultiBloc>(),
               )),
     );
+  }
+
+  void connectionChange(bool connStatus) {
+    print(connStatus);
   }
 
   @override

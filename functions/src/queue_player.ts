@@ -29,6 +29,7 @@ export async function queuePlayer(request: any, response: any) {
             await notifyPlayersMatchStarted(result[1])
         } catch (e) {
             console.log('error queueing player, prolly queueing against himself')
+            response.send(false)
         }
         console.log('---- end queuePlayer match started')
     }
@@ -66,8 +67,8 @@ async function queueNotEmpty(userId: string, userFcmToken: string) {
     let query = await queue.orderBy('time', 'asc').limit(1).get()
     if (query.docs[0].exists && query.docs[0].data().uid == userId) {
         // TODO: check that user is not going to play against itself
+        console.log("error: double queue")
         throw new AlreadyQueueingError(userId + " is already queued")
-
     }
     let matchId = await delQueueStartMatch(query.docs[0], userId, userFcmToken)
     console.log('match started: ' + matchId)

@@ -6,6 +6,13 @@ let gamefields = admin.firestore().collection('gamefields')
 let matches = admin.firestore().collection('matches')
 let users = admin.firestore().collection('users')
 
+class AlreadyQueueingError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "AlreadyQueueingError";
+    }
+}
+
 export async function queuePlayer(request: any, response: any) {
     console.log('--- start queuePlayer')
     let userId: string = request.query.userId
@@ -59,6 +66,7 @@ async function queueNotEmpty(userId: string, userFcmToken: string) {
     let query = await queue.orderBy('time', 'asc').limit(1).get()
     if (query.docs[0].exists && query.docs[0].data().uid == userId) {
         // TODO: check that user is not going to play against itself
+        throw new AlreadyQueueingError(userId + " is already queued")
 
     }
     let matchId = await delQueueStartMatch(query.docs[0], userId, userFcmToken)

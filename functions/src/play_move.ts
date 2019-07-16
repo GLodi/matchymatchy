@@ -6,8 +6,8 @@ let users = admin.firestore().collection('users')
 export async function playMove(request: any, response: any) {
     let newTarget: string = request.query.newTarget
     let userId: string = request.query.userId
-    let moves: number = request.query.moves
-    let won: boolean = request.query.won
+    let moves: number = +request.query.moves
+    let won: boolean = (request.query.won == 'true')
     let matchId: string = request.query.matchId
     console.log('--- start playMove: ' + matchId)
     let match = await matches.doc(matchId).get()
@@ -33,9 +33,7 @@ export async function playMove(request: any, response: any) {
                 console.log(e)
             }
             response.send(true)
-            console.log('won' + won)
-            if (won == true) {
-                console.log('declaring')
+            if (won) {
                 await declareWinner(matchId)
             }
             console.log('--- move received')
@@ -74,7 +72,6 @@ async function upMoves(matchId: string, userId: string, moves: number) {
 }
 
 async function declareWinner(matchId: string) {
-    console.log("dentro declareWinner")
     let match = await matches.doc(matchId).get()
     match.data()!.hostmoves > match.data()!.joinmoves ?
         upWinAmount(matchId, true) : upWinAmount(matchId, false)

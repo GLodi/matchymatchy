@@ -35,7 +35,6 @@ class ApiProviderImpl implements ApiProvider {
 
   @override
   Future<bool> sendMove(TargetField target, Session session, bool won) async {
-    print(won);
     return _net
         .get(_baseUrl +
             'playMove?userId=' +

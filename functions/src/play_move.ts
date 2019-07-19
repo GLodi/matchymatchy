@@ -14,28 +14,9 @@ export async function playMove(request: any, response: any) {
     if (match.exists) {
         if (userId == match.data()!.hostuid ||
             userId == match.data()!.joinuid) {
-            await updateTarget(userId, matchId, newTarget)
-            await upMoves(matchId, userId, moves)
-            let message = {
-                data: {
-                    matchid: match.id,
-                    enemytarget: newTarget,
-                    messType: 'move',
-                },
-                token: userId == match.data()!.hostuid ?
-                    match.data()!.joinfcmtoken :
-                    match.data()!.hostfcmtoken
-            }
-            try {
-                admin.messaging().send(message)
-            } catch (e) {
-                console.log('error sending message')
-                console.log(e)
-            }
+            await updateMatch(userId, matchId, newTarget, moves)
             response.send(true)
-            if (won) {
-                await declareWinner(matchId)
-            }
+            if (won) await declareWinner(matchId)
             console.log('--- move received')
             console.log('--- end playMove: ' + matchId)
         }
@@ -49,24 +30,15 @@ export async function playMove(request: any, response: any) {
     }
 }
 
-async function updateTarget(userId: string, matchId: string, newTarget: string) {
+async function updateMatch(userId: string, matchId: string, newTarget: string, moves: number) {
     let match = await matches.doc(matchId).get()
     userId == match.data()!.hostuid ?
         await matches.doc(matchId).update({
-            hosttarget: newTarget
-        }) :
-        await matches.doc(matchId).update({
-            jointarget: newTarget
-        })
-}
-
-async function upMoves(matchId: string, userId: string, moves: number) {
-    let match = await matches.doc(matchId).get()
-    userId == match.data()!.hostuid ?
-        await matches.doc(matchId).update({
+            hosttarget: newTarget,
             hostmoves: +moves
         }) :
         await matches.doc(matchId).update({
+            jointarget: newTarget,
             joinmoves: +moves
         })
 }
@@ -74,37 +46,7 @@ async function upMoves(matchId: string, userId: string, moves: number) {
 async function declareWinner(matchId: string) {
     let match = await matches.doc(matchId).get()
     match.data()!.hostmoves > match.data()!.joinmoves ?
-        upWinAmount(matchId, true) : upWinAmount(matchId, false)
-    let messageToJoin = {
-        data: {
-            matchid: match.id,
-            winner: match.data()!.winner,
-            messType: 'winner',
-            winnerName: match.data()!.winnerName,
-        },
-        token: match.data()!.joinfcmtoken
-    }
-    try {
-        admin.messaging().send(messageToJoin)
-    } catch (e) {
-        console.log('error sending message')
-        console.log(e)
-    }
-    let messageToHost = {
-        data: {
-            matchid: match.id,
-            winner: match.data()!.winner,
-            messType: 'winner',
-            winnerName: match.data()!.winnerName,
-        },
-        token: match.data()!.hostfcmtoken
-    }
-    try {
-        admin.messaging().send(messageToHost)
-    } catch (e) {
-        console.log('error sending message')
-        console.log(e)
-    }
+        await upWinAmount(matchId, true) : await upWinAmount(matchId, false)
 }
 
 async function upWinAmount(matchId: string, hostOrJoin: boolean) {

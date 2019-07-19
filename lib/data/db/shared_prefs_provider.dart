@@ -42,7 +42,7 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
     prefs = await SharedPreferences.getInstance();
     prefs.setString('username', user.username);
     if (!test) prefs.setString('uid', user.uid);
-    prefs.setString('imageUrl', user.imageUrl);
+    prefs.setString('photoUrl', user.photoUrl);
     prefs.setInt('matchesWon', user.matchesWon);
   }
 
@@ -51,16 +51,16 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
     prefs = await SharedPreferences.getInstance();
     String username = prefs.getString('username');
     String uid = prefs.getString('uid');
-    String imageUrl = prefs.getString('imageUrl');
+    String photoUrl = prefs.getString('photoUrl');
     int matchesWon = prefs.getInt('matchesWon');
     if (username != null &&
         uid != null &&
-        imageUrl != null &&
+        photoUrl != null &&
         matchesWon != null) {
       return User(
           username: username,
           uid: uid,
-          imageUrl: imageUrl,
+          photoUrl: photoUrl,
           matchesWon: matchesWon);
     }
     return null;

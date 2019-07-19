@@ -53,6 +53,8 @@ async function populateQueue(gfid: number, userId: string, userFcmToken: string)
         joinuid: null,
         jointarget: null,
         joinfcmtoken: null,
+        winner: '',
+        winnerName: '',
     })
     queue.add({
         time: admin.firestore.Timestamp.now(),
@@ -82,8 +84,6 @@ async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, j
     console.log('queue deleted: ' + doc.id)
     let matchId = doc.data().matchid
     await matches.doc(matchId).update({
-        winner: '',
-        winnerName: '',
         hostmoves: 0,
         joinmoves: 0,
         joinuid: joinUid,

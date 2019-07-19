@@ -36,7 +36,7 @@ class LoginProviderImpl extends LoginProvider {
     User user = User(
         username: fireUser.displayName,
         uid: fireUser.uid,
-        imageUrl: fireUser.photoUrl);
+        photoUrl: fireUser.photoUrl);
 
     if (fireUser != null) {
       // Check if already signed up

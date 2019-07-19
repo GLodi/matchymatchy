@@ -1,21 +1,21 @@
 class User {
   String username;
   String uid;
-  String imageUrl;
+  String photoUrl;
   int matchesWon;
   String currentMatch;
 
-  User({this.username, this.uid, this.imageUrl, this.matchesWon = 0});
+  User({this.username, this.uid, this.photoUrl, this.matchesWon = 0});
 
   User.fromMap(Map<String, dynamic> map) {
     assert(map['username'] != null);
     assert(map['uid'] != null);
-    assert(map['imageUrl'] != null);
+    assert(map['photoUrl'] != null);
     assert(map['matchesWon'] != null);
     assert(map['currentMatch'] != null);
     username = map['username'];
     uid = map['uid'];
-    imageUrl = map['imageUrl'];
+    photoUrl = map['photoUrl'];
     matchesWon = map['matchesWon'];
     currentMatch = map['currentMatch'];
   }
@@ -24,7 +24,7 @@ class User {
     return <String, dynamic>{
       'username': username,
       'uid': uid,
-      'imageUrl': imageUrl,
+      'photoUrl': photoUrl,
       'matchesWon': matchesWon,
       'currentMatch': currentMatch,
     };

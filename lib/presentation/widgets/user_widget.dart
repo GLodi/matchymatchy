@@ -79,7 +79,7 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
             margin: EdgeInsets.all(10),
             child: ClipOval(
               child: CachedNetworkImage(
-                imageUrl: widget.user.imageUrl,
+                imageUrl: widget.user.photoUrl,
                 placeholder: (context, url) => CircularProgressIndicator(),
                 errorWidget: (context, url, error) => Icon(Icons.error),
               ),

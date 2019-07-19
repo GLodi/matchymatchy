@@ -4,7 +4,6 @@ import { QueryDocumentSnapshot } from '@google-cloud/firestore'
 let queue = admin.firestore().collection('queue')
 let gamefields = admin.firestore().collection('gamefields')
 let matches = admin.firestore().collection('matches')
-let users = admin.firestore().collection('users')
 
 class AlreadyQueueingError extends Error {
     constructor(message: string) {
@@ -18,20 +17,15 @@ export async function queuePlayer(request: any, response: any) {
     let userId: string = request.query.userId
     let userFcmToken: string = request.query.userFcmToken
     let qs = await queue.get()
-    if (qs.empty) {
-        let gf = await queueEmpty(userId, userFcmToken)
+    try {
+        let gf = qs.empty ? await queueEmpty(userId, userFcmToken) :
+            await queueNotEmpty(userId, userFcmToken)
         response.send(gf.data())
-        console.log('--- end queuePlayer new queue')
-    } else {
-        try {
-            let result = await queueNotEmpty(userId, userFcmToken)
-            await response.send(result[0].data())
-            await notifyPlayersMatchStarted(result[1])
-        } catch (e) {
-            console.log('error queueing player, prolly queueing against himself')
-            response.send(false)
-        }
-        console.log('---- end queuePlayer match started')
+        console.log('--- end queuePlayer')
+    } catch (e) {
+        console.log('--- error queueing player')
+        console.log(e)
+        response.send(false)
     }
 }
 
@@ -57,18 +51,18 @@ async function populateQueue(gfid: number, userId: string, userFcmToken: string)
         winnerName: '',
     })
     queue.add({
-        time: admin.firestore.Timestamp.now(),
         uid: userId,
         gfid: gfid,
         matchid: newMatchRef.id,
         ufcmtoken: userFcmToken,
+        time: admin.firestore.Timestamp.now(),
     })
 }
 
 async function queueNotEmpty(userId: string, userFcmToken: string) {
     let query = await queue.orderBy('time', 'asc').limit(1).get()
     if (query.docs[0].exists && query.docs[0].data().uid == userId) {
-        console.log("error: double queue")
+        console.log("--- error: double queue")
         throw new AlreadyQueueingError(userId + " is already queued")
     }
     let matchId = await delQueueStartMatch(query.docs[0], userId, userFcmToken)
@@ -76,7 +70,7 @@ async function queueNotEmpty(userId: string, userFcmToken: string) {
     let match = await matches.doc(matchId).get()
     let gf = await gamefields.doc(String(match.data()!.gfid)).get()
     console.log(gf.data())
-    return [gf, matchId]
+    return gf
 }
 
 async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, joinFcmToken: string) {
@@ -91,50 +85,4 @@ async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, j
         time: admin.firestore.Timestamp.now(),
     })
     return matchId
-}
-
-async function notifyPlayersMatchStarted(matchId: string) {
-    let match = await matches.doc(matchId).get()
-    let hostDoc = await users.where('uid', '==', match.data()!.hostuid).get()
-    let hostName = await hostDoc.docs[0].data().username
-    let joinDoc = await users.where('uid', '==', match.data()!.joinuid).get()
-    let joinName = await joinDoc.docs[0].data().username
-    let messageToHost = {
-        data: {
-            matchid: match.id,
-            click_action: 'FLUTTER_NOTIFICATION_CLICK',
-            messType: 'challenge',
-            enemyName: joinName,
-        },
-        notification: {
-            title: 'Match started!',
-            body: joinName + ' challenged you!',
-        },
-        token: match.data()!.hostfcmtoken
-    }
-    let messageToJoin = {
-        data: {
-            matchid: match.id,
-            click_action: 'FLUTTER_NOTIFICATION_CLICK',
-            messType: 'challenge',
-            enemyName: hostName,
-        },
-        notification: {
-            title: 'Match started!',
-            body: hostName + ' challenged you!',
-        },
-        token: match.data()!.joinfcmtoken,
-    }
-    try {
-        admin.messaging().send(messageToHost)
-        console.log('message sent to host: ' + match.data()!.hostfcmtoken)
-    } catch (error) {
-        console.log('error sending message: ' + error)
-    }
-    try {
-        admin.messaging().send(messageToJoin)
-        console.log('message sent to join: ' + match.data()!.joinfcmtoken)
-    } catch (error) {
-        console.log('error sending message: ' + error)
-    }
 }

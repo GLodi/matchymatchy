@@ -14,18 +14,15 @@ class _SingleScreenState extends State<SingleScreen>
     with TickerProviderStateMixin {
   SingleBloc bloc;
   AnimationController _entryAnimCont;
-  Animation _entryAnim;
+  Animation<double> _entryAnim;
   double fifthWidth, tenthWidth, opacityLevel = 0;
 
   @override
   void initState() {
     super.initState();
     _entryAnimCont = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 2000));
-    _entryAnim = Tween(begin: -1.0, end: 0.0).animate(CurvedAnimation(
-      parent: _entryAnimCont,
-      curve: Curves.bounceOut,
-    ));
+        vsync: this, duration: Duration(milliseconds: 2000), value: 0.1);
+    _entryAnim = CurvedAnimation(parent: _entryAnimCont, curve: Curves.ease);
     bloc = BlocProvider.of<SingleBloc>(context);
     bloc.emitEvent(GameEvent(type: GameEventType.start));
     bloc.correct.listen((correct) => _changeOpacity());
@@ -84,36 +81,30 @@ class _SingleScreenState extends State<SingleScreen>
 
   Widget initScreen() {
     _entryAnimCont.forward();
-    final double height = MediaQuery.of(context).size.height;
-    return AnimatedBuilder(
-        animation: _entryAnimCont,
-        builder: (context, child) {
-          return Transform(
-            transform:
-                Matrix4.translationValues(0, _entryAnim.value * height, 0),
-            child: Stack(
+    return ScaleTransition(
+        scale: _entryAnim,
+        alignment: Alignment.center,
+        child: Stack(
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(top: 50),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          moves(),
-                          targetField(),
-                        ],
-                      ),
-                    ),
-                    gfWidget(),
-                  ],
+                Container(
+                  margin: EdgeInsets.only(top: 50),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      moves(),
+                      targetField(),
+                    ],
+                  ),
                 ),
-                endOpacity(),
+                gfWidget(),
               ],
             ),
-          );
-        });
+            endOpacity(),
+          ],
+        ));
   }
 
   Widget moves() {

@@ -12,7 +12,7 @@ abstract class ApiProvider {
   Future<Game> queuePlayer(String uid, String token);
 
   // Send updated target to server
-  Future<bool> sendMove(TargetField target, Session session, bool won);
+  Future<bool> sendMove(TargetField target, Session session, bool done);
 }
 
 class ApiProviderImpl implements ApiProvider {
@@ -34,7 +34,7 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<bool> sendMove(TargetField target, Session session, bool won) async {
+  Future<bool> sendMove(TargetField target, Session session, bool done) async {
     return _net
         .get(_baseUrl +
             'playMove?userId=' +
@@ -43,8 +43,8 @@ class ApiProviderImpl implements ApiProvider {
             session.matchId +
             '&newTarget=' +
             target.grid +
-            '&won=' +
-            won.toString() +
+            '&done=' +
+            done.toString() +
             '&moves=' +
             session.moves.toString())
         .then((response) => response);

@@ -49,6 +49,8 @@ async function populateQueue(gfid: number, userId: string, userFcmToken: string)
         joinfcmtoken: null,
         winner: '',
         winnerName: '',
+        hostdone: null,
+        joindone: null,
     })
     queue.add({
         uid: userId,

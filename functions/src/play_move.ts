@@ -7,7 +7,7 @@ export async function playMove(request: any, response: any) {
     let newTarget: string = request.query.newTarget
     let userId: string = request.query.userId
     let moves: number = +request.query.moves
-    let won: boolean = (request.query.won == 'true')
+    let done: boolean = (request.query.done == 'true')
     let matchId: string = request.query.matchId
     console.log('--- start playMove: ' + matchId)
     let match = await matches.doc(matchId).get()
@@ -15,8 +15,14 @@ export async function playMove(request: any, response: any) {
         if (userId == match.data()!.hostuid ||
             userId == match.data()!.joinuid) {
             await updateMatch(userId, matchId, newTarget, moves)
+            if (done) await setPlayerDone(userId, matchId)
             response.send(true)
-            if (won) await declareWinner(matchId)
+            if (done &&
+                ((match.data()!.hostdone != null && userId == match.data()!.joinuid) ||
+                    (match.data()!.joindone != null && userId == match.data()!.hostuid))) {
+                console.log('checktrue')
+                await declareWinner(matchId)
+            }
             console.log('--- move received')
             console.log('--- end playMove: ' + matchId)
         }
@@ -43,10 +49,30 @@ async function updateMatch(userId: string, matchId: string, newTarget: string, m
         })
 }
 
+async function setPlayerDone(userId: string, matchId: string) {
+    let match = await matches.doc(matchId).get()
+    userId == match.data()!.hostuid ?
+        await matches.doc(matchId).update({
+            hostdone: true
+        }) :
+        await matches.doc(matchId).update({
+            joindone: true
+        })
+}
+
 async function declareWinner(matchId: string) {
     let match = await matches.doc(matchId).get()
-    match.data()!.hostmoves > match.data()!.joinmoves ?
-        await upWinAmount(matchId, true) : await upWinAmount(matchId, false)
+    if (match.data()!.hostmoves < match.data()!.joinmoves) {
+        await upWinAmount(matchId, true)
+    }
+    else if (match.data()!.hostmoves > match.data()!.joinmoves) {
+        await upWinAmount(matchId, false)
+    }
+    else {
+        matches.doc(matchId).update({
+            winner: 'draw',
+        })
+    }
 }
 
 async function upWinAmount(matchId: string, hostOrJoin: boolean) {

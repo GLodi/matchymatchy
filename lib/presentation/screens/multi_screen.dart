@@ -67,32 +67,55 @@ class _MultiScreenState extends State<MultiScreen>
             ),
           );
         },
-        child: Stack(
-          children: <Widget>[
-            background(),
-            BlocEventStateBuilder<GameEvent, GameState>(
-              bloc: bloc,
-              builder: (context, state) {
-                switch (state.type) {
-                  case GameStateType.error:
-                    {
-                      return Center(child: Text(state.message));
+        child: WillPopScope(
+            onWillPop: _onWillPop,
+            child: Stack(
+              children: <Widget>[
+                background(),
+                BlocEventStateBuilder<GameEvent, GameState>(
+                  bloc: bloc,
+                  builder: (context, state) {
+                    switch (state.type) {
+                      case GameStateType.error:
+                        {
+                          return Center(child: Text(state.message));
+                        }
+                      case GameStateType.notInit:
+                        {
+                          return notInit();
+                        }
+                      case GameStateType.init:
+                        {
+                          return init();
+                        }
                     }
-                  case GameStateType.notInit:
-                    {
-                      return notInit();
-                    }
-                  case GameStateType.init:
-                    {
-                      return init();
-                    }
-                }
-              },
-            ),
-          ],
-        ),
+                  },
+                ),
+              ],
+            )),
       ),
     );
+  }
+
+  Future<bool> _onWillPop() {
+    return showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+            title: new Text('Are you sure?'),
+            content: new Text('Do you want to exit?'),
+            actions: <Widget>[
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('No'),
+              ),
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: new Text('Yes'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 
   Widget init() {

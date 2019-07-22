@@ -52,31 +52,54 @@ class _SingleScreenState extends State<SingleScreen>
             ),
           );
         },
-        child: BlocEventStateBuilder<GameEvent, GameState>(
-          bloc: bloc,
-          builder: (context, state) {
-            switch (state.type) {
-              case GameStateType.error:
-                {
-                  return Center(child: Text(state.message));
+        child: WillPopScope(
+            onWillPop: _onWillPop,
+            child: BlocEventStateBuilder<GameEvent, GameState>(
+              bloc: bloc,
+              builder: (context, state) {
+                switch (state.type) {
+                  case GameStateType.error:
+                    {
+                      return Center(child: Text(state.message));
+                    }
+                  case GameStateType.notInit:
+                    {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  case GameStateType.init:
+                    {
+                      if (fifthWidth == null && tenthWidth == null) {
+                        fifthWidth = MediaQuery.of(context).size.width / 5;
+                        tenthWidth = fifthWidth / 2;
+                      }
+                      return initScreen();
+                    }
                 }
-              case GameStateType.notInit:
-                {
-                  return Center(child: CircularProgressIndicator());
-                }
-              case GameStateType.init:
-                {
-                  if (fifthWidth == null && tenthWidth == null) {
-                    fifthWidth = MediaQuery.of(context).size.width / 5;
-                    tenthWidth = fifthWidth / 2;
-                  }
-                  return initScreen();
-                }
-            }
-          },
-        ),
+              },
+            )),
       ),
     );
+  }
+
+  Future<bool> _onWillPop() {
+    return showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+            title: new Text('Are you sure?'),
+            content: new Text('Do you want to exit?'),
+            actions: <Widget>[
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('No'),
+              ),
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: new Text('Yes'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 
   Widget initScreen() {

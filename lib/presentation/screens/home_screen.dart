@@ -59,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
+  // Shows Single/Multi button and UserWidget at the bottom
   Widget initLogged(User user) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
@@ -69,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     ]);
   }
 
+  // Shows Single/Login buttons
   Widget initNotLogged() {
     return Stack(
       children: <Widget>[
@@ -93,6 +95,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
+  // Widget that includes both center bottons
   Widget centerButtons(String multiButtonText) {
     return Stack(
       children: <Widget>[
@@ -126,6 +129,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
+  // Single/Login/Multi button
+  // Weird hack to make sure that their margins are correct
   Widget choiceButton(String text, bool isOnLeft, Function onPress) {
     return Container(
       width: MediaQuery.of(context).size.width / 2,

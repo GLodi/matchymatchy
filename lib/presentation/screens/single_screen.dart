@@ -32,6 +32,11 @@ class _SingleScreenState extends State<SingleScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: BackButton(color: Colors.black),
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
       body: Hero(
         tag: 'single',
         // This is to prevent a Hero animation workflow
@@ -112,15 +117,12 @@ class _SingleScreenState extends State<SingleScreen>
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(top: 50),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      moves(),
-                      targetField(),
-                    ],
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    moves(),
+                    targetField(),
+                  ],
                 ),
                 gfWidget(),
               ],

@@ -47,6 +47,11 @@ class _MultiScreenState extends State<MultiScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(color: Colors.black),
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
       body: Hero(
         tag: 'multi',
         // This is to prevent a Hero animation workflow

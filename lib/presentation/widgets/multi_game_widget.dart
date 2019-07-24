@@ -42,61 +42,58 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(top: 50),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Container(
-                        constraints: BoxConstraints(
-                          maxHeight: 3 * tenthWidth,
-                          maxWidth: 3 * tenthWidth,
-                        ),
-                        alignment: Alignment.topCenter,
-                        child: BlocProvider(
-                          child: EnemyWidget(),
-                          bloc: EnemyFieldBloc(widget.bloc),
-                        ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Container(
+                      constraints: BoxConstraints(
+                        maxHeight: 3 * tenthWidth,
+                        maxWidth: 3 * tenthWidth,
                       ),
-                      StreamBuilder<int>(
-                        stream: widget.bloc.moveNumber,
-                        initialData: 0,
-                        builder: (context, snapshot) {
-                          return Column(
-                            children: <Widget>[
-                              Text(
-                                'Moves',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: "Roboto",
-                                  fontSize: 20.0,
-                                ),
+                      alignment: Alignment.topCenter,
+                      child: BlocProvider(
+                        child: EnemyWidget(),
+                        bloc: EnemyFieldBloc(widget.bloc),
+                      ),
+                    ),
+                    StreamBuilder<int>(
+                      stream: widget.bloc.moveNumber,
+                      initialData: 0,
+                      builder: (context, snapshot) {
+                        return Column(
+                          children: <Widget>[
+                            Text(
+                              'Moves',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: "Roboto",
+                                fontSize: 20.0,
                               ),
-                              Text(
-                                snapshot.data.toString(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: "Roboto",
-                                  fontSize: 25.0,
-                                ),
-                              )
-                            ],
-                          );
-                        },
+                            ),
+                            Text(
+                              snapshot.data.toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: "Roboto",
+                                fontSize: 25.0,
+                              ),
+                            )
+                          ],
+                        );
+                      },
+                    ),
+                    Container(
+                      constraints: BoxConstraints(
+                        maxHeight: 3 * tenthWidth,
+                        maxWidth: 3 * tenthWidth,
                       ),
-                      Container(
-                        constraints: BoxConstraints(
-                          maxHeight: 3 * tenthWidth,
-                          maxWidth: 3 * tenthWidth,
-                        ),
-                        alignment: Alignment.topCenter,
-                        child: BlocProvider(
-                          child: TargetFieldWidget(),
-                          bloc: TargetBloc(widget.bloc),
-                        ),
+                      alignment: Alignment.topCenter,
+                      child: BlocProvider(
+                        child: TargetFieldWidget(),
+                        bloc: TargetBloc(widget.bloc),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 SafeArea(
                   child: Container(

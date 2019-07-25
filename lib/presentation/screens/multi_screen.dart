@@ -101,7 +101,7 @@ class _MultiScreenState extends State<MultiScreen>
     return showDialog(
           context: context,
           builder: (context) => new AlertDialog(
-            title: new Text('Are you sure?'),
+            title: new Text('Close match'),
             content: new Text('Do you want to exit?'),
             actions: <Widget>[
               new FlatButton(
@@ -121,6 +121,8 @@ class _MultiScreenState extends State<MultiScreen>
   Widget init() {
     return Stack(
       children: <Widget>[
+        // AbsorbPointer is needed to prevent the player
+        // from moving squares when transitioning to win_widget
         AbsorbPointer(
             absorbing: opacityLevel != 0,
             child: MultiGameWidget(

@@ -35,8 +35,6 @@ export async function queuePlayer(request: any, response: any) {
 
 async function alreadyInMatch(userId: string) {
     let user = await users.doc(userId).get()
-    console.log(userId + ' ' + user.data()!.currentMatch)
-    console.log(user.data()!.currentMatch != null)
     return user.data()!.currentMatch != null
 }
 
@@ -44,7 +42,6 @@ async function queueEmpty(userId: string, userFcmToken: string) {
     let gfid: number = Math.floor(Math.random() * 1000) + 1
     populateQueue(gfid, userId, userFcmToken)
     let gf = await gamefields.doc(String(gfid)).get()
-    console.log(gf.data())
     return gf
 }
 
@@ -78,19 +75,16 @@ function populateQueue(gfid: number, userId: string, userFcmToken: string) {
 async function queueNotEmpty(userId: string, userFcmToken: string) {
     let query = await queue.orderBy('time', 'asc').limit(1).get()
     let matchId = await delQueueStartMatch(query.docs[0], userId, userFcmToken)
-    console.log('match started: ' + matchId)
     let match = await matches.doc(matchId).get()
     users.doc(userId).update({
         currentMatch: match.id,
     })
     let gf = await gamefields.doc(String(match.data()!.gfid)).get()
-    console.log(gf.data())
     return gf
 }
 
 async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, joinFcmToken: string) {
     queue.doc(doc.id).delete()
-    console.log('queue deleted: ' + doc.id)
     let matchId = doc.data().matchid
     await matches.doc(matchId).update({
         hostmoves: 0,

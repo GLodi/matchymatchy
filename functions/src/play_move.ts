@@ -20,7 +20,6 @@ export async function playMove(request: any, response: any) {
             if (done &&
                 ((match.data()!.hostdone != null && userId == match.data()!.joinuid) ||
                     (match.data()!.joindone != null && userId == match.data()!.hostuid))) {
-                console.log('checktrue')
                 await declareWinner(matchId)
             }
             console.log('--- move received')
@@ -77,15 +76,22 @@ async function declareWinner(matchId: string) {
 
 async function upWinAmount(matchId: string, hostOrJoin: boolean) {
     let match = await matches.doc(matchId).get()
-    let userRef = await users.doc(
-        hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid
-    )
-    let user = await userRef.get()
-    userRef.update({
-        matchesWon: +user.data()!.matchesWon + 1
+    let hostRef = await users.doc(match.data()!.hostuid)
+    let joinRef = await users.doc(match.data()!.joinuid)
+    let winner = hostOrJoin ? await hostRef.get() : await joinRef.get()
+    let winnerRef = hostOrJoin ? hostRef : joinRef
+    winnerRef.update({
+        currentMatch: null,
+        matchesWon: +winner.data()!.matchesWon + 1
     })
     matches.doc(matchId).update({
         winner: hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid,
-        winnerName: user.data()!.username,
+        winnerName: winner.data()!.username,
+    })
+    hostRef.update({
+        currentMatch: null
+    })
+    joinRef.update({
+        currentMatch: null
     })
 }

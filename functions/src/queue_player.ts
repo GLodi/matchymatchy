@@ -1,14 +1,15 @@
 import * as admin from 'firebase-admin'
 import { QueryDocumentSnapshot } from '@google-cloud/firestore'
 
+let users = admin.firestore().collection('users')
 let queue = admin.firestore().collection('queue')
 let gamefields = admin.firestore().collection('gamefields')
 let matches = admin.firestore().collection('matches')
 
-class AlreadyQueueingError extends Error {
+class StillInMatch extends Error {
     constructor(message: string) {
         super(message);
-        this.name = "AlreadyQueueingError";
+        this.name = "StillInMatch";
     }
 }
 
@@ -18,26 +19,36 @@ export async function queuePlayer(request: any, response: any) {
     let userFcmToken: string = request.query.userFcmToken
     let qs = await queue.get()
     try {
-        let gf = qs.empty ? await queueEmpty(userId, userFcmToken) :
-            await queueNotEmpty(userId, userFcmToken)
-        response.send(gf.data())
-        console.log('--- end queuePlayer')
+        if (!await alreadyInMatch(userId)) {
+            let gf = qs.empty ? await queueEmpty(userId, userFcmToken) :
+                await queueNotEmpty(userId, userFcmToken)
+            response.send(gf.data())
+            console.log('--- end queuePlayer')
+        } else throw new StillInMatch(userId + ' is already playing another match')
     } catch (e) {
+        // TODO: requeue player?
         console.log('--- error queueing player')
         console.log(e)
         response.send(false)
     }
 }
 
+async function alreadyInMatch(userId: string) {
+    let user = await users.doc(userId).get()
+    console.log(userId + ' ' + user.data()!.currentMatch)
+    console.log(user.data()!.currentMatch != null)
+    return user.data()!.currentMatch != null
+}
+
 async function queueEmpty(userId: string, userFcmToken: string) {
     let gfid: number = Math.floor(Math.random() * 1000) + 1
-    await populateQueue(gfid, userId, userFcmToken)
+    populateQueue(gfid, userId, userFcmToken)
     let gf = await gamefields.doc(String(gfid)).get()
     console.log(gf.data())
     return gf
 }
 
-async function populateQueue(gfid: number, userId: string, userFcmToken: string) {
+function populateQueue(gfid: number, userId: string, userFcmToken: string) {
     let newMatchRef = matches.doc()
     newMatchRef.set({
         gfid: gfid,
@@ -59,17 +70,19 @@ async function populateQueue(gfid: number, userId: string, userFcmToken: string)
         ufcmtoken: userFcmToken,
         time: admin.firestore.Timestamp.now(),
     })
+    users.doc(userId).update({
+        currentMatch: newMatchRef.id,
+    })
 }
 
 async function queueNotEmpty(userId: string, userFcmToken: string) {
     let query = await queue.orderBy('time', 'asc').limit(1).get()
-    if (query.docs[0].exists && query.docs[0].data().uid == userId) {
-        console.log("--- error: double queue")
-        throw new AlreadyQueueingError(userId + " is already queued")
-    }
     let matchId = await delQueueStartMatch(query.docs[0], userId, userFcmToken)
     console.log('match started: ' + matchId)
     let match = await matches.doc(matchId).get()
+    users.doc(userId).update({
+        currentMatch: match.id,
+    })
     let gf = await gamefields.doc(String(match.data()!.gfid)).get()
     console.log(gf.data())
     return gf

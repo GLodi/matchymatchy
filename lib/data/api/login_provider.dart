@@ -7,6 +7,7 @@ import 'package:squazzle/data/models/models.dart';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = GoogleSignIn();
 
+// TODO: add logout option
 abstract class LoginProvider {
   // Try login through Google services
   Future<User> loginWithGoogle();

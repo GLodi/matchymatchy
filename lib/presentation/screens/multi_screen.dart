@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/widgets/multi_game_widget.dart';
 import 'package:squazzle/presentation/widgets/win_widget.dart';
-import 'package:squazzle/presentation/widgets/gradient_animation.dart';
 
 class MultiScreen extends StatefulWidget {
   @override
@@ -47,6 +46,7 @@ class _MultiScreenState extends State<MultiScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[200],
       appBar: AppBar(
         leading: BackButton(color: Colors.black),
         backgroundColor: Colors.transparent,
@@ -74,29 +74,24 @@ class _MultiScreenState extends State<MultiScreen>
         },
         child: WillPopScope(
             onWillPop: _onWillPop,
-            child: Stack(
-              children: <Widget>[
-                background(),
-                BlocEventStateBuilder<GameEvent, GameState>(
-                  bloc: bloc,
-                  builder: (context, state) {
-                    switch (state.type) {
-                      case GameStateType.error:
-                        {
-                          return Center(child: Text(state.message));
-                        }
-                      case GameStateType.notInit:
-                        {
-                          return notInit();
-                        }
-                      case GameStateType.init:
-                        {
-                          return init();
-                        }
+            child: BlocEventStateBuilder<GameEvent, GameState>(
+              bloc: bloc,
+              builder: (context, state) {
+                switch (state.type) {
+                  case GameStateType.error:
+                    {
+                      return Center(child: Text(state.message));
                     }
-                  },
-                ),
-              ],
+                  case GameStateType.notInit:
+                    {
+                      return notInit();
+                    }
+                  case GameStateType.init:
+                    {
+                      return init();
+                    }
+                }
+              },
             )),
       ),
     );
@@ -159,23 +154,6 @@ class _MultiScreenState extends State<MultiScreen>
           ),
         ],
       ),
-    );
-  }
-
-  Widget background() {
-    return GradientAnimation(
-      begin: LinearGradient(
-        colors: [Colors.tealAccent, Colors.lightBlue],
-        begin: Alignment.topRight,
-        end: Alignment.bottomLeft,
-      ),
-      end: LinearGradient(
-        colors: [Colors.pink, Colors.redAccent],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      height: MediaQuery.of(context).size.height,
-      controller: _controller,
     );
   }
 

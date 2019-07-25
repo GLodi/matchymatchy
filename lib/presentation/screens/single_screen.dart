@@ -31,7 +31,7 @@ class _SingleScreenState extends State<SingleScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.blue[200],
       appBar: AppBar(
         leading: BackButton(color: Colors.black),
         backgroundColor: Colors.transparent,

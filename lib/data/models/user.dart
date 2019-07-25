@@ -12,7 +12,6 @@ class User {
     assert(map['uid'] != null);
     assert(map['photoUrl'] != null);
     assert(map['matchesWon'] != null);
-    assert(map['currentMatch'] != null);
     username = map['username'];
     uid = map['uid'];
     photoUrl = map['photoUrl'];

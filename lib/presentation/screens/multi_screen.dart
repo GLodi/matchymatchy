@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/widgets/multi_game_widget.dart';
@@ -12,32 +13,11 @@ class MultiScreen extends StatefulWidget {
 class _MultiScreenState extends State<MultiScreen>
     with TickerProviderStateMixin {
   MultiBloc bloc;
-  AnimationController _controller;
-  AnimationStatusListener statusListener;
   double opacityLevel = 0;
-  bool contrDisposed = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 6),
-    );
-    statusListener = (status) async {
-      try {
-        await Future.delayed(Duration(seconds: 3));
-        if (!contrDisposed) {
-          if (status == AnimationStatus.completed) {
-            _controller.reverse();
-          } else if (status == AnimationStatus.dismissed) {
-            _controller.forward();
-          }
-        }
-      } on TickerCanceled {}
-    };
-    _controller.addStatusListener(statusListener);
-    _controller.forward();
     bloc = BlocProvider.of<MultiBloc>(context);
     bloc.emitEvent(GameEvent(type: GameEventType.queue));
     bloc.correct.listen((correct) => _changeOpacity());
@@ -48,7 +28,7 @@ class _MultiScreenState extends State<MultiScreen>
     return Scaffold(
       backgroundColor: Colors.blue[200],
       appBar: AppBar(
-        leading: BackButton(color: Colors.black),
+        leading: BackButton(color: Colors.white),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
       ),
@@ -148,12 +128,17 @@ class _MultiScreenState extends State<MultiScreen>
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          CircularProgressIndicator(),
+          SpinKitRotatingPlain(
+            color: Colors.white,
+            size: 80.0,
+          ),
+          SizedBox(height: 80),
           StreamBuilder<String>(
             initialData: 'Connecting to server...',
             stream: bloc.waitMessage,
             builder: (context, snapshot) => Text(snapshot.data),
           ),
+          SizedBox(height: 60),
         ],
       ),
     );
@@ -166,8 +151,6 @@ class _MultiScreenState extends State<MultiScreen>
   @override
   void dispose() {
     bloc.dispose();
-    contrDisposed = true;
-    _controller.dispose();
     super.dispose();
   }
 }

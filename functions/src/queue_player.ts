@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin'
-import { QueryDocumentSnapshot } from '@google-cloud/firestore'
+import { DocumentSnapshot, QueryDocumentSnapshot } from '@google-cloud/firestore'
 
 let users = admin.firestore().collection('users')
 let queue = admin.firestore().collection('queue')
@@ -22,9 +22,13 @@ export async function queuePlayer(request: any, response: any) {
         if (!await alreadyInMatch(userId)) {
             let gf = qs.empty ? await queueEmpty(userId, userFcmToken) :
                 await queueNotEmpty(userId, userFcmToken)
-            response.send(gf.data())
+            let gfmap = gf.data()!
+            // TODO: send information with enemytarget and moves
+            gfmap['enemytarget'] = gfmap['target']
+            response.send(gfmap)
             console.log('--- end queuePlayer')
         } else throw new StillInMatch(userId + ' is already playing another match')
+        // TODO: send back already started game
     } catch (e) {
         // TODO: requeue player?
         console.log('--- error queueing player')
@@ -40,20 +44,22 @@ async function alreadyInMatch(userId: string) {
 
 async function queueEmpty(userId: string, userFcmToken: string) {
     let gfid: number = Math.floor(Math.random() * 1000) + 1
-    populateQueue(gfid, userId, userFcmToken)
     let gf = await gamefields.doc(String(gfid)).get()
+    populateQueue(gf, userId, userFcmToken)
     return gf
 }
 
-function populateQueue(gfid: number, userId: string, userFcmToken: string) {
+function populateQueue(gf: DocumentSnapshot, userId: string, userFcmToken: string) {
     let newMatchRef = matches.doc()
     newMatchRef.set({
-        gfid: gfid,
+        gfid: +gf.id,
+        hostmoves: +0,
         hostuid: userId,
-        hosttarget: null,
+        hosttarget: gf.data()!.target,
         hostfcmtoken: userFcmToken,
+        joinmoves: +0,
         joinuid: null,
-        jointarget: null,
+        jointarget: gf.data()!.target,
         joinfcmtoken: null,
         winner: '',
         winnerName: '',
@@ -62,7 +68,7 @@ function populateQueue(gfid: number, userId: string, userFcmToken: string) {
     })
     queue.add({
         uid: userId,
-        gfid: gfid,
+        gfid: +gf.id,
         matchid: newMatchRef.id,
         ufcmtoken: userFcmToken,
         time: admin.firestore.Timestamp.now(),

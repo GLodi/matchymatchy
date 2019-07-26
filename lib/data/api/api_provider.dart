@@ -8,7 +8,7 @@ abstract class ApiProvider {
   // Request user info
   Future<User> getUser(String uid);
 
-  // Add player to server queue
+  // Add player to server queue, or receive current match
   Future<Game> queuePlayer(String uid, String token);
 
   // Send updated target to server
@@ -30,7 +30,7 @@ class ApiProviderImpl implements ApiProvider {
   Future<Game> queuePlayer(String uid, String token) async {
     return _net
         .get(_baseUrl + 'queuePlayer?userId=' + uid + '&userFcmToken=' + token)
-        .then((response) => Game.fromMap(response));
+        .then((response) => GameOnline.fromMap(response));
   }
 
   @override

@@ -9,21 +9,18 @@ export async function playMove(request: any, response: any) {
     let moves: number = +request.query.moves
     let done: boolean = (request.query.done == 'true')
     let matchId: string = request.query.matchId
-    console.log('--- start playMove: ' + matchId)
-    let match = await matches.doc(matchId).get()
-    if (match.exists) {
-        if (userId == match.data()!.hostuid ||
-            userId == match.data()!.joinuid) {
+    let matchDoc = await matches.doc(matchId).get()
+    if (matchDoc.exists) {
+        if (userId == matchDoc.data()!.hostuid ||
+            userId == matchDoc.data()!.joinuid) {
             await updateMatch(userId, matchId, newTarget, moves)
             if (done) await setPlayerDone(userId, matchId)
             response.send(true)
             if (done &&
-                ((match.data()!.hostdone != null && userId == match.data()!.joinuid) ||
-                    (match.data()!.joindone != null && userId == match.data()!.hostuid))) {
+                ((matchDoc.data()!.hostdone != null && userId == matchDoc.data()!.joinuid) ||
+                    (matchDoc.data()!.joindone != null && userId == matchDoc.data()!.hostuid))) {
                 await declareWinner(matchId)
             }
-            console.log('--- move received')
-            console.log('--- end playMove: ' + matchId)
         }
         else {
             console.log('--- error: user neither host nor join')
@@ -36,8 +33,8 @@ export async function playMove(request: any, response: any) {
 }
 
 async function updateMatch(userId: string, matchId: string, newTarget: string, moves: number) {
-    let match = await matches.doc(matchId).get()
-    userId == match.data()!.hostuid ?
+    let matchDoc = await matches.doc(matchId).get()
+    userId == matchDoc.data()!.hostuid ?
         await matches.doc(matchId).update({
             hosttarget: newTarget,
             hostmoves: +moves
@@ -49,8 +46,8 @@ async function updateMatch(userId: string, matchId: string, newTarget: string, m
 }
 
 async function setPlayerDone(userId: string, matchId: string) {
-    let match = await matches.doc(matchId).get()
-    userId == match.data()!.hostuid ?
+    let matchDoc = await matches.doc(matchId).get()
+    userId == matchDoc.data()!.hostuid ?
         await matches.doc(matchId).update({
             hostdone: true
         }) :
@@ -60,11 +57,11 @@ async function setPlayerDone(userId: string, matchId: string) {
 }
 
 async function declareWinner(matchId: string) {
-    let match = await matches.doc(matchId).get()
-    if (match.data()!.hostmoves < match.data()!.joinmoves) {
+    let matchDoc = await matches.doc(matchId).get()
+    if (matchDoc.data()!.hostmoves < matchDoc.data()!.joinmoves) {
         await upWinAmount(matchId, true)
     }
-    else if (match.data()!.hostmoves > match.data()!.joinmoves) {
+    else if (matchDoc.data()!.hostmoves > matchDoc.data()!.joinmoves) {
         await upWinAmount(matchId, false)
     }
     else {
@@ -76,24 +73,24 @@ async function declareWinner(matchId: string) {
 }
 
 async function upWinAmount(matchId: string, hostOrJoin: boolean) {
-    let match = await matches.doc(matchId).get()
+    let matchDoc = await matches.doc(matchId).get()
     let userRef = await users.doc(
-        hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid
+        hostOrJoin ? matchDoc.data()!.hostuid : matchDoc.data()!.joinuid
     )
     let user = await userRef.get()
     userRef.update({
         matchesWon: +user.data()!.matchesWon + 1
     })
     matches.doc(matchId).update({
-        winner: hostOrJoin ? match.data()!.hostuid : match.data()!.joinuid,
+        winner: hostOrJoin ? matchDoc.data()!.hostuid : matchDoc.data()!.joinuid,
         winnerName: user.data()!.username,
     })
 }
 
 async function resetCurrentMatch(matchId: string) {
-    let match = await matches.doc(matchId).get()
-    let hostRef = await users.doc(match.data()!.hostuid)
-    let joinRef = await users.doc(match.data()!.joinuid)
+    let matchDoc = await matches.doc(matchId).get()
+    let hostRef = await users.doc(matchDoc.data()!.hostuid)
+    let joinRef = await users.doc(matchDoc.data()!.joinuid)
     hostRef.update({
         currentMatch: null
     })

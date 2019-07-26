@@ -1,11 +1,10 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import { DocumentData } from '@google-cloud/firestore'
-
-admin.initializeApp(functions.config().firebase)
-
 import { playMove } from './play_move';
 import { queuePlayer } from './queue_player';
+
+admin.initializeApp(functions.config().firebase)
 
 // Handle queueing player
 exports.queuePlayer = functions
@@ -48,14 +47,14 @@ let matches = admin.firestore().collection('matches')
 let users = admin.firestore().collection('users')
 
 async function onMatchStart(matchId: string) {
-    let match = await matches.doc(matchId).get()
-    let hostDoc = await users.where('uid', '==', match.data()!.hostuid).get()
+    let matchDoc = await matches.doc(matchId).get()
+    let hostDoc = await users.where('uid', '==', matchDoc.data()!.hostuid).get()
     let hostName = await hostDoc.docs[0].data().username
-    let joinDoc = await users.where('uid', '==', match.data()!.joinuid).get()
+    let joinDoc = await users.where('uid', '==', matchDoc.data()!.joinuid).get()
     let joinName = await joinDoc.docs[0].data().username
     let messageToHost = {
         data: {
-            matchid: match.id,
+            matchid: matchDoc.id,
             click_action: 'FLUTTER_NOTIFICATION_CLICK',
             messType: 'challenge',
             enemyName: joinName,
@@ -64,11 +63,11 @@ async function onMatchStart(matchId: string) {
             title: 'Match started!',
             body: joinName + ' challenged you!',
         },
-        token: match.data()!.hostfcmtoken
+        token: matchDoc.data()!.hostfcmtoken
     }
     let messageToJoin = {
         data: {
-            matchid: match.id,
+            matchid: matchDoc.id,
             click_action: 'FLUTTER_NOTIFICATION_CLICK',
             messType: 'challenge',
             enemyName: hostName,
@@ -77,18 +76,18 @@ async function onMatchStart(matchId: string) {
             title: 'Match started!',
             body: hostName + ' challenged you!',
         },
-        token: match.data()!.joinfcmtoken,
+        token: matchDoc.data()!.joinfcmtoken,
     }
     try {
         admin.messaging().send(messageToHost)
-        console.log('message sent to host: ' + match.data()!.hostfcmtoken)
+        console.log('message sent to host: ' + matchDoc.data()!.hostfcmtoken)
     } catch (e) {
         console.log('--- error sending message: ')
         console.log(e)
     }
     try {
         admin.messaging().send(messageToJoin)
-        console.log('message sent to join: ' + match.data()!.joinfcmtoken)
+        console.log('message sent to join: ' + matchDoc.data()!.joinfcmtoken)
     } catch (e) {
         console.log('--- error sending message: ')
         console.log(e)

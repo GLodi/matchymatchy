@@ -1,4 +1,5 @@
 import * as admin from 'firebase-admin'
+import { Match } from './match'
 import { DocumentSnapshot, QueryDocumentSnapshot } from '@google-cloud/firestore'
 
 let users = admin.firestore().collection('users')
@@ -6,29 +7,25 @@ let queue = admin.firestore().collection('queue')
 let gamefields = admin.firestore().collection('gamefields')
 let matches = admin.firestore().collection('matches')
 
-class StillInMatch extends Error {
-    constructor(message: string) {
-        super(message);
-        this.name = "StillInMatch";
-    }
-}
-
 export async function queuePlayer(request: any, response: any) {
-    console.log('--- start queuePlayer')
     let userId: string = request.query.userId
     let userFcmToken: string = request.query.userFcmToken
     let qs = await queue.get()
     try {
-        if (!await alreadyInMatch(userId)) {
-            let gf = qs.empty ? await queueEmpty(userId, userFcmToken) :
+        let currentMatch = await alreadyInMatch(userId)
+        if (currentMatch == null) {
+            let gfDoc = qs.empty ? await queueEmpty(userId, userFcmToken) :
                 await queueNotEmpty(userId, userFcmToken)
-            let gfmap = gf.data()!
-            // TODO: send information with enemytarget and moves
-            gfmap['enemytarget'] = gfmap['target']
-            response.send(gfmap)
-            console.log('--- end queuePlayer')
-        } else throw new StillInMatch(userId + ' is already playing another match')
-        // TODO: send back already started game
+            let newMatch = new Match(gfDoc.id, gfDoc.data()!.grid, gfDoc.data()!.target, gfDoc.data()!.target)
+            response.send(newMatch)
+        } else {
+            // TODO: send back already started game
+            let matchDoc = await matches.doc(currentMatch).get()
+            let gfDoc = await gamefields.doc(matchDoc.data()!.gfid).get()
+            let match = new Match(gfDoc.id, gfDoc.data()!.grid, gfDoc.data()!.target, gfDoc.data()!.target)
+            response.send(match)
+        }
+        console.log('--- end queuePlayer')
     } catch (e) {
         // TODO: requeue player?
         console.log('--- error queueing player')
@@ -37,12 +34,12 @@ export async function queuePlayer(request: any, response: any) {
     }
 }
 
-async function alreadyInMatch(userId: string) {
+async function alreadyInMatch(userId: string): Promise<string> {
     let user = await users.doc(userId).get()
-    return user.data()!.currentMatch != null
+    return user.data()!.currentMatch != null ? user.data()!.currentMatch : null
 }
 
-async function queueEmpty(userId: string, userFcmToken: string) {
+async function queueEmpty(userId: string, userFcmToken: string): Promise<DocumentSnapshot> {
     let gfid: number = Math.floor(Math.random() * 1000) + 1
     let gf = await gamefields.doc(String(gfid)).get()
     populateQueue(gf, userId, userFcmToken)
@@ -78,7 +75,7 @@ function populateQueue(gf: DocumentSnapshot, userId: string, userFcmToken: strin
     })
 }
 
-async function queueNotEmpty(userId: string, userFcmToken: string) {
+async function queueNotEmpty(userId: string, userFcmToken: string): Promise<DocumentSnapshot> {
     let query = await queue.orderBy('time', 'asc').limit(1).get()
     let matchId = await delQueueStartMatch(query.docs[0], userId, userFcmToken)
     let match = await matches.doc(matchId).get()
@@ -89,7 +86,7 @@ async function queueNotEmpty(userId: string, userFcmToken: string) {
     return gf
 }
 
-async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, joinFcmToken: string) {
+async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, joinFcmToken: string): Promise<string> {
     queue.doc(doc.id).delete()
     let matchId = doc.data().matchid
     await matches.doc(matchId).update({

@@ -19,7 +19,6 @@ export async function queuePlayer(request: any, response: any) {
             let newMatch = new Match(gfDoc.id, gfDoc.data()!.grid, gfDoc.data()!.target, gfDoc.data()!.target)
             response.send(newMatch)
         } else {
-            // TODO: send back already started game
             let matchDoc = await matches.doc(currentMatch).get()
             let gfDoc = await gamefields.doc(matchDoc.data()!.gfid).get()
             let match = new Match(gfDoc.id, gfDoc.data()!.grid, gfDoc.data()!.target, gfDoc.data()!.target)

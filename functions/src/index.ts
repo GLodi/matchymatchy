@@ -1,10 +1,12 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
+
+admin.initializeApp(functions.config().firebase)
+
 import { DocumentData } from '@google-cloud/firestore'
 import { playMove } from './play_move';
 import { queuePlayer } from './queue_player';
 
-admin.initializeApp(functions.config().firebase)
 
 // Handle queueing player
 exports.queuePlayer = functions

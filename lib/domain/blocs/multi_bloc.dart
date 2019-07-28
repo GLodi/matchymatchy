@@ -54,7 +54,7 @@ class MultiBloc extends GameBloc {
   }
 
   // TODO: check that what is return by call is the correct object and not an error
-  void storeGameInfo(Game game) async {
+  void storeGameInfo(GameOnline game) async {
     _waitMessageSubject.add('Waiting for opponent...');
     gameField = game.gameField;
     targetField = game.targetField;

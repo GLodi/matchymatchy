@@ -16,15 +16,18 @@ export async function queuePlayer(request: any, response: any) {
         if (currentMatch == null) {
             let gfDoc = qs.empty ? await queueEmpty(userId, userFcmToken) :
                 await queueNotEmpty(userId, userFcmToken)
-            let newMatch = new Match(gfDoc.id, gfDoc.data()!.grid, gfDoc.data()!.target, gfDoc.data()!.target)
+            let newMatch = new Match(gfDoc.id, gfDoc.data()!.grid, gfDoc.data()!.target, gfDoc.data()!.target, 0)
             response.send(newMatch)
         } else {
             let matchDoc = await matches.doc(currentMatch).get()
             let gfDoc = await gamefields.doc(matchDoc.data()!.gfid).get()
-            let match = new Match(gfDoc.id, gfDoc.data()!.grid, gfDoc.data()!.target, gfDoc.data()!.target)
+            let hostOrJoin = userId == matchDoc.data()!.hostuid
+            let match = new Match(gfDoc.id, gfDoc.data()!.grid,
+                hostOrJoin ? matchDoc.data()!.hosttarget : matchDoc.data()!.jointarget,
+                hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
+                hostOrJoin ? matchDoc.data()!.hostmoves : matchDoc.data()!.joinmoves)
             response.send(match)
         }
-        console.log('--- end queuePlayer')
     } catch (e) {
         // TODO: requeue player?
         console.log('--- error queueing player')

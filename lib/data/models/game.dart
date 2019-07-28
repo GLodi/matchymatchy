@@ -22,16 +22,18 @@ class GameOnline extends Game {
   int moves;
 
   GameOnline.fromMap(Map<String, dynamic> map) {
-    assert(map['grid'] != null);
+    assert(map['gfid'] != null);
+    assert(map['gf'] != null);
     assert(map['target'] != null);
     assert(map['enemytarget'] != null);
     assert(map['moves'] != null);
-    assert(map['grid'].toString().length == 25);
+    assert(map['gf'].toString().length == 25);
     assert(map['target'].toString().length == 9);
     assert(map['enemytarget'].toString().length == 9);
-    gameField = GameField(grid: map['grid']);
+    assert(map['moves'] >= 0);
+    gameField = GameField(grid: map['gf']);
     targetField = TargetField(grid: map['target']);
     enemyTargetField = TargetField(grid: map['enemytarget']);
-    moves = int.parse(map['moves']);
+    moves = map['moves'];
   }
 }

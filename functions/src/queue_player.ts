@@ -7,20 +7,30 @@ let queue = admin.firestore().collection('queue')
 let gamefields = admin.firestore().collection('gamefields')
 let matches = admin.firestore().collection('matches')
 
+// Queue handling
+// Waits for a player's connection: checks if he's currently
+// playing in a match (if which case it sends him the current
+// match's situation) or he's ready for a new game.
 export async function queuePlayer(request: any, response: any) {
     let userId: string = request.query.userId
     let userFcmToken: string = request.query.userFcmToken
     let qs = await queue.get()
     try {
         let currentMatch = await alreadyInMatch(userId)
+        // Not already in match, put him in queue
         if (currentMatch == null) {
+            // Queue can either be empty or full.
+            // If empty, create new element in queue and wait for someone.
+            // if full, join other player's match and start game.
             let gfDoc = qs.empty ? await queueEmpty(userId, userFcmToken) :
                 await queueNotEmpty(userId, userFcmToken)
             let newMatch = new Match(gfDoc.id, gfDoc.data()!.grid, gfDoc.data()!.target, gfDoc.data()!.target, 0)
             response.send(newMatch)
-        } else {
+        }
+        // Already in game, send him his match's situation and let him continue
+        else {
             let matchDoc = await matches.doc(currentMatch).get()
-            let gfDoc = await gamefields.doc(matchDoc.data()!.gfid).get()
+            let gfDoc = await gamefields.doc(String(matchDoc.data()!.gfid)).get()
             let hostOrJoin = userId == matchDoc.data()!.hostuid
             let match = new Match(gfDoc.id, gfDoc.data()!.grid,
                 hostOrJoin ? matchDoc.data()!.hosttarget : matchDoc.data()!.jointarget,

@@ -14,6 +14,7 @@ abstract class GameRepo {
       .increaseMoves()
       .then((_) => logicProvider.applyMove(gameField, move));
 
+  // TODO: move this to single and multi, logic is different
   // Return amount of moves currently played
   Future<int> getMoves() => prefsProvider.getMoves();
 

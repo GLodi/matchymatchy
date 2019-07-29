@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin'
-import { Match } from './match'
+import { Session } from './session'
 import { DocumentSnapshot, QueryDocumentSnapshot } from '@google-cloud/firestore'
 
 let users = admin.firestore().collection('users')
@@ -25,7 +25,7 @@ export async function queuePlayer(request: any, response: any) {
             let gfDoc = qs.empty ? await queueEmpty(userId, userFcmToken) :
                 await queueNotEmpty(userId, userFcmToken)
             let diff = await diffToSend(gfDoc.data()!.grid, gfDoc.data()!.target)
-            let newMatch = new Match(gfDoc.id, gfDoc.data()!.grid, gfDoc.data()!.target, diff, 0, false)
+            let newMatch = new Session(gfDoc.id, gfDoc.data()!.grid, gfDoc.data()!.target, diff, 0, false)
             response.send(newMatch)
         }
         // Already in game, send him his match's situation and let him continue
@@ -33,8 +33,8 @@ export async function queuePlayer(request: any, response: any) {
             let matchDoc = await matches.doc(currentMatch).get()
             let gfDoc = await gamefields.doc(String(matchDoc.data()!.gfid)).get()
             let hostOrJoin = userId == matchDoc.data()!.hostuid
-            let match = new Match(gfDoc.id, gfDoc.data()!.grid,
-                hostOrJoin ? matchDoc.data()!.hosttarget : matchDoc.data()!.jointarget,
+            let match = new Session(gfDoc.id, gfDoc.data()!.grid,
+                gfDoc.data()!.target,
                 hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
                 hostOrJoin ? matchDoc.data()!.hostmoves : matchDoc.data()!.joinmoves, true)
             response.send(match)

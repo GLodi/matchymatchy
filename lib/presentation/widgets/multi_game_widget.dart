@@ -68,7 +68,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
                               style: TextStyle(
                                 fontFamily: "Roboto",
                                 fontSize: 20.0,
-                                color: Colors.black,
+                                color: Colors.white,
                               ),
                             ),
                             Text(
@@ -77,7 +77,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
                               style: TextStyle(
                                 fontFamily: "Roboto",
                                 fontSize: 25.0,
-                                color: Colors.black,
+                                color: Colors.white,
                               ),
                             )
                           ],

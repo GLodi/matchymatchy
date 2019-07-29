@@ -1,4 +1,4 @@
-export class Match {
+export class Session {
     gfid: string;
     gf: string;
     target: string;

@@ -53,13 +53,13 @@ class MultiBloc extends GameBloc {
     }
   }
 
-  // TODO: check that what is return by call is the correct object and not an error
   void storeGameInfo(GameOnline game) async {
     _waitMessageSubject.add('Waiting for opponent...');
+    // TODO: set moves received from game
     gameField = game.gameField;
     targetField = game.targetField;
-    var diff = repo.diffToSend(gameField, targetField);
-    _matchUpdatesSubject.add(diff);
+    _matchUpdatesSubject.add(game.enemyTargetField);
+    if (game.started) emitEvent(GameEvent(type: GameEventType.start));
   }
 
   void listenToChallengeMessages() {

@@ -30,10 +30,7 @@ class ApiProviderImpl implements ApiProvider {
   Future<GameOnline> queuePlayer(String uid, String token) async {
     return _net
         .get(_baseUrl + 'queuePlayer?userId=' + uid + '&userFcmToken=' + token)
-        .then((response) {
-      print(response);
-      GameOnline.fromMap(response);
-    });
+        .then((response) => GameOnline.fromMap(response));
   }
 
   @override

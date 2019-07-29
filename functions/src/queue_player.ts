@@ -24,7 +24,8 @@ export async function queuePlayer(request: any, response: any) {
             // if full, join other player's match and start game.
             let gfDoc = qs.empty ? await queueEmpty(userId, userFcmToken) :
                 await queueNotEmpty(userId, userFcmToken)
-            let newMatch = new Match(gfDoc.id, gfDoc.data()!.grid, gfDoc.data()!.target, gfDoc.data()!.target, 0)
+            let diff = await diffToSend(gfDoc.data()!.grid, gfDoc.data()!.target)
+            let newMatch = new Match(gfDoc.id, gfDoc.data()!.grid, gfDoc.data()!.target, diff, 0, false)
             response.send(newMatch)
         }
         // Already in game, send him his match's situation and let him continue
@@ -35,7 +36,7 @@ export async function queuePlayer(request: any, response: any) {
             let match = new Match(gfDoc.id, gfDoc.data()!.grid,
                 hostOrJoin ? matchDoc.data()!.hosttarget : matchDoc.data()!.jointarget,
                 hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
-                hostOrJoin ? matchDoc.data()!.hostmoves : matchDoc.data()!.joinmoves)
+                hostOrJoin ? matchDoc.data()!.hostmoves : matchDoc.data()!.joinmoves, true)
             response.send(match)
         }
     } catch (e) {
@@ -54,21 +55,21 @@ async function alreadyInMatch(userId: string): Promise<string> {
 async function queueEmpty(userId: string, userFcmToken: string): Promise<DocumentSnapshot> {
     let gfid: number = Math.floor(Math.random() * 1000) + 1
     let gf = await gamefields.doc(String(gfid)).get()
-    populateQueue(gf, userId, userFcmToken)
+    await populateQueue(gf, userId, userFcmToken)
     return gf
 }
 
-function populateQueue(gf: DocumentSnapshot, userId: string, userFcmToken: string) {
+async function populateQueue(gf: DocumentSnapshot, userId: string, userFcmToken: string) {
     let newMatchRef = matches.doc()
     newMatchRef.set({
         gfid: +gf.id,
         hostmoves: +0,
         hostuid: userId,
-        hosttarget: gf.data()!.target,
+        hosttarget: await diffToSend(gf.data()!.grid, gf.data()!.target),
         hostfcmtoken: userFcmToken,
         joinmoves: +0,
         joinuid: null,
-        jointarget: gf.data()!.target,
+        jointarget: await diffToSend(gf.data()!.grid, gf.data()!.target),
         joinfcmtoken: null,
         winner: '',
         winnerName: '',
@@ -109,4 +110,16 @@ async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, j
         time: admin.firestore.Timestamp.now(),
     })
     return matchId
+}
+
+async function diffToSend(gf: string, target: string): Promise<string> {
+    let enemy = ""
+    var a = [6, 7, 8, 11, 12, 13, 16, 17, 18]
+    for (let i = 0; i < 9; i++) {
+        if (gf[a[i]] == target[i])
+            enemy += gf[a[i]]
+        else
+            enemy += '6'
+    }
+    return enemy
 }

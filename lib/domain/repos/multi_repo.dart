@@ -42,9 +42,6 @@ class MultiRepo extends GameRepo {
 
   void storeMatchId(String matchId) => prefsProvider.storeMatchId(matchId);
 
-  TargetField diffToSend(GameField gameField, TargetField targetField) =>
-      logicProvider.diffToSend(gameField, targetField);
-
   Stream<ChallengeMessage> get challengeMessages =>
       messProvider.challengeMessages;
 

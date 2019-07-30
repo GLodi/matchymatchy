@@ -3,32 +3,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:squazzle/data/models/models.dart';
 
 abstract class SharedPrefsProvider {
-  // Store logged user information
   Future<void> storeUser(User user);
 
-  // Return logged user information
-  Future<User> getUser();
-
-  // Return uid of logged user
-  Future<String> getUid();
-
-  // Returns true if first time that user opens app
-  Future<bool> isFirstOpen();
-
-  // Resets amount of current moves amount
-  Future<void> restoreMoves();
-
-  // Increase current amount of moves
-  Future<void> increaseMoves();
-
-  // Returns amount of moves in current game
-  Future<int> getMoves();
-
-  // Stores current matchId
   Future<void> storeMatchId(String matchId);
 
-  // Returns current game's information
-  Future<Session> getCurrentGameSession();
+  Future<void> storeGf(GameField gf);
+
+  Future<void> storeTarget(TargetField targetField);
+
+  Future<User> getUser();
+
+  Future<String> getUid();
+
+  Future<bool> isFirstOpen();
+
+  Future<void> restoreMoves();
+
+  Future<void> increaseMoves();
+
+  Future<int> getMoves();
+
+  Future<Session> getCurrentSession();
 }
 
 class SharedPrefsProviderImpl extends SharedPrefsProvider {
@@ -110,11 +105,25 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
   }
 
   @override
-  Future<Session> getCurrentGameSession() async {
+  Future<void> storeGf(GameField gf) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString('gf', gf.grid);
+  }
+
+  @override
+  Future<void> storeTarget(TargetField targetField) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString('target', targetField.grid);
+  }
+
+  @override
+  Future<Session> getCurrentSession() async {
     prefs = await SharedPreferences.getInstance();
     return Session(
         !test ? prefs.getString('uid') : 'iG00CwdtEscbX1WeqDtl3Qi6E552',
         prefs.getString('matchId'),
+        prefs.getString('gf'),
+        prefs.getString('target'),
         prefs.getInt('moves'));
   }
 }

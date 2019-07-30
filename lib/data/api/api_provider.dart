@@ -41,8 +41,8 @@ class ApiProviderImpl implements ApiProvider {
             session.uid +
             '&matchId=' +
             session.matchId +
-            '&newGrid=' +
-            session.grid +
+            '&newGf=' +
+            session.gf +
             '&newTarget=' +
             session.target +
             '&done=' +

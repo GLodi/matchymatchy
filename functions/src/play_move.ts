@@ -4,16 +4,17 @@ let matches = admin.firestore().collection('matches')
 let users = admin.firestore().collection('users')
 
 export async function playMove(request: any, response: any) {
-    let newTarget: string = request.query.newTarget
     let userId: string = request.query.userId
-    let moves: number = +request.query.moves
-    let done: boolean = (request.query.done == 'true')
     let matchId: string = request.query.matchId
+    let newGf: string = request.query.newGf
+    let newTarget: string = request.query.newTarget
+    let done: boolean = (request.query.done == 'true')
+    let moves: number = +request.query.moves
     let matchDoc = await matches.doc(matchId).get()
     if (matchDoc.exists) {
         if (userId == matchDoc.data()!.hostuid ||
             userId == matchDoc.data()!.joinuid) {
-            await updateMatch(userId, matchId, newTarget, moves)
+            await updateMatch(userId, matchId, newGf, newTarget, moves)
             if (done) await setPlayerDone(userId, matchId)
             response.send(true)
             if (done &&
@@ -32,14 +33,16 @@ export async function playMove(request: any, response: any) {
     }
 }
 
-async function updateMatch(userId: string, matchId: string, newTarget: string, moves: number) {
+async function updateMatch(userId: string, matchId: string, newGf: string, newTarget: string, moves: number) {
     let matchDoc = await matches.doc(matchId).get()
     userId == matchDoc.data()!.hostuid ?
         await matches.doc(matchId).update({
+            hostgf: newGf,
             hosttarget: newTarget,
             hostmoves: +moves
         }) :
         await matches.doc(matchId).update({
+            joingf: newGf,
             jointarget: newTarget,
             joinmoves: +moves
         })

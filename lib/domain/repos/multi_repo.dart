@@ -18,10 +18,10 @@ class MultiRepo extends GameRepo {
     var need = logicProvider.needToSendMove(gameField, targetField);
     if (need) {
       TargetField targetDiff = logicProvider.diffToSend(gameField, targetField);
-      Session session = await prefsProvider.getCurrentGameSession();
+      Session session = await prefsProvider.getCurrentSession();
       bool isCorrect =
           await logicProvider.checkIfCorrect(gameField, targetField);
-      await apiProvider.sendMove(targetDiff, session, isCorrect);
+      await apiProvider.sendMove(session, isCorrect);
     }
     return logicProvider.checkIfCorrect(gameField, targetField);
   }

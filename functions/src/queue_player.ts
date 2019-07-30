@@ -33,7 +33,8 @@ export async function queuePlayer(request: any, response: any) {
             let matchDoc = await matches.doc(currentMatch).get()
             let gfDoc = await gamefields.doc(String(matchDoc.data()!.gfid)).get()
             let hostOrJoin = userId == matchDoc.data()!.hostuid
-            let match = new Session(gfDoc.id, gfDoc.data()!.grid,
+            let match = new Session(gfDoc.id,
+                hostOrJoin ? matchDoc.data()!.hostgf : matchDoc.data()!.joingf,
                 gfDoc.data()!.target,
                 hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
                 hostOrJoin ? matchDoc.data()!.hostmoves : matchDoc.data()!.joinmoves, true)
@@ -65,10 +66,12 @@ async function populateQueue(gf: DocumentSnapshot, userId: string, userFcmToken:
         gfid: +gf.id,
         hostmoves: +0,
         hostuid: userId,
+        hostgf: gf.data()!.grid,
         hosttarget: await diffToSend(gf.data()!.grid, gf.data()!.target),
         hostfcmtoken: userFcmToken,
         joinmoves: +0,
         joinuid: null,
+        joingf: gf.data()!.grid,
         jointarget: await diffToSend(gf.data()!.grid, gf.data()!.target),
         joinfcmtoken: null,
         winner: '',

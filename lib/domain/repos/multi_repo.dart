@@ -14,10 +14,12 @@ class MultiRepo extends GameRepo {
             prefsProvider: prefsProvider);
 
   @override
-  Future<bool> isCorrect(GameField gameField, TargetField targetField) async {
+  Future<bool> moveDone(GameField gameField, TargetField targetField) async {
     var need = logicProvider.needToSendMove(gameField, targetField);
     if (need) {
-      TargetField targetDiff = logicProvider.diffToSend(gameField, targetField);
+      await prefsProvider.storeGf(gameField);
+      await prefsProvider
+          .storeTarget(logicProvider.diffToSend(gameField, targetField));
       Session session = await prefsProvider.getCurrentSession();
       bool isCorrect =
           await logicProvider.checkIfCorrect(gameField, targetField);
@@ -32,7 +34,9 @@ class MultiRepo extends GameRepo {
     await prefsProvider.restoreMoves();
     String uid = await prefsProvider.getUid();
     String token = await messProvider.getToken();
-    return await apiProvider.queuePlayer(uid, token);
+    GameOnline situation = await apiProvider.queuePlayer(uid, token);
+    prefsProvider.storeMoves(situation.moves);
+    return situation;
   }
 
   Future<void> updateUserInfo() => prefsProvider

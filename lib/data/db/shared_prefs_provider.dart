@@ -11,6 +11,8 @@ abstract class SharedPrefsProvider {
 
   Future<void> storeTarget(TargetField targetField);
 
+  Future<void> storeMoves(int moves);
+
   Future<User> getUser();
 
   Future<String> getUid();
@@ -39,6 +41,30 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
     if (!test) prefs.setString('uid', user.uid);
     prefs.setString('photoUrl', user.photoUrl);
     prefs.setInt('matchesWon', user.matchesWon);
+  }
+
+  @override
+  Future<void> storeMatchId(String matchId) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString('matchId', matchId);
+  }
+
+  @override
+  Future<void> storeGf(GameField gf) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString('gf', gf.grid);
+  }
+
+  @override
+  Future<void> storeTarget(TargetField targetField) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString('target', targetField.grid);
+  }
+
+  @override
+  Future<void> storeMoves(int moves) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setInt('moves', moves);
   }
 
   @override
@@ -81,12 +107,6 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
   }
 
   @override
-  Future<void> storeMatchId(String matchId) async {
-    prefs = await SharedPreferences.getInstance();
-    prefs.setString('matchId', matchId);
-  }
-
-  @override
   Future<void> restoreMoves() async {
     prefs = await SharedPreferences.getInstance();
     prefs.setInt('moves', 0);
@@ -102,18 +122,6 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
   Future<int> getMoves() async {
     prefs = await SharedPreferences.getInstance();
     return prefs.getInt('moves');
-  }
-
-  @override
-  Future<void> storeGf(GameField gf) async {
-    prefs = await SharedPreferences.getInstance();
-    prefs.setString('gf', gf.grid);
-  }
-
-  @override
-  Future<void> storeTarget(TargetField targetField) async {
-    prefs = await SharedPreferences.getInstance();
-    prefs.setString('target', targetField.grid);
   }
 
   @override

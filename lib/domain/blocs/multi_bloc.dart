@@ -19,8 +19,8 @@ class MultiBloc extends GameBloc {
   Stream<String> get waitMessage => _waitMessageSubject.stream;
 
   // Updates enemy target
-  final _matchUpdatesSubject = BehaviorSubject<TargetField>();
-  Stream<TargetField> get matchUpdates => _matchUpdatesSubject.stream;
+  final _enemyTargetSubject = BehaviorSubject<TargetField>();
+  Stream<TargetField> get enemyTarget => _enemyTargetSubject.stream;
 
   MultiBloc(this.repo) : super(repo);
 
@@ -55,10 +55,10 @@ class MultiBloc extends GameBloc {
 
   void storeGameInfo(GameOnline game) async {
     _waitMessageSubject.add('Waiting for opponent...');
-    // TODO: set moves received from game
     gameField = game.gameField;
     targetField = game.targetField;
-    _matchUpdatesSubject.add(game.enemyTargetField);
+    _enemyTargetSubject.add(game.enemyTargetField);
+    moveNumberSubject.add(game.moves);
     if (game.started) emitEvent(GameEvent(type: GameEventType.start));
   }
 
@@ -71,7 +71,7 @@ class MultiBloc extends GameBloc {
 
   void listenToMoveMessages() {
     moveSub = repo.moveMessages.listen((mess) {
-      _matchUpdatesSubject.add(TargetField(grid: mess.enemyTarget));
+      _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
     });
   }
 
@@ -88,7 +88,7 @@ class MultiBloc extends GameBloc {
     moveSub.cancel();
     challengeSub.cancel();
     winnerSub.cancel();
-    _matchUpdatesSubject.close();
+    _enemyTargetSubject.close();
     _waitMessageSubject.close();
     super.dispose();
   }

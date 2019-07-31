@@ -11,7 +11,7 @@ class SingleRepo extends GameRepo {
             prefsProvider: prefsProvider);
 
   @override
-  Future<bool> isCorrect(GameField gameField, TargetField targetField) =>
+  Future<bool> moveDone(GameField gameField, TargetField targetField) =>
       logicProvider.checkIfCorrect(gameField, targetField);
 
   Future<Game> getGame(int id) =>

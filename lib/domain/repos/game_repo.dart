@@ -19,5 +19,5 @@ abstract class GameRepo {
   Future<int> getMoves() => prefsProvider.getMoves();
 
   // Check whether player has reached end game
-  Future<bool> isCorrect(GameField gameField, TargetField targetField);
+  Future<bool> moveDone(GameField gameField, TargetField targetField);
 }

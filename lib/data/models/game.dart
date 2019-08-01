@@ -21,6 +21,7 @@ class GameOnline extends Game {
   TargetField enemyTargetField;
   int moves;
   bool started;
+  String enemyName;
 
   GameOnline.fromMap(Map<String, dynamic> map) {
     assert(map['gfid'] != null);
@@ -29,6 +30,7 @@ class GameOnline extends Game {
     assert(map['enemytarget'] != null);
     assert(map['moves'] != null);
     assert(map['started'] != null);
+    assert(map['enemyname'] != null);
     assert(map['gf'].toString().length == 25);
     assert(map['target'].toString().length == 9);
     assert(map['enemytarget'].toString().length == 9);
@@ -38,5 +40,6 @@ class GameOnline extends Game {
     enemyTargetField = TargetField(grid: map['enemytarget']);
     moves = map['moves'];
     started = map['started'];
+    enemyName = map['enemyname'];
   }
 }

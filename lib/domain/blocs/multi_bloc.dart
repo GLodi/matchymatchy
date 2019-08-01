@@ -22,6 +22,10 @@ class MultiBloc extends GameBloc {
   final _enemyTargetSubject = BehaviorSubject<TargetField>();
   Stream<TargetField> get enemyTarget => _enemyTargetSubject.stream;
 
+  // Updates enemy name on appbar
+  final _enemyNameSubject = BehaviorSubject<String>();
+  Stream<String> get enemyName => _enemyNameSubject.stream;
+
   MultiBloc(this.repo) : super(repo);
 
   @override
@@ -35,7 +39,7 @@ class MultiBloc extends GameBloc {
         listenToWinnerMessages();
         await repo.queuePlayer().catchError((e) {
           result = GameState.error('error queueing to server');
-        }).then((game) => storeGameInfo(game));
+        }).then((game) => showGame(game));
         if (result != null && result.type == GameStateType.error) {
           yield result;
         }
@@ -53,11 +57,12 @@ class MultiBloc extends GameBloc {
     }
   }
 
-  void storeGameInfo(GameOnline game) async {
+  void showGame(GameOnline game) async {
     _waitMessageSubject.add('Waiting for opponent...');
     gameField = game.gameField;
     targetField = game.targetField;
     _enemyTargetSubject.add(game.enemyTargetField);
+    _enemyNameSubject.add(game.enemyName);
     moveNumberSubject.add(game.moves);
     if (game.started) emitEvent(GameEvent(type: GameEventType.start));
   }
@@ -90,6 +95,7 @@ class MultiBloc extends GameBloc {
     winnerSub.cancel();
     _enemyTargetSubject.close();
     _waitMessageSubject.close();
+    _enemyNameSubject.close();
     super.dispose();
   }
 }

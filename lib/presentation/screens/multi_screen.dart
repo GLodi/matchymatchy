@@ -31,6 +31,11 @@ class _MultiScreenState extends State<MultiScreen>
         leading: BackButton(color: Colors.white),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
+        title: StreamBuilder<String>(
+          initialData: 'Opponent',
+          stream: bloc.enemyName,
+          builder: (context, snapshot) => Text(snapshot.data),
+        ),
       ),
       body: Hero(
         tag: 'multi',

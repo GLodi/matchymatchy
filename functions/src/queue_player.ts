@@ -25,19 +25,27 @@ export async function queuePlayer(request: any, response: any) {
             let gfDoc = qs.empty ? await queueEmpty(userId, userFcmToken) :
                 await queueNotEmpty(userId, userFcmToken)
             let diff = await diffToSend(gfDoc.data()!.grid, gfDoc.data()!.target)
-            let newMatch = new Session(gfDoc.id, gfDoc.data()!.grid, gfDoc.data()!.target, diff, 0, false)
+            let newMatch = new Session(gfDoc.id, gfDoc.data()!.grid, gfDoc.data()!.target, diff, 0, '', false)
             response.send(newMatch)
         }
         // Already in game, send him his match's situation and let him continue
         else {
             let matchDoc = await matches.doc(currentMatch).get()
-            let gfDoc = await gamefields.doc(String(matchDoc.data()!.gfid)).get()
             let hostOrJoin = userId == matchDoc.data()!.hostuid
+            hostOrJoin ?
+                await matches.doc(currentMatch).update({
+                    hostfcmtoken: userFcmToken
+                }) :
+                await matches.doc(currentMatch).update({
+                    joinfcmtoken: userFcmToken
+                })
+            let gfDoc = await gamefields.doc(String(matchDoc.data()!.gfid)).get()
             let match = new Session(gfDoc.id,
                 hostOrJoin ? matchDoc.data()!.hostgf : matchDoc.data()!.joingf,
                 gfDoc.data()!.target,
                 hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
-                hostOrJoin ? matchDoc.data()!.hostmoves : matchDoc.data()!.joinmoves, true)
+                hostOrJoin ? matchDoc.data()!.hostmoves : matchDoc.data()!.joinmoves,
+                hostOrJoin ? await getUsername(matchDoc.data()!.joinuid) : await getUsername(matchDoc.data()!.hostuid), true)
             response.send(match)
         }
     } catch (e) {
@@ -46,6 +54,11 @@ export async function queuePlayer(request: any, response: any) {
         console.log(e)
         response.send(false)
     }
+}
+
+async function getUsername(userId: string): Promise<string> {
+    let user = await users.doc(userId).get()
+    return user.data()!.username
 }
 
 async function alreadyInMatch(userId: string): Promise<string> {

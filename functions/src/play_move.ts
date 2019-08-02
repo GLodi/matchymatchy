@@ -1,8 +1,14 @@
 import * as admin from 'firebase-admin'
+import { DocumentReference, DocumentSnapshot } from '@google-cloud/firestore'
 
 let matches = admin.firestore().collection('matches')
 let users = admin.firestore().collection('users')
 
+/**
+ * Receive move from player.
+ * Verifies that source is legit and checks if a winner needs
+ * to be declared.
+ */
 export async function playMove(request: any, response: any) {
     let userId: string = request.query.userId
     let matchId: string = request.query.matchId
@@ -10,7 +16,7 @@ export async function playMove(request: any, response: any) {
     let newTarget: string = request.query.newTarget
     let done: boolean = (request.query.done == 'true')
     let moves: number = +request.query.moves
-    let matchDoc = await matches.doc(matchId).get()
+    let matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
     if (matchDoc.exists) {
         if (userId == matchDoc.data()!.hostuid ||
             userId == matchDoc.data()!.joinuid) {
@@ -18,8 +24,11 @@ export async function playMove(request: any, response: any) {
             if (done) await setPlayerDone(userId, matchId)
             response.send(true)
             if (done &&
-                ((matchDoc.data()!.hostdone != null && userId == matchDoc.data()!.joinuid) ||
-                    (matchDoc.data()!.joindone != null && userId == matchDoc.data()!.hostuid))) {
+                ((matchDoc.data()!.hostdone != null
+                    && userId == matchDoc.data()!.joinuid)
+                    ||
+                    (matchDoc.data()!.joindone != null
+                        && userId == matchDoc.data()!.hostuid))) {
                 await declareWinner(matchId)
             }
         }
@@ -33,8 +42,12 @@ export async function playMove(request: any, response: any) {
     }
 }
 
+/**
+ * Update match document. This change will be picked up by index.ts
+ * and FCM will notify the enemy player.
+ */
 async function updateMatch(userId: string, matchId: string, newGf: string, newTarget: string, moves: number) {
-    let matchDoc = await matches.doc(matchId).get()
+    let matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
     userId == matchDoc.data()!.hostuid ?
         await matches.doc(matchId).update({
             hostgf: newGf,
@@ -48,8 +61,11 @@ async function updateMatch(userId: string, matchId: string, newGf: string, newTa
         })
 }
 
+/**
+ * If a player signals that is done with the match, update the doc.
+ */
 async function setPlayerDone(userId: string, matchId: string) {
-    let matchDoc = await matches.doc(matchId).get()
+    let matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
     userId == matchDoc.data()!.hostuid ?
         await matches.doc(matchId).update({
             hostdone: true
@@ -59,8 +75,11 @@ async function setPlayerDone(userId: string, matchId: string) {
         })
 }
 
+/**
+ * If both players are done, declare winner. 
+ */
 async function declareWinner(matchId: string) {
-    let matchDoc = await matches.doc(matchId).get()
+    let matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
     if (matchDoc.data()!.hostmoves < matchDoc.data()!.joinmoves) {
         await upWinAmount(matchId, true)
     }
@@ -75,25 +94,34 @@ async function declareWinner(matchId: string) {
     await resetCurrentMatch(matchId)
 }
 
+/**
+ * Increase winner's win count.
+ */
 async function upWinAmount(matchId: string, hostOrJoin: boolean) {
-    let matchDoc = await matches.doc(matchId).get()
-    let userRef = await users.doc(
+    let matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
+    let userRef: DocumentReference = await users.doc(
         hostOrJoin ? matchDoc.data()!.hostuid : matchDoc.data()!.joinuid
     )
-    let user = await userRef.get()
+    let user: DocumentSnapshot = await userRef.get()
     userRef.update({
         matchesWon: +user.data()!.matchesWon + 1
     })
     matches.doc(matchId).update({
-        winner: hostOrJoin ? matchDoc.data()!.hostuid : matchDoc.data()!.joinuid,
+        winner: hostOrJoin ?
+            matchDoc.data()!.hostuid : matchDoc.data()!.joinuid,
         winnerName: user.data()!.username,
     })
 }
 
+/**
+ * Frees players from finished game, allowing them to re-queue.
+ */
 async function resetCurrentMatch(matchId: string) {
-    let matchDoc = await matches.doc(matchId).get()
-    let hostRef = await users.doc(matchDoc.data()!.hostuid)
-    let joinRef = await users.doc(matchDoc.data()!.joinuid)
+    let matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
+    let hostRef: DocumentReference =
+        await users.doc(matchDoc.data()!.hostuid)
+    let joinRef: DocumentReference =
+        await users.doc(matchDoc.data()!.joinuid)
     hostRef.update({
         currentMatch: null
     })

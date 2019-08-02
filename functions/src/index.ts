@@ -4,23 +4,29 @@ import * as admin from 'firebase-admin'
 admin.initializeApp(functions.config().firebase)
 
 import { DocumentData } from '@google-cloud/firestore'
-import { playMove } from './play_move';
-import { queuePlayer } from './queue_player';
+import { playMove } from './play_move'
+import { queuePlayer } from './queue_player'
 
 
-// Handle queueing player
+/**
+ * Handle queueing player
+ */
 exports.queuePlayer = functions
     .region('europe-west1')
     .https
     .onRequest(async (request, response) => queuePlayer(request, response))
 
-// Handle player's move
+/**
+ * Handle player's move
+ */
 exports.playMove = functions
     .region('europe-west1')
     .https
     .onRequest(async (request, response) => playMove(request, response))
 
-// Update other player on enemy's move and update both on player win
+/** 
+ * Listen to changes in documents and notify players through FCM
+ */
 exports.notifyUser = functions
     .region('europe-west1')
     .firestore

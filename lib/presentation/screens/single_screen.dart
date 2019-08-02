@@ -33,7 +33,7 @@ class _SingleScreenState extends State<SingleScreen>
     return Scaffold(
       backgroundColor: Colors.blue[200],
       appBar: AppBar(
-        leading: BackButton(color: Colors.black),
+        leading: BackButton(color: Colors.white),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
       ),
@@ -145,7 +145,7 @@ class _SingleScreenState extends State<SingleScreen>
               style: TextStyle(
                 fontFamily: "Roboto",
                 fontSize: 20.0,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
             Text(
@@ -154,7 +154,7 @@ class _SingleScreenState extends State<SingleScreen>
               style: TextStyle(
                 fontFamily: "Roboto",
                 fontSize: 25.0,
-                color: Colors.black,
+                color: Colors.white,
               ),
             )
           ],

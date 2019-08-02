@@ -23,6 +23,7 @@ class MultiRepo extends GameRepo {
       Session session = await prefsProvider.getCurrentSession();
       bool isCorrect =
           await logicProvider.checkIfCorrect(gameField, targetField);
+      print(session.toMap());
       await apiProvider.sendMove(session, isCorrect);
     }
     return logicProvider.checkIfCorrect(gameField, targetField);
@@ -36,6 +37,7 @@ class MultiRepo extends GameRepo {
     String token = await messProvider.getToken();
     GameOnline situation = await apiProvider.queuePlayer(uid, token);
     prefsProvider.storeMoves(situation.moves);
+    prefsProvider.storeMatchId(situation.matchId);
     return situation;
   }
 

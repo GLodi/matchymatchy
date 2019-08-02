@@ -32,10 +32,18 @@ class _MultiScreenState extends State<MultiScreen>
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         title: StreamBuilder<String>(
-          initialData: 'Opponent',
+          initialData: 'Multiplayer',
           stream: bloc.enemyName,
           builder: (context, snapshot) => Text(snapshot.data),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.remove_circle),
+            tooltip: 'Abandon match',
+            // TODO: add WillPopscope
+            onPressed: () {},
+          )
+        ],
       ),
       body: Hero(
         tag: 'multi',

@@ -19,10 +19,10 @@ export async function queuePlayer(request: any, response: any) {
     try {
         let currentMatch: string = await alreadyInMatch(userId)
         if (currentMatch == null) {
-            response.send(newGame(userId, userFcmToken))
+            response.send(await newGame(userId, userFcmToken))
         }
         else {
-            response.send(reconnect(userId, userFcmToken, currentMatch))
+            response.send(await reconnect(userId, userFcmToken, currentMatch))
         }
     } catch (e) {
         // TODO: requeue player?
@@ -50,15 +50,18 @@ async function newGame(userId: string, userFcmToken: string): Promise<Session> {
     // Queue can either be empty or full.
     // If empty, create new element in queue and wait for someone.
     // if full, join other player's match and start game.
-    let gfDoc: DocumentSnapshot = qs.empty ?
-        await queueEmpty(userId, userFcmToken) :
-        await queueNotEmpty(userId, userFcmToken)
+    let gfDocMatch: [DocumentSnapshot, string] =
+        qs.empty ?
+            await queueEmpty(userId, userFcmToken) :
+            await queueNotEmpty(userId, userFcmToken)
     let diff: string =
-        await diffToSend(gfDoc.data()!.grid, gfDoc.data()!.target)
+        await diffToSend(gfDocMatch[0].data()!.grid, gfDocMatch[0].data()!.target)
     let newMatch: Session =
-        new Session(gfDoc.id,
-            gfDoc.data()!.grid,
-            gfDoc.data()!.target,
+        new Session(
+            gfDocMatch[1],
+            gfDocMatch[0].id,
+            gfDocMatch[0].data()!.grid,
+            gfDocMatch[0].data()!.target,
             diff,
             0,
             '',
@@ -99,9 +102,10 @@ async function reconnect(userId: string, userFcmToken: string, currentMatch: str
 }
 
 /**
- * Populate queue with player's information
+ * Populate queue with player's information.
+ * Returns GameField of starting match.
  */
-async function queueEmpty(userId: string, userFcmToken: string): Promise<DocumentSnapshot> {
+async function queueEmpty(userId: string, userFcmToken: string): Promise<[DocumentSnapshot, string]> {
     let gfid: number = Math.floor(Math.random() * 1000) + 1
     let gf: DocumentSnapshot = await gamefields.doc(String(gfid)).get()
     let newMatchRef: DocumentReference = matches.doc()
@@ -132,13 +136,14 @@ async function queueEmpty(userId: string, userFcmToken: string): Promise<Documen
     users.doc(userId).update({
         currentMatch: newMatchRef.id,
     })
-    return gf
+    return [gf, newMatchRef.id]
 }
 
 /**
  * Join last element in queue 
+ * Returns GameField of starting match.
  */
-async function queueNotEmpty(userId: string, userFcmToken: string): Promise<DocumentSnapshot> {
+async function queueNotEmpty(userId: string, userFcmToken: string): Promise<[DocumentSnapshot, string]> {
     let query: QuerySnapshot =
         await queue.orderBy('time', 'asc').limit(1).get()
     let matchId: string =
@@ -150,7 +155,7 @@ async function queueNotEmpty(userId: string, userFcmToken: string): Promise<Docu
     })
     let gf: DocumentSnapshot =
         await gamefields.doc(String(match.data()!.gfid)).get()
-    return gf
+    return [gf, matchId]
 }
 
 /**

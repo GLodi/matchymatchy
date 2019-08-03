@@ -32,7 +32,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Scaffold(
+        body: Stack(
       children: <Widget>[
         HomeBackgroundWidget(),
         BlocEventStateBuilder<HomeEvent, HomeState>(
@@ -52,11 +53,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 return Center(child: Text('${state.message}'));
                 break;
               default:
+                return Container();
             }
           },
         ),
       ],
-    );
+    ));
   }
 
   // Shows Single/Multi button and UserWidget at the bottom
@@ -142,12 +144,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               : EdgeInsets.only(left: 15, top: 25, right: 25, bottom: 25),
           child: MaterialButton(
             padding: EdgeInsets.all(20),
-            color: Colors.white,
+            color: Colors.blue[200],
             child: Column(
               children: <Widget>[
                 Text(text,
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Colors.white,
                     )),
                 Expanded(
                   child: Image(

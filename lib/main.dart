@@ -73,12 +73,21 @@ class App extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: BlocProvider(
-          child: HomeScreen(isTest),
-          bloc: kiwi.Container().resolve<HomeBloc>(),
-        ),
-      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => BlocProvider(
+              child: HomeScreen(isTest),
+              bloc: kiwi.Container().resolve<HomeBloc>(),
+            ),
+        '/single': (context) => BlocProvider(
+              child: SingleScreen(),
+              bloc: kiwi.Container().resolve<SingleBloc>(),
+            ),
+        '/multi': (context) => BlocProvider(
+              child: MultiScreen(),
+              bloc: kiwi.Container().resolve<MultiBloc>(),
+            ),
+      },
     );
   }
 }

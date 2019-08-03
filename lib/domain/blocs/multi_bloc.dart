@@ -22,9 +22,17 @@ class MultiBloc extends GameBloc {
   final _enemyTargetSubject = BehaviorSubject<TargetField>();
   Stream<TargetField> get enemyTarget => _enemyTargetSubject.stream;
 
+  // Updates enemy target
+  final _hasMatchStartedSubject = BehaviorSubject<bool>();
+  Stream<bool> get hasMatchStarted => _hasMatchStartedSubject.stream;
+
   // Updates enemy name on appbar
   final _enemyNameSubject = BehaviorSubject<String>();
   Stream<String> get enemyName => _enemyNameSubject.stream;
+
+  // Listen to done button press on last slide (need to hide them)
+  final _forfeitSubject = PublishSubject<bool>();
+  Sink<bool> get forfeit => _forfeitSubject.sink;
 
   MultiBloc(this.repo) : super(repo);
 
@@ -64,7 +72,10 @@ class MultiBloc extends GameBloc {
     _enemyTargetSubject.add(game.enemyTargetField);
     _enemyNameSubject.add(game.enemyName);
     moveNumberSubject.add(game.moves);
-    if (game.started) emitEvent(GameEvent(type: GameEventType.start));
+    if (game.started) {
+      _hasMatchStartedSubject.add(true);
+      emitEvent(GameEvent(type: GameEventType.start));
+    }
   }
 
   void listenToChallengeMessages() {

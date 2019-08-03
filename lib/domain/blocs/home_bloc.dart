@@ -8,6 +8,7 @@ import 'package:squazzle/domain/domain.dart';
 /// Handles profile info and user authentication.
 class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   final HomeRepo _repo;
+  StreamSubscription _connectivitySub;
 
   // Trigger home_screen -> multi_screen transition
   final _intentToMultiScreenSubject = BehaviorSubject<void>();
@@ -17,15 +18,13 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   final _showSlidesSubject = BehaviorSubject<bool>();
   Stream<bool> get showSlides => _showSlidesSubject.stream;
 
-  // Listen to connection changes
-  final _connChangeSub = BehaviorSubject<bool>();
-  Stream<bool> get connChange => _connChangeSub.stream;
-
   // Listen to done button press on last slide (need to hide them)
   final _doneSlidesButtonSubject = PublishSubject<bool>();
   Sink<bool> get doneSlidesButton => _doneSlidesButtonSubject.sink;
 
-  StreamSubscription _connectivitySub;
+  // Listen to connection changes
+  final _connChangeSub = BehaviorSubject<bool>();
+  Stream<bool> get connChange => _connChangeSub.stream;
 
   HomeBloc(this._repo) : super(initialState: HomeState.notInit());
 

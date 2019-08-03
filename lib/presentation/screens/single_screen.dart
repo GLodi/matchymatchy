@@ -52,7 +52,7 @@ class _SingleScreenState extends State<SingleScreen>
             borderRadius: BorderRadius.circular(10.0),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.blue[200],
               ),
             ),
           );
@@ -79,6 +79,8 @@ class _SingleScreenState extends State<SingleScreen>
                       }
                       return initScreen();
                     }
+                  default:
+                    return Container();
                 }
               },
             )),

@@ -37,12 +37,17 @@ class _MultiScreenState extends State<MultiScreen>
           builder: (context, snapshot) => Text(snapshot.data),
         ),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.remove_circle),
-            tooltip: 'Abandon match',
-            // TODO: add WillPopscope
-            onPressed: () {},
-          )
+          StreamBuilder<bool>(
+            initialData: false,
+            stream: bloc.hasMatchStarted,
+            builder: (context, snapshot) => snapshot.data
+                ? IconButton(
+                    icon: Icon(Icons.remove_circle),
+                    tooltip: 'Forfeit match',
+                    onPressed: _onForfeitButton,
+                  )
+                : Container(),
+          ),
         ],
       ),
       body: Hero(
@@ -60,13 +65,13 @@ class _MultiScreenState extends State<MultiScreen>
             borderRadius: BorderRadius.circular(10.0),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.blue[200],
               ),
             ),
           );
         },
         child: WillPopScope(
-            onWillPop: _onWillPop,
+            onWillPop: _onBackButton,
             child: BlocEventStateBuilder<GameEvent, GameState>(
               bloc: bloc,
               builder: (context, state) {
@@ -83,6 +88,8 @@ class _MultiScreenState extends State<MultiScreen>
                     {
                       return init();
                     }
+                  default:
+                    return Container();
                 }
               },
             )),
@@ -90,20 +97,44 @@ class _MultiScreenState extends State<MultiScreen>
     );
   }
 
-  Future<bool> _onWillPop() {
+  Future<bool> _onForfeitButton() {
     return showDialog(
           context: context,
-          builder: (context) => new AlertDialog(
-            title: new Text('Close match'),
-            content: new Text('Do you want to exit?'),
+          builder: (context) => AlertDialog(
+            title: Text('Forfeit match'),
+            content: Text('Are you sure you want to forfeit the match?'),
             actions: <Widget>[
-              new FlatButton(
+              FlatButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: new Text('No'),
+                child: Text('No'),
               ),
-              new FlatButton(
+              FlatButton(
+                onPressed: () {
+                  // TODO: notify server that user wants to forfeit
+                  Navigator.popAndPushNamed(context, '/');
+                },
+                child: Text('Yes'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+  }
+
+  Future<bool> _onBackButton() {
+    return showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Close match'),
+            content: Text('Do you want to exit?'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('No'),
+              ),
+              FlatButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: new Text('Yes'),
+                child: Text('Yes'),
               ),
             ],
           ),

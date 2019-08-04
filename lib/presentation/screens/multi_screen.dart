@@ -32,6 +32,7 @@ class _MultiScreenState extends State<MultiScreen>
         leading: BackButton(color: Colors.white),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
+        // TODO: this disappears when queueing and waiting appears
         title: StreamBuilder<String>(
           initialData: 'Multiplayer',
           stream: bloc.enemyName,
@@ -98,51 +99,6 @@ class _MultiScreenState extends State<MultiScreen>
     );
   }
 
-  Future<bool> _onForfeitButton() {
-    return showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Forfeit match'),
-            content: Text('Are you sure you want to forfeit the match?'),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: Text('No'),
-              ),
-              FlatButton(
-                onPressed: () {
-                  bloc.forfeitButton.add(true);
-                  Navigator.popAndPushNamed(context, '/');
-                },
-                child: Text('Yes'),
-              ),
-            ],
-          ),
-        ) ??
-        false;
-  }
-
-  Future<bool> _onBackButton() {
-    return showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Close match'),
-            content: Text('Do you want to exit?'),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: Text('No'),
-              ),
-              FlatButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: Text('Yes'),
-              ),
-            ],
-          ),
-        ) ??
-        false;
-  }
-
   Widget init() {
     return Stack(
       children: <Widget>[
@@ -191,6 +147,51 @@ class _MultiScreenState extends State<MultiScreen>
 
   void _changeOpacity() {
     setState(() => opacityLevel = opacityLevel == 0 ? 1.0 : 0.0);
+  }
+
+  Future<bool> _onForfeitButton() {
+    return showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Forfeit match'),
+            content: Text('Are you sure you want to forfeit the match?'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('No'),
+              ),
+              FlatButton(
+                onPressed: () {
+                  bloc.forfeitButton.add(true);
+                  Navigator.popAndPushNamed(context, '/');
+                },
+                child: Text('Yes'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+  }
+
+  Future<bool> _onBackButton() {
+    return showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Close match'),
+            content: Text('Do you want to exit?'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('No'),
+              ),
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text('Yes'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 
   @override

@@ -134,6 +134,10 @@ async function onWinner(newMatch: DocumentData, matchId: string) {
             messType: 'winner',
             winnerName: newMatch.winnerName,
         },
+        notification: {
+            title: 'Match finished!',
+            body: newMatch.winnerName + ' won!',
+        },
         token: newMatch.joinfcmtoken
     }
     let messageToHost = {
@@ -142,6 +146,10 @@ async function onWinner(newMatch: DocumentData, matchId: string) {
             winner: newMatch.winner,
             messType: 'winner',
             winnerName: newMatch.winnerName,
+        },
+        notification: {
+            title: 'Match finished!',
+            body: newMatch.winnerName + ' won!',
         },
         token: newMatch.hostfcmtoken
     }

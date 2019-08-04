@@ -36,7 +36,7 @@ class MultiBloc extends GameBloc {
 
   MultiBloc(this.repo) : super(repo);
 
-  void setup() async {
+  void setup() {
     _forfeitButtonSubject.listen((input) => repo.forfeit());
   }
 
@@ -111,6 +111,7 @@ class MultiBloc extends GameBloc {
     _enemyTargetSubject.close();
     _waitMessageSubject.close();
     _enemyNameSubject.close();
+    _hasMatchStartedSubject.close();
     super.dispose();
   }
 }

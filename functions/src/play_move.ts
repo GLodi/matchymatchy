@@ -12,46 +12,62 @@ export async function playMove(request: any, response: any) {
     let done: boolean = (request.query.done == 'true')
     let moves: number = +request.query.moves
     let matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
-    if (matchDoc.exists) {
-        if (userId == matchDoc.data()!.hostuid ||
-            userId == matchDoc.data()!.joinuid) {
-            await updateMatch(userId, matchId, newGf, newTarget, moves)
-            if (done) await setPlayerDone(userId, matchId)
-            response.send(true)
-            if (done &&
-                ((matchDoc.data()!.hostdone != null
-                    && userId == matchDoc.data()!.joinuid)
-                    ||
-                    (matchDoc.data()!.joindone != null
-                        && userId == matchDoc.data()!.hostuid))) {
-                await declareWinner(matchId)
+    try {
+        if (matchDoc.exists) {
+            if (userId == matchDoc.data()!.hostuid ||
+                userId == matchDoc.data()!.joinuid) {
+                await updateMatch(userId, matchId, newGf, newTarget, moves)
+                if (done) await setPlayerDone(userId, matchId)
+                response.send(true)
+                if (done &&
+                    ((matchDoc.data()!.hostdone != null
+                        && userId == matchDoc.data()!.joinuid)
+                        ||
+                        (matchDoc.data()!.joindone != null
+                            && userId == matchDoc.data()!.hostuid))) {
+                    await declareWinner(matchId)
+                }
             }
-        }
-        else {
-            console.log('--- error: user neither host nor join')
+            else {
+                console.log('--- error user neither host nor join')
+                response.send(false)
+            }
+        } else {
+            console.log('--- error no match with specified matchId')
             response.send(false)
         }
-    } else {
-        console.log('--- error: no match with specified matchId')
+    } catch (e) {
+        console.log('--- error applying player move')
+        console.log(e)
         response.send(false)
     }
 }
 
 export async function forfeit(request: any, response: any) {
     let userId: string = request.query.userId
-    let matchId: string = request.query.matchid
+    let matchId: string = request.query.matchId
     let matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
-    if (matchDoc.exists) {
-        if (userId == matchDoc.data()!.hostuid) {
-            // directly declare winner, but check
-            // that a winner hasn't already been declared
-
+    try {
+        if (matchDoc.exists) {
+            if (matchDoc.data()!.winner == null) {
+                if (userId == matchDoc.data()!.hostuid) {
+                    await upWinAmount(matchId, false)
+                }
+                if (userId == matchDoc.data()!.joinuid) {
+                    await upWinAmount(matchId, true)
+                }
+                response.send(true)
+            } else {
+                // TODO: send player already declared winner?
+                console.log('--- error winner already declared')
+                response.send(false)
+            }
         }
-        if (userId == matchDoc.data()!.joinuid) {
-
-        }
+    } catch (e) {
+        console.log('--- error forfeting player player')
+        console.log(e)
+        response.send(false)
     }
-    response.send(true)
 }
 
 /**
@@ -103,7 +119,6 @@ async function declareWinner(matchId: string) {
             winner: 'draw',
         })
     }
-    await resetCurrentMatch(matchId)
 }
 
 /**
@@ -123,6 +138,7 @@ async function upWinAmount(matchId: string, hostOrJoin: boolean) {
             matchDoc.data()!.hostuid : matchDoc.data()!.joinuid,
         winnerName: user.data()!.username,
     })
+    await resetCurrentMatch(matchId)
 }
 
 /**

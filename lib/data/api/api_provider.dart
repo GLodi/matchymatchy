@@ -59,7 +59,7 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<bool> sendForfeit(String uid, String matchId) {
+  Future<bool> sendForfeit(String uid, String matchId) async {
     return _net
         .get(_baseUrl + 'forfeit?userId=' + uid + '&matchId=' + matchId)
         .then((response) => response);

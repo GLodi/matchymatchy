@@ -32,6 +32,7 @@ class MultiRepo extends GameRepo {
   Future<bool> forfeit() async {
     var userId = await prefsProvider.getUid();
     var matchId = await prefsProvider.getMatchId();
+    // TODO: if sendForfeit is true, reset stored info
     return apiProvider.sendForfeit(userId, matchId);
   }
 

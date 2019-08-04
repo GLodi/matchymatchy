@@ -30,11 +30,15 @@ class MultiBloc extends GameBloc {
   final _enemyNameSubject = BehaviorSubject<String>();
   Stream<String> get enemyName => _enemyNameSubject.stream;
 
-  // Listen to done button press on last slide (need to hide them)
-  final _forfeitSubject = PublishSubject<bool>();
-  Sink<bool> get forfeit => _forfeitSubject.sink;
+  // Listen to forfeit button press
+  final _forfeitButtonSubject = PublishSubject<bool>();
+  Sink<bool> get forfeitButton => _forfeitButtonSubject.sink;
 
   MultiBloc(this.repo) : super(repo);
+
+  void setup() async {
+    _forfeitButtonSubject.listen((input) => repo.forfeit());
+  }
 
   @override
   Stream<GameState> eventHandler(

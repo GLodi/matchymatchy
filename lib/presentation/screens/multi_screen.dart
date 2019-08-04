@@ -19,6 +19,7 @@ class _MultiScreenState extends State<MultiScreen>
   void initState() {
     super.initState();
     bloc = BlocProvider.of<MultiBloc>(context);
+    bloc.setup();
     bloc.emitEvent(GameEvent(type: GameEventType.queue));
     bloc.correct.listen((correct) => _changeOpacity());
   }
@@ -110,7 +111,7 @@ class _MultiScreenState extends State<MultiScreen>
               ),
               FlatButton(
                 onPressed: () {
-                  // TODO: notify server that user wants to forfeit
+                  bloc.forfeitButton.add(true);
                   Navigator.popAndPushNamed(context, '/');
                 },
                 child: Text('Yes'),

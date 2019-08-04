@@ -121,8 +121,8 @@ async function queueEmpty(userId: string, userFcmToken: string): Promise<[Docume
         joingf: gf.data()!.grid,
         jointarget: await diffToSend(gf.data()!.grid, gf.data()!.target),
         joinfcmtoken: null,
-        winner: '',
-        winnerName: '',
+        winner: null,
+        winnerName: null,
         hostdone: null,
         joindone: null,
     })

@@ -29,6 +29,12 @@ class MultiRepo extends GameRepo {
     return logicProvider.checkIfCorrect(gameField, targetField);
   }
 
+  Future<bool> forfeit() async {
+    var userId = await prefsProvider.getUid();
+    var matchId = await prefsProvider.getMatchId();
+    return apiProvider.sendForfeit(userId, matchId);
+  }
+
   Future<String> getStoredUid() => prefsProvider.getUid();
 
   Future<GameOnline> queuePlayer() async {

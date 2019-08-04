@@ -4,11 +4,6 @@ import { DocumentReference, DocumentSnapshot } from '@google-cloud/firestore'
 let matches = admin.firestore().collection('matches')
 let users = admin.firestore().collection('users')
 
-/**
- * Receive move from player.
- * Verifies that source is legit and checks if a winner needs
- * to be declared.
- */
 export async function playMove(request: any, response: any) {
     let userId: string = request.query.userId
     let matchId: string = request.query.matchId
@@ -40,6 +35,23 @@ export async function playMove(request: any, response: any) {
         console.log('--- error: no match with specified matchId')
         response.send(false)
     }
+}
+
+export async function forfeit(request: any, response: any) {
+    let userId: string = request.query.userId
+    let matchId: string = request.query.matchid
+    let matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
+    if (matchDoc.exists) {
+        if (userId == matchDoc.data()!.hostuid) {
+            // directly declare winner, but check
+            // that a winner hasn't already been declared
+
+        }
+        if (userId == matchDoc.data()!.joinuid) {
+
+        }
+    }
+    response.send(true)
 }
 
 /**

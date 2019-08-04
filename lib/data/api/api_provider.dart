@@ -13,6 +13,9 @@ abstract class ApiProvider {
 
   // Send updated target to server
   Future<bool> sendMove(Session session, bool done);
+
+  // Send forfeit notice
+  Future<bool> sendForfeit(String uid, String matchId);
 }
 
 class ApiProviderImpl implements ApiProvider {
@@ -52,6 +55,13 @@ class ApiProviderImpl implements ApiProvider {
             done.toString() +
             '&moves=' +
             session.moves.toString())
+        .then((response) => response);
+  }
+
+  @override
+  Future<bool> sendForfeit(String uid, String matchId) {
+    return _net
+        .get(_baseUrl + 'forfeit?userId=' + uid + '&matchId=' + matchId)
         .then((response) => response);
   }
 }

@@ -15,6 +15,8 @@ abstract class SharedPrefsProvider {
 
   Future<User> getUser();
 
+  Future<String> getMatchId();
+
   Future<String> getUid();
 
   Future<bool> isFirstOpen();
@@ -85,6 +87,12 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
           matchesWon: matchesWon);
     }
     return null;
+  }
+
+  @override
+  Future<String> getMatchId() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.getString('matchId');
   }
 
   @override

@@ -4,12 +4,11 @@ import * as admin from 'firebase-admin'
 admin.initializeApp(functions.config().firebase)
 
 import { DocumentData } from '@google-cloud/firestore'
-import { playMove } from './play_move'
+import { playMove, forfeit } from './play_move'
 import { queuePlayer } from './queue_player'
 
-
 /**
- * Handle queueing player
+ * Handle queue
  */
 exports.queuePlayer = functions
     .region('europe-west1')
@@ -17,15 +16,23 @@ exports.queuePlayer = functions
     .onRequest(async (request, response) => queuePlayer(request, response))
 
 /**
- * Handle player's move
+ * Apply player's move to his match
  */
 exports.playMove = functions
     .region('europe-west1')
     .https
     .onRequest(async (request, response) => playMove(request, response))
 
+/**
+ * Forfeit player from his match
+ */
+exports.forfeit = functions
+    .region('europe-west1')
+    .https
+    .onRequest(async (request, response) => forfeit(request, response))
+
 /** 
- * Listen to changes in documents and notify players through FCM
+ * Listen to changes in match documents and notify players through FCM
  */
 exports.notifyUser = functions
     .region('europe-west1')

@@ -96,6 +96,8 @@ async function reconnect(userId: string, userFcmToken: string, currentMatch: str
             gfDoc.data()!.target,
             hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
             hostOrJoin ? matchDoc.data()!.hostmoves : matchDoc.data()!.joinmoves,
+            // TODO: the following line crashes, because if
+            // the game hasn't started yet there is no joinuid
             hostOrJoin ? await getUsername(matchDoc.data()!.joinuid) : await getUsername(matchDoc.data()!.hostuid),
             true)
     return match

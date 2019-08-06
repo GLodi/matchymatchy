@@ -6,15 +6,17 @@ import 'game_bloc.dart';
 
 /// GameFieldWidget's bloc.
 class GameFieldBloc extends BlocEventStateBase<WidgetEvent, WidgetState> {
-  final GameBloc gameBloc;
+  final GameBloc _gameBloc;
 
+  // Update GameField after every move
   final _gameFieldSubject = BehaviorSubject<GameField>();
   Stream<GameField> get gameField => _gameFieldSubject.stream;
 
+  // Receive move coordinates from user move
   final _moveSubject = PublishSubject<List<int>>();
   Sink<List<int>> get move => _moveSubject.sink;
 
-  GameFieldBloc(this.gameBloc);
+  GameFieldBloc(this._gameBloc);
 
   void setup() {
     _moveSubject.listen(_applyMove);
@@ -22,22 +24,22 @@ class GameFieldBloc extends BlocEventStateBase<WidgetEvent, WidgetState> {
 
   void _applyMove(List<int> list) async {
     Move move = Move(from: list[0], dir: list[1]);
-    GameField field =
-        await gameBloc.gameRepo.applyMove(gameBloc.gameField, move);
-    gameBloc.gameField = field;
-    _gameFieldSubject.add(field);
-    int moves = await gameBloc.gameRepo.getMoves();
-    gameBloc.moveNumberSubject.add(moves);
-    bool isCorrect = await gameBloc.gameRepo
-        .moveDone(gameBloc.gameField, gameBloc.targetField);
-    if (isCorrect) gameBloc.emitEvent(GameEvent(type: GameEventType.victory));
+    GameField newField =
+        await _gameBloc.gameRepo.applyMove(_gameBloc.gameField, move);
+    _gameBloc.gameField = newField;
+    _gameFieldSubject.add(newField);
+    int moves = await _gameBloc.gameRepo.getMoves();
+    _gameBloc.moveNumberSubject.add(moves);
+    bool isCorrect = await _gameBloc.gameRepo
+        .moveDone(_gameBloc.gameField, _gameBloc.targetField);
+    if (isCorrect) _gameBloc.emitEvent(GameEvent(type: GameEventType.victory));
   }
 
   @override
   Stream<WidgetState> eventHandler(
       WidgetEvent event, WidgetState currentState) async* {
     if (event.type == WidgetEventType.start) {
-      _gameFieldSubject.add(gameBloc.gameField);
+      _gameFieldSubject.add(_gameBloc.gameField);
     }
   }
 

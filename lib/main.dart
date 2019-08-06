@@ -9,7 +9,7 @@ import 'package:squazzle/data/data.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/presentation.dart';
 
-final bool isTest = true;
+final bool isTest = false;
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -26,15 +26,14 @@ void main() {
       (c) => LoginProviderImpl());
   container.registerSingleton<SharedPrefsProvider, SharedPrefsProviderImpl>(
       (c) => SharedPrefsProviderImpl(test: isTest));
-  container.registerSingleton<MessagingProvider, MessagingProviderImpl>(
-      (c) => MessagingProviderImpl());
+  container.registerSingleton((c) => MessagingEventBus());
 
   // Repos
   container.registerSingleton((c) => SingleRepo(c.resolve<LogicProvider>(),
       c.resolve<DbProvider>(), c.resolve<SharedPrefsProvider>()));
   container.registerSingleton((c) => MultiRepo(
       c.resolve<ApiProvider>(),
-      c.resolve<MessagingProvider>(),
+      c.resolve<MessagingEventBus>(),
       c.resolve<LogicProvider>(),
       c.resolve<DbProvider>(),
       c.resolve<SharedPrefsProvider>()));
@@ -43,8 +42,10 @@ void main() {
 
   // Blocs
   container.registerFactory((c) => SingleBloc(c.resolve<SingleRepo>()));
-  container.registerFactory((c) => MultiBloc(c.resolve<MultiRepo>()));
-  container.registerFactory((c) => HomeBloc(c.resolve<HomeRepo>()));
+  container.registerFactory(
+      (c) => MultiBloc(c.resolve<MultiRepo>(), c.resolve<MessagingEventBus>()));
+  container.registerFactory(
+      (c) => HomeBloc(c.resolve<HomeRepo>(), c.resolve<MessagingEventBus>()));
 
   initDb();
 

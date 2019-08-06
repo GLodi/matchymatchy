@@ -4,7 +4,7 @@ import 'game_repo.dart';
 /// MultiBloc's repository.
 class MultiRepo extends GameRepo {
   final ApiProvider apiProvider;
-  final MessagingProvider messProvider;
+  final MessagingEventBus messProvider;
 
   MultiRepo(this.apiProvider, this.messProvider, LogicProvider logicProvider,
       DbProvider dbProvider, SharedPrefsProvider prefsProvider)
@@ -31,7 +31,6 @@ class MultiRepo extends GameRepo {
   Future<bool> forfeit() async {
     var userId = await prefsProvider.getUid();
     var matchId = await prefsProvider.getMatchId();
-    // TODO: if sendForfeit is true, reset stored info
     return apiProvider.sendForfeit(userId, matchId);
   }
 
@@ -53,11 +52,4 @@ class MultiRepo extends GameRepo {
       .then((user) => prefsProvider.storeUser(user));
 
   void storeMatchId(String matchId) => prefsProvider.storeMatchId(matchId);
-
-  Stream<ChallengeMessage> get challengeMessages =>
-      messProvider.challengeMessages;
-
-  Stream<MoveMessage> get moveMessages => messProvider.moveMessages;
-
-  Stream<WinnerMessage> get winnerMessages => messProvider.winnerMessages;
 }

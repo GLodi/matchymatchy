@@ -2,13 +2,16 @@ import 'package:rxdart/rxdart.dart';
 import 'package:connectivity/connectivity.dart';
 import 'dart:async';
 
+import 'package:squazzle/data/api/mess_event_bus.dart';
 import 'package:squazzle/domain/domain.dart';
+import 'package:squazzle/data/models/models.dart';
 
 /// HomeScreen's bloc.
 /// Handles profile info and user authentication.
 class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   final HomeRepo _repo;
-  StreamSubscription _connectivitySub;
+  final MessagingEventBus _messEventBus;
+  StreamSubscription _connectivitySub, _messSub;
 
   // Trigger home_screen -> multi_screen transition
   final _intentToMultiScreenSubject = BehaviorSubject<void>();
@@ -30,7 +33,8 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   final _doneSlidesButtonSubject = PublishSubject<bool>();
   Sink<bool> get doneSlidesButton => _doneSlidesButtonSubject.sink;
 
-  HomeBloc(this._repo) : super(initialState: HomeState.notInit());
+  HomeBloc(this._repo, this._messEventBus)
+      : super(initialState: HomeState.notInit());
 
   void setup() async {
     _doneSlidesButtonSubject.listen((input) {
@@ -80,9 +84,16 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     await _repo.checkIfLoggedIn().catchError((e) {
       _snackBarSubject.add('Login check error');
     }).then((user) {
-      user != null
-          ? nextState = HomeState.initLogged(user)
-          : nextState = HomeState.initNotLogged();
+      if (user != null) {
+        nextState = HomeState.initLogged(user);
+        _messSub = _messEventBus.on<WinnerMessage>().listen((mess) {
+            // TODO: also add stream in home_screen
+            if ()
+            mes
+        });
+      } else {
+        nextState = HomeState.initNotLogged();
+      }
     });
     return nextState;
   }
@@ -93,6 +104,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     _showSlidesSubject.close();
     _doneSlidesButtonSubject.close();
     _connectivitySub.cancel();
+    _messSub.cancel();
     super.dispose();
   }
 }

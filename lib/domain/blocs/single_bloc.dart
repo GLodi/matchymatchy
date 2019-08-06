@@ -3,14 +3,14 @@ import 'dart:math';
 import 'package:squazzle/domain/domain.dart';
 
 class SingleBloc extends GameBloc {
-  final SingleRepo repo;
+  final SingleRepo _repo;
   var ran = Random();
 
   // Streams extracted from GameBloc's subjects
   Stream<bool> get correct => correctSubject.stream;
   Stream<int> get moveNumber => moveNumberSubject.stream;
 
-  SingleBloc(this.repo) : super(repo);
+  SingleBloc(this._repo) : super(_repo);
 
   @override
   Stream<GameState> eventHandler(
@@ -19,7 +19,7 @@ class SingleBloc extends GameBloc {
       case GameEventType.start:
         GameState result;
         int t = ran.nextInt(500) + 1;
-        await repo
+        await _repo
             .getGame(t)
             .catchError((e) =>
                 result = GameState.error('error retrieving data from db'))

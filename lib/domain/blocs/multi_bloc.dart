@@ -1,13 +1,15 @@
 import 'package:rxdart/rxdart.dart';
 import 'dart:async';
 
+import 'package:squazzle/data/api/mess_event_bus.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
 
 /// In addition to the functionalities available through Gamebloc,
 /// the Multiplayer version of the game needs an Enemy
 class MultiBloc extends GameBloc {
-  final MultiRepo repo;
+  final MultiRepo _repo;
+  final MessagingEventBus _messEventBus;
   StreamSubscription moveSub, challengeSub, winnerSub;
 
   // Streams extracted from GameBloc's subjects
@@ -34,10 +36,10 @@ class MultiBloc extends GameBloc {
   final _forfeitButtonSubject = PublishSubject<bool>();
   Sink<bool> get forfeitButton => _forfeitButtonSubject.sink;
 
-  MultiBloc(this.repo) : super(repo);
+  MultiBloc(this._repo, this._messEventBus) : super(_repo);
 
   void setup() {
-    _forfeitButtonSubject.listen((input) => repo.forfeit());
+    _forfeitButtonSubject.listen((input) => _repo.forfeit());
   }
 
   @override
@@ -49,7 +51,7 @@ class MultiBloc extends GameBloc {
         listenToChallengeMessages();
         listenToMoveMessages();
         listenToWinnerMessages();
-        await repo.queuePlayer().catchError((e) {
+        await _repo.queuePlayer().catchError((e) {
           result = GameState.error('error queueing to server');
         }).then((game) => showGame(game));
         if (result != null && result.type == GameStateType.error) {
@@ -83,8 +85,8 @@ class MultiBloc extends GameBloc {
   }
 
   void listenToChallengeMessages() {
-    challengeSub = repo.challengeMessages.listen((mess) {
-      repo.storeMatchId(mess.matchId);
+    challengeSub = _messEventBus.on<ChallengeMessage>().listen((mess) {
+      _repo.storeMatchId(mess.matchId);
       _enemyNameSubject.add(mess.enemyName);
       _hasMatchStartedSubject.add(true);
       emitEvent(GameEvent(type: GameEventType.start));
@@ -92,16 +94,17 @@ class MultiBloc extends GameBloc {
   }
 
   void listenToMoveMessages() {
-    moveSub = repo.moveMessages.listen((mess) {
+    moveSub = _messEventBus.on<MoveMessage>().listen((mess) {
       _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
     });
   }
 
   void listenToWinnerMessages() async {
-    String uid = await repo.getStoredUid();
-    // TODO: does work, but home_screen is not refreshed
-    winnerSub = repo.winnerMessages.listen((mess) {
-      if (mess.winner == uid) repo.updateUserInfo();
+    String uid = await _repo.getStoredUid();
+    winnerSub = _messEventBus.on<WinnerMessage>().listen((mess) {
+      if (mess.winner == uid) {
+        _repo.updateUserInfo();
+      }
     });
   }
 

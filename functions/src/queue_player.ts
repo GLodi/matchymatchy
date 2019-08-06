@@ -64,7 +64,7 @@ async function newGame(userId: string, userFcmToken: string): Promise<Session> {
             gfDocMatch[0].data()!.target,
             diff,
             0,
-            '',
+            'Searching...',
             false)
     return newMatch
 }
@@ -89,18 +89,25 @@ async function reconnect(userId: string, userFcmToken: string, currentMatch: str
         })
     let gfDoc: DocumentSnapshot =
         await gamefields.doc(String(matchDoc.data()!.gfid)).get()
-    let match: Session =
-        new Session(currentMatch,
+    if (matchDoc.data()!.joinuid != null) {
+        return new Session(currentMatch,
             gfDoc.id,
             hostOrJoin ? matchDoc.data()!.hostgf : matchDoc.data()!.joingf,
             gfDoc.data()!.target,
             hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
             hostOrJoin ? matchDoc.data()!.hostmoves : matchDoc.data()!.joinmoves,
-            // TODO: the following line crashes, because if
-            // the game hasn't started yet there is no joinuid
             hostOrJoin ? await getUsername(matchDoc.data()!.joinuid) : await getUsername(matchDoc.data()!.hostuid),
             true)
-    return match
+    } else {
+        return new Session(currentMatch,
+            gfDoc.id,
+            hostOrJoin ? matchDoc.data()!.hostgf : matchDoc.data()!.joingf,
+            gfDoc.data()!.target,
+            hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
+            hostOrJoin ? matchDoc.data()!.hostmoves : matchDoc.data()!.joinmoves,
+            'Searching...',
+            false)
+    }
 }
 
 /**
@@ -127,6 +134,7 @@ async function queueEmpty(userId: string, userFcmToken: string): Promise<[Docume
         winnerName: null,
         hostdone: null,
         joindone: null,
+        forfeitWin: false,
     })
     queue.add({
         uid: userId,
@@ -176,9 +184,6 @@ async function delQueueStartMatch(doc: QueryDocumentSnapshot, joinUid: string, j
     return matchId
 }
 
-/**
- * 
- */
 async function diffToSend(gf: string, target: string): Promise<string> {
     let enemy = ""
     var a = [6, 7, 8, 11, 12, 13, 16, 17, 18]

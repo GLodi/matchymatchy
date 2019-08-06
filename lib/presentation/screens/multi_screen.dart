@@ -32,12 +32,12 @@ class _MultiScreenState extends State<MultiScreen>
         leading: BackButton(color: Colors.white),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        // TODO: this disappears when queueing and waiting appears
         title: StreamBuilder<String>(
           initialData: 'Multiplayer',
           stream: bloc.enemyName,
           builder: (context, snapshot) => Text(snapshot.data),
         ),
+        // TODO: this disappears when queueing and waiting appears
         actions: <Widget>[
           StreamBuilder<bool>(
             initialData: false,

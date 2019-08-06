@@ -51,10 +51,10 @@ export async function forfeit(request: any, response: any) {
         if (matchDoc.exists) {
             if (matchDoc.data()!.winner == null) {
                 if (userId == matchDoc.data()!.hostuid) {
-                    await upWinAmount(matchId, false)
+                    await upWinAmount(matchId, false, true)
                 }
                 if (userId == matchDoc.data()!.joinuid) {
-                    await upWinAmount(matchId, true)
+                    await upWinAmount(matchId, true, true)
                 }
                 response.send(true)
             } else {
@@ -109,10 +109,10 @@ async function setPlayerDone(userId: string, matchId: string) {
 async function declareWinner(matchId: string) {
     let matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
     if (matchDoc.data()!.hostmoves < matchDoc.data()!.joinmoves) {
-        await upWinAmount(matchId, true)
+        await upWinAmount(matchId, true, false)
     }
     else if (matchDoc.data()!.hostmoves > matchDoc.data()!.joinmoves) {
-        await upWinAmount(matchId, false)
+        await upWinAmount(matchId, false, false)
     }
     else {
         matches.doc(matchId).update({
@@ -124,7 +124,7 @@ async function declareWinner(matchId: string) {
 /**
  * Increase winner's win count.
  */
-async function upWinAmount(matchId: string, hostOrJoin: boolean) {
+async function upWinAmount(matchId: string, hostOrJoin: boolean, forfeitWin: boolean) {
     let matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
     let userRef: DocumentReference = await users.doc(
         hostOrJoin ? matchDoc.data()!.hostuid : matchDoc.data()!.joinuid
@@ -137,6 +137,7 @@ async function upWinAmount(matchId: string, hostOrJoin: boolean) {
         winner: hostOrJoin ?
             matchDoc.data()!.hostuid : matchDoc.data()!.joinuid,
         winnerName: user.data()!.username,
+        forfeitWin: forfeitWin,
     })
     await resetCurrentMatch(matchId)
 }

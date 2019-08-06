@@ -23,7 +23,6 @@ class MultiRepo extends GameRepo {
       Session session = await prefsProvider.getCurrentSession();
       bool isCorrect =
           await logicProvider.checkIfCorrect(gameField, targetField);
-      print(session.toMap());
       await apiProvider.sendMove(session, isCorrect);
     }
     return logicProvider.checkIfCorrect(gameField, targetField);

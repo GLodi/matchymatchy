@@ -133,6 +133,7 @@ async function onWinner(newMatch: DocumentData, matchId: string) {
             winner: newMatch.winner,
             messType: 'winner',
             winnerName: newMatch.winnerName,
+            forfeitWin: newMatch.forfeitWin.toString(),
         },
         notification: {
             title: 'Match finished!',
@@ -146,6 +147,7 @@ async function onWinner(newMatch: DocumentData, matchId: string) {
             winner: newMatch.winner,
             messType: 'winner',
             winnerName: newMatch.winnerName,
+            forfeitWin: newMatch.forfeitWin.toString(),
         },
         notification: {
             title: 'Match finished!',

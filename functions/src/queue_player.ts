@@ -25,7 +25,6 @@ export async function queuePlayer(request: any, response: any) {
             response.send(await reconnect(userId, userFcmToken, currentMatch))
         }
     } catch (e) {
-        // TODO: requeue player?
         console.log('--- error queueing player')
         console.log(e)
         response.send(false)

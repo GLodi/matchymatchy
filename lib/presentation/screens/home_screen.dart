@@ -19,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   HomeBloc bloc;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -27,38 +28,37 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     bloc.setup();
     bloc.connChange.listen((connStatus) => connectionChange(connStatus));
     bloc.intentToMultiScreen.listen((_) => openMultiScreen());
+    bloc.snackBar.listen((message) => showSnackBar(message));
     bloc.emitEvent(HomeEvent(type: HomeEventType.checkIfUserLogged));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         body: Stack(
-      children: <Widget>[
-        HomeBackgroundWidget(),
-        BlocEventStateBuilder<HomeEvent, HomeState>(
-          bloc: bloc,
-          builder: (context, state) {
-            switch (state.type) {
-              case HomeStateType.initLogged:
-                return initLogged(state.user);
-                break;
-              case HomeStateType.initNotLogged:
-                return initNotLogged();
-                break;
-              case HomeStateType.notInit:
-                return Center(child: CircularProgressIndicator());
-                break;
-              case HomeStateType.error:
-                return Center(child: Text('${state.message}'));
-                break;
-              default:
-                return Container();
-            }
-          },
-        ),
-      ],
-    ));
+          children: <Widget>[
+            HomeBackgroundWidget(),
+            BlocEventStateBuilder<HomeEvent, HomeState>(
+              bloc: bloc,
+              builder: (context, state) {
+                switch (state.type) {
+                  case HomeStateType.initLogged:
+                    return initLogged(state.user);
+                    break;
+                  case HomeStateType.initNotLogged:
+                    return initNotLogged();
+                    break;
+                  case HomeStateType.notInit:
+                    return Center(child: CircularProgressIndicator());
+                    break;
+                  default:
+                    return Container();
+                }
+              },
+            ),
+          ],
+        ));
   }
 
   // Shows Single/Multi button and UserWidget at the bottom
@@ -167,6 +167,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  void showSnackBar(String message) {
+    _scaffoldKey.currentState
+        .showSnackBar(new SnackBar(content: new Text(message)));
   }
 
   void openMultiScreen() {

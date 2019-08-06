@@ -21,16 +21,12 @@ class HomeState extends BlocState {
       HomeState(type: HomeStateType.initNotLogged);
 
   factory HomeState.notInit() => HomeState(type: HomeStateType.notInit);
-
-  factory HomeState.error(String message) =>
-      HomeState(type: HomeStateType.error, message: message);
 }
 
 enum HomeStateType {
   initLogged,
   initNotLogged,
   notInit,
-  error,
 }
 
 class HomeEvent extends BlocEvent {
@@ -46,5 +42,4 @@ class HomeEvent extends BlocEvent {
 enum HomeEventType {
   checkIfUserLogged,
   multiButtonPress,
-  error,
 }

@@ -86,6 +86,7 @@ class MultiBloc extends GameBloc {
     challengeSub = repo.challengeMessages.listen((mess) {
       repo.storeMatchId(mess.matchId);
       _enemyNameSubject.add(mess.enemyName);
+      _hasMatchStartedSubject.add(true);
       emitEvent(GameEvent(type: GameEventType.start));
     });
   }

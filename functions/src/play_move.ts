@@ -58,7 +58,6 @@ export async function forfeit(request: any, response: any) {
                 }
                 response.send(true)
             } else {
-                // TODO: send player already declared winner?
                 console.log('--- error winner already declared')
                 response.send(false)
             }

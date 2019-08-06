@@ -18,13 +18,17 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   final _showSlidesSubject = BehaviorSubject<bool>();
   Stream<bool> get showSlides => _showSlidesSubject.stream;
 
-  // Listen to done button press on last slide (need to hide them)
-  final _doneSlidesButtonSubject = PublishSubject<bool>();
-  Sink<bool> get doneSlidesButton => _doneSlidesButtonSubject.sink;
-
   // Listen to connection changes
   final _connChangeSub = BehaviorSubject<bool>();
   Stream<bool> get connChange => _connChangeSub.stream;
+
+  // Show snackbar for login errors
+  final _snackBarSubject = BehaviorSubject<String>();
+  Stream<String> get snackBar => _snackBarSubject.stream;
+
+  // Listen to done button press on last slide (need to hide them)
+  final _doneSlidesButtonSubject = PublishSubject<bool>();
+  Sink<bool> get doneSlidesButton => _doneSlidesButtonSubject.sink;
 
   HomeBloc(this._repo) : super(initialState: HomeState.notInit());
 
@@ -61,19 +65,11 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
           _intentToMultiScreenSubject.add((null));
         } else {
           yield HomeState.notInit();
-          HomeState nextState;
           await _repo.loginWithGoogle().catchError((e) {
-            nextState = HomeState.error(e.toString());
+            _snackBarSubject.add('Login error');
           });
-          if (nextState?.type == HomeStateType.error) {
-            yield nextState;
-            break;
-          }
           yield await checkIfUserLogged();
         }
-        break;
-      case HomeEventType.error:
-        yield HomeState.error(event.message);
         break;
       default:
     }
@@ -82,7 +78,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   Future<HomeState> checkIfUserLogged() async {
     HomeState nextState;
     await _repo.checkIfLoggedIn().catchError((e) {
-      nextState = HomeState.error(e.toString());
+      _snackBarSubject.add('Login check error');
     }).then((user) {
       user != null
           ? nextState = HomeState.initLogged(user)

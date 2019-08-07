@@ -6,7 +6,6 @@ import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/screens/single_screen.dart';
 import 'package:squazzle/presentation/screens/multi_screen.dart';
 import 'package:squazzle/presentation/widgets/user_widget.dart';
-import 'package:squazzle/presentation/widgets/home_background_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool isTest;
@@ -35,30 +34,29 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        body: Stack(
-          children: <Widget>[
-            HomeBackgroundWidget(),
-            BlocEventStateBuilder<HomeEvent, HomeState>(
-              bloc: bloc,
-              builder: (context, state) {
-                switch (state.type) {
-                  case HomeStateType.initLogged:
-                    return initLogged(state.user);
-                    break;
-                  case HomeStateType.initNotLogged:
-                    return initNotLogged();
-                    break;
-                  case HomeStateType.notInit:
-                    return Center(child: CircularProgressIndicator());
-                    break;
-                  default:
-                    return Container();
-                }
-              },
-            ),
-          ],
-        ));
+      key: _scaffoldKey,
+      body: Container(
+        color: Colors.white,
+        child: BlocEventStateBuilder<HomeEvent, HomeState>(
+          bloc: bloc,
+          builder: (context, state) {
+            switch (state.type) {
+              case HomeStateType.initLogged:
+                return initLogged(state.user);
+                break;
+              case HomeStateType.initNotLogged:
+                return initNotLogged();
+                break;
+              case HomeStateType.notInit:
+                return Center(child: CircularProgressIndicator());
+                break;
+              default:
+                return Container();
+            }
+          },
+        ),
+      ),
+    );
   }
 
   // Shows Single/Multi button and UserWidget at the bottom

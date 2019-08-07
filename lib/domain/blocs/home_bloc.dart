@@ -86,10 +86,9 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     }).then((user) {
       if (user != null) {
         nextState = HomeState.initLogged(user);
-        _messSub = _messEventBus.on<WinnerMessage>().listen((mess) {
-            // TODO: also add stream in home_screen
-            if ()
-            mes
+        _messEventBus.on<WinnerMessage>().listen((mess) {
+          // TODO: update wins amount in user_widget
+          // TODO: show queueing/notqueueing/inmatch on multi button
         });
       } else {
         nextState = HomeState.initNotLogged();

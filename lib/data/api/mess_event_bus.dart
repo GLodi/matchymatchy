@@ -4,7 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:squazzle/data/models/models.dart';
 
 class MessagingEventBus {
-  final _messaging = FirebaseMessaging();
+  final FirebaseMessaging _messaging = FirebaseMessaging();
   final StreamController _messController = StreamController.broadcast();
 
   MessagingEventBus() {

@@ -112,10 +112,4 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
           ],
         ));
   }
-
-  @override
-  void dispose() {
-    widget.bloc.dispose();
-    super.dispose();
-  }
 }

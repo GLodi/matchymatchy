@@ -20,7 +20,7 @@ class SingleBloc extends GameBloc {
         GameState result;
         int t = ran.nextInt(500) + 1;
         await _repo
-            .getGame(t)
+            .getMatch(t)
             .catchError((e) =>
                 result = GameState.error('error retrieving data from db'))
             .then((game) {

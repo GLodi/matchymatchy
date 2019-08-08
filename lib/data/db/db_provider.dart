@@ -7,10 +7,16 @@ import 'package:squazzle/data/models/models.dart';
 
 abstract class DbProvider {
   // Returns a GameField and TargetField with given id
-  Future<Game> getGame(int id);
+  Future<Match> getMatch(int id);
+
+  // Stores online match
+  Future<void> saveMatchOnline(MatchOnline matchOnline);
 }
 
 class DbProviderImpl extends DbProvider {
+  final String gameFieldTable = 'gamefields';
+  final String matchOnlineTable = 'matchonline';
+
   static Database _db;
 
   Future<Database> get db async {
@@ -27,10 +33,14 @@ class DbProviderImpl extends DbProvider {
   }
 
   @override
-  Future<Game> getGame(int id) async {
+  Future<Match> getMatch(int id) async {
     var dbClient = await db;
     List<Map> maps = await dbClient.query('gamefields',
         columns: ['_id', 'grid', 'target'], where: '_id = ?', whereArgs: [id]);
-    return maps.length > 0 ? Game.fromMap(maps.first) : null;
+    return maps.length > 0 ? Match.fromMap(maps.first) : null;
   }
+
+  @override
+  Future<void> saveMatchOnline(MatchOnline matchOnline) async =>
+      await _db.insert(matchOnlineTable, matchOnline.toMap());
 }

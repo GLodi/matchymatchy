@@ -1,13 +1,13 @@
 import 'game_field.dart';
 import 'target_field.dart';
 
-class Game {
+class Match {
   GameField gameField;
   TargetField targetField;
 
-  Game({this.gameField, this.targetField});
+  Match({this.gameField, this.targetField});
 
-  Game.fromMap(Map<String, dynamic> map) {
+  Match.fromMap(Map<String, dynamic> map) {
     assert(map['grid'] != null);
     assert(map['target'] != null);
     assert(map['grid'].toString().length == 25);
@@ -17,14 +17,14 @@ class Game {
   }
 }
 
-class GameOnline extends Game {
+class MatchOnline extends Match {
   String matchId;
   TargetField enemyTargetField;
   int moves;
   bool started;
   String enemyName;
 
-  GameOnline.fromMap(Map<String, dynamic> map) {
+  MatchOnline.fromMap(Map<String, dynamic> map) {
     assert(map['gfid'] != null);
     assert(map['matchid'] != null);
     assert(map['gf'] != null);
@@ -44,5 +44,11 @@ class GameOnline extends Game {
     started = map['started'];
     enemyName = map['enemyname'];
     matchId = map['matchid'];
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      '': grid,
+    };
   }
 }

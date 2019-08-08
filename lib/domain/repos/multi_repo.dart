@@ -36,11 +36,11 @@ class MultiRepo extends GameRepo {
 
   Future<String> getStoredUid() => prefsProvider.getUid();
 
-  Future<GameOnline> queuePlayer() async {
+  Future<MatchOnline> queuePlayer() async {
     await prefsProvider.restoreMoves();
     String uid = await prefsProvider.getUid();
     String token = await messProvider.getToken();
-    GameOnline situation = await apiProvider.queuePlayer(uid, token);
+    MatchOnline situation = await apiProvider.queuePlayer(uid, token);
     prefsProvider.storeMoves(situation.moves);
     prefsProvider.storeMatchId(situation.matchId);
     return situation;

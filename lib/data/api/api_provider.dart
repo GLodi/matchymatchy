@@ -9,7 +9,7 @@ abstract class ApiProvider {
   Future<User> getUser(String uid);
 
   // Add player to server queue, or receive current match
-  Future<GameOnline> queuePlayer(String uid, String token);
+  Future<MatchOnline> queuePlayer(String uid, String token);
 
   // Send updated target to server
   Future<bool> sendMove(Session session, bool done);
@@ -30,12 +30,12 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<GameOnline> queuePlayer(String uid, String token) async {
+  Future<MatchOnline> queuePlayer(String uid, String token) async {
     return _net
         .get(_baseUrl + 'queuePlayer?userId=' + uid + '&userFcmToken=' + token)
         .then((response) {
       print(response);
-      return GameOnline.fromMap(response);
+      return MatchOnline.fromMap(response);
     });
   }
 

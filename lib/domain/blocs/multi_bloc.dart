@@ -71,7 +71,7 @@ class MultiBloc extends GameBloc {
     }
   }
 
-  void showGame(GameOnline game) async {
+  void showMatch(MatchOnline matchOnline) async {
     _waitMessageSubject.add('Waiting for opponent...');
     gameField = game.gameField;
     targetField = game.targetField;

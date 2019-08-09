@@ -53,7 +53,7 @@ class MultiBloc extends GameBloc {
         listenToWinnerMessages();
         await _repo.queuePlayer().catchError((e) {
           result = GameState.error('error queueing to server');
-        }).then((game) => showGame(game));
+        }).then((match) => showMatch(match));
         if (result != null && result.type == GameStateType.error) {
           yield result;
         }
@@ -73,12 +73,12 @@ class MultiBloc extends GameBloc {
 
   void showMatch(MatchOnline matchOnline) async {
     _waitMessageSubject.add('Waiting for opponent...');
-    gameField = game.gameField;
-    targetField = game.targetField;
-    _enemyTargetSubject.add(game.enemyTargetField);
-    _enemyNameSubject.add(game.enemyName);
-    moveNumberSubject.add(game.moves);
-    if (game.started) {
+    gameField = matchOnline.gameField;
+    targetField = matchOnline.targetField;
+    _enemyTargetSubject.add(matchOnline.enemyTargetField);
+    _enemyNameSubject.add(matchOnline.enemyName);
+    moveNumberSubject.add(matchOnline.moves);
+    if (matchOnline.started) {
       _hasMatchStartedSubject.add(true);
       emitEvent(GameEvent(type: GameEventType.start));
     }

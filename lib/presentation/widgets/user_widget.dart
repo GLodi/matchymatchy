@@ -39,19 +39,19 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
         builder: (context, child) {
           return Transform(
             transform: Matrix4.translationValues(
-                0, _entryAnim.value * widget.height, 0),
+                0, -_entryAnim.value * widget.height, 0),
             child: Align(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.topCenter,
               child: Container(
                 height: 100.0,
                 color: Colors.transparent,
                 child: Container(
                   child: elements(),
                   decoration: BoxDecoration(
-                    color: Colors.orange,
+                    color: Colors.blue[200],
                     borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(20.0),
-                      topRight: const Radius.circular(20.0),
+                      bottomLeft: const Radius.circular(20.0),
+                      bottomRight: const Radius.circular(20.0),
                     ),
                     boxShadow: [
                       BoxShadow(

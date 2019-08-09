@@ -48,7 +48,13 @@ class MatchOnline extends Match {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      '': grid,
+      'matchId': matchId,
+      'grid': gameField.grid,
+      'targetField': targetField.grid,
+      'enemyTargetField': enemyTargetField.grid,
+      'moves': moves.toString(),
+      'started': started,
+      'enemyName': enemyName,
     };
   }
 }

@@ -64,9 +64,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     return Stack(children: <Widget>[
-      // TODO: refresh at end of game
       UserWidget(user: user, height: height, width: width),
-      centerButtons("Multiplayer"),
+      // TODO: add list of previous online matches
+      bottomButtons("Multiplayer"),
     ]);
   }
 
@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget initNotLogged() {
     return Stack(
       children: <Widget>[
-        centerButtons("Log in"),
+        bottomButtons("Log in"),
         StreamBuilder<bool>(
           stream: bloc.showSlides,
           initialData: false,
@@ -95,12 +95,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  // Widget that includes both center bottons
-  Widget centerButtons(String multiButtonText) {
+  // Widget that includes both bottom bottons
+  Widget bottomButtons(String multiButtonText) {
     return Stack(
       children: <Widget>[
         Align(
-          alignment: Alignment.centerLeft,
+          alignment: Alignment.bottomCenter,
           child: Hero(
               tag: 'single',
               child: choiceButton("Singleplayer", true, () {
@@ -126,6 +126,80 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ),
       ],
+    );
+  }
+
+  // Bottom left practice button
+  Widget practiceButton() {
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Container(
+        margin: EdgeInsets.only(left: 25, top: 25, right: 15, bottom: 25),
+        child: MaterialButton(
+          padding: EdgeInsets.all(20),
+          color: Colors.blue[200],
+          child: Column(
+            children: <Widget>[
+              Text('Practice',
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
+              Expanded(
+                child: Image(
+                  image: AssetImage('assets/icons/console.png'),
+                ),
+              ),
+            ],
+          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          onPressed: () {
+            widget.isTest
+                ? openMultiScreen()
+                : Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BlocProvider(
+                              child: SingleScreen(),
+                              bloc: kiwi.Container().resolve<SingleBloc>(),
+                            )),
+                  );
+          },
+        ),
+      ),
+    );
+  }
+
+  // Bottom right multiplayer button
+  Widget multiButton(String text) {
+    return Container(
+      margin: EdgeInsets.only(left: 15, top: 25, right: 25, bottom: 25),
+      child: MaterialButton(
+        padding: EdgeInsets.all(20),
+        color: Colors.blue[200],
+        child: Column(
+          children: <Widget>[
+            Text(text,
+                style: TextStyle(
+                  color: Colors.white,
+                )),
+            Expanded(
+              child: Image(
+                image: AssetImage('assets/icons/multiplayer.png'),
+              ),
+            ),
+          ],
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                    child: MultiScreen(),
+                    bloc: kiwi.Container().resolve<MultiBloc>(),
+                  )),
+        ),
+      ),
     );
   }
 
@@ -159,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ],
             ),
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             onPressed: onPress,
           ),
         ),

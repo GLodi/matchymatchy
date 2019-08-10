@@ -65,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final double height = MediaQuery.of(context).size.height;
     return Stack(children: <Widget>[
       UserWidget(user: user, height: height, width: width),
-      // TODO: add list of previous online matches
       bottomButtons("Multiplayer"),
     ]);
   }
@@ -97,36 +96,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   // Widget that includes both bottom bottons
   Widget bottomButtons(String multiButtonText) {
-    return Stack(
-      children: <Widget>[
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Hero(
-              tag: 'single',
-              child: choiceButton("Singleplayer", true, () {
-                widget.isTest
-                    ? openMultiScreen()
-                    : Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => BlocProvider(
-                                  child: SingleScreen(),
-                                  bloc: kiwi.Container().resolve<SingleBloc>(),
-                                )),
-                      );
-              })),
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Hero(
-            tag: 'multi',
-            child: choiceButton(multiButtonText, false, () {
-              bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress));
-            }),
-          ),
-        ),
-      ],
-    );
+    return Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+            height: 150,
+            child: Row(
+              children: <Widget>[
+                Hero(tag: 'single', child: practiceButton()),
+                Hero(
+                  tag: 'multi',
+                  child: multiButton(multiButtonText),
+                ),
+              ],
+            )));
   }
 
   // Bottom left practice button
@@ -198,44 +180,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     child: MultiScreen(),
                     bloc: kiwi.Container().resolve<MultiBloc>(),
                   )),
-        ),
-      ),
-    );
-  }
-
-  // Single/Login/Multi button
-  // Weird hack to make sure that their margins are correct
-  Widget choiceButton(String text, bool isOnLeft, Function onPress) {
-    return Container(
-      width: MediaQuery.of(context).size.width / 2,
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: Container(
-          margin: isOnLeft
-              ? EdgeInsets.only(left: 25, top: 25, right: 15, bottom: 25)
-              : EdgeInsets.only(left: 15, top: 25, right: 25, bottom: 25),
-          child: MaterialButton(
-            padding: EdgeInsets.all(20),
-            color: Colors.blue[200],
-            child: Column(
-              children: <Widget>[
-                Text(text,
-                    style: TextStyle(
-                      color: Colors.white,
-                    )),
-                Expanded(
-                  child: Image(
-                    image: AssetImage(isOnLeft
-                        ? 'assets/icons/console.png'
-                        : 'assets/icons/multiplayer.png'),
-                  ),
-                ),
-              ],
-            ),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            onPressed: onPress,
-          ),
         ),
       ),
     );

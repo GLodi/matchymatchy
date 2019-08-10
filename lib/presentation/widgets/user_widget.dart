@@ -53,12 +53,6 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
                       bottomLeft: const Radius.circular(20.0),
                       bottomRight: const Radius.circular(20.0),
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                        blurRadius: 10.0,
-                      ),
-                    ],
                   ),
                 ),
               ),

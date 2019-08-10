@@ -99,10 +99,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Align(
         alignment: Alignment.bottomCenter,
         child: Container(
-            height: 150,
+            height: 120,
             child: Row(
               children: <Widget>[
-                Hero(tag: 'single', child: practiceButton()),
+                practiceFAB(),
                 Hero(
                   tag: 'multi',
                   child: multiButton(multiButtonText),
@@ -112,42 +112,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   // Bottom left practice button
-  Widget practiceButton() {
-    return AspectRatio(
-      aspectRatio: 1,
-      child: Container(
-        margin: EdgeInsets.only(left: 25, top: 25, right: 15, bottom: 25),
-        child: MaterialButton(
-          padding: EdgeInsets.all(20),
-          color: Colors.blue[200],
-          child: Column(
-            children: <Widget>[
-              Text('Practice',
-                  style: TextStyle(
-                    color: Colors.white,
-                  )),
-              Expanded(
-                child: Image(
-                  image: AssetImage('assets/icons/console.png'),
-                ),
-              ),
-            ],
-          ),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          onPressed: () {
-            widget.isTest
-                ? openMultiScreen()
-                : Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BlocProvider(
-                              child: SingleScreen(),
-                              bloc: kiwi.Container().resolve<SingleBloc>(),
-                            )),
-                  );
-          },
-        ),
+  Widget practiceFAB() {
+    return Container(
+      margin: EdgeInsets.only(left: 25, top: 25, right: 15, bottom: 25),
+      child: FloatingActionButton(
+        heroTag: "single",
+        backgroundColor: Colors.blue[200],
+        onPressed: () {
+          widget.isTest
+              ? openMultiScreen()
+              : Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                            child: SingleScreen(),
+                            bloc: kiwi.Container().resolve<SingleBloc>(),
+                          )),
+                );
+        },
       ),
     );
   }

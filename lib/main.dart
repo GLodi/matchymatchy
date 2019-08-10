@@ -8,12 +8,14 @@ import 'dart:io';
 import 'package:squazzle/data/data.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/presentation.dart';
+import 'package:flutter/scheduler.dart' show timeDilation;
 
 final bool isTest = false;
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   kiwi.Container container = kiwi.Container();
+  timeDilation = 3.0; // Will slow down animations by a factor of two
 
   // Providers
   container

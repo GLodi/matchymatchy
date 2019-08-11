@@ -98,73 +98,58 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget bottomButtons(String multiButtonText) {
     return Align(
         alignment: Alignment.bottomCenter,
-        child: Container(
-            height: 120,
-            child: Row(
-              children: <Widget>[
-                practiceFAB(),
-                Hero(
-                  tag: 'multi',
-                  child: multiButton(multiButtonText),
-                ),
-              ],
-            )));
+        child: Row(
+          children: <Widget>[
+            practiceFAB(),
+            multiButton(multiButtonText),
+          ],
+        ));
   }
 
   // Bottom left practice button
   Widget practiceFAB() {
-    return Container(
-      margin: EdgeInsets.only(left: 25, top: 25, right: 15, bottom: 25),
-      child: FloatingActionButton(
-        heroTag: "single",
-        backgroundColor: Colors.blue[200],
-        onPressed: () {
-          widget.isTest
-              ? openMultiScreen()
-              : Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => BlocProvider(
-                            child: SingleScreen(),
-                            bloc: kiwi.Container().resolve<SingleBloc>(),
-                          )),
-                );
-        },
-      ),
+    return FloatingActionButton(
+      heroTag: "single",
+      backgroundColor: Colors.blue[200],
+      onPressed: () {
+        widget.isTest
+            ? openMultiScreen()
+            : Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                          child: SingleScreen(),
+                          bloc: kiwi.Container().resolve<SingleBloc>(),
+                        )),
+              );
+      },
     );
   }
 
   // Bottom right multiplayer button
   Widget multiButton(String text) {
-    return Container(
-      margin: EdgeInsets.only(left: 15, top: 25, right: 25, bottom: 25),
-      child: MaterialButton(
-        padding: EdgeInsets.all(20),
-        color: Colors.blue[200],
-        child: Column(
-          children: <Widget>[
-            Text(text,
+    return Hero(
+        tag: 'multi',
+        child: Container(
+          child: MaterialButton(
+            padding: EdgeInsets.all(20),
+            color: Colors.blue[200],
+            child: Text(text,
                 style: TextStyle(
                   color: Colors.white,
                 )),
-            Expanded(
-              child: Image(
-                image: AssetImage('assets/icons/multiplayer.png'),
-              ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BlocProvider(
+                        child: MultiScreen(),
+                        bloc: kiwi.Container().resolve<MultiBloc>(),
+                      )),
             ),
-          ],
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BlocProvider(
-                    child: MultiScreen(),
-                    bloc: kiwi.Container().resolve<MultiBloc>(),
-                  )),
-        ),
-      ),
-    );
+          ),
+        ));
   }
 
   void showSnackBar(String message) {

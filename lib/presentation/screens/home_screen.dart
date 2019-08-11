@@ -98,31 +98,42 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget bottomButtons(String multiButtonText) {
     return Align(
         alignment: Alignment.bottomCenter,
-        child: Row(
-          children: <Widget>[
-            practiceFAB(),
-            multiButton(multiButtonText),
-          ],
+        child: Container(
+          margin: EdgeInsets.all(20),
+          child: Row(
+            children: <Widget>[
+              practiceFAB(),
+              Spacer(flex: 1),
+              multiButton(multiButtonText),
+            ],
+          ),
         ));
   }
 
   // Bottom left practice button
   Widget practiceFAB() {
-    return FloatingActionButton(
-      heroTag: "single",
-      backgroundColor: Colors.blue[200],
-      onPressed: () {
-        widget.isTest
-            ? openMultiScreen()
-            : Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BlocProvider(
-                          child: SingleScreen(),
-                          bloc: kiwi.Container().resolve<SingleBloc>(),
-                        )),
-              );
-      },
+    return Container(
+      height: 75.0,
+      width: 75.0,
+      child: FittedBox(
+        child: FloatingActionButton(
+          heroTag: "single",
+          backgroundColor: Colors.blue[200],
+          child: Icon(Icons.videogame_asset),
+          onPressed: () {
+            widget.isTest
+                ? openMultiScreen()
+                : Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BlocProvider(
+                              child: SingleScreen(),
+                              bloc: kiwi.Container().resolve<SingleBloc>(),
+                            )),
+                  );
+          },
+        ),
+      ),
     );
   }
 
@@ -139,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   color: Colors.white,
                 )),
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(

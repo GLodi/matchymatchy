@@ -64,7 +64,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     return Stack(children: <Widget>[
-      UserWidget(user: user, height: height, width: width),
+      Column(children: <Widget>[
+        UserWidget(user: user, height: height, width: width),
+        Expanded(
+          child: PageView(
+            physics: BouncingScrollPhysics(),
+            children: <Widget>[
+              Container(
+                color: Colors.pink,
+              ),
+              Container(
+                color: Colors.cyan,
+              ),
+              Container(
+                color: Colors.deepPurple,
+              ),
+            ],
+          ),
+        ),
+      ]),
       bottomButtons("Multiplayer"),
     ]);
   }
@@ -99,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Align(
         alignment: Alignment.bottomCenter,
         child: Container(
-          height: 100,
+          height: 80,
           margin: EdgeInsets.only(top: 10),
           padding: EdgeInsets.only(top: 10, right: 20, left: 20, bottom: 10),
           decoration: new BoxDecoration(color: Colors.white, boxShadow: [
@@ -153,8 +171,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       child: Hero(
         tag: 'multi',
         child: MaterialButton(
-          height: 55,
-          padding: EdgeInsets.all(20),
+          height: 45,
+          padding: EdgeInsets.all(10),
           color: Colors.blue[100],
           elevation: 0,
           highlightElevation: 0,

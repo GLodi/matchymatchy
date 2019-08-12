@@ -43,7 +43,7 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
             child: Align(
               alignment: Alignment.topCenter,
               child: Container(
-                height: 100.0,
+                height: 200.0,
                 color: Colors.transparent,
                 child: Container(
                   child: elements(),

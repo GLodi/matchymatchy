@@ -99,11 +99,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Align(
         alignment: Alignment.bottomCenter,
         child: Container(
-          margin: EdgeInsets.all(20),
+          height: 100,
+          margin: EdgeInsets.only(top: 10),
+          padding: EdgeInsets.only(top: 10, right: 20, left: 20, bottom: 10),
+          decoration: new BoxDecoration(color: Colors.white, boxShadow: [
+            new BoxShadow(
+              color: Colors.black,
+              blurRadius: 5.0,
+            ),
+          ]),
           child: Row(
             children: <Widget>[
               practiceFAB(),
-              Spacer(flex: 1),
               multiButton(multiButtonText),
             ],
           ),
@@ -113,13 +120,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // Bottom left practice button
   Widget practiceFAB() {
     return Container(
-      height: 75.0,
-      width: 75.0,
+      height: 55.0,
+      width: 55.0,
+      margin: EdgeInsets.only(right: 20),
       child: FittedBox(
         child: FloatingActionButton(
           heroTag: "single",
-          backgroundColor: Colors.blue[200],
-          child: Icon(Icons.videogame_asset),
+          backgroundColor: Colors.blue[100],
+          child: Icon(Icons.videogame_asset, color: Colors.blue[800], size: 35),
+          elevation: 0,
+          highlightElevation: 0,
           onPressed: () {
             widget.isTest
                 ? openMultiScreen()
@@ -139,28 +149,32 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   // Bottom right multiplayer button
   Widget multiButton(String text) {
-    return Hero(
+    return Expanded(
+      child: Hero(
         tag: 'multi',
-        child: Container(
-          child: MaterialButton(
-            padding: EdgeInsets.all(20),
-            color: Colors.blue[200],
-            child: Text(text,
-                style: TextStyle(
-                  color: Colors.white,
-                )),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BlocProvider(
-                        child: MultiScreen(),
-                        bloc: kiwi.Container().resolve<MultiBloc>(),
-                      )),
-            ),
+        child: MaterialButton(
+          height: 55,
+          padding: EdgeInsets.all(20),
+          color: Colors.blue[100],
+          elevation: 0,
+          highlightElevation: 0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BlocProvider(
+                      child: MultiScreen(),
+                      bloc: kiwi.Container().resolve<MultiBloc>(),
+                    )),
           ),
-        ));
+          child: Text(text,
+              style: TextStyle(
+                color: Colors.blue[800],
+              )),
+        ),
+      ),
+    );
   }
 
   void showSnackBar(String message) {

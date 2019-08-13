@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
+import 'package:page_indicator/page_indicator.dart';
 
 import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
@@ -17,8 +18,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  HomeBloc bloc;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<PageContainerState> _pageViewKey = GlobalKey();
+
+  HomeBloc bloc;
+  PageController controller;
 
   @override
   void initState() {
@@ -29,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     bloc.intentToMultiScreen.listen((_) => openMultiScreen());
     bloc.snackBar.listen((message) => showSnackBar(message));
     bloc.emitEvent(HomeEvent(type: HomeEventType.checkIfUserLogged));
+    controller = PageController();
   }
 
   @override
@@ -67,19 +72,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       Column(children: <Widget>[
         UserWidget(user: user, height: height, width: width),
         Expanded(
-          child: PageView(
-            physics: BouncingScrollPhysics(),
-            children: <Widget>[
-              Container(
-                color: Colors.pink,
-              ),
-              Container(
-                color: Colors.cyan,
-              ),
-              Container(
-                color: Colors.deepPurple,
-              ),
-            ],
+          child: PageIndicatorContainer(
+            key: _pageViewKey,
+            child: PageView(
+              children: <Widget>[
+                Container(color: Colors.purple),
+                Container(color: Colors.green),
+              ],
+              controller: controller,
+              reverse: false,
+            ),
+            align: IndicatorAlign.top,
+            length: 2,
+            indicatorSpace: 10.0,
+            indicatorSelectorColor: Colors.blue[800],
           ),
         ),
       ]),
@@ -218,6 +224,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void dispose() {
     bloc.dispose();
+    controller.dispose();
     super.dispose();
   }
 }

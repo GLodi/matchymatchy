@@ -7,6 +7,7 @@ import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/screens/single_screen.dart';
 import 'package:squazzle/presentation/screens/multi_screen.dart';
 import 'package:squazzle/presentation/widgets/user_widget.dart';
+import 'package:squazzle/presentation/widgets/home_match_list_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool isTest;
@@ -18,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<PageContainerState> _pageViewKey = GlobalKey();
 
   HomeBloc bloc;
@@ -76,8 +77,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             key: _pageViewKey,
             child: PageView(
               children: <Widget>[
-                Container(color: Colors.purple),
-                Container(color: Colors.green),
+                Container(color: Colors.white),
+                Container(color: Colors.white),
               ],
               controller: controller,
               reverse: false,
@@ -86,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             length: 2,
             indicatorSpace: 10.0,
             indicatorSelectorColor: Colors.blue[800],
+            indicatorColor: Colors.grey[300],
           ),
         ),
       ]),
@@ -126,8 +128,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           height: 80,
           margin: EdgeInsets.only(top: 10),
           padding: EdgeInsets.only(top: 10, right: 20, left: 20, bottom: 10),
-          decoration: new BoxDecoration(color: Colors.white, boxShadow: [
-            new BoxShadow(
+          decoration: BoxDecoration(color: Colors.white, boxShadow: [
+            BoxShadow(
               color: Colors.black,
               blurRadius: 5.0,
             ),
@@ -203,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   void showSnackBar(String message) {
     _scaffoldKey.currentState
-        .showSnackBar(new SnackBar(content: new Text(message)));
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   void openMultiScreen() {

@@ -10,7 +10,13 @@ abstract class DbProvider {
   Future<Match> getMatch(int id);
 
   // Stores online match
-  Future<void> saveMatchOnline(MatchOnline matchOnline);
+  Future<void> storeMatchOnline(MatchOnline matchOnline);
+
+  // Get online match
+  Future<MatchOnline> getMatchOnline(String matchId);
+
+  // Get all online matches
+  Future<List<MatchOnline>> getAllMatchOnline();
 }
 
 class DbProviderImpl extends DbProvider {
@@ -41,6 +47,18 @@ class DbProviderImpl extends DbProvider {
   }
 
   @override
-  Future<void> saveMatchOnline(MatchOnline matchOnline) async =>
+  Future<void> storeMatchOnline(MatchOnline matchOnline) async =>
       await _db.insert(matchOnlineTable, matchOnline.toMap());
+
+  @override
+  Future<MatchOnline> getMatchOnline(String matchId) {
+    // TODO: implement getMatchOnline
+    return null;
+  }
+
+  @override
+  Future<List<MatchOnline>> getAllMatchOnline() {
+    // TODO: implement getAllMatchOnline
+    return null;
+  }
 }

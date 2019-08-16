@@ -41,7 +41,7 @@ class DbProviderImpl extends DbProvider {
   @override
   Future<Match> getMatch(int id) async {
     var dbClient = await db;
-    List<Map> maps = await dbClient.query('gamefields',
+    List<Map> maps = await dbClient.query(gameFieldTable,
         columns: ['_id', 'grid', 'target'], where: '_id = ?', whereArgs: [id]);
     return maps.length > 0 ? Match.fromMap(maps.first) : null;
   }
@@ -51,14 +51,19 @@ class DbProviderImpl extends DbProvider {
       await _db.insert(matchOnlineTable, matchOnline.toMap());
 
   @override
-  Future<MatchOnline> getMatchOnline(String matchId) {
-    // TODO: implement getMatchOnline
-    return null;
+  Future<MatchOnline> getMatchOnline(String matchId) async {
+    var dbClient = await db;
+    List<Map> maps = await dbClient
+        .query(matchOnlineTable, where: 'matchId = ?', whereArgs: [matchId]);
+    return maps.length > 0 ? MatchOnline.fromMap(maps.first) : null;
   }
 
   @override
-  Future<List<MatchOnline>> getAllMatchOnline() {
-    // TODO: implement getAllMatchOnline
-    return null;
+  Future<List<MatchOnline>> getAllMatchOnline() async {
+    var dbClient = await db;
+    List<Map> maps = await dbClient.query(matchOnlineTable);
+    List<MatchOnline> matches =
+        maps.map((m) => MatchOnline.fromMap(m)).toList();
+    return matches.length > 0 ? matches : null;
   }
 }

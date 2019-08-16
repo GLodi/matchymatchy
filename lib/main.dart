@@ -9,7 +9,7 @@ import 'package:squazzle/data/data.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/presentation.dart';
 
-final bool isTest = true;
+final bool isTest = false;
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -37,8 +37,8 @@ void main() {
       c.resolve<LogicProvider>(),
       c.resolve<DbProvider>(),
       c.resolve<SharedPrefsProvider>()));
-  container.registerSingleton((c) =>
-      HomeRepo(c.resolve<LoginProvider>(), c.resolve<SharedPrefsProvider>()));
+  container.registerSingleton((c) => HomeRepo(c.resolve<LoginProvider>(),
+      c.resolve<SharedPrefsProvider>(), c.resolve<DbProvider>()));
 
   // Blocs
   container.registerFactory((c) => SingleBloc(c.resolve<SingleRepo>()));

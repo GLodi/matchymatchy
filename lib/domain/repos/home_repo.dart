@@ -4,14 +4,17 @@ import 'package:squazzle/data/data.dart';
 class HomeRepo {
   final LoginProvider loginProvider;
   final SharedPrefsProvider prefsProvider;
+  final DbProvider dbProvider;
 
-  HomeRepo(this.loginProvider, this.prefsProvider);
+  HomeRepo(this.loginProvider, this.prefsProvider, this.dbProvider);
 
   Future<void> loginWithGoogle() => loginProvider
       .loginWithGoogle()
       .then((user) => prefsProvider.storeUser(user));
 
   Future<User> checkIfLoggedIn() => prefsProvider.getUser();
+
+  Future<List<MatchOnline>> getMatches() => dbProvider.getAllMatchOnline();
 
   Future<bool> isFirstOpen() => prefsProvider.isFirstOpen();
 }

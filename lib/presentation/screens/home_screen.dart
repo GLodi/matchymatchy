@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           builder: (context, state) {
             switch (state.type) {
               case HomeStateType.initLogged:
-                return initLogged(state.user);
+                return initLogged(state.user, state.matches);
                 break;
               case HomeStateType.initNotLogged:
                 return initNotLogged();
@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   // Shows Single/Multi button and UserWidget at the bottom
-  Widget initLogged(User user) {
+  Widget initLogged(User user, List<MatchOnline> matches) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     return Stack(children: <Widget>[
@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             child: PageView(
               children: <Widget>[
                 Container(color: Colors.white),
-                Container(color: Colors.white),
+                HomeMatchList(matchList: matches),
               ],
               controller: controller,
               reverse: false,
@@ -186,14 +186,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           highlightElevation: 0,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BlocProvider(
-                      child: MultiScreen(),
-                      bloc: kiwi.Container().resolve<MultiBloc>(),
-                    )),
-          ),
+          onPressed: () =>
+              bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress)),
           child: Text(text,
               style: TextStyle(
                 color: Colors.blue[800],
@@ -204,8 +198,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   void showSnackBar(String message) {
-    _scaffoldKey.currentState
-        .showSnackBar(SnackBar(content: Text(message)));
+    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(message)));
   }
 
   void openMultiScreen() {

@@ -5,9 +5,7 @@ import 'package:squazzle/data/models/models.dart';
 
 class HomeMatchList extends StatefulWidget {
   final List<MatchOnline> matchList;
-
-  HomeMatchList({Key key, this.matchList}): super(key: key);
-
+  HomeMatchList({Key key, this.matchList}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return _HomeMatchListState();
@@ -15,9 +13,15 @@ class HomeMatchList extends StatefulWidget {
 }
 
 class _HomeMatchListState extends State<HomeMatchList> {
-
   @override
   Widget build(BuildContext context) {
+    if (widget.matchList != null)
+      return list();
+    else
+      return Container(color: Colors.blue);
+  }
+
+  Widget list() {
     return ListView.builder(
       itemBuilder: (context, position) {
         return Card(
@@ -26,5 +30,4 @@ class _HomeMatchListState extends State<HomeMatchList> {
       },
     );
   }
-
 }

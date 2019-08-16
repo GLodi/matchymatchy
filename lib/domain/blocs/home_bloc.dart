@@ -81,19 +81,19 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
 
   Future<HomeState> checkIfUserLogged() async {
     HomeState nextState;
-    await _repo.checkIfLoggedIn().catchError((e) {
+    User user = await _repo.checkIfLoggedIn().catchError((e) {
       _snackBarSubject.add('Login check error');
-    }).then((user) {
-      if (user != null) {
-        nextState = HomeState.initLogged(user);
-        _messEventBus.on<WinnerMessage>().listen((mess) {
-          // TODO: update wins amount in user_widget
-          // TODO: show queueing/notqueueing/inmatch on multi button
-        });
-      } else {
-        nextState = HomeState.initNotLogged();
-      }
     });
+    if (user != null) {
+      List<MatchOnline> matches = await _repo.getMatches();
+      nextState = HomeState.initLogged(user, matches);
+      _messEventBus.on<WinnerMessage>().listen((mess) {
+        // TODO: update wins amount in user_widget
+        // TODO: show queueing/notqueueing/inmatch on multi button
+      });
+    } else {
+      nextState = HomeState.initNotLogged();
+    }
     return nextState;
   }
 

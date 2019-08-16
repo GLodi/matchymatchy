@@ -19,10 +19,11 @@ class Match {
 
 class MatchOnline extends Match {
   String matchId;
-  TargetField enemyTargetField;
-  int moves;
-  bool started;
   String enemyName;
+  int moves;
+  int gfid;
+  bool started;
+  TargetField enemyTargetField;
 
   MatchOnline.fromMap(Map<String, dynamic> map) {
     assert(map['gfid'] != null);
@@ -37,9 +38,11 @@ class MatchOnline extends Match {
     assert(map['target'].toString().length == 9);
     assert(map['enemytarget'].toString().length == 9);
     assert(map['moves'] >= 0);
+    assert(map['gfid'] >= 0);
     gameField = GameField(grid: map['gf']);
     targetField = TargetField(grid: map['target']);
     enemyTargetField = TargetField(grid: map['enemytarget']);
+    gfid = map['gfid'];
     moves = map['moves'];
     started = map['started'];
     enemyName = map['enemyname'];
@@ -48,13 +51,14 @@ class MatchOnline extends Match {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'matchId': matchId,
-      'grid': gameField.grid,
-      'targetField': targetField.grid,
-      'enemyTargetField': enemyTargetField.grid,
+      'matchid': matchId,
+      'gfid': gfid.toString(),
+      'gf': gameField.grid,
+      'target': targetField.grid,
+      'enemytarget': enemyTargetField.grid,
       'moves': moves.toString(),
       'started': started,
-      'enemyName': enemyName,
+      'enemyname': enemyName,
     };
   }
 }

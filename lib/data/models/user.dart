@@ -8,10 +8,6 @@ class User {
   User({this.username, this.uid, this.photoUrl, this.matchesWon = 0});
 
   User.fromMap(Map<String, dynamic> map) {
-    assert(map['username'] != null);
-    assert(map['uid'] != null);
-    assert(map['photoUrl'] != null);
-    assert(map['matchesWon'] != null);
     username = map['username'];
     uid = map['uid'];
     photoUrl = map['photoUrl'];

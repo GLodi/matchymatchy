@@ -21,7 +21,7 @@ enum WidgetStateType {
 class WidgetEvent extends BlocEvent {
   final WidgetEventType type;
 
-  WidgetEvent({this.type: WidgetEventType.start}) : assert(type != null);
+  WidgetEvent({this.type: WidgetEventType.start});
 }
 
 enum WidgetEventType {

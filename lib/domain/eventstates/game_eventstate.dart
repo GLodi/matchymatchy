@@ -28,7 +28,7 @@ enum GameStateType {
 class GameEvent extends BlocEvent {
   final GameEventType type;
 
-  GameEvent({this.type: GameEventType.start}) : assert(type != null);
+  GameEvent({this.type: GameEventType.start});
 }
 
 enum GameEventType {

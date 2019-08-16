@@ -38,7 +38,7 @@ class HomeEvent extends BlocEvent {
   HomeEvent({
     this.type: HomeEventType.checkIfUserLogged,
     this.message,
-  }) : assert(type != null);
+  });
 }
 
 enum HomeEventType {

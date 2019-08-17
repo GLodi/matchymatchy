@@ -14,6 +14,9 @@ class HomeRepo {
 
   Future<User> checkIfLoggedIn() => prefsProvider.getUser();
 
+  Future<void> storeMatchOnline(MatchOnline matchOnline) =>
+      dbProvider.storeMatchOnline(matchOnline);
+
   Future<List<MatchOnline>> getMatches() => dbProvider.getAllMatchOnline();
 
   Future<bool> isFirstOpen() => prefsProvider.isFirstOpen();

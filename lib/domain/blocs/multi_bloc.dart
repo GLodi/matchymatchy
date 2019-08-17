@@ -102,6 +102,7 @@ class MultiBloc extends GameBloc {
   void listenToWinnerMessages() async {
     String uid = await _repo.getStoredUid();
     winnerSub = _messEventBus.on<WinnerMessage>().listen((mess) {
+      // TODO: show win_widget
       if (mess.winner == uid) {
         _repo.updateUserInfo();
       }

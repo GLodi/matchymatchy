@@ -43,6 +43,7 @@ class MultiRepo extends GameRepo {
     MatchOnline situation = await apiProvider.queuePlayer(uid, token);
     prefsProvider.storeMoves(situation.moves);
     prefsProvider.storeMatchId(situation.matchId);
+    dbProvider.storeMatchOnline(situation);
     return situation;
   }
 

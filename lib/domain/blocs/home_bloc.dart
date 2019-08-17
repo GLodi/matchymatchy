@@ -87,7 +87,13 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     if (user != null) {
       List<MatchOnline> matches = await _repo.getMatches();
       nextState = HomeState.initLogged(user, matches);
+      _messEventBus.on<ChallengeMessage>().listen((mess) {
+        print('challenge');
+        // TODO: store new mathonline
+      });
       _messEventBus.on<WinnerMessage>().listen((mess) {
+        print('RECEIVERWINONHOME');
+        // TODO: update match online
         // TODO: update wins amount in user_widget
         // TODO: show queueing/notqueueing/inmatch on multi button
       });

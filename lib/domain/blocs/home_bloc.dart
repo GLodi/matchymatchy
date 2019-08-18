@@ -81,24 +81,28 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
 
   Future<HomeState> checkIfUserLogged() async {
     HomeState nextState;
-    User user = await _repo.checkIfLoggedIn().catchError((e) {
+    try {
+      User user = await _repo.checkIfLoggedIn();
+      if (user != null) {
+        List<MatchOnline> matches = await _repo.getMatches();
+        nextState = HomeState.initLogged(user, matches);
+        _messEventBus.on<ChallengeMessage>().listen((mess) {
+          print('challenge');
+          // TODO: store new mathonline
+        });
+        _messEventBus.on<WinnerMessage>().listen((mess) {
+          print('RECEIVERWINONHOME');
+          // TODO: update match online
+          // TODO: update wins amount in user_widget
+          // TODO: show queueing/notqueueing/inmatch on multi button
+        });
+      } else {
+        nextState = HomeState.initNotLogged();
+      }
+    } catch (e) {
       _snackBarSubject.add('Login check error');
-    });
-    if (user != null) {
-      List<MatchOnline> matches = await _repo.getMatches();
-      nextState = HomeState.initLogged(user, matches);
-      _messEventBus.on<ChallengeMessage>().listen((mess) {
-        print('challenge');
-        // TODO: store new mathonline
-      });
-      _messEventBus.on<WinnerMessage>().listen((mess) {
-        print('RECEIVERWINONHOME');
-        // TODO: update match online
-        // TODO: update wins amount in user_widget
-        // TODO: show queueing/notqueueing/inmatch on multi button
-      });
-    } else {
       nextState = HomeState.initNotLogged();
+      print(e);
     }
     return nextState;
   }

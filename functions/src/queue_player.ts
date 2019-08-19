@@ -46,12 +46,12 @@ async function alreadyInMatch(userId: string): Promise<string> {
 
 /**
  * Host/Join game depending on queue's situation
+ * Queue can either be empty or full.
+ * If empty, create new element in queue and wait for someone.
+ * if full, join other player's match and start game.
  */
 async function newGame(userId: string, userFcmToken: string): Promise<Session> {
   let qs: QuerySnapshot = await queue.get();
-  // Queue can either be empty or full.
-  // If empty, create new element in queue and wait for someone.
-  // if full, join other player's match and start game.
   let gfDocMatch: [DocumentSnapshot, string] = qs.empty
     ? await queueEmpty(userId, userFcmToken)
     : await queueNotEmpty(userId, userFcmToken);
@@ -71,11 +71,6 @@ async function newGame(userId: string, userFcmToken: string): Promise<Session> {
     false
   );
   return newMatch;
-}
-
-async function getUsername(userId: string): Promise<string> {
-  let user: DocumentSnapshot = await users.doc(userId).get();
-  return user.data()!.username;
 }
 
 /**
@@ -125,6 +120,11 @@ async function reconnect(
       false
     );
   }
+}
+
+async function getUsername(userId: string): Promise<string> {
+  let user: DocumentSnapshot = await users.doc(userId).get();
+  return user.data()!.username;
 }
 
 /**

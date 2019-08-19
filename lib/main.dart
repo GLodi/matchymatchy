@@ -37,8 +37,11 @@ void main() {
       c.resolve<LogicProvider>(),
       c.resolve<DbProvider>(),
       c.resolve<SharedPrefsProvider>()));
-  container.registerSingleton((c) => HomeRepo(c.resolve<LoginProvider>(),
-      c.resolve<SharedPrefsProvider>(), c.resolve<DbProvider>()));
+  container.registerSingleton((c) => HomeRepo(
+      c.resolve<LoginProvider>(),
+      c.resolve<SharedPrefsProvider>(),
+      c.resolve<DbProvider>(),
+      c.resolve<ApiProvider>()));
 
   // Blocs
   container.registerFactory((c) => SingleBloc(c.resolve<SingleRepo>()));

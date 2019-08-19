@@ -5,8 +5,10 @@ class HomeRepo {
   final LoginProvider loginProvider;
   final SharedPrefsProvider prefsProvider;
   final DbProvider dbProvider;
+  final ApiProvider apiProvider;
 
-  HomeRepo(this.loginProvider, this.prefsProvider, this.dbProvider);
+  HomeRepo(this.loginProvider, this.prefsProvider, this.dbProvider,
+      this.apiProvider);
 
   Future<void> loginWithGoogle() => loginProvider
       .loginWithGoogle()
@@ -20,4 +22,11 @@ class HomeRepo {
   Future<List<MatchOnline>> getMatches() => dbProvider.getAllMatchOnline();
 
   Future<bool> isFirstOpen() => prefsProvider.isFirstOpen();
+
+  Future<String> getStoredUid() => prefsProvider.getUid();
+
+  Future<void> updateUserInfo() => prefsProvider
+      .getUid()
+      .then((uid) => apiProvider.getUser(uid))
+      .then((user) => prefsProvider.storeUser(user));
 }

@@ -17,6 +17,7 @@ class MatchOnline extends Match {
   String matchId;
   String enemyName;
   int moves;
+  int enemyMoves;
   int gfid;
   bool started;
   TargetField enemyTargetField;
@@ -27,6 +28,7 @@ class MatchOnline extends Match {
     enemyTargetField = TargetField(grid: map['enemytarget']);
     gfid = int.parse(map['gfid'].toString());
     moves = int.parse(map['moves'].toString());
+    enemyMoves = int.parse(map['enemymoves'].toString());
     started = map['started'];
     enemyName = map['enemyname'];
     matchId = map['matchid'];
@@ -40,6 +42,7 @@ class MatchOnline extends Match {
       'target': targetField.grid,
       'enemytarget': enemyTargetField.grid,
       'moves': moves.toString(),
+      'enemymoves': enemyMoves.toString(),
       'started': started,
       'enemyname': enemyName,
     };

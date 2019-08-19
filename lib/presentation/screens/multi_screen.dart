@@ -37,7 +37,6 @@ class _MultiScreenState extends State<MultiScreen>
           stream: bloc.enemyName,
           builder: (context, snapshot) => Text(snapshot.data),
         ),
-        // TODO: this disappears when queueing and waiting appears
         actions: <Widget>[
           StreamBuilder<bool>(
             initialData: false,

@@ -108,6 +108,9 @@ async function setPlayerDone(userId: string, matchId: string) {
     : await matches.doc(matchId).update({
         joindone: true
       });
+  await users.doc(userId).update({
+    currentMatch: null
+  });
 }
 
 /**

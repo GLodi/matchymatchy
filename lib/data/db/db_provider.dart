@@ -35,6 +35,7 @@ class DbProviderImpl extends DbProvider {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String databasePath = join(appDocDir.path, 'asset_squazzle.db');
     var thedb = await openDatabase(databasePath);
+    await thedb.query('');
     return thedb;
   }
 

@@ -23,6 +23,7 @@ class _HomeMatchListState extends State<HomeMatchList> {
 
   Widget list() {
     return ListView.builder(
+      itemCount: widget.matchList.length,
       itemBuilder: (context, position) {
         return Card(
           child: Text(widget.matchList[position].matchId.toString()),

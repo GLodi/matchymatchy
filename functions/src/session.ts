@@ -7,7 +7,7 @@ export class Session {
   enemymoves: number;
   enemyname: string;
   enemytarget: string;
-  started: boolean;
+  started: number;
 
   constructor(
     matchid: string,
@@ -18,7 +18,7 @@ export class Session {
     enemymoves: number,
     enemyname: string,
     enemytarget: string,
-    started: boolean
+    started: number
   ) {
     this.matchid = matchid;
     this.gfid = gfid;

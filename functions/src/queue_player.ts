@@ -68,7 +68,7 @@ async function newGame(userId: string, userFcmToken: string): Promise<Session> {
     0,
     "Searching...",
     diff,
-    false
+    0
   );
   return newMatch;
 }
@@ -105,7 +105,7 @@ async function reconnect(
         ? await getUsername(matchDoc.data()!.joinuid)
         : await getUsername(matchDoc.data()!.hostuid),
       hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
-      true
+      1
     );
   } else {
     return new Session(
@@ -117,7 +117,7 @@ async function reconnect(
       hostOrJoin ? matchDoc.data()!.joinmoves : matchDoc.data()!.hostmoves,
       "Searching...",
       hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
-      false
+      0
     );
   }
 }

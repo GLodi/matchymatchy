@@ -78,7 +78,7 @@ class MultiBloc extends GameBloc {
     _enemyTargetSubject.add(matchOnline.enemyTargetField);
     _enemyNameSubject.add(matchOnline.enemyName);
     moveNumberSubject.add(matchOnline.moves);
-    if (matchOnline.started) {
+    if (matchOnline.started == 1) {
       _hasMatchStartedSubject.add(true);
       emitEvent(GameEvent(type: GameEventType.start));
     }

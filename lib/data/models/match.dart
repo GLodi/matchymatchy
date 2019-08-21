@@ -19,32 +19,32 @@ class MatchOnline extends Match {
   int moves;
   int enemyMoves;
   int gfid;
-  bool started;
+  int started;
   TargetField enemyTargetField;
 
   MatchOnline.fromMap(Map<String, dynamic> map) {
     gameField = GameField(grid: map['gf']);
     targetField = TargetField(grid: map['target']);
-    enemyTargetField = TargetField(grid: map['enemytarget']);
-    gfid = int.parse(map['gfid'].toString());
+    matchId = map['matchid'];
+    enemyName = map['enemyname'];
     moves = int.parse(map['moves'].toString());
     enemyMoves = int.parse(map['enemymoves'].toString());
-    started = map['started'];
-    enemyName = map['enemyname'];
-    matchId = map['matchid'];
+    gfid = int.parse(map['gfid'].toString());
+    started = int.parse(map['started'].toString());
+    enemyTargetField = TargetField(grid: map['enemytarget']);
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'matchid': matchId,
-      'gfid': gfid.toString(),
       'gf': gameField.grid,
       'target': targetField.grid,
-      'enemytarget': enemyTargetField.grid,
+      'matchid': matchId,
+      'enemyname': enemyName,
       'moves': moves.toString(),
       'enemymoves': enemyMoves.toString(),
-      'started': started,
-      'enemyname': enemyName,
+      'gfid': gfid.toString(),
+      'started': started.toString(),
+      'enemytarget': enemyTargetField.grid,
     };
   }
 }

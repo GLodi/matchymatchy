@@ -1,7 +1,8 @@
 import 'dart:io';
-import 'package:sqflite/sqflite.dart';
+import 'dart:typed_data';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'package:squazzle/data/models/models.dart';
 
@@ -25,18 +26,25 @@ class DbProviderImpl extends DbProvider {
 
   static Database _db;
 
+  DbProviderImpl() {
+    _initDatabase();
+  }
+
   Future<Database> get db async {
     if (_db != null) return _db;
-    _db = await _initDatabase();
+    await _initDatabase();
     return _db;
   }
 
   _initDatabase() async {
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    String databasePath = join(appDocDir.path, 'asset_squazzle.db');
-    var thedb = await openDatabase(databasePath);
-    await thedb.query('');
-    return thedb;
+    var dbDir = await getDatabasesPath();
+    var dbPath = join(dbDir, "app.db");
+    await deleteDatabase(dbPath);
+    ByteData data = await rootBundle.load("assets/squazzle.db");
+    List<int> bytes =
+        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    await File(dbPath).writeAsBytes(bytes);
+    _db = await openDatabase(dbPath);
   }
 
   @override

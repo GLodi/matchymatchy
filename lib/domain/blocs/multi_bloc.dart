@@ -48,9 +48,7 @@ class MultiBloc extends GameBloc {
     switch (event.type) {
       case GameEventType.queue:
         GameState result;
-        listenToChallengeMessages();
-        listenToMoveMessages();
-        listenToWinnerMessages();
+        listenToMessages();
         await _repo.queuePlayer().catchError((e) {
           result = GameState.error('error queueing to server');
         }).then((match) => showMatch(match));
@@ -73,36 +71,30 @@ class MultiBloc extends GameBloc {
 
   void showMatch(MatchOnline matchOnline) async {
     _waitMessageSubject.add('Waiting for opponent...');
-    gameField = matchOnline.gameField;
-    targetField = matchOnline.targetField;
-    _enemyTargetSubject.add(matchOnline.enemyTargetField);
-    _enemyNameSubject.add(matchOnline.enemyName);
-    moveNumberSubject.add(matchOnline.moves);
     if (matchOnline.started == 1) {
+      gameField = matchOnline.gameField;
+      targetField = matchOnline.targetField;
+      _enemyTargetSubject.add(matchOnline.enemyTargetField);
+      _enemyNameSubject.add(matchOnline.enemyName);
+      moveNumberSubject.add(matchOnline.moves);
       _hasMatchStartedSubject.add(true);
       emitEvent(GameEvent(type: GameEventType.start));
     }
   }
 
-  void listenToChallengeMessages() {
-    challengeSub = _messEventBus.on<ChallengeMessage>().listen((mess) {
-      _repo.storeMatchId(mess.matchId);
-      _enemyNameSubject.add(mess.enemyName);
-      _hasMatchStartedSubject.add(true);
-      emitEvent(GameEvent(type: GameEventType.start));
-    });
-  }
-
-  void listenToMoveMessages() {
-    moveSub = _messEventBus.on<MoveMessage>().listen((mess) {
-      _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
-    });
-  }
-
-  void listenToWinnerMessages() async {
-    winnerSub = _messEventBus.on<WinnerMessage>().listen((mess) {
-      // TODO: populate win_widget that's already showing
-    });
+  void listenToMessages() {
+    if (challengeSub == null && moveSub == null && winnerSub == null) {
+      challengeSub = _messEventBus.on<ChallengeMessage>().listen((mess) {
+        emitEvent(GameEvent(type: GameEventType.queue));
+      });
+      moveSub = _messEventBus.on<MoveMessage>().listen((mess) {
+        _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
+      });
+      winnerSub = _messEventBus.on<WinnerMessage>().listen((mess) {
+        // TODO: populate win_widget that's already showing, or show if forfeit
+        emitEvent(GameEvent(type: GameEventType.victory));
+      });
+    }
   }
 
   @override

@@ -8,6 +8,9 @@ abstract class ApiProvider {
   // Request user info
   Future<User> getUser(String uid);
 
+  // Request list of all previously played matches
+  Future<List<MatchOnline>> getMatchHistory(String uid);
+
   // Add player to server queue, or receive current match
   Future<MatchOnline> queuePlayer(String uid, String token);
 
@@ -27,6 +30,16 @@ class ApiProviderImpl implements ApiProvider {
   @override
   Future<User> getUser(String uid) {
     return usersRef.document(uid).get().then((doc) => User.fromMap(doc.data));
+  }
+
+  @override
+  Future<List<MatchOnline>> getMatchHistory(String uid) async {
+    List<MatchOnline> list = List<MatchOnline>();
+    QuerySnapshot matchesQuery =
+        await usersRef.document(uid).collection('matches').getDocuments();
+    matchesQuery.documents
+        .forEach((d) => list.add(MatchOnline.fromMap(d.data)));
+    return list;
   }
 
   @override

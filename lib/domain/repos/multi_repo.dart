@@ -39,9 +39,11 @@ class MultiRepo extends GameRepo {
     String uid = await prefsProvider.getUid();
     String token = await messProvider.getToken();
     MatchOnline situation = await apiProvider.queuePlayer(uid, token);
-    prefsProvider.storeMoves(situation.moves);
-    prefsProvider.storeMatchId(situation.matchId);
-    dbProvider.storeMatchOnline(situation);
+    if (situation.started == 1) {
+      prefsProvider.storeMoves(situation.moves);
+      prefsProvider.storeMatchId(situation.matchId);
+      dbProvider.storeMatchOnline(situation);
+    }
     return situation;
   }
 

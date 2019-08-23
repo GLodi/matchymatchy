@@ -129,7 +129,7 @@ async function getUsername(userId: string): Promise<string> {
 
 /**
  * Populate queue with player's information.
- * Returns GameField of starting match.
+ * Returns match's GameField
  */
 async function queueEmpty(
   userId: string,
@@ -186,12 +186,13 @@ async function queueNotEmpty(
     userId,
     userFcmToken
   );
-  let match: DocumentSnapshot = await matches.doc(matchId).get();
-  users.doc(userId).update({
-    currentMatch: match.id
-  });
+  let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
+  let hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
+  let joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);
+  hostRef.collection("matches").add(matchDoc);
+  joinRef.collection("matches").add(matchDoc);
   let gf: DocumentSnapshot = await gamefields
-    .doc(String(match.data()!.gfid))
+    .doc(String(matchDoc.data()!.gfid))
     .get();
   return [gf, matchId];
 }

@@ -15,7 +15,7 @@ class HomeMatchList extends StatefulWidget {
 class _HomeMatchListState extends State<HomeMatchList> {
   @override
   Widget build(BuildContext context) {
-    if (widget.matchList != null)
+    if (widget.matchList != null && widget.matchList.isNotEmpty)
       return list();
     else
       return Container(color: Colors.blue);

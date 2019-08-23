@@ -136,7 +136,9 @@ class _MultiScreenState extends State<MultiScreen>
           StreamBuilder<String>(
             initialData: 'Connecting to server...',
             stream: bloc.waitMessage,
-            builder: (context, snapshot) => Text(snapshot.data),
+            builder: (context, snapshot) => Text(
+              snapshot.data,
+            ),
           ),
           SizedBox(height: 60),
         ],

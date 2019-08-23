@@ -5,29 +5,29 @@ import 'package:squazzle/data/models/models.dart';
 abstract class SharedPrefsProvider {
   Future<void> storeUser(User user);
 
-  Future<void> storeMatchId(String matchId);
+  Future<void> storeMatchId(String matchId); // delete
 
-  Future<void> storeGf(GameField gf);
+  Future<void> storeGf(GameField gf); // delete
 
-  Future<void> storeTarget(TargetField targetField);
+  Future<void> storeTarget(TargetField targetField); // delete
 
-  Future<void> storeMoves(int moves);
+  Future<void> storeMoves(int moves); // delete
 
   Future<User> getUser();
 
-  Future<String> getMatchId();
+  Future<String> getMatchId(); // delete
 
   Future<String> getUid();
 
   Future<bool> isFirstOpen();
 
-  Future<void> restoreMoves();
+  Future<void> restoreMoves(); // delete
 
-  Future<void> increaseMoves();
+  Future<void> increaseMoves(); // delete
 
-  Future<int> getMoves();
+  Future<int> getMoves(); // delete
 
-  Future<Session> getCurrentSession();
+  Future<Session> getCurrentSession(); // delete, return current match in db
 }
 
 class SharedPrefsProviderImpl extends SharedPrefsProvider {

@@ -123,9 +123,10 @@ async function declareWinner(matchId: string) {
   } else if (matchDoc.data()!.hostmoves > matchDoc.data()!.joinmoves) {
     await upWinAmount(matchId, false, false);
   } else {
-    matches.doc(matchId).update({
+    await matches.doc(matchId).update({
       winner: "draw"
     });
+    await resetMatch(matchId);
   }
 }
 
@@ -150,13 +151,15 @@ async function upWinAmount(
     winnerName: user.data()!.username,
     forfeitWin: forfeitWin
   });
-  await resetCurrentMatch(matchId);
+  await resetMatch(matchId);
 }
 
 /**
  * Frees players from finished game, allowing them to re-queue.
+ * Copies match document to each user's user/matches collection and
+ * deletes it from matches.
  */
-async function resetCurrentMatch(matchId: string) {
+async function resetMatch(matchId: string) {
   let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
   let hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
   let joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);
@@ -166,4 +169,13 @@ async function resetCurrentMatch(matchId: string) {
   joinRef.update({
     currentMatch: null
   });
+  hostRef
+    .collection("matches")
+    .doc(matchId)
+    .update(matchDoc);
+  joinRef
+    .collection("matches")
+    .doc(matchId)
+    .update(matchDoc);
+  await matches.doc(matchId).delete();
 }

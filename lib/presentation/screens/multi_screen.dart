@@ -154,8 +154,9 @@ class _MultiScreenState extends State<MultiScreen>
     return showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Forfeit match'),
-            content: Text('Are you sure you want to forfeit the match?'),
+            title: Text('Forfeit match', style: TextStyle(color: Colors.black)),
+            content: Text('Are you sure you want to forfeit the match?',
+                style: TextStyle(color: Colors.black)),
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.of(context).pop(false),
@@ -178,8 +179,9 @@ class _MultiScreenState extends State<MultiScreen>
     return showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Close match'),
-            content: Text('Do you want to exit?'),
+            title: Text('Close match', style: TextStyle(color: Colors.black)),
+            content: Text('Do you want to exit?',
+                style: TextStyle(color: Colors.black)),
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.of(context).pop(false),

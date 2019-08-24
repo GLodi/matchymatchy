@@ -14,6 +14,6 @@ class SingleRepo extends GameRepo {
   Future<bool> moveDone(GameField gameField, TargetField targetField) =>
       logicProvider.checkIfCorrect(gameField, targetField);
 
-  Future<Match> getMatch(int id) =>
-      prefsProvider.restoreMoves().then((_) => dbProvider.getMatch(id));
+  Future<Match> getTestMatch(int id) =>
+      prefsProvider.restoreMoves().then((_) => dbProvider.getTestMatch(id));
 }

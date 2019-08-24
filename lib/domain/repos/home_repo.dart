@@ -10,16 +10,16 @@ class HomeRepo {
   HomeRepo(this.loginProvider, this.prefsProvider, this.dbProvider,
       this.apiProvider);
 
-  Future<void> loginWithGoogle() => loginProvider
-      .loginWithGoogle()
-      .then((user) => prefsProvider.storeUser(user));
+  Future<void> loginWithGoogle() async {
+    User user = await loginProvider.loginWithGoogle();
+    await dbProvider
+        .storeMatchOnlineList(await apiProvider.getMatchHistory(user.uid));
+    return await prefsProvider.storeUser(user);
+  }
 
   Future<User> checkIfLoggedIn() => prefsProvider.getUser();
 
-  Future<void> storeMatchOnline(MatchOnline matchOnline) =>
-      dbProvider.storeMatchOnline(matchOnline);
-
-  Future<List<MatchOnline>> getMatches() => dbProvider.getAllMatchOnline();
+  Future<List<MatchOnline>> getStoredMatches() => dbProvider.getStoredMatches();
 
   Future<bool> isFirstOpen() => prefsProvider.isFirstOpen();
 

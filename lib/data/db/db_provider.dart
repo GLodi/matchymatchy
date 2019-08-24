@@ -7,17 +7,15 @@ import 'package:sqflite/sqflite.dart';
 import 'package:squazzle/data/models/models.dart';
 
 abstract class DbProvider {
-  // Returns a GameField and TargetField with given id
-  Future<Match> getMatch(int id);
+  Future<Match> getTestMatch(int id);
 
-  // Stores online match
   Future<void> storeMatchOnline(MatchOnline matchOnline);
 
-  // Get online match
+  Future<void> storeMatchOnlineList(List<MatchOnline> list);
+
   Future<MatchOnline> getMatchOnline(String matchId);
 
-  // Get all online matches
-  Future<List<MatchOnline>> getAllMatchOnline();
+  Future<List<MatchOnline>> getStoredMatches();
 }
 
 class DbProviderImpl extends DbProvider {
@@ -48,7 +46,7 @@ class DbProviderImpl extends DbProvider {
   }
 
   @override
-  Future<Match> getMatch(int id) async {
+  Future<Match> getTestMatch(int id) async {
     var dbClient = await db;
     List<Map> maps = await dbClient.query(gameFieldTable,
         columns: ['_id', 'grid', 'target'], where: '_id = ?', whereArgs: [id]);
@@ -56,8 +54,17 @@ class DbProviderImpl extends DbProvider {
   }
 
   @override
-  Future<void> storeMatchOnline(MatchOnline matchOnline) async =>
-      await _db.insert(matchOnlineTable, matchOnline.toMap());
+  Future<void> storeMatchOnline(MatchOnline matchOnline) async {
+    var dbClient = await db;
+    await dbClient.insert(matchOnlineTable, matchOnline.toMap());
+  }
+
+  @override
+  Future<void> storeMatchOnlineList(List<MatchOnline> list) async {
+    var dbClient = await db;
+    list.forEach((match) => dbClient.insert(matchOnlineTable, match.toMap()));
+    return null;
+  }
 
   @override
   Future<MatchOnline> getMatchOnline(String matchId) async {
@@ -68,7 +75,7 @@ class DbProviderImpl extends DbProvider {
   }
 
   @override
-  Future<List<MatchOnline>> getAllMatchOnline() async {
+  Future<List<MatchOnline>> getStoredMatches() async {
     var dbClient = await db;
     List<Map> maps = await dbClient.query(matchOnlineTable);
     List<MatchOnline> matches =

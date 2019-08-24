@@ -14,20 +14,11 @@ export async function playMove(request: any, response: any) {
   let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
   try {
     if (matchDoc.exists) {
-      if (
-        userId == matchDoc.data()!.hostuid ||
-        userId == matchDoc.data()!.joinuid
-      ) {
+      if (isPlayer(userId, matchDoc)) {
         await updateMatch(userId, matchId, newGf, newTarget, moves);
         if (done) await setPlayerDone(userId, matchId);
         response.send(true);
-        if (
-          done &&
-          ((matchDoc.data()!.hostdone != null &&
-            userId == matchDoc.data()!.joinuid) ||
-            (matchDoc.data()!.joindone != null &&
-              userId == matchDoc.data()!.hostuid))
-        ) {
+        if (done && isOtherPlayerDone(userId, matchDoc)) {
           await declareWinner(matchId);
         }
       } else {
@@ -43,6 +34,24 @@ export async function playMove(request: any, response: any) {
     console.log(e);
     response.send(false);
   }
+}
+
+function isPlayer(userId: string, matchDoc: DocumentSnapshot): boolean {
+  return (
+    userId == matchDoc.data()!.hostuid || userId == matchDoc.data()!.joinuid
+  );
+}
+
+function isOtherPlayerDone(
+  firstPlayer: string,
+  matchDoc: DocumentSnapshot
+): boolean {
+  return (
+    (matchDoc.data()!.hostdone != null &&
+      firstPlayer == matchDoc.data()!.joinuid) ||
+    (matchDoc.data()!.joindone != null &&
+      firstPlayer == matchDoc.data()!.hostuid)
+  );
 }
 
 export async function forfeit(request: any, response: any) {
@@ -169,6 +178,7 @@ async function resetMatch(matchId: string) {
   joinRef.update({
     currentMatch: null
   });
+  // TODO: following not needed, as it will only be refenced
   hostRef
     .collection("matches")
     .doc(matchId)
@@ -177,5 +187,4 @@ async function resetMatch(matchId: string) {
     .collection("matches")
     .doc(matchId)
     .update(matchDoc);
-  await matches.doc(matchId).delete();
 }

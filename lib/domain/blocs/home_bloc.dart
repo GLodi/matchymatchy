@@ -71,6 +71,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
           yield HomeState.notInit();
           await _repo.loginWithGoogle().catchError((e) {
             _snackBarSubject.add('Login error');
+            print(e);
           });
           yield await checkIfUserLogged();
         }
@@ -84,7 +85,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     try {
       User user = await _repo.checkIfLoggedIn();
       if (user != null) {
-        List<MatchOnline> matches = await _repo.getMatches();
+        List<MatchOnline> matches = await _repo.getStoredMatches();
         _repo.updateUserInfo();
         String uid = await _repo.getStoredUid();
         nextState = HomeState.initLogged(user, matches);

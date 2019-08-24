@@ -5,19 +5,14 @@ import 'package:squazzle/data/models/models.dart';
 import 'net_utils.dart';
 
 abstract class ApiProvider {
-  // Request user info
   Future<User> getUser(String uid);
 
-  // Request list of all previously played matches
   Future<List<MatchOnline>> getMatchHistory(String uid);
 
-  // Add player to server queue, or receive current match
   Future<MatchOnline> queuePlayer(String uid, String token);
 
-  // Send updated target to server
   Future<bool> sendMove(Session session, bool done);
 
-  // Send forfeit notice
   Future<bool> sendForfeit(String uid, String matchId);
 }
 

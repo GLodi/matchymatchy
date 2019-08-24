@@ -105,11 +105,7 @@ async function onMatchStart(matchId: string) {
   }
 }
 
-async function onMove(
-  newMatch: DocumentData,
-  matchId: string,
-  hostOrJoin: boolean
-) {
+function onMove(newMatch: DocumentData, matchId: string, hostOrJoin: boolean) {
   let message = {
     data: {
       matchid: matchId,
@@ -126,7 +122,7 @@ async function onMove(
   }
 }
 
-async function onWinner(newMatch: DocumentData, matchId: string) {
+function onWinner(newMatch: DocumentData, matchId: string) {
   let messageToJoin = {
     data: {
       matchid: matchId,

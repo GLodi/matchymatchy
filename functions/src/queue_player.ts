@@ -189,6 +189,7 @@ async function queueNotEmpty(
   let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
   let hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
   let joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);
+  // TODO: don't store entire doc, just reference it
   hostRef.collection("matches").add(matchDoc);
   joinRef.collection("matches").add(matchDoc);
   let gf: DocumentSnapshot = await gamefields
@@ -217,7 +218,7 @@ async function delQueueStartMatch(
   return matchId;
 }
 
-async function diffToSend(gf: string, target: string): Promise<string> {
+function diffToSend(gf: string, target: string): string {
   let enemy = "";
   var a = [6, 7, 8, 11, 12, 13, 16, 17, 18];
   for (let i = 0; i < 9; i++) {

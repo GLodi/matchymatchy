@@ -32,8 +32,16 @@ class ApiProviderImpl implements ApiProvider {
     List<MatchOnline> list = List<MatchOnline>();
     QuerySnapshot matchesQuery =
         await usersRef.document(uid).collection('matches').getDocuments();
-    matchesQuery.documents
-        .forEach((d) => list.add(MatchOnline.fromMap(d.data)));
+    print('documenti: ' + matchesQuery.documents.length.toString());
+    matchesQuery.documents.forEach((d) async {
+      DocumentReference matchRef = d.data['match'];
+      DocumentSnapshot matchSnap = await matchRef.get();
+      print(matchSnap.data);
+      MatchOnline matchOnline = MatchOnline.fromMap(matchSnap.data);
+      print(matchOnline.toMap());
+      list.add(matchOnline);
+    });
+    print(list.length);
     return list;
   }
 

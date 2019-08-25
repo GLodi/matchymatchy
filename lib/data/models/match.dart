@@ -13,6 +13,7 @@ class Match {
   }
 }
 
+// TODO: add winnername
 class MatchOnline extends Match {
   String matchId;
   String enemyName;

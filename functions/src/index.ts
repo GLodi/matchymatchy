@@ -128,12 +128,12 @@ function onWinner(newMatch: DocumentData, matchId: string) {
       matchid: matchId,
       winner: newMatch.winner,
       messType: "winner",
-      winnerName: newMatch.winnerName,
-      forfeitWin: newMatch.forfeitWin.toString()
+      winnername: newMatch.winnername,
+      forfeitwin: newMatch.forfeitwin.toString()
     },
     notification: {
       title: "Match finished!",
-      body: newMatch.winnerName + " won!"
+      body: newMatch.winnername + " won!"
     },
     token: newMatch.joinfcmtoken
   };
@@ -142,12 +142,12 @@ function onWinner(newMatch: DocumentData, matchId: string) {
       matchid: matchId,
       winner: newMatch.winner,
       messType: "winner",
-      winnerName: newMatch.winnerName,
-      forfeitWin: newMatch.forfeitWin.toString()
+      winnername: newMatch.winnername,
+      forfeitwin: newMatch.forfeitwin.toString()
     },
     notification: {
       title: "Match finished!",
-      body: newMatch.winnerName + " won!"
+      body: newMatch.winnername + " won!"
     },
     token: newMatch.hostfcmtoken
   };

@@ -13,10 +13,10 @@ class Match {
   }
 }
 
-// TODO: add winnername
 class MatchOnline extends Match {
   String matchId;
   String enemyName;
+  String winnerName;
   int moves;
   int enemyMoves;
   int gfid;
@@ -28,10 +28,11 @@ class MatchOnline extends Match {
     targetField = TargetField(grid: map['target']);
     matchId = map['matchid'];
     enemyName = map['enemyname'];
+    winnerName = map['winnername'];
     moves = int.parse(map['moves'].toString());
     enemyMoves = int.parse(map['enemymoves'].toString());
     gfid = int.parse(map['gfid'].toString());
-    started = int.parse(map['started'].toString());
+    started = map['started'] == 'true' ? 1 : 0;
     enemyTargetField = TargetField(grid: map['enemytarget']);
   }
 
@@ -41,10 +42,11 @@ class MatchOnline extends Match {
       'target': targetField.grid,
       'matchid': matchId,
       'enemyname': enemyName,
-      'moves': moves.toString(),
-      'enemymoves': enemyMoves.toString(),
-      'gfid': gfid.toString(),
-      'started': started.toString(),
+      'winnername': winnerName,
+      'moves': moves,
+      'enemymoves': enemyMoves,
+      'gfid': gfid,
+      'started': started,
       'enemytarget': enemyTargetField.grid,
     };
   }

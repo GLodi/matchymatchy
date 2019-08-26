@@ -9,12 +9,16 @@ import 'package:squazzle/data/models/models.dart';
 abstract class DbProvider {
   Future<Match> getTestMatch(int id);
 
+  // TODO: if already exists (reconnection) do nothing
   Future<void> storeMatchOnline(MatchOnline matchOnline);
 
   Future<void> storeMatchOnlineList(List<MatchOnline> list);
 
   Future<MatchOnline> getMatchOnline(String matchId);
 
+  // TODO: sort them by time first and if started second,
+  // so that the list shown in home_screen shows the
+  // ongoing games first
   Future<List<MatchOnline>> getStoredMatches();
 }
 

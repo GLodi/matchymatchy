@@ -151,10 +151,10 @@ async function queueEmpty(
     jointarget: await diffToSend(gf.data()!.grid, gf.data()!.target),
     joinfcmtoken: null,
     winner: null,
-    winnerName: null,
+    winnername: null,
     hostdone: null,
     joindone: null,
-    forfeitWin: false
+    forfeitwin: false
   });
   queue.add({
     uid: userId,
@@ -189,7 +189,7 @@ async function queueNotEmpty(
   let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
   let hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
   let joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);
-  // TODO: don't store entire doc, just reference it
+  // TODO: create PastMatch with essential info and stillgoing/done
   hostRef.collection("matches").add(matchDoc);
   joinRef.collection("matches").add(matchDoc);
   let gf: DocumentSnapshot = await gamefields

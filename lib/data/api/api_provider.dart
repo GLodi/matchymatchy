@@ -36,11 +36,19 @@ class ApiProviderImpl implements ApiProvider {
     await matchesQuery.documents.forEach((d) async {
       DocumentReference matchRef = d.data['match'];
       DocumentSnapshot matchSnap = await matchRef.get();
+      Map<String, dynamic> map = matchSnap.data;
+      // TODO: nonsense, copy all information from matches to user/matches
+      // and do this renaming. No need to delete match afterwards
+      // Still create PastMatch that represents information in user/matches
+      if (uid == map['hostuid']) {
+        map['moves'] = map['hostmoves'];
+        map['enemymoves'] = map['joinmoves'];
+        map['target'] = map['hosttarget'];
+        map['enemytarget'] = map['jointarget'];
+      }
       print('snap' + matchSnap.data.toString());
       print('bbbbb');
-      // TODO: rename MatchOnline => Situation/CurrentMatch
-      // TODO: create MatchOnline with just archive information
-      MatchOnline matchOnline = MatchOnline.fromMap(matchSnap.data);
+      MatchOnline matchOnline = MatchOnline.fromMap(map);
       print('matchOnline' + matchOnline.toMap().toString());
       list.add(matchOnline);
     });

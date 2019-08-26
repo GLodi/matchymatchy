@@ -157,8 +157,8 @@ async function upWinAmount(
   });
   matches.doc(matchId).update({
     winner: hostOrJoin ? matchDoc.data()!.hostuid : matchDoc.data()!.joinuid,
-    winnerName: user.data()!.username,
-    forfeitWin: forfeitWin
+    winnername: user.data()!.username,
+    forfeitwin: forfeitWin
   });
   await resetMatch(matchId);
 }
@@ -178,7 +178,7 @@ async function resetMatch(matchId: string) {
   joinRef.update({
     currentMatch: null
   });
-  // TODO: following not needed, as it will only be refenced
+  // TODO: copy all necessary info for archiving in user/matches
   hostRef
     .collection("matches")
     .doc(matchId)

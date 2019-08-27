@@ -189,7 +189,6 @@ async function queueNotEmpty(
   let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
   let hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
   let joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);
-  // TODO: create PastMatch with essential info and stillgoing/done
   hostRef.collection("matches").add(matchDoc);
   joinRef.collection("matches").add(matchDoc);
   let gf: DocumentSnapshot = await gamefields

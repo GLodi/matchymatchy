@@ -26,6 +26,7 @@ abstract class DbProvider {
 class DbProviderImpl extends DbProvider {
   final String gameFieldTable = 'gamefields';
   final String matchOnlineTable = 'matchonline';
+  final String pastMatchTable = 'pastmatches';
 
   static Database _db;
 
@@ -91,7 +92,7 @@ class DbProviderImpl extends DbProvider {
   @override
   Future<List<PastMatch>> getPastMatches() async {
     var dbClient = await db;
-    List<Map> maps = await dbClient.query(matchOnlineTable);
+    List<Map> maps = await dbClient.query(pastMatchTable);
     List<PastMatch> matches = maps.map((m) => PastMatch.fromMap(m)).toList();
     return matches.length > 0 ? matches : null;
   }
@@ -100,7 +101,7 @@ class DbProviderImpl extends DbProvider {
   Future<void> storePastMatches(List<PastMatch> list) async {
     var dbClient = await db;
     list.forEach(
-        (pastmatch) => dbClient.insert(matchOnlineTable, pastmatch.toMap()));
+        (pastmatch) => dbClient.insert(pastMatchTable, pastmatch.toMap()));
     return null;
   }
 }

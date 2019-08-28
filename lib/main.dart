@@ -26,14 +26,14 @@ void main() {
   container.registerSingleton((c) => MessagingEventBus());
 
   // Repos
-  container.registerSingleton((c) => SingleRepo(c.resolve<LogicProvider>(),
-      c.resolve<DbProvider>(), c.resolve<SharedPrefsProvider>()));
+  container.registerSingleton(
+      (c) => SingleRepo(c.resolve<LogicProvider>(), c.resolve<DbProvider>()));
   container.registerSingleton((c) => MultiRepo(
       c.resolve<ApiProvider>(),
       c.resolve<MessagingEventBus>(),
+      c.resolve<SharedPrefsProvider>(),
       c.resolve<LogicProvider>(),
-      c.resolve<DbProvider>(),
-      c.resolve<SharedPrefsProvider>()));
+      c.resolve<DbProvider>()));
   container.registerSingleton((c) => HomeRepo(
       c.resolve<LoginProvider>(),
       c.resolve<SharedPrefsProvider>(),

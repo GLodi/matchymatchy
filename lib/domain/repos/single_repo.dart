@@ -3,17 +3,32 @@ import 'package:squazzle/data/data.dart';
 
 /// SingleBloc's repository.
 class SingleRepo extends GameRepo {
-  SingleRepo(LogicProvider logicProvider, DbProvider dbProvider,
-      SharedPrefsProvider prefsProvider)
-      : super(
-            logicProvider: logicProvider,
-            dbProvider: dbProvider,
-            prefsProvider: prefsProvider);
+  int moves = 0;
+
+  SingleRepo(
+    LogicProvider logicProvider,
+    DbProvider dbProvider,
+  ) : super(
+          logicProvider: logicProvider,
+          dbProvider: dbProvider,
+        );
+
+  @override
+  Future<int> getMoves() {
+    return Future.value(moves);
+  }
+
+  @override
+  Future<void> increaseMoves() {
+    moves += 1;
+  }
 
   @override
   Future<bool> moveDone(GameField gameField, TargetField targetField) =>
       logicProvider.checkIfCorrect(gameField, targetField);
 
-  Future<Match> getTestMatch(int id) =>
-      prefsProvider.restoreMoves().then((_) => dbProvider.getTestMatch(id));
+  Future<Match> getTestMatch(int id) {
+    moves = 0;
+    return dbProvider.getTestMatch(id);
+  }
 }

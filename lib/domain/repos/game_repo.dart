@@ -5,19 +5,17 @@ import 'package:squazzle/data/data.dart';
 abstract class GameRepo {
   final LogicProvider logicProvider;
   final DbProvider dbProvider;
-  final SharedPrefsProvider prefsProvider;
 
-  GameRepo({this.logicProvider, this.dbProvider, this.prefsProvider});
+  GameRepo({this.logicProvider, this.dbProvider});
 
-  // Apply chosen move and return new field
-  Future<GameField> applyMove(GameField gameField, Move move) => prefsProvider
-      .increaseMoves()
-      .then((_) => logicProvider.applyMove(gameField, move));
+  Future<GameField> applyMove(GameField gameField, Move move) {
+    increaseMoves();
+    return logicProvider.applyMove(gameField, move);
+  }
 
-  // TODO: move this to single and multi, logic is different
-  // Return amount of moves currently played
-  Future<int> getMoves() => prefsProvider.getMoves();
+  Future<int> getMoves();
 
-  // Check whether player has reached end game
+  Future<void> increaseMoves();
+
   Future<bool> moveDone(GameField gameField, TargetField targetField);
 }

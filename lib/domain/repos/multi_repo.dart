@@ -5,13 +5,24 @@ import 'game_repo.dart';
 class MultiRepo extends GameRepo {
   final ApiProvider apiProvider;
   final MessagingEventBus messProvider;
+  final SharedPrefsProvider prefsProvider;
 
-  MultiRepo(this.apiProvider, this.messProvider, LogicProvider logicProvider,
-      DbProvider dbProvider, SharedPrefsProvider prefsProvider)
+  MultiRepo(this.apiProvider, this.messProvider, this.prefsProvider,
+      LogicProvider logicProvider, DbProvider dbProvider)
       : super(
-            logicProvider: logicProvider,
-            dbProvider: dbProvider,
-            prefsProvider: prefsProvider);
+          logicProvider: logicProvider,
+          dbProvider: dbProvider,
+        );
+
+  @override
+  Future<int> getMoves() {
+    return prefsProvider.getMoves();
+  }
+
+  @override
+  Future<void> increaseMoves() async {
+    return prefsProvider.storeMoves(await prefsProvider.getMoves() + 1);
+  }
 
   @override
   Future<bool> moveDone(GameField gameField, TargetField targetField) async {

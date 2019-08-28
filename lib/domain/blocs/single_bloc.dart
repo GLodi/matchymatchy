@@ -4,7 +4,7 @@ import 'package:squazzle/domain/domain.dart';
 
 class SingleBloc extends GameBloc {
   final SingleRepo _repo;
-  var ran = Random();
+  Random ran = Random();
 
   // Streams extracted from GameBloc's subjects
   Stream<bool> get correct => correctSubject.stream;

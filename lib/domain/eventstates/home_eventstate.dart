@@ -7,17 +7,18 @@ class HomeState extends BlocState {
   final HomeStateType type;
   final String message;
   final User user;
-  final List<MatchOnline> matches;
+  final List<PastMatch> pastMatches;
 
   HomeState({
     @required this.type,
     this.message,
     this.user,
-    this.matches,
+    this.pastMatches,
   });
 
-  factory HomeState.initLogged(User user, List<MatchOnline> matches) =>
-      HomeState(type: HomeStateType.initLogged, user: user, matches: matches);
+  factory HomeState.initLogged(User user, List<PastMatch> pastMatches) =>
+      HomeState(
+          type: HomeStateType.initLogged, user: user, pastMatches: pastMatches);
 
   factory HomeState.initNotLogged() =>
       HomeState(type: HomeStateType.initNotLogged);

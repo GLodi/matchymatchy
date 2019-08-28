@@ -9,17 +9,18 @@ import 'package:squazzle/data/models/models.dart';
 abstract class DbProvider {
   Future<Match> getTestMatch(int id);
 
-  // TODO: if already exists (reconnection) do nothing
-  Future<void> storeMatchOnline(MatchOnline matchOnline);
+  Future<MatchOnline> getActiveMatch(String matchId);
 
-  Future<void> storeMatchOnlineList(List<MatchOnline> list);
+  // TODO: check that if match already exists, don't do anything
+  Future<void> storeActiveMatch(MatchOnline matchOnline);
 
-  Future<MatchOnline> getMatchOnline(String matchId);
+  Future<List<MatchOnline>> getActiveMatches();
 
-  // TODO: sort them by time first and if started second,
-  // so that the list shown in home_screen shows the
-  // ongoing games first
-  Future<List<MatchOnline>> getStoredMatches();
+  Future<void> storeActiveMatches(List<MatchOnline> list);
+
+  Future<List<PastMatch>> getPastMatches();
+
+  Future<void> storePastMatches(List<PastMatch> list);
 }
 
 class DbProviderImpl extends DbProvider {
@@ -58,20 +59,7 @@ class DbProviderImpl extends DbProvider {
   }
 
   @override
-  Future<void> storeMatchOnline(MatchOnline matchOnline) async {
-    var dbClient = await db;
-    await dbClient.insert(matchOnlineTable, matchOnline.toMap());
-  }
-
-  @override
-  Future<void> storeMatchOnlineList(List<MatchOnline> list) async {
-    var dbClient = await db;
-    list.forEach((match) => dbClient.insert(matchOnlineTable, match.toMap()));
-    return null;
-  }
-
-  @override
-  Future<MatchOnline> getMatchOnline(String matchId) async {
+  Future<MatchOnline> getActiveMatch(String matchId) async {
     var dbClient = await db;
     List<Map> maps = await dbClient
         .query(matchOnlineTable, where: 'matchId = ?', whereArgs: [matchId]);
@@ -79,11 +67,40 @@ class DbProviderImpl extends DbProvider {
   }
 
   @override
-  Future<List<MatchOnline>> getStoredMatches() async {
+  Future<void> storeActiveMatch(MatchOnline matchOnline) async {
+    var dbClient = await db;
+    await dbClient.insert(matchOnlineTable, matchOnline.toMap());
+  }
+
+  @override
+  Future<List<MatchOnline>> getActiveMatches() async {
     var dbClient = await db;
     List<Map> maps = await dbClient.query(matchOnlineTable);
     List<MatchOnline> matches =
         maps.map((m) => MatchOnline.fromMap(m)).toList();
     return matches.length > 0 ? matches : null;
+  }
+
+  @override
+  Future<void> storeActiveMatches(List<MatchOnline> list) async {
+    var dbClient = await db;
+    list.forEach((match) => dbClient.insert(matchOnlineTable, match.toMap()));
+    return null;
+  }
+
+  @override
+  Future<List<PastMatch>> getPastMatches() async {
+    var dbClient = await db;
+    List<Map> maps = await dbClient.query(matchOnlineTable);
+    List<PastMatch> matches = maps.map((m) => PastMatch.fromMap(m)).toList();
+    return matches.length > 0 ? matches : null;
+  }
+
+  @override
+  Future<void> storePastMatches(List<PastMatch> list) async {
+    var dbClient = await db;
+    list.forEach(
+        (pastmatch) => dbClient.insert(matchOnlineTable, pastmatch.toMap()));
+    return null;
   }
 }

@@ -14,4 +14,12 @@ class PastMatch {
     forfeitWin:
     map['forfeitwin'] == 'true' ? 1 : 0;
   }
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'moves': moves,
+      'enemymoves': enemyMoves,
+      'winner': winner,
+      'forfeitwin': forfeitWin,
+    };
+  }
 }

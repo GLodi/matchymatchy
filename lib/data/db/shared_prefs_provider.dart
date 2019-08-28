@@ -21,13 +21,15 @@ abstract class SharedPrefsProvider {
 
   Future<bool> isFirstOpen();
 
-  Future<void> restoreMoves(); // delete
-
-  Future<void> increaseMoves(); // delete
+  Future<void> restoreSession(); // delete
 
   Future<int> getMoves(); // delete
 
-  Future<Session> getCurrentSession(); // delete, return current match in db
+  Future<void> increaseMoves(); // delete
+
+  Future<void> restoreMoves(); // delete
+
+  Future<Session> getSession(); // delete, return current match in db
 }
 
 class SharedPrefsProviderImpl extends SharedPrefsProvider {
@@ -121,6 +123,13 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
   }
 
   @override
+  Future<void> restoreSession() async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setInt('moves', 0);
+    prefs.setString('matchid', '');
+  }
+
+  @override
   Future<void> increaseMoves() async {
     prefs = await SharedPreferences.getInstance();
     prefs.setInt('moves', prefs.getInt('moves') + 1);
@@ -133,7 +142,7 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
   }
 
   @override
-  Future<Session> getCurrentSession() async {
+  Future<Session> getSession() async {
     prefs = await SharedPreferences.getInstance();
     return Session(
         !test ? prefs.getString('uid') : 'iG00CwdtEscbX1WeqDtl3Qi6E552',

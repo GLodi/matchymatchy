@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           builder: (context, state) {
             switch (state.type) {
               case HomeStateType.initLogged:
-                return initLogged(state.user, state.matches);
+                return initLogged(state.user, state.pastMatches);
                 break;
               case HomeStateType.initNotLogged:
                 return initNotLogged();
@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   // Shows Single/Multi button and UserWidget at the bottom
-  Widget initLogged(User user, List<MatchOnline> matches) {
+  Widget initLogged(User user, List<PastMatch> pastMatches) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     return Stack(children: <Widget>[
@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             child: PageView(
               children: <Widget>[
                 Container(color: Colors.white),
-                HomeMatchList(matchList: matches),
+                HomeMatchList(pastMatches: pastMatches),
               ],
               controller: controller,
               reverse: false,

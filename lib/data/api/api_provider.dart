@@ -7,7 +7,9 @@ import 'net_utils.dart';
 abstract class ApiProvider {
   Future<User> getUser(String uid);
 
-  Future<List<MatchOnline>> getMatchHistory(String uid);
+  Future<List<MatchOnline>> getActiveMatches(String uid);
+
+  Future<List<PastMatch>> getPastMatches(String uid);
 
   Future<MatchOnline> queuePlayer(String uid, String token);
 
@@ -28,31 +30,28 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<List<MatchOnline>> getMatchHistory(String uid) async {
+  Future<List<MatchOnline>> getActiveMatches(String uid) async {
     List<MatchOnline> list = List<MatchOnline>();
-    QuerySnapshot matchesQuery =
-        await usersRef.document(uid).collection('matches').getDocuments();
-    print('documenti: ' + matchesQuery.documents.length.toString());
-    await matchesQuery.documents.forEach((d) async {
-      DocumentReference matchRef = d.data['match'];
-      DocumentSnapshot matchSnap = await matchRef.get();
-      Map<String, dynamic> map = matchSnap.data;
-      // TODO: nonsense, copy all information from matches to user/matches
-      // and do this renaming. No need to delete match afterwards
-      // Still create PastMatch that represents information in user/matches
-      if (uid == map['hostuid']) {
-        map['moves'] = map['hostmoves'];
-        map['enemymoves'] = map['joinmoves'];
-        map['target'] = map['hosttarget'];
-        map['enemytarget'] = map['jointarget'];
-      }
-      print('snap' + matchSnap.data.toString());
-      print('bbbbb');
-      MatchOnline matchOnline = MatchOnline.fromMap(map);
-      print('matchOnline' + matchOnline.toMap().toString());
-      list.add(matchOnline);
-    });
-    print('list length' + list.length.toString());
+    QuerySnapshot activeMatchesQuery =
+        await usersRef.document(uid).collection('activematches').getDocuments();
+    print('active matches detected: ' +
+        activeMatchesQuery.documents.length.toString());
+    activeMatchesQuery.documents
+        .forEach((d) => list.add(MatchOnline.fromMap(d.data)));
+    print('active matches list length' + list.length.toString());
+    return list;
+  }
+
+  @override
+  Future<List<PastMatch>> getPastMatches(String uid) async {
+    List<PastMatch> list = List<PastMatch>();
+    QuerySnapshot pastMatchesQuery =
+        await usersRef.document(uid).collection('pastmatches').getDocuments();
+    print('past matches detected: ' +
+        pastMatchesQuery.documents.length.toString());
+    pastMatchesQuery.documents
+        .forEach((d) => list.add(PastMatch.fromMap(d.data)));
+    print('past matches list length' + list.length.toString());
     return list;
   }
 

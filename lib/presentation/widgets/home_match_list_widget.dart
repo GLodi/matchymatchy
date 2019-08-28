@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:squazzle/data/models/models.dart';
 
 class HomeMatchList extends StatefulWidget {
-  final List<MatchOnline> matchList;
-  HomeMatchList({Key key, this.matchList}) : super(key: key);
+  final List<PastMatch> pastMatches;
+  HomeMatchList({Key key, this.pastMatches}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return _HomeMatchListState();
@@ -15,7 +14,7 @@ class HomeMatchList extends StatefulWidget {
 class _HomeMatchListState extends State<HomeMatchList> {
   @override
   Widget build(BuildContext context) {
-    if (widget.matchList != null && widget.matchList.isNotEmpty)
+    if (widget.pastMatches != null && widget.pastMatches.isNotEmpty)
       return list();
     else
       return Container(color: Colors.blue);
@@ -23,10 +22,10 @@ class _HomeMatchListState extends State<HomeMatchList> {
 
   Widget list() {
     return ListView.builder(
-      itemCount: widget.matchList.length,
+      itemCount: widget.pastMatches.length,
       itemBuilder: (context, position) {
         return Card(
-          child: Text(widget.matchList[position].matchId.toString()),
+          child: Text(widget.pastMatches[position].moves.toString()),
         );
       },
     );

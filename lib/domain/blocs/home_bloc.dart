@@ -85,10 +85,11 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     try {
       User user = await _repo.checkIfLoggedIn();
       if (user != null) {
-        List<MatchOnline> matches = await _repo.getStoredMatches();
+        // TODO: get stored active matches and put them on top
+        List<PastMatch> pastMatches = await _repo.getStoredPastMatches();
         _repo.updateUserInfo();
         String uid = await _repo.getStoredUid();
-        nextState = HomeState.initLogged(user, matches);
+        nextState = HomeState.initLogged(user, pastMatches);
         _messEventBus.on<ChallengeMessage>().listen((mess) {
           print('home challenge');
           // TODO: show option to go to multi

@@ -69,14 +69,14 @@ class MultiBloc extends GameBloc {
     }
   }
 
-  void showMatch(MatchOnline matchOnline) async {
+  void showMatch(ActiveMatch activeMatch) async {
     _waitMessageSubject.add('Waiting for opponent...');
-    if (matchOnline.started == 1) {
-      gameField = matchOnline.gameField;
-      targetField = matchOnline.targetField;
-      _enemyTargetSubject.add(matchOnline.enemyTargetField);
-      _enemyNameSubject.add(matchOnline.enemyName);
-      moveNumberSubject.add(matchOnline.moves);
+    if (activeMatch.started == 1) {
+      gameField = activeMatch.gameField;
+      targetField = activeMatch.targetField;
+      _enemyTargetSubject.add(activeMatch.enemyTargetField);
+      _enemyNameSubject.add(activeMatch.enemyName);
+      moveNumberSubject.add(activeMatch.moves);
       _hasMatchStartedSubject.add(true);
       emitEvent(GameEvent(type: GameEventType.start));
     }

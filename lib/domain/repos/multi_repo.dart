@@ -45,11 +45,11 @@ class MultiRepo extends GameRepo {
     return apiProvider.sendForfeit(userId, matchId);
   }
 
-  Future<MatchOnline> queuePlayer() async {
+  Future<ActiveMatch> queuePlayer() async {
     await prefsProvider.restoreMoves();
     String uid = await prefsProvider.getUid();
     String token = await messProvider.getToken();
-    MatchOnline situation = await apiProvider.queuePlayer(uid, token);
+    ActiveMatch situation = await apiProvider.queuePlayer(uid, token);
     if (situation.started == 1) {
       prefsProvider.storeMoves(situation.moves); // delete
       prefsProvider.storeMatchId(situation.matchId); // delete

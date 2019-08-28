@@ -13,7 +13,7 @@ class Match {
   }
 }
 
-class MatchOnline extends Match {
+class ActiveMatch extends Match {
   String matchId;
   String enemyName;
   String winnerName;
@@ -23,7 +23,7 @@ class MatchOnline extends Match {
   int started;
   TargetField enemyTargetField;
 
-  MatchOnline.fromMap(Map<String, dynamic> map) {
+  ActiveMatch.fromMap(Map<String, dynamic> map) {
     gameField = GameField(grid: map['gf']);
     targetField = TargetField(grid: map['target']);
     matchId = map['matchid'];

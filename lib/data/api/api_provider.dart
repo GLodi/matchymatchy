@@ -7,11 +7,11 @@ import 'net_utils.dart';
 abstract class ApiProvider {
   Future<User> getUser(String uid);
 
-  Future<List<MatchOnline>> getActiveMatches(String uid);
+  Future<List<ActiveMatch>> getActiveMatches(String uid);
 
   Future<List<PastMatch>> getPastMatches(String uid);
 
-  Future<MatchOnline> queuePlayer(String uid, String token);
+  Future<ActiveMatch> queuePlayer(String uid, String token);
 
   Future<bool> sendMove(Session session, bool done);
 
@@ -30,14 +30,14 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<List<MatchOnline>> getActiveMatches(String uid) async {
-    List<MatchOnline> list = List<MatchOnline>();
+  Future<List<ActiveMatch>> getActiveMatches(String uid) async {
+    List<ActiveMatch> list = List<ActiveMatch>();
     QuerySnapshot activeMatchesQuery =
         await usersRef.document(uid).collection('activematches').getDocuments();
     print('active matches detected: ' +
         activeMatchesQuery.documents.length.toString());
     activeMatchesQuery.documents
-        .forEach((d) => list.add(MatchOnline.fromMap(d.data)));
+        .forEach((d) => list.add(ActiveMatch.fromMap(d.data)));
     print('active matches list length' + list.length.toString());
     return list;
   }
@@ -56,12 +56,12 @@ class ApiProviderImpl implements ApiProvider {
   }
 
   @override
-  Future<MatchOnline> queuePlayer(String uid, String token) async {
+  Future<ActiveMatch> queuePlayer(String uid, String token) async {
     return _net
         .get(_baseUrl + 'queuePlayer?userId=' + uid + '&userFcmToken=' + token)
         .then((response) {
       print(response);
-      return MatchOnline.fromMap(response);
+      return ActiveMatch.fromMap(response);
     });
   }
 

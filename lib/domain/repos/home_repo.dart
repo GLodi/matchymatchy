@@ -21,11 +21,13 @@ class HomeRepo {
 
   Future<User> checkIfLoggedIn() => prefsProvider.getUser();
 
-  Future<List<PastMatch>> getStoredPastMatches() => dbProvider.getPastMatches();
+  Future<List<ActiveMatch>> getActiveMatches() => dbProvider.getActiveMatches();
+
+  Future<List<PastMatch>> getPastMatches() => dbProvider.getPastMatches();
 
   Future<bool> isFirstOpen() => prefsProvider.isFirstOpen();
 
-  Future<String> getStoredUid() => prefsProvider.getUid();
+  Future<String> getUid() => prefsProvider.getUid();
 
   Future<void> updateUserInfo() => prefsProvider
       .getUid()

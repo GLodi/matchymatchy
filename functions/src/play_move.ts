@@ -165,7 +165,7 @@ async function upWinAmount(
 
 /**
  * Frees players from finished game, allowing them to re-queue.
- * Copies match document to each user's user/matches collection and
+ * Copies match document to each user's user/pastmatches collection and
  * deletes it from matches.
  */
 async function resetMatch(matchId: string) {

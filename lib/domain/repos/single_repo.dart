@@ -21,6 +21,7 @@ class SingleRepo extends GameRepo {
   @override
   Future<void> increaseMoves() {
     moves += 1;
+    return null;
   }
 
   @override

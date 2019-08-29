@@ -86,9 +86,10 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
       User user = await _repo.checkIfLoggedIn();
       if (user != null) {
         // TODO: get stored active matches and put them on top
-        List<PastMatch> pastMatches = await _repo.getStoredPastMatches();
+        // TODO: show queue on multi button if there's any active matches
+        List<PastMatch> pastMatches = await _repo.getPastMatches();
         _repo.updateUserInfo();
-        String uid = await _repo.getStoredUid();
+        String uid = await _repo.getUid();
         nextState = HomeState.initLogged(user, pastMatches);
         _messEventBus.on<ChallengeMessage>().listen((mess) {
           print('home challenge');
@@ -101,7 +102,6 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
             _repo.updateUserInfo();
             // TODO: update wins amount in user_widget
           }
-          // TODO: show queue on multi button
         });
       } else {
         nextState = HomeState.initNotLogged();

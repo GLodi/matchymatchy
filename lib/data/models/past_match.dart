@@ -5,14 +5,10 @@ class PastMatch {
   int forfeitWin;
 
   PastMatch.fromMap(Map<String, dynamic> map) {
-    moves:
-    int.parse(map['moves'].toString());
-    enemyMoves:
-    int.parse(map['enemymoves'].toString());
-    winner:
-    map['winner'];
-    forfeitWin:
-    map['forfeitwin'];
+    moves = int.parse(map['moves'].toString());
+    enemyMoves = int.parse(map['enemymoves'].toString());
+    winner = map['winner'];
+    forfeitWin = map['forfeitwin'];
   }
 
   Map<String, dynamic> toMap() {

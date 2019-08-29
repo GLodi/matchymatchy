@@ -5,11 +5,16 @@ service cloud.firestore {
       allow write: if request.auth.uid == userId;
     }
     
-    match /users/{userId}/matches/{docId} {
+    match /users/{userId}/activematches/{docId} {
       allow read: if request.auth.uid == userId;
-      allow write: if request.auth.uid == userId;
+      allow write: if false;
     }
     
+    match /users/{userId}/pastmatches/{docId} {
+      allow read: if request.auth.uid == userId;
+      allow write: if false;
+    }
+
     match /matches/{matchId} {
       allow read: if true;
       allow write: if false;

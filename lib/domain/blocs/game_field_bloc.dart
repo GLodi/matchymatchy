@@ -28,8 +28,7 @@ class GameFieldBloc extends BlocEventStateBase<WidgetEvent, WidgetState> {
         await _gameBloc.gameRepo.applyMove(_gameBloc.gameField, move);
     _gameBloc.gameField = newField;
     _gameFieldSubject.add(newField);
-    int moves = await _gameBloc.gameRepo.getMoves();
-    _gameBloc.moveNumberSubject.add(moves);
+    _gameBloc.moveNumberSubject.add(await _gameBloc.gameRepo.getMoves());
     bool isCorrect = await _gameBloc.gameRepo
         .moveDone(_gameBloc.gameField, _gameBloc.targetField);
     if (isCorrect) _gameBloc.emitEvent(GameEvent(type: GameEventType.victory));

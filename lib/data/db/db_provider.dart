@@ -11,7 +11,6 @@ abstract class DbProvider {
 
   Future<ActiveMatch> getActiveMatch(String matchId);
 
-  // TODO: check that if match already exists, don't do anything
   Future<void> storeActiveMatch(ActiveMatch activeMatch);
 
   Future<List<ActiveMatch>> getActiveMatches();
@@ -21,6 +20,8 @@ abstract class DbProvider {
   Future<List<PastMatch>> getPastMatches();
 
   Future<void> storePastMatches(List<PastMatch> list);
+
+  Future<void> updateActiveMatch(ActiveMatch activeMatch);
 }
 
 class DbProviderImpl extends DbProvider {
@@ -103,5 +104,12 @@ class DbProviderImpl extends DbProvider {
     list.forEach(
         (pastmatch) => dbClient.insert(pastMatchTable, pastmatch.toMap()));
     return null;
+  }
+
+  @override
+  Future<void> updateActiveMatch(ActiveMatch activeMatch) async {
+    var dbClient = await db;
+    return await dbClient.update(activeMatchTable, activeMatch.toMap(),
+        where: 'matchid = ?', whereArgs: [activeMatch.matchId]);
   }
 }

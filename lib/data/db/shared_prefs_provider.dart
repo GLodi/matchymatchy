@@ -5,31 +5,11 @@ import 'package:squazzle/data/models/models.dart';
 abstract class SharedPrefsProvider {
   Future<void> storeUser(User user);
 
-  Future<void> storeMatchId(String matchId); // delete
-
-  Future<void> storeGf(GameField gf); // delete
-
-  Future<void> storeTarget(TargetField targetField); // delete
-
-  Future<void> storeMoves(int moves); // delete
-
   Future<User> getUser();
-
-  Future<String> getMatchId(); // delete
 
   Future<String> getUid();
 
   Future<bool> isFirstOpen();
-
-  Future<void> restoreSession(); // delete
-
-  Future<int> getMoves(); // delete
-
-  Future<void> increaseMoves(); // delete
-
-  Future<void> restoreMoves(); // delete
-
-  Future<Session> getSession(); // delete, return current match in db
 }
 
 class SharedPrefsProviderImpl extends SharedPrefsProvider {
@@ -45,30 +25,6 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
     if (!test) prefs.setString('uid', user.uid);
     prefs.setString('photoUrl', user.photoUrl);
     prefs.setInt('matchesWon', user.matchesWon);
-  }
-
-  @override
-  Future<void> storeMatchId(String matchId) async {
-    prefs = await SharedPreferences.getInstance();
-    prefs.setString('matchId', matchId);
-  }
-
-  @override
-  Future<void> storeGf(GameField gf) async {
-    prefs = await SharedPreferences.getInstance();
-    prefs.setString('gf', gf.grid);
-  }
-
-  @override
-  Future<void> storeTarget(TargetField targetField) async {
-    prefs = await SharedPreferences.getInstance();
-    prefs.setString('target', targetField.grid);
-  }
-
-  @override
-  Future<void> storeMoves(int moves) async {
-    prefs = await SharedPreferences.getInstance();
-    prefs.setInt('moves', moves);
   }
 
   @override
@@ -92,12 +48,6 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
   }
 
   @override
-  Future<String> getMatchId() async {
-    prefs = await SharedPreferences.getInstance();
-    return prefs.getString('matchId');
-  }
-
-  @override
   Future<String> getUid() async {
     prefs = await SharedPreferences.getInstance();
     if (!test)
@@ -114,41 +64,5 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
       return true;
     }
     return false;
-  }
-
-  @override
-  Future<void> restoreMoves() async {
-    prefs = await SharedPreferences.getInstance();
-    prefs.setInt('moves', 0);
-  }
-
-  @override
-  Future<void> restoreSession() async {
-    prefs = await SharedPreferences.getInstance();
-    prefs.setInt('moves', 0);
-    prefs.setString('matchid', '');
-  }
-
-  @override
-  Future<void> increaseMoves() async {
-    prefs = await SharedPreferences.getInstance();
-    prefs.setInt('moves', prefs.getInt('moves') + 1);
-  }
-
-  @override
-  Future<int> getMoves() async {
-    prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('moves');
-  }
-
-  @override
-  Future<Session> getSession() async {
-    prefs = await SharedPreferences.getInstance();
-    return Session(
-        !test ? prefs.getString('uid') : 'iG00CwdtEscbX1WeqDtl3Qi6E552',
-        prefs.getString('matchId'),
-        prefs.getString('gf'),
-        prefs.getString('target'),
-        prefs.getInt('moves'));
   }
 }

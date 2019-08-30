@@ -189,8 +189,14 @@ async function queueNotEmpty(
   let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
   let hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
   let joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);
-  hostRef.collection("activematches").add(matchDoc);
-  joinRef.collection("activematches").add(matchDoc);
+  hostRef
+    .collection("activematches")
+    .doc(matchDoc.id)
+    .set(matchDoc.data()!);
+  joinRef
+    .collection("activematches")
+    .doc(matchDoc.id)
+    .set(matchDoc.data()!);
   let gf: DocumentSnapshot = await gamefields
     .doc(String(matchDoc.data()!.gfid))
     .get();

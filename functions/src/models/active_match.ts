@@ -1,4 +1,4 @@
-export class Session {
+export class ActiveMatch {
   matchid: string;
   gfid: string;
   gf: string;

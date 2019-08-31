@@ -1,5 +1,5 @@
 import * as admin from "firebase-admin";
-import { Session } from "./session";
+import { ActiveMatch } from "./models/active_match";
 import {
   DocumentReference,
   DocumentSnapshot,
@@ -50,7 +50,10 @@ async function alreadyInMatch(userId: string): Promise<string> {
  * If empty, create new element in queue and wait for someone.
  * if full, join other player's match and start game.
  */
-async function newGame(userId: string, userFcmToken: string): Promise<Session> {
+async function newGame(
+  userId: string,
+  userFcmToken: string
+): Promise<ActiveMatch> {
   let qs: QuerySnapshot = await queue.get();
   let gfDocMatch: [DocumentSnapshot, string] = qs.empty
     ? await queueEmpty(userId, userFcmToken)
@@ -59,7 +62,7 @@ async function newGame(userId: string, userFcmToken: string): Promise<Session> {
     gfDocMatch[0].data()!.grid,
     gfDocMatch[0].data()!.target
   );
-  let newMatch: Session = new Session(
+  let newMatch: ActiveMatch = new ActiveMatch(
     gfDocMatch[1],
     gfDocMatch[0].id,
     gfDocMatch[0].data()!.grid,
@@ -80,7 +83,7 @@ async function reconnect(
   userId: string,
   userFcmToken: string,
   currentMatch: string
-): Promise<Session> {
+): Promise<ActiveMatch> {
   let matchDoc: DocumentSnapshot = await matches.doc(currentMatch).get();
   let hostOrJoin: boolean = userId == matchDoc.data()!.hostuid;
   hostOrJoin
@@ -94,7 +97,7 @@ async function reconnect(
     .doc(String(matchDoc.data()!.gfid))
     .get();
   if (matchDoc.data()!.joinuid != null) {
-    return new Session(
+    return new ActiveMatch(
       currentMatch,
       gfDoc.id,
       hostOrJoin ? matchDoc.data()!.hostgf : matchDoc.data()!.joingf,
@@ -108,7 +111,7 @@ async function reconnect(
       1
     );
   } else {
-    return new Session(
+    return new ActiveMatch(
       currentMatch,
       gfDoc.id,
       hostOrJoin ? matchDoc.data()!.hostgf : matchDoc.data()!.joingf,
@@ -189,6 +192,12 @@ async function queueNotEmpty(
   let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
   let hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
   let joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);
+  hostRef.update({
+    currentMatch: matchId
+  });
+  joinRef.update({
+    currentMatch: matchId
+  });
   hostRef
     .collection("activematches")
     .doc(matchDoc.id)

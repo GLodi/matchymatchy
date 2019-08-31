@@ -24,7 +24,7 @@ class ActiveMatch extends Match {
   TargetField enemyTargetField;
 
   ActiveMatch.fromMap(Map<String, dynamic> map) {
-    gameField = GameField(grid: map['gf']);
+    this.gameField = GameField(grid: map['gf']);
     targetField = TargetField(grid: map['target']);
     matchId = map['matchid'];
     enemyName = map['enemyname'];

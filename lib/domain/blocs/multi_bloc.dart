@@ -85,7 +85,7 @@ class MultiBloc extends GameBloc {
   void listenToMessages() {
     if (challengeSub == null && moveSub == null && winnerSub == null) {
       challengeSub = _messEventBus.on<ChallengeMessage>().listen((mess) {
-        emitEvent(GameEvent(type: GameEventType.queue));
+        emitEvent(GameEvent(type: GameEventType.start));
       });
       moveSub = _messEventBus.on<MoveMessage>().listen((mess) {
         _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));

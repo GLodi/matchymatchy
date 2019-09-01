@@ -6,6 +6,7 @@ admin.initializeApp(functions.config().firebase);
 import { DocumentData } from "@google-cloud/firestore";
 import { playMove, forfeit } from "./play_move";
 import { queuePlayer } from "./queue_player";
+import { getActiveMatches } from "./get_active_matches";
 
 /**
  * Handle queue
@@ -27,6 +28,15 @@ exports.playMove = functions
 exports.forfeit = functions
   .region("europe-west1")
   .https.onRequest(async (request, response) => forfeit(request, response));
+
+/**
+ * Returns list of player's active matches
+ */
+exports.getActiveMatches = functions
+  .region("europe-west1")
+  .https.onRequest(async (request, response) =>
+    getActiveMatches(request, response)
+  );
 
 /**
  * Listen to changes in match documents and notify players through FCM

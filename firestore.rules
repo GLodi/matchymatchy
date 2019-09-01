@@ -6,7 +6,7 @@ service cloud.firestore {
     }
     
     match /users/{userId}/activematches/{docId} {
-      allow read: if request.auth.uid == userId;
+      allow read: if false;
       allow write: if false;
     }
     

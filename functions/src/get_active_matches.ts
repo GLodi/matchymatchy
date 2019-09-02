@@ -15,6 +15,7 @@ export async function getActiveMatches(request: any, response: any) {
       let match = await matches.doc(d.id).get();
       list.push(match.data());
     });
+    response.send(list);
   } catch (e) {
     console.log("--- error getting matches player");
     console.log(e);

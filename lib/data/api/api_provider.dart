@@ -32,17 +32,11 @@ class ApiProviderImpl implements ApiProvider {
 
   @override
   Future<List<ActiveMatch>> getActiveMatches(String uid) async {
-    List<ActiveMatch> list = List<ActiveMatch>();
-    QuerySnapshot activeMatchesQuery =
-        await usersRef.document(uid).collection('activematches').getDocuments();
-    print('active matches detected: ' +
-        activeMatchesQuery.documents.length.toString());
-    activeMatchesQuery.documents.forEach((d) {
-      print('data' + d.data.toString());
-      list.add(ActiveMatch.fromMap(d.data));
+    return _net
+        .get(_baseUrl + 'getActiveMatches?userId=' + uid)
+        .then((response) {
+      print(response);
     });
-    print('active matches list length' + list.length.toString());
-    return list;
   }
 
   @override

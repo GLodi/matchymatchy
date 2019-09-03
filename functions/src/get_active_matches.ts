@@ -14,7 +14,35 @@ export async function getActiveMatches(request: any, response: any) {
       .get();
     await docs.forEach(async d => {
       let match = await matches.doc(d.id).get();
-      list.push();
+      if (userId == match.data()!.hostuid) {
+        list.push(
+          new ActiveMatch(
+            match.id,
+            match.data()!.gfid,
+            match.data()!.hostgf,
+            match.data()!.hosttarget,
+            match.data()!.hostmoves,
+            match.data()!.joinmoves,
+            match.data()!.joinname,
+            match.data()!.jointarget,
+            match.data()!.started
+          )
+        );
+      } else {
+        list.push(
+          new ActiveMatch(
+            match.id,
+            match.data()!.gfid,
+            match.data()!.joingf,
+            match.data()!.jointarget,
+            match.data()!.joinmoves,
+            match.data()!.hostmoves,
+            match.data()!.hostname,
+            match.data()!.hosttarget,
+            match.data()!.started
+          )
+        );
+      }
     });
     response.send(list);
   } catch (e) {

@@ -12,10 +12,6 @@ class HomeRepo {
 
   Future<void> loginWithGoogle() async {
     User user = await loginProvider.loginWithGoogle();
-    await dbProvider
-        .storeActiveMatches(await apiProvider.getActiveMatches(user.uid));
-    await dbProvider
-        .storePastMatches(await apiProvider.getPastMatches(user.uid));
     return await prefsProvider.storeUser(user);
   }
 
@@ -33,4 +29,11 @@ class HomeRepo {
       .getUid()
       .then((uid) => apiProvider.getUser(uid))
       .then((user) => prefsProvider.storeUser(user));
+
+  Future<void> updateMatches() async {
+    String uid = await prefsProvider.getUid();
+    await dbProvider
+        .storeActiveMatches(await apiProvider.getActiveMatches(uid));
+    await dbProvider.storePastMatches(await apiProvider.getPastMatches(uid));
+  }
 }

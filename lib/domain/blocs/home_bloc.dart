@@ -69,11 +69,14 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
           _intentToMultiScreenSubject.add((null));
         } else {
           yield HomeState.notInit();
-          await _repo.loginWithGoogle().catchError((e) {
+          try {
+            await _repo.loginWithGoogle();
+            yield await checkIfUserLogged();
+            await updateMatches();
+          } catch (e) {
             _snackBarSubject.add('Login error');
             print(e);
-          });
-          yield await checkIfUserLogged();
+          }
         }
         break;
       default:
@@ -112,6 +115,16 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
       print(e);
     }
     return nextState;
+  }
+
+  Future<void> updateMatches() async {
+    try {
+      // TODO: show loading on active/past matches list
+      await _repo.updateMatches();
+    } catch (e) {
+      _snackBarSubject.add('Fetching user info error');
+      print(e);
+    }
   }
 
   @override

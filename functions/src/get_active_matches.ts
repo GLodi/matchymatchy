@@ -12,7 +12,7 @@ export async function getActiveMatches(request: any, response: any) {
       .doc(userId)
       .collection("activematches")
       .get();
-    if (!docs.empty) {
+    if (docs != null && !docs.empty) {
       await docs.forEach(async d => {
         let match = await matches.doc(d.id).get();
         if (userId == match.data()!.hostuid) {

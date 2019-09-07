@@ -35,6 +35,7 @@ class ApiProviderImpl implements ApiProvider {
     return _net
         .get(_baseUrl + 'getActiveMatches?userId=' + uid)
         .then((response) {
+      print('getactive');
       print(response);
     });
   }
@@ -46,11 +47,13 @@ class ApiProviderImpl implements ApiProvider {
         await usersRef.document(uid).collection('pastmatches').getDocuments();
     print('past matches detected: ' +
         pastMatchesQuery.documents.length.toString());
-    pastMatchesQuery.documents.forEach((d) {
-      print('data' + d.data.toString());
-      list.add(PastMatch.fromMap(d.data));
-    });
-    print('past matches list length' + list.length.toString());
+    if (pastMatchesQuery.documents.isNotEmpty) {
+      pastMatchesQuery.documents.forEach((d) {
+        print('data' + d.data.toString());
+        list.add(PastMatch.fromMap(d.data));
+      });
+      print('past matches list length' + list.length.toString());
+    }
     return list;
   }
 

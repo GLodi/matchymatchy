@@ -12,10 +12,11 @@ export async function getActiveMatches(request: any, response: any) {
       .doc(userId)
       .collection("activematches")
       .get();
-    if (docs != null && !docs.empty) {
+    if (!docs.empty) {
       await docs.forEach(async d => {
         let match = await matches.doc(d.id).get();
         if (userId == match.data()!.hostuid) {
+          console.log("before push host");
           list.push(
             new ActiveMatch(
               match.id,
@@ -30,6 +31,7 @@ export async function getActiveMatches(request: any, response: any) {
             )
           );
         } else {
+          console.log("before push join");
           list.push(
             new ActiveMatch(
               match.id,
@@ -45,11 +47,13 @@ export async function getActiveMatches(request: any, response: any) {
           );
         }
       });
+      response.send(list);
+    } else {
+      response.status(500).send("No active matches");
     }
-    response.send(list);
   } catch (e) {
     console.log("--- error getting matches player");
-    console.log(e);
-    response.send(false);
+    console.error(e);
+    response.status(500).send("Error retrieving active matches information");
   }
 }

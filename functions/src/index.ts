@@ -111,7 +111,7 @@ async function onMatchStart(matchId: string) {
     console.log("message sent to join: " + matchDoc.data()!.joinfcmtoken);
   } catch (e) {
     console.log("--- error sending message: ");
-    console.log(e);
+    console.error(e);
   }
 }
 
@@ -128,7 +128,7 @@ function onMove(newMatch: DocumentData, matchId: string, hostOrJoin: boolean) {
     admin.messaging().send(message);
   } catch (e) {
     console.log("--- error sending message");
-    console.log(e);
+    console.error(e);
   }
 }
 
@@ -171,6 +171,6 @@ function onWinner(newMatch: DocumentData, matchId: string) {
     admin.messaging().send(messageToHost);
   } catch (e) {
     console.log("--- error sending message");
-    console.log(e);
+    console.error(e);
   }
 }

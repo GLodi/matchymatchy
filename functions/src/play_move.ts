@@ -23,16 +23,16 @@ export async function playMove(request: any, response: any) {
         }
       } else {
         console.log("--- error user neither host nor join");
-        response.send(false);
+        response.status(500).send("Error: user neither host nor join");
       }
     } else {
       console.log("--- error no match with specified matchId");
-      response.send(false);
+      response.status(500).send("Error: no match with specified matchId");
     }
   } catch (e) {
     console.log("--- error applying player move");
-    console.log(e);
-    response.send(false);
+    console.error(e);
+    response.status(500).send("Error playing move");
   }
 }
 
@@ -70,13 +70,13 @@ export async function forfeit(request: any, response: any) {
         response.send(true);
       } else {
         console.log("--- error winner already declared");
-        response.send(false);
+        response.status(500).send("Error: winner already declared");
       }
     }
   } catch (e) {
     console.log("--- error forfeting player player");
-    console.log(e);
-    response.send(false);
+    console.error(e);
+    response.status(500).send("Error forfeiting player");
   }
 }
 
@@ -191,11 +191,11 @@ async function resetMatch(matchId: string) {
     forfeitwin: matchDoc.data()!.forfeitwin
   });
   hostRef
-    .collection("matches")
+    .collection("activematches")
     .doc(matchId)
     .delete();
   joinRef
-    .collection("matches")
+    .collection("activematches")
     .doc(matchId)
     .delete();
 }

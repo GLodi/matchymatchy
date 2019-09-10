@@ -3,6 +3,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:squazzle/data/models/models.dart';
 
+Color colorOne = Colors.red;
+Color colorTwo = Colors.red[300];
+Color colorThree = Colors.red[100];
+
 class UserWidget extends StatefulWidget {
   final User user;
   final double height;
@@ -44,7 +48,6 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
               alignment: Alignment.topCenter,
               child: Container(
                 height: 200.0,
-                color: Colors.transparent,
                 child: Container(
                   child: elements(),
                   decoration: BoxDecoration(

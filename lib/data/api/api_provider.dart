@@ -35,8 +35,9 @@ class ApiProviderImpl implements ApiProvider {
     return _net
         .get(_baseUrl + 'getActiveMatches?userId=' + uid)
         .then((response) {
-      print('getactive');
-      print(response);
+      var list = response as List;
+      List<ActiveMatch> objs = list.map((i) => ActiveMatch.fromMap(i)).toList();
+      return objs;
     });
   }
 

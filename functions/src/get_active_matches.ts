@@ -14,8 +14,6 @@ export async function getActiveMatches(request: any, response: any) {
       .get();
     if (!docs.empty) {
       let activeMatches: ActiveMatch[] = await makeList(userId, docs);
-      console.log("length");
-      console.log(activeMatches.length);
       response.send(activeMatches);
     } else {
       response.status(500).send("No active matches");
@@ -35,8 +33,6 @@ async function makeList(
   for (let doc of query.docs) {
     let match = await matches.doc(doc.id).get();
     if (userId == match.data()!.hostuid) {
-      console.log("before push host");
-      console.log(match.id);
       list.push(
         new ActiveMatch(
           match.id,
@@ -51,8 +47,6 @@ async function makeList(
         )
       );
     } else {
-      console.log("before push join");
-      console.log(match.id);
       list.push(
         new ActiveMatch(
           match.id,

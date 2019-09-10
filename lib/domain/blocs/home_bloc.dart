@@ -71,8 +71,8 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
           yield HomeState.notInit();
           try {
             await _repo.loginWithGoogle();
-            yield await checkIfUserLogged();
             await updateMatches();
+            yield await checkIfUserLogged();
           } catch (e) {
             _snackBarSubject.add('Login error');
             print(e);
@@ -90,10 +90,11 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
       if (user != null) {
         // TODO: get stored active matches and put them on top
         // TODO: show queue on multi button if there's any active matches
+        List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
         List<PastMatch> pastMatches = await _repo.getPastMatches();
         _repo.updateUserInfo();
         String uid = await _repo.getUid();
-        nextState = HomeState.initLogged(user, pastMatches);
+        nextState = HomeState.initLogged(user, activeMatches, pastMatches);
         _messEventBus.on<ChallengeMessage>().listen((mess) {
           print('home challenge');
           // TODO: show option to go to multi

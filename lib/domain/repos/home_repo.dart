@@ -33,10 +33,10 @@ class HomeRepo {
   Future<void> updateMatches() async {
     String uid = await prefsProvider.getUid();
     List activeMatches = await apiProvider.getActiveMatches(uid);
-    if (activeMatches != null && activeMatches.isNotEmpty)
+    print('stored active' + activeMatches.length.toString());
+    if (activeMatches.isNotEmpty)
       await dbProvider.storeActiveMatches(activeMatches);
     List pastMatches = await apiProvider.getPastMatches(uid);
-    if (pastMatches != null && pastMatches.isNotEmpty)
-      await dbProvider.storePastMatches(pastMatches);
+    if (pastMatches.isNotEmpty) await dbProvider.storePastMatches(pastMatches);
   }
 }

@@ -43,7 +43,8 @@ async function makeList(
           match.data()!.joinmoves,
           match.data()!.joinname,
           match.data()!.jointarget,
-          match.data()!.started
+          // TODO: need to test this
+          match.data()!.time != null ? 1 : 0
         )
       );
     } else {
@@ -57,7 +58,7 @@ async function makeList(
           match.data()!.hostmoves,
           match.data()!.hostname,
           match.data()!.hosttarget,
-          match.data()!.started
+          match.data()!.time != null ? 1 : 0
         )
       );
     }

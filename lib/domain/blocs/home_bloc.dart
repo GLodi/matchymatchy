@@ -1,6 +1,5 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:logger/logger.dart';
 import 'dart:async';
 
 import 'package:squazzle/data/api/mess_event_bus.dart';
@@ -10,7 +9,6 @@ import 'package:squazzle/data/models/models.dart';
 /// HomeScreen's bloc.
 /// Handles profile info and user authentication.
 class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
-  final Logger logger = Logger();
   final HomeRepo _repo;
   final MessagingEventBus _messEventBus;
   StreamSubscription _connectivitySubs, _challengeSubs, _winnerSubs;
@@ -77,7 +75,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
             yield await checkIfUserLogged();
           } catch (e) {
             _snackBarSubject.add('Login error');
-            logger.e(e);
+            print(e);
           }
         }
         break;
@@ -115,7 +113,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     } catch (e) {
       _snackBarSubject.add('Login check error');
       nextState = HomeState.initNotLogged();
-      logger.e(e);
+      print(e);
     }
     return nextState;
   }
@@ -126,7 +124,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
       await _repo.updateMatches();
     } catch (e) {
       _snackBarSubject.add('Fetching user info error');
-      logger.e(e);
+      print(e);
     }
   }
 

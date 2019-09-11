@@ -32,7 +32,7 @@ class ActiveMatch extends Match {
     moves = int.parse(map['moves'].toString());
     enemyMoves = int.parse(map['enemymoves'].toString());
     gfid = int.parse(map['gfid'].toString());
-    started = map['started'] == 'true' ? 1 : 0;
+    started = int.parse(map['started'].toString());
     enemyTargetField = TargetField(grid: map['enemytarget']);
   }
 

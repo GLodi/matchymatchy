@@ -201,11 +201,11 @@ async function queueNotEmpty(
   hostRef
     .collection("activematches")
     .doc(matchDoc.id)
-    .set(matchDoc.data()!);
+    .set({});
   joinRef
     .collection("activematches")
     .doc(matchDoc.id)
-    .set(matchDoc.data()!);
+    .set({});
   let gf: DocumentSnapshot = await gamefields
     .doc(String(matchDoc.data()!.gfid))
     .get();

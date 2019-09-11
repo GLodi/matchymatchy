@@ -52,11 +52,11 @@ class MultiRepo extends GameRepo {
   Future<ActiveMatch> queuePlayer() async {
     String uid = await prefsProvider.getUid();
     String token = await messProvider.getToken();
-    ActiveMatch situation = await apiProvider.queuePlayer(uid, token);
-    lastMatchId = situation.matchId;
-    if (situation.started == 1) {
-      await dbProvider.storeActiveMatch(situation);
+    ActiveMatch currentMatch = await apiProvider.queuePlayer(uid, token);
+    lastMatchId = currentMatch.matchId;
+    if (currentMatch.started == 1) {
+      await dbProvider.storeActiveMatch(currentMatch);
     }
-    return situation;
+    return currentMatch;
   }
 }

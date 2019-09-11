@@ -10,7 +10,7 @@ import 'package:squazzle/data/models/models.dart';
 class MultiBloc extends GameBloc {
   final MultiRepo _repo;
   final MessagingEventBus _messEventBus;
-  StreamSubscription moveSub, challengeSub, winnerSub;
+  StreamSubscription _moveSubs, _challengeSubs, _winnerSubs;
 
   // Streams extracted from GameBloc's subjects
   Stream<bool> get correct => correctSubject.stream;
@@ -51,13 +51,14 @@ class MultiBloc extends GameBloc {
         listenToMessages();
         await _repo.queuePlayer().catchError((e) {
           result = GameState.error('error queueing to server');
-        }).then((match) => showMatch(match));
+        }).then((match) => queueResult(match));
         if (result != null && result.type == GameStateType.error) {
           yield result;
         }
         break;
       case GameEventType.start:
         if (currentState.type == GameStateType.notInit) {
+          // TODO: request game info
           yield GameState(type: GameStateType.init);
         }
         break;
@@ -65,11 +66,14 @@ class MultiBloc extends GameBloc {
         correctSubject.add(true);
         // TODO: show info until other player has finished
         break;
+      case GameEventType.error:
+        yield GameState.error('Error queueing');
+        break;
       default:
     }
   }
 
-  void showMatch(ActiveMatch activeMatch) async {
+  void queueResult(ActiveMatch activeMatch) async {
     _waitMessageSubject.add('Waiting for opponent...');
     if (activeMatch.started == 1) {
       gameField = activeMatch.gameField;
@@ -83,14 +87,19 @@ class MultiBloc extends GameBloc {
   }
 
   void listenToMessages() {
-    if (challengeSub == null && moveSub == null && winnerSub == null) {
-      challengeSub = _messEventBus.on<ChallengeMessage>().listen((mess) {
-        emitEvent(GameEvent(type: GameEventType.start));
+    if (_challengeSubs == null && _moveSubs == null && _winnerSubs == null) {
+      _challengeSubs =
+          _messEventBus.on<ChallengeMessage>().listen((mess) async {
+        await _repo
+            .queuePlayer()
+            .catchError(emitEvent(GameEvent(type: GameEventType.error)))
+            .then((match) => queueResult(match));
+        await emitEvent(GameEvent(type: GameEventType.start));
       });
-      moveSub = _messEventBus.on<MoveMessage>().listen((mess) {
+      _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) {
         _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
       });
-      winnerSub = _messEventBus.on<WinnerMessage>().listen((mess) {
+      _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
         // TODO: populate win_widget that's already showing, or show if forfeit
         emitEvent(GameEvent(type: GameEventType.victory));
       });
@@ -99,9 +108,9 @@ class MultiBloc extends GameBloc {
 
   @override
   void dispose() async {
-    moveSub.cancel();
-    challengeSub.cancel();
-    winnerSub.cancel();
+    _moveSubs.cancel();
+    _challengeSubs.cancel();
+    _winnerSubs.cancel();
     _enemyTargetSubject.close();
     _waitMessageSubject.close();
     _enemyNameSubject.close();

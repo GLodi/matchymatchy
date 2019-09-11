@@ -1,5 +1,6 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:logger/logger.dart';
 import 'dart:async';
 
 import 'package:squazzle/data/api/mess_event_bus.dart';
@@ -9,9 +10,10 @@ import 'package:squazzle/data/models/models.dart';
 /// HomeScreen's bloc.
 /// Handles profile info and user authentication.
 class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
+  final Logger logger = Logger();
   final HomeRepo _repo;
   final MessagingEventBus _messEventBus;
-  StreamSubscription _connectivitySub, _messSub;
+  StreamSubscription _connectivitySubs, _challengeSubs, _winnerSubs;
 
   // Trigger home_screen -> multi_screen transition
   final _intentToMultiScreenSubject = BehaviorSubject<void>();
@@ -42,7 +44,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     });
     ConnectivityResult curr = await Connectivity().checkConnectivity();
     bool prev = curr == ConnectivityResult.none ? false : true;
-    _connectivitySub = Connectivity()
+    _connectivitySubs = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
       if (result == ConnectivityResult.none && prev) {
@@ -75,7 +77,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
             yield await checkIfUserLogged();
           } catch (e) {
             _snackBarSubject.add('Login error');
-            print(e);
+            logger.e(e);
           }
         }
         break;
@@ -95,12 +97,12 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
         _repo.updateUserInfo();
         String uid = await _repo.getUid();
         nextState = HomeState.initLogged(user, activeMatches, pastMatches);
-        _messEventBus.on<ChallengeMessage>().listen((mess) {
+        _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) {
           print('home challenge');
           // TODO: show option to go to multi
           // TODO: show inmatch on multi button
         });
-        _messEventBus.on<WinnerMessage>().listen((mess) {
+        _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
           print('home winnner');
           if (mess.winner == uid) {
             _repo.updateUserInfo();
@@ -113,7 +115,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     } catch (e) {
       _snackBarSubject.add('Login check error');
       nextState = HomeState.initNotLogged();
-      print(e);
+      logger.e(e);
     }
     return nextState;
   }
@@ -124,7 +126,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
       await _repo.updateMatches();
     } catch (e) {
       _snackBarSubject.add('Fetching user info error');
-      print(e);
+      logger.e(e);
     }
   }
 
@@ -133,8 +135,9 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     _intentToMultiScreenSubject.close();
     _showSlidesSubject.close();
     _doneSlidesButtonSubject.close();
-    _connectivitySub.cancel();
-    _messSub.cancel();
+    _connectivitySubs.cancel();
+    _winnerSubs.cancel();
+    _challengeSubs.cancel();
     super.dispose();
   }
 }

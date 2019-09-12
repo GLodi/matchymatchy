@@ -36,24 +36,6 @@ export async function playMove(request: any, response: any) {
   }
 }
 
-function isPlayer(userId: string, matchDoc: DocumentSnapshot): boolean {
-  return (
-    userId == matchDoc.data()!.hostuid || userId == matchDoc.data()!.joinuid
-  );
-}
-
-function isOtherPlayerDone(
-  firstPlayer: string,
-  matchDoc: DocumentSnapshot
-): boolean {
-  return (
-    (matchDoc.data()!.hostdone != null &&
-      firstPlayer == matchDoc.data()!.joinuid) ||
-    (matchDoc.data()!.joindone != null &&
-      firstPlayer == matchDoc.data()!.hostuid)
-  );
-}
-
 export async function forfeit(request: any, response: any) {
   let userId: string = request.query.userId;
   let matchId: string = request.query.matchId;
@@ -78,6 +60,24 @@ export async function forfeit(request: any, response: any) {
     console.error(e);
     response.status(500).send("Error forfeiting player");
   }
+}
+
+function isPlayer(userId: string, matchDoc: DocumentSnapshot): boolean {
+  return (
+    userId == matchDoc.data()!.hostuid || userId == matchDoc.data()!.joinuid
+  );
+}
+
+function isOtherPlayerDone(
+  firstPlayer: string,
+  matchDoc: DocumentSnapshot
+): boolean {
+  return (
+    (matchDoc.data()!.hostdone != null &&
+      firstPlayer == matchDoc.data()!.joinuid) ||
+    (matchDoc.data()!.joindone != null &&
+      firstPlayer == matchDoc.data()!.hostuid)
+  );
 }
 
 /**

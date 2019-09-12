@@ -104,7 +104,7 @@ async function onMatchStart(matchId: string) {
     console.log("message sent to host: " + matchDoc.data()!.hostfcmtoken);
   } catch (e) {
     console.log("--- error sending message: ");
-    console.log(e);
+    console.error(e);
   }
   try {
     admin.messaging().send(messageToJoin);
@@ -165,7 +165,7 @@ function onWinner(newMatch: DocumentData, matchId: string) {
     admin.messaging().send(messageToJoin);
   } catch (e) {
     console.log("--- error sending message");
-    console.log(e);
+    console.error(e);
   }
   try {
     admin.messaging().send(messageToHost);

@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:squazzle/data/models/models.dart';
-
-Color colorOne = Colors.red;
-Color colorTwo = Colors.red[300];
-Color colorThree = Colors.red[100];
+import 'curve_painter.dart';
 
 class UserWidget extends StatefulWidget {
   final User user;
@@ -48,15 +45,16 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
               alignment: Alignment.topCenter,
               child: Container(
                 height: 200.0,
-                child: Container(
-                  child: elements(),
-                  decoration: BoxDecoration(
-                    color: Colors.blue[200],
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: const Radius.circular(20.0),
-                      bottomRight: const Radius.circular(20.0),
-                    ),
+                decoration: BoxDecoration(
+                  color: Colors.blue[100],
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: const Radius.circular(20.0),
+                    bottomRight: const Radius.circular(20.0),
                   ),
+                ),
+                child: CustomPaint(
+                  painter: CurvePainter(),
+                  child: elements(),
                 ),
               ),
             ),

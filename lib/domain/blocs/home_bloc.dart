@@ -16,6 +16,12 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   final _intentToMultiScreenSubject = BehaviorSubject<void>();
   Stream<void> get intentToMultiScreen => _intentToMultiScreenSubject.stream;
 
+  final _activeMatchesSubject = BehaviorSubject<List<ActiveMatch>>();
+  Stream<List<ActiveMatch>> get activeMatches => _activeMatchesSubject.stream;
+
+  final _pastMatchesSubject = BehaviorSubject<List<PastMatch>>();
+  Stream<List<PastMatch>> get pastMatches => _pastMatchesSubject.stream;
+
   final _showSlidesSubject = BehaviorSubject<bool>();
   Stream<bool> get showSlides => _showSlidesSubject.stream;
 
@@ -66,7 +72,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
           yield HomeState.notInit();
           try {
             await _repo.loginWithGoogle();
-            await updateMatches();
+            updateMatches();
             yield await checkIfUserLogged();
           } catch (e) {
             _snackBarSubject.add('Login error');
@@ -117,6 +123,10 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     try {
       // TODO: show loading on active/past matches list
       await _repo.updateMatches();
+      List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
+      List<PastMatch> pastMatches = await _repo.getPastMatches();
+      _activeMatchesSubject.add(activeMatches);
+      _pastMatchesSubject.add(pastMatches);
     } catch (e) {
       _snackBarSubject.add('Fetching user info error');
       print(e);

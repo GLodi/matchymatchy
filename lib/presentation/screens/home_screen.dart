@@ -74,28 +74,44 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Stack(children: <Widget>[
       Column(children: <Widget>[
         UserWidget(user: user, height: height, width: width),
-        Expanded(
-          child: PageIndicatorContainer(
-            key: _pageViewKey,
-            child: PageView(
-              children: <Widget>[
-                Container(color: Colors.white),
-                HomeMatchList(
-                    activeMatches: activeMatches, pastMatches: pastMatches),
-              ],
-              controller: controller,
-              reverse: false,
-            ),
-            align: IndicatorAlign.top,
-            length: 2,
-            indicatorSpace: 10.0,
-            indicatorSelectorColor: Colors.blue[800],
-            indicatorColor: Colors.grey[300],
-          ),
+        StreamBuilder<List<ActiveMatch>>(
+          stream: bloc.activeMatches,
+          initialData: activeMatches,
+          builder: (context, snapshot1) {
+            return StreamBuilder<List<PastMatch>>(
+              stream: bloc.pastMatches,
+              initialData: pastMatches,
+              builder: (context2, snapshot2) =>
+                  centerPageView(snapshot1.data, snapshot2.data),
+            );
+          },
         ),
       ]),
       bottomButtons("Multiplayer"),
     ]);
+  }
+
+  Widget centerPageView(
+      List<ActiveMatch> activeMatches, List<PastMatch> pastMatches) {
+    return Expanded(
+      child: PageIndicatorContainer(
+        key: _pageViewKey,
+        child: PageView(
+          children: <Widget>[
+            Container(color: Colors.white),
+            HomeMatchList(
+                activeMatches: activeMatches, pastMatches: pastMatches),
+          ],
+          controller: controller,
+          reverse: false,
+        ),
+        align: IndicatorAlign.top,
+        length: 2,
+        indicatorSpace: 10.0,
+        indicatorSelectorColor: Colors.blue[800],
+        indicatorColor: Colors.grey[300],
+      ),
+    );
   }
 
   // Shows Single/Login buttons

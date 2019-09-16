@@ -91,17 +91,18 @@ class _SingleScreenState extends State<SingleScreen>
   Future<bool> _onWillPop() {
     return showDialog(
           context: context,
-          builder: (context) => new AlertDialog(
-            title: new Text('Are you sure?'),
-            content: new Text('Do you want to exit?'),
+          builder: (context) => AlertDialog(
+            title: Text('Are you sure?', style: TextStyle(color: Colors.black)),
+            content: Text('Do you want to exit?',
+                style: TextStyle(color: Colors.black)),
             actions: <Widget>[
-              new FlatButton(
+              FlatButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: new Text('No'),
+                child: Text('No'),
               ),
-              new FlatButton(
+              FlatButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: new Text('Yes'),
+                child: Text('Yes'),
               ),
             ],
           ),

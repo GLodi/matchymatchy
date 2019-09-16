@@ -43,6 +43,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     });
     ConnectivityResult curr = await Connectivity().checkConnectivity();
     bool prev = curr == ConnectivityResult.none ? false : true;
+    _connChangeSub.add(prev);
     _connectivitySubs = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {

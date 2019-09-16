@@ -194,6 +194,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   // Bottom right multiplayer button
   Widget multiButton(String text) {
+    String lastInput = text;
     return Expanded(
       child: Hero(
         tag: 'multi',
@@ -207,10 +208,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           onPressed: () =>
               bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress)),
-          child: Text(text,
-              style: TextStyle(
-                color: Colors.blue[800],
-              )),
+          child: StreamBuilder<bool>(
+              initialData: false,
+              stream: bloc.connChange,
+              builder: (context, snapshot) =>
+                  Text(snapshot.data ? lastInput : "Offline",
+                      style: TextStyle(
+                        color: Colors.blue[800],
+                      ))),
         ),
       ),
     );

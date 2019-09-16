@@ -55,7 +55,7 @@ class MultiRepo extends GameRepo {
     ActiveMatch currentMatch = await apiProvider.queuePlayer(uid, token);
     lastMatchId = currentMatch.matchId;
     if (currentMatch.started == 1) {
-      await dbProvider.storeActiveMatch(currentMatch);
+      dbProvider.storeActiveMatch(currentMatch);
     }
     return currentMatch;
   }

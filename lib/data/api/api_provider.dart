@@ -62,10 +62,7 @@ class ApiProviderImpl implements ApiProvider {
   Future<ActiveMatch> queuePlayer(String uid, String token) async {
     return _net
         .get(_baseUrl + 'queuePlayer?userId=' + uid + '&userFcmToken=' + token)
-        .then((response) {
-      print(response);
-      return ActiveMatch.fromMap(response);
-    });
+        .then((response) => ActiveMatch.fromMap(response));
   }
 
   @override

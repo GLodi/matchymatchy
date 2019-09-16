@@ -13,23 +13,18 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   final MessagingEventBus _messEventBus;
   StreamSubscription _connectivitySubs, _challengeSubs, _winnerSubs;
 
-  // Trigger home_screen -> multi_screen transition
   final _intentToMultiScreenSubject = BehaviorSubject<void>();
   Stream<void> get intentToMultiScreen => _intentToMultiScreenSubject.stream;
 
-  // Show help slides if first time opening app
   final _showSlidesSubject = BehaviorSubject<bool>();
   Stream<bool> get showSlides => _showSlidesSubject.stream;
 
-  // Listen to connection changes
   final _connChangeSub = BehaviorSubject<bool>();
   Stream<bool> get connChange => _connChangeSub.stream;
 
-  // Show snackbar for login errors
   final _snackBarSubject = BehaviorSubject<String>();
   Stream<String> get snackBar => _snackBarSubject.stream;
 
-  // Listen to done button press on last slide (need to hide them)
   final _doneSlidesButtonSubject = PublishSubject<bool>();
   Sink<bool> get doneSlidesButton => _doneSlidesButtonSubject.sink;
 

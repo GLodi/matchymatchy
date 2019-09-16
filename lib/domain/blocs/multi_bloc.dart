@@ -16,23 +16,18 @@ class MultiBloc extends GameBloc {
   Stream<bool> get correct => correctSubject.stream;
   Stream<int> get moveNumber => moveNumberSubject.stream;
 
-  // Shows waiting for players message after connecting to server
   final _waitMessageSubject = BehaviorSubject<String>();
   Stream<String> get waitMessage => _waitMessageSubject.stream;
 
-  // Updates enemy target
   final _enemyTargetSubject = BehaviorSubject<TargetField>();
   Stream<TargetField> get enemyTarget => _enemyTargetSubject.stream;
 
-  // Updates enemy target
   final _hasMatchStartedSubject = BehaviorSubject<bool>();
   Stream<bool> get hasMatchStarted => _hasMatchStartedSubject.stream;
 
-  // Updates enemy name on appbar
   final _enemyNameSubject = BehaviorSubject<String>();
   Stream<String> get enemyName => _enemyNameSubject.stream;
 
-  // Listen to forfeit button press
   final _forfeitButtonSubject = PublishSubject<bool>();
   Sink<bool> get forfeitButton => _forfeitButtonSubject.sink;
 
@@ -47,13 +42,12 @@ class MultiBloc extends GameBloc {
       GameEvent event, GameState currentState) async* {
     switch (event.type) {
       case GameEventType.queue:
-        GameState result;
-        listenToMessages();
-        await _repo.queuePlayer().catchError((e) {
-          result = GameState.error('error queueing to server');
-        }).then((match) => queueResult(match));
-        if (result != null && result.type == GameStateType.error) {
-          yield result;
+        try {
+          listenToMessages();
+          ActiveMatch currentMatch = await _repo.queuePlayer();
+          queueResult(currentMatch);
+        } catch (e) {
+          yield GameState.error('error queueing to server');
         }
         break;
       case GameEventType.start:
@@ -73,14 +67,14 @@ class MultiBloc extends GameBloc {
     }
   }
 
-  void queueResult(ActiveMatch activeMatch) async {
+  void queueResult(ActiveMatch currentMatch) async {
     _waitMessageSubject.add('Waiting for opponent...');
-    if (activeMatch.started == 1) {
-      gameField = activeMatch.gameField;
-      targetField = activeMatch.targetField;
-      _enemyTargetSubject.add(activeMatch.enemyTargetField);
-      _enemyNameSubject.add(activeMatch.enemyName);
-      moveNumberSubject.add(activeMatch.moves);
+    if (currentMatch.started == 1) {
+      gameField = currentMatch.gameField;
+      targetField = currentMatch.targetField;
+      _enemyTargetSubject.add(currentMatch.enemyTargetField);
+      _enemyNameSubject.add(currentMatch.enemyName);
+      moveNumberSubject.add(currentMatch.moves);
       _hasMatchStartedSubject.add(true);
       emitEvent(GameEvent(type: GameEventType.start));
     }

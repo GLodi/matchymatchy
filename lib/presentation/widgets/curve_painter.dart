@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 Color colorOne = Colors.blue;
-Color colorTwo = Colors.blue[300];
-Color colorThree = Colors.blue[100];
+Color colorTwo = Colors.blue[500];
 
 class CurvePainter extends CustomPainter {
   @override
@@ -10,34 +9,12 @@ class CurvePainter extends CustomPainter {
     Path path = Path();
     Paint paint = Paint();
 
-    path.lineTo(0, size.height * 0.75);
-    path.quadraticBezierTo(size.width * 0.10, size.height * 0.70,
-        size.width * 0.17, size.height * 0.90);
-    path.quadraticBezierTo(
-        size.width * 0.20, size.height, size.width * 0.25, size.height * 0.90);
-    path.quadraticBezierTo(size.width * 0.40, size.height * 0.40,
-        size.width * 0.50, size.height * 0.70);
-    path.quadraticBezierTo(size.width * 0.60, size.height * 0.85,
-        size.width * 0.65, size.height * 0.65);
-    path.quadraticBezierTo(
-        size.width * 0.70, size.height * 0.90, size.width, 0);
-    path.close();
-
-    paint.color = colorThree;
-    canvas.drawPath(path, paint);
-
     path = Path();
-    path.lineTo(0, size.height * 0.50);
-    path.quadraticBezierTo(size.width * 0.10, size.height * 0.80,
-        size.width * 0.15, size.height * 0.60);
-    path.quadraticBezierTo(size.width * 0.20, size.height * 0.45,
-        size.width * 0.27, size.height * 0.60);
+    path.lineTo(0, size.height * 0.8);
+    path.quadraticBezierTo(size.width * 0.2, size.height * 0.60,
+        size.width * 0.5, size.height * 0.80);
     path.quadraticBezierTo(
-        size.width * 0.45, size.height, size.width * 0.50, size.height * 0.80);
-    path.quadraticBezierTo(size.width * 0.55, size.height * 0.45,
-        size.width * 0.75, size.height * 0.75);
-    path.quadraticBezierTo(
-        size.width * 0.85, size.height * 0.93, size.width, size.height * 0.60);
+        size.width * 0.8, size.height, size.width, size.height * 0.75);
     path.lineTo(size.width, 0);
     path.close();
 
@@ -45,15 +22,11 @@ class CurvePainter extends CustomPainter {
     canvas.drawPath(path, paint);
 
     path = Path();
-    path.lineTo(0, size.height * 0.75);
-    path.quadraticBezierTo(size.width * 0.10, size.height * 0.55,
-        size.width * 0.22, size.height * 0.70);
-    path.quadraticBezierTo(size.width * 0.30, size.height * 0.90,
-        size.width * 0.40, size.height * 0.75);
-    path.quadraticBezierTo(size.width * 0.52, size.height * 0.50,
-        size.width * 0.65, size.height * 0.70);
+    path.lineTo(0, size.height * 0.6);
     path.quadraticBezierTo(
-        size.width * 0.75, size.height * 0.85, size.width, size.height * 0.60);
+        size.width * 0.2, size.height, size.width * 0.6, size.height * 0.80);
+    path.quadraticBezierTo(
+        size.width * 0.8, size.height * 0.7, size.width, size.height * 0.80);
     path.lineTo(size.width, 0);
     path.close();
 

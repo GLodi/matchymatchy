@@ -46,7 +46,7 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
               child: Container(
                 height: 200.0,
                 decoration: BoxDecoration(
-                  color: Colors.blue[100],
+                  color: Colors.blue[200],
                   borderRadius: BorderRadius.only(
                     bottomLeft: const Radius.circular(20.0),
                     bottomRight: const Radius.circular(20.0),
@@ -65,13 +65,9 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
   Widget elements() {
     return Stack(
       children: <Widget>[
-        Positioned(
-          left: widget.width / 3,
-          child: Text(widget.user.username, textAlign: TextAlign.right),
-        ),
         Center(
           child: Container(
-            margin: EdgeInsets.all(10),
+            margin: EdgeInsets.fromLTRB(0, 0, 120, 0),
             child: ClipOval(
               child: CachedNetworkImage(
                 imageUrl: widget.user.photoUrl,
@@ -81,7 +77,13 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
             ),
           ),
         ),
-        Text('Wins: ' + widget.user.matchesWon.toString()),
+        Positioned(
+            top: 80,
+            right: widget.width / 4,
+            child: Column(children: [
+              Text(widget.user.username, textAlign: TextAlign.right),
+              Text('Wins: ' + widget.user.matchesWon.toString()),
+            ])),
       ],
     );
   }

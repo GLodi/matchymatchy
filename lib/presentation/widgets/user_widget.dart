@@ -6,10 +6,11 @@ import 'curve_painter.dart';
 
 class UserWidget extends StatefulWidget {
   final User user;
-  final double height;
-  final double width;
+  final double parentHeight;
+  final double parentWidth;
 
-  UserWidget({Key key, this.user, this.height, this.width}) : super(key: key);
+  UserWidget({Key key, this.user, this.parentHeight, this.parentWidth})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -40,7 +41,7 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
         builder: (context, child) {
           return Transform(
             transform: Matrix4.translationValues(
-                0, -_entryAnim.value * widget.height, 0),
+                0, -_entryAnim.value * widget.parentHeight, 0),
             child: Align(
               alignment: Alignment.topCenter,
               child: Container(
@@ -79,7 +80,7 @@ class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
         ),
         Positioned(
             top: 80,
-            right: widget.width / 4,
+            right: widget.parentWidth / 4,
             child: Column(children: [
               Text(widget.user.username, textAlign: TextAlign.right),
               Text('Wins: ' + widget.user.matchesWon.toString()),

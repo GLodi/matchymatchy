@@ -30,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     super.initState();
     bloc = BlocProvider.of<HomeBloc>(context);
     bloc.setup();
-    bloc.connChange.listen((connStatus) => connectionChange(connStatus));
     bloc.intentToMultiScreen.listen((_) => openMultiScreen());
     bloc.snackBar.listen((message) => showSnackBar(message));
     bloc.emitEvent(HomeEvent(type: HomeEventType.checkIfUserLogged));
@@ -73,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final double height = MediaQuery.of(context).size.height;
     return Stack(children: <Widget>[
       Column(children: <Widget>[
-        UserWidget(user: user, height: height, width: width),
+        UserWidget(user: user, parentHeight: height, parentWidth: width),
         StreamBuilder<List<ActiveMatch>>(
           stream: bloc.activeMatches,
           initialData: activeMatches,
@@ -198,25 +197,28 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Expanded(
       child: Hero(
         tag: 'multi',
-        child: MaterialButton(
-          height: 45,
-          padding: EdgeInsets.all(10),
-          color: Colors.blue[100],
-          elevation: 0,
-          highlightElevation: 0,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-          onPressed: () =>
-              bloc.emitEvent(HomeEvent(type: HomeEventType.multiButtonPress)),
-          child: StreamBuilder<bool>(
-              initialData: false,
-              stream: bloc.connChange,
-              builder: (context, snapshot) =>
-                  Text(snapshot.data ? lastInput : "Offline",
-                      style: TextStyle(
-                        color: Colors.blue[800],
-                      ))),
-        ),
+        child: StreamBuilder<bool>(
+            initialData: false,
+            stream: bloc.connChange,
+            builder: (context, snapshot) {
+              return MaterialButton(
+                height: 45,
+                padding: EdgeInsets.all(10),
+                color: Colors.blue[100],
+                elevation: 0,
+                highlightElevation: 0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
+                onPressed: () => snapshot.data
+                    ? bloc.emitEvent(
+                        HomeEvent(type: HomeEventType.multiButtonPress))
+                    : null,
+                child: Text(snapshot.data ? lastInput : "Offline",
+                    style: TextStyle(
+                      color: Colors.blue[800],
+                    )),
+              );
+            }),
       ),
     );
   }
@@ -234,10 +236,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 bloc: kiwi.Container().resolve<MultiBloc>(),
               )),
     );
-  }
-
-  void connectionChange(bool connStatus) {
-    print(connStatus);
   }
 
   @override

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 Color colorOne = Colors.blue;
-Color colorTwo = Colors.blue[500];
+Color colorTwo = Colors.blue[300];
 
 class CurvePainter extends CustomPainter {
   @override

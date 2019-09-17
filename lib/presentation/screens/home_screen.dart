@@ -70,24 +70,28 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       User user, List<ActiveMatch> activeMatches, List<PastMatch> pastMatches) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
-    return Stack(children: <Widget>[
-      Column(children: <Widget>[
-        UserWidget(user: user, parentHeight: height, parentWidth: width),
-        StreamBuilder<List<ActiveMatch>>(
-          stream: bloc.activeMatches,
-          initialData: activeMatches,
-          builder: (context, snapshot1) {
-            return StreamBuilder<List<PastMatch>>(
-              stream: bloc.pastMatches,
-              initialData: pastMatches,
-              builder: (context2, snapshot2) =>
-                  centerPageView(snapshot1.data, snapshot2.data),
-            );
-          },
+    return Stack(
+      children: <Widget>[
+        Column(
+          children: <Widget>[
+            UserWidget(user: user, parentHeight: height, parentWidth: width),
+            StreamBuilder<List<ActiveMatch>>(
+              stream: bloc.activeMatches,
+              initialData: activeMatches,
+              builder: (context, snapshot1) {
+                return StreamBuilder<List<PastMatch>>(
+                  stream: bloc.pastMatches,
+                  initialData: pastMatches,
+                  builder: (context2, snapshot2) =>
+                      centerPageView(snapshot1.data, snapshot2.data),
+                );
+              },
+            ),
+          ],
         ),
-      ]),
-      bottomButtons("Multiplayer"),
-    ]);
+        bottomButtons("Multiplayer"),
+      ],
+    );
   }
 
   Widget centerPageView(
@@ -141,24 +145,28 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // Widget that includes both bottom bottons
   Widget bottomButtons(String multiButtonText) {
     return Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-          height: 80,
-          margin: EdgeInsets.only(top: 10),
-          padding: EdgeInsets.only(top: 10, right: 20, left: 20, bottom: 10),
-          decoration: BoxDecoration(color: Colors.white, boxShadow: [
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        height: 80,
+        margin: EdgeInsets.only(top: 10),
+        padding: EdgeInsets.only(top: 10, right: 20, left: 20, bottom: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
             BoxShadow(
               color: Colors.black,
               blurRadius: 5.0,
             ),
-          ]),
-          child: Row(
-            children: <Widget>[
-              practiceFAB(),
-              multiButton(multiButtonText),
-            ],
-          ),
-        ));
+          ],
+        ),
+        child: Row(
+          children: <Widget>[
+            practiceFAB(),
+            multiButton(multiButtonText),
+          ],
+        ),
+      ),
+    );
   }
 
   // Bottom left practice button
@@ -180,10 +188,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 : Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => BlocProvider(
-                              child: SingleScreen(),
-                              bloc: kiwi.Container().resolve<SingleBloc>(),
-                            )),
+                      builder: (context) => BlocProvider(
+                        child: SingleScreen(),
+                        bloc: kiwi.Container().resolve<SingleBloc>(),
+                      ),
+                    ),
                   );
           },
         ),
@@ -198,27 +207,30 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       child: Hero(
         tag: 'multi',
         child: StreamBuilder<bool>(
-            initialData: false,
-            stream: bloc.connChange,
-            builder: (context, snapshot) {
-              return MaterialButton(
-                height: 45,
-                padding: EdgeInsets.all(10),
-                color: Colors.blue[100],
-                elevation: 0,
-                highlightElevation: 0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                onPressed: () => snapshot.data
-                    ? bloc.emitEvent(
-                        HomeEvent(type: HomeEventType.multiButtonPress))
-                    : null,
-                child: Text(snapshot.data ? lastInput : "Offline",
-                    style: TextStyle(
-                      color: Colors.blue[800],
-                    )),
-              );
-            }),
+          initialData: false,
+          stream: bloc.connChange,
+          builder: (context, snapshot) {
+            return MaterialButton(
+              height: 45,
+              padding: EdgeInsets.all(10),
+              color: Colors.blue[100],
+              elevation: 0,
+              highlightElevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
+              onPressed: () => snapshot.data
+                  ? bloc.emitEvent(
+                      HomeEvent(type: HomeEventType.multiButtonPress))
+                  : null,
+              child: Text(
+                snapshot.data ? lastInput : "Offline",
+                style: TextStyle(
+                  color: Colors.blue[800],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -231,10 +243,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => BlocProvider(
-                child: MultiScreen(),
-                bloc: kiwi.Container().resolve<MultiBloc>(),
-              )),
+        builder: (context) => BlocProvider(
+          child: MultiScreen(),
+          bloc: kiwi.Container().resolve<MultiBloc>(),
+        ),
+      ),
     );
   }
 

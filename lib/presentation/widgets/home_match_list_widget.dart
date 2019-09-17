@@ -16,10 +16,10 @@ class HomeMatchList extends StatefulWidget {
 class _HomeMatchListState extends State<HomeMatchList> {
   @override
   Widget build(BuildContext context) {
-    if (widget.activeMatches != null && widget.activeMatches.isNotEmpty)
+    if (!areListsEmpty())
       return list();
     else
-      return Container(color: Colors.blue);
+      return Center();
   }
 
   Widget list() {
@@ -32,5 +32,9 @@ class _HomeMatchListState extends State<HomeMatchList> {
         );
       },
     );
+  }
+
+  bool areListsEmpty() {
+    return widget.activeMatches.isEmpty && widget.pastMatches.isEmpty;
   }
 }

@@ -22,7 +22,7 @@ class CurvePainter extends CustomPainter {
     canvas.drawPath(path, paint);
 
     path = Path();
-    path.lineTo(0, size.height * 0.6);
+    path.lineTo(0, size.height * 0.65);
     path.quadraticBezierTo(
         size.width * 0.2, size.height, size.width * 0.6, size.height * 0.80);
     path.quadraticBezierTo(

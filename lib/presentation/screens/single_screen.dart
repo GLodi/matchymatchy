@@ -193,7 +193,6 @@ class _SingleScreenState extends State<SingleScreen>
     return Container(
       constraints: BoxConstraints(maxHeight: 5 * fifthWidth),
       alignment: Alignment.bottomCenter,
-      // TODO: move field state to absordwidget
       child: AbsorbPointer(
           absorbing: opacityLevel != 0,
           child: BlocProvider(

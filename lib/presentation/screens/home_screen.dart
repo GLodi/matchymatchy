@@ -75,7 +75,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         Column(
           children: <Widget>[
             UserWidget(user: user, parentHeight: height, parentWidth: width),
-            HomePageViewWidget(),
+            BlocProvider(
+              child: HomePageViewWidget(),
+              bloc: kiwi.Container().resolve<HomePageViewBloc>(),
+            ),
           ],
         ),
         bottomButtons("Multiplayer"),

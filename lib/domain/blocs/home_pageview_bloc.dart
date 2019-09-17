@@ -24,11 +24,11 @@ class HomePageViewBloc
       case HomePageViewEventType.start:
         List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
         List<PastMatch> pastMatches = await _repo.getPastMatches();
+        print('retrieving');
+        print(activeMatches.length);
+        print(pastMatches.length);
         _activeMatchesSubject.add(activeMatches);
         _pastMatchesSubject.add(pastMatches);
-        break;
-      case HomePageViewEventType.error:
-        yield HomePageViewState.error('Error retrieving matches data');
         break;
       default:
     }

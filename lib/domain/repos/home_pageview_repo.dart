@@ -10,9 +10,11 @@ class HomePageViewRepo {
     newPastMatch = dbProvider.newPastMatch();
   }
 
-  Future<List<ActiveMatch>> getActiveMatches() => dbProvider.getActiveMatches();
+  Future<List<ActiveMatch>> getActiveMatches() async =>
+      await dbProvider.getActiveMatches();
 
-  Future<List<PastMatch>> getPastMatches() => dbProvider.getPastMatches();
+  Future<List<PastMatch>> getPastMatches() async =>
+      await dbProvider.getPastMatches();
 
   Stream<ActiveMatch> newActiveMatch;
 

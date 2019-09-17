@@ -6,22 +6,11 @@ import 'package:squazzle/domain/bloc_utils/bloc_utils.dart';
 class HomePageViewState extends BlocState {
   final HomePageViewStateType type;
   final String message;
-  final List<ActiveMatch> activeMatches;
-  final List<PastMatch> pastMatches;
 
   HomePageViewState({
     @required this.type,
     this.message,
-    this.activeMatches,
-    this.pastMatches,
   });
-
-  factory HomePageViewState.init(
-          List<ActiveMatch> activeMatches, List<PastMatch> pastMatches) =>
-      HomePageViewState(
-          type: HomePageViewStateType.init,
-          activeMatches: activeMatches,
-          pastMatches: pastMatches);
 
   factory HomePageViewState.notInit() =>
       HomePageViewState(type: HomePageViewStateType.notInit);
@@ -31,7 +20,6 @@ class HomePageViewState extends BlocState {
 }
 
 enum HomePageViewStateType {
-  init,
   notInit,
   error,
 }

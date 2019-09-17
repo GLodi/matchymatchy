@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:squazzle/data/models/models.dart';
 
@@ -17,12 +18,12 @@ class _HomeMatchListState extends State<HomeMatchList> {
   @override
   Widget build(BuildContext context) {
     if (!areListsEmpty())
-      return list();
+      return init();
     else
-      return Center();
+      return notInit();
   }
 
-  Widget list() {
+  Widget init() {
     return ListView.builder(
       itemCount: widget.activeMatches.length,
       itemBuilder: (context, position) {
@@ -34,7 +35,27 @@ class _HomeMatchListState extends State<HomeMatchList> {
     );
   }
 
+  Widget notInit() {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          SpinKitRotatingPlain(
+            color: Colors.blue[100],
+            size: 60.0,
+          ),
+          SizedBox(height: 40),
+          Text('Retrieving matches...',
+              style: TextStyle(color: Colors.blue[300])),
+          SizedBox(height: 60),
+        ],
+      ),
+    );
+  }
+
   bool areListsEmpty() {
-    return widget.activeMatches.isEmpty && widget.pastMatches.isEmpty;
+    return (widget.activeMatches == null || widget.activeMatches.isEmpty) &&
+        (widget.pastMatches == null || widget.pastMatches.isEmpty);
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart';
@@ -22,9 +23,14 @@ abstract class DbProvider {
   Future<void> storePastMatches(List<PastMatch> list);
 
   Future<void> updateActiveMatch(ActiveMatch activeMatch);
+
+  Stream<ActiveMatch> newActiveMatch();
+
+  Stream<PastMatch> newPastMatch();
 }
 
 class DbProviderImpl extends DbProvider {
+  final StreamController _messController = StreamController.broadcast();
   final String gameFieldTable = 'gamefields';
   final String activeMatchTable = 'activematches';
   final String pastMatchTable = 'pastmatches';
@@ -50,6 +56,20 @@ class DbProviderImpl extends DbProvider {
         data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
     await File(dbPath).writeAsBytes(bytes);
     _db = await openDatabase(dbPath);
+  }
+
+  @override
+  Stream<ActiveMatch> newActiveMatch() {
+    return _messController.stream
+        .where((event) => event is ActiveMatch)
+        .cast<ActiveMatch>();
+  }
+
+  @override
+  Stream<PastMatch> newPastMatch() {
+    return _messController.stream
+        .where((event) => event is PastMatch)
+        .cast<PastMatch>();
   }
 
   @override

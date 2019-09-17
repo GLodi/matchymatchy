@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
-import 'package:page_indicator/page_indicator.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/screens/single_screen.dart';
 import 'package:squazzle/presentation/screens/multi_screen.dart';
 import 'package:squazzle/presentation/widgets/user_widget.dart';
-import 'package:squazzle/presentation/widgets/home_match_list_widget.dart';
+import 'package:squazzle/presentation/widgets/home_pageview_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool isTest;
@@ -20,10 +20,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final GlobalKey<PageContainerState> _pageViewKey = GlobalKey();
 
   HomeBloc bloc;
-  PageController controller;
 
   @override
   void initState() {
@@ -33,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     bloc.intentToMultiScreen.listen((_) => openMultiScreen());
     bloc.snackBar.listen((message) => showSnackBar(message));
     bloc.emitEvent(HomeEvent(type: HomeEventType.checkIfUserLogged));
-    controller = PageController();
   }
 
   @override
@@ -47,14 +44,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           builder: (context, state) {
             switch (state.type) {
               case HomeStateType.initLogged:
-                return initLogged(
-                    state.user, state.activeMatches, state.pastMatches);
+                return initLogged(state.user);
                 break;
               case HomeStateType.initNotLogged:
                 return initNotLogged();
                 break;
               case HomeStateType.notInit:
-                return Center(child: CircularProgressIndicator());
+                return Center(
+                  child: SpinKitRotatingPlain(
+                    color: Colors.blue[100],
+                    size: 80.0,
+                  ),
+                );
                 break;
               default:
                 return Container();
@@ -66,8 +67,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   // Shows Single/Multi button and UserWidget at the bottom
-  Widget initLogged(
-      User user, List<ActiveMatch> activeMatches, List<PastMatch> pastMatches) {
+  Widget initLogged(User user) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     return Stack(
@@ -75,45 +75,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         Column(
           children: <Widget>[
             UserWidget(user: user, parentHeight: height, parentWidth: width),
-            StreamBuilder<List<ActiveMatch>>(
-              stream: bloc.activeMatches,
-              initialData: activeMatches,
-              builder: (context, snapshot1) {
-                return StreamBuilder<List<PastMatch>>(
-                  stream: bloc.pastMatches,
-                  initialData: pastMatches,
-                  builder: (context2, snapshot2) =>
-                      centerPageView(snapshot1.data, snapshot2.data),
-                );
-              },
-            ),
+            HomePageViewWidget(),
           ],
         ),
         bottomButtons("Multiplayer"),
       ],
-    );
-  }
-
-  Widget centerPageView(
-      List<ActiveMatch> activeMatches, List<PastMatch> pastMatches) {
-    return Expanded(
-      child: PageIndicatorContainer(
-        key: _pageViewKey,
-        child: PageView(
-          children: <Widget>[
-            Container(color: Colors.white),
-            HomeMatchList(
-                activeMatches: activeMatches, pastMatches: pastMatches),
-          ],
-          controller: controller,
-          reverse: false,
-        ),
-        align: IndicatorAlign.top,
-        length: 2,
-        indicatorSpace: 10.0,
-        indicatorSelectorColor: Colors.blue[800],
-        indicatorColor: Colors.grey[300],
-      ),
     );
   }
 
@@ -254,7 +220,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void dispose() {
     bloc.dispose();
-    controller.dispose();
     super.dispose();
   }
 }

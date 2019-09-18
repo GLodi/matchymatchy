@@ -6,8 +6,8 @@ class HomePageViewRepo {
   final ApiProvider apiProvider;
 
   HomePageViewRepo(this.dbProvider, this.prefsProvider, this.apiProvider) {
-    newActiveMatch = dbProvider.newActiveMatch();
-    newPastMatch = dbProvider.newPastMatch();
+    newActiveMatches = dbProvider.newActiveMatches();
+    newPastMatches = dbProvider.newPastMatches();
   }
 
   Future<List<ActiveMatch>> getActiveMatches() async =>
@@ -16,7 +16,7 @@ class HomePageViewRepo {
   Future<List<PastMatch>> getPastMatches() async =>
       await dbProvider.getPastMatches();
 
-  Stream<ActiveMatch> newActiveMatch;
+  Stream<List<ActiveMatch>> newActiveMatches;
 
-  Stream<PastMatch> newPastMatch;
+  Stream<List<PastMatch>> newPastMatches;
 }

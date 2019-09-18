@@ -24,9 +24,9 @@ abstract class DbProvider {
 
   Future<void> updateActiveMatch(ActiveMatch activeMatch);
 
-  Stream<ActiveMatch> newActiveMatch();
+  Stream<List<ActiveMatch>> newActiveMatches();
 
-  Stream<PastMatch> newPastMatch();
+  Stream<List<PastMatch>> newPastMatches();
 }
 
 class DbProviderImpl extends DbProvider {
@@ -59,17 +59,17 @@ class DbProviderImpl extends DbProvider {
   }
 
   @override
-  Stream<ActiveMatch> newActiveMatch() {
+  Stream<List<ActiveMatch>> newActiveMatches() {
     return _messController.stream
-        .where((event) => event is ActiveMatch)
-        .cast<ActiveMatch>();
+        .where((event) => event is List<ActiveMatch>)
+        .cast<List<ActiveMatch>>();
   }
 
   @override
-  Stream<PastMatch> newPastMatch() {
+  Stream<List<PastMatch>> newPastMatches() {
     return _messController.stream
-        .where((event) => event is PastMatch)
-        .cast<PastMatch>();
+        .where((event) => event is List<PastMatch>)
+        .cast<List<PastMatch>>();
   }
 
   @override
@@ -107,6 +107,7 @@ class DbProviderImpl extends DbProvider {
   Future<void> storeActiveMatches(List<ActiveMatch> list) async {
     var dbClient = await db;
     list.forEach((match) => dbClient.insert(activeMatchTable, match.toMap()));
+    _messController.add(list);
     return null;
   }
 
@@ -123,6 +124,7 @@ class DbProviderImpl extends DbProvider {
     var dbClient = await db;
     list.forEach(
         (pastmatch) => dbClient.insert(pastMatchTable, pastmatch.toMap()));
+    _messController.add(list);
     return null;
   }
 

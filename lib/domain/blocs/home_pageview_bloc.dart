@@ -24,11 +24,11 @@ class HomePageViewBloc
       case HomePageViewEventType.start:
         List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
         List<PastMatch> pastMatches = await _repo.getPastMatches();
-        print('retrieving');
-        print(activeMatches.length);
-        print(pastMatches.length);
-        _activeMatchesSubject.add(activeMatches);
-        _pastMatchesSubject.add(pastMatches);
+        if (activeMatches != null) _activeMatchesSubject.add(activeMatches);
+        if (pastMatches != null) _pastMatchesSubject.add(pastMatches);
+        _repo.newActiveMatches
+            .listen((list) => _activeMatchesSubject.add(list));
+        _repo.newPastMatches.listen((list) => _pastMatchesSubject.add(list));
         break;
       default:
     }

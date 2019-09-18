@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:page_indicator/page_indicator.dart';
 
 import 'package:squazzle/data/models/models.dart';

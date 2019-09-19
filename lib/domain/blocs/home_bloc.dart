@@ -25,6 +25,9 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   final _snackBarSubject = BehaviorSubject<String>();
   Stream<String> get snackBar => _snackBarSubject.stream;
 
+  final _userSubject = BehaviorSubject<User>();
+  Stream<User> get user => _userSubject.stream;
+
   final _doneSlidesButtonSubject = PublishSubject<bool>();
   Sink<bool> get doneSlidesButton => _doneSlidesButtonSubject.sink;
 
@@ -91,11 +94,12 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
           // TODO: show option to go to multi
           // TODO: show inmatch on multi button
         });
-        _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
+        _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
           print('home winner');
           _repo.updateMatches(); // to test
           if (mess.winner == uid) {
-            _repo.updateUserInfo();
+            await _repo.updateUser();
+            _userSubject.add(await _repo.getUser());
             // TODO: update wins amount in user_widget,
             // make stream for it
           }

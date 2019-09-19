@@ -74,7 +74,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       children: <Widget>[
         Column(
           children: <Widget>[
-            UserWidget(user: user, parentHeight: height, parentWidth: width),
+            StreamBuilder<User>(
+              initialData: user,
+              stream: bloc.user,
+              builder: (context, snapshot) {
+                return UserWidget(
+                    user: snapshot.data,
+                    parentHeight: height,
+                    parentWidth: width);
+              },
+            ),
             BlocProvider(
               child: HomePageViewWidget(),
               bloc: kiwi.Container().resolve<HomePageViewBloc>(),
@@ -92,8 +101,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       children: <Widget>[
         bottomButtons("Log in"),
         StreamBuilder<bool>(
-          stream: bloc.showSlides,
           initialData: false,
+          stream: bloc.showSlides,
           builder: (context, snapshot) {
             return Container();
             // return Visibility(

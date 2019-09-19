@@ -166,7 +166,7 @@ async function upWinAmount(
 /**
  * Frees players from finished game, allowing them to re-queue.
  * Copies match document to each user's user/pastmatches collection and
- * deletes it from matches.
+ * deletes it from matches and user/activematches.
  */
 async function resetMatch(matchId: string) {
   let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
@@ -185,7 +185,8 @@ async function resetMatch(matchId: string) {
       moves: matchDoc.data()!.hostmoves,
       enemymoves: matchDoc.data()!.joinmoves,
       winner: matchDoc.data()!.winnername,
-      forfeitwin: matchDoc.data()!.forfeitwin == true ? true : false
+      forfeitwin: matchDoc.data()!.forfeitwin == true ? true : false,
+      time: admin.firestore.Timestamp.now()
     });
   joinRef
     .collection("pastmatches")
@@ -194,7 +195,8 @@ async function resetMatch(matchId: string) {
       moves: matchDoc.data()!.joinmoves,
       enemymoves: matchDoc.data()!.hostmoves,
       winner: matchDoc.data()!.winnername,
-      forfeitwin: matchDoc.data()!.forfeitwin == true ? true : false
+      forfeitwin: matchDoc.data()!.forfeitwin == true ? true : false,
+      time: admin.firestore.Timestamp.now()
     });
   hostRef
     .collection("activematches")
@@ -204,4 +206,5 @@ async function resetMatch(matchId: string) {
     .collection("activematches")
     .doc(matchId)
     .delete();
+  matches.doc(matchId).delete();
 }

@@ -21,10 +21,12 @@ class HomeRepo {
 
   Future<String> getUid() => prefsProvider.getUid();
 
-  Future<void> updateUserInfo() => prefsProvider
+  Future<void> updateUser() => prefsProvider
       .getUid()
       .then((uid) => apiProvider.getUser(uid))
       .then((user) => prefsProvider.storeUser(user));
+
+  Future<User> getUser() => prefsProvider.getUser();
 
   Future<void> updateMatches() async {
     String uid = await prefsProvider.getUid();

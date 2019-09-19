@@ -8,7 +8,7 @@ class PastMatch {
     moves = int.parse(map['moves'].toString());
     enemyMoves = int.parse(map['enemymoves'].toString());
     winner = map['winner'];
-    forfeitWin = map['forfeitwin'];
+    forfeitWin = map['forfeitwin'] == 'true' ? 1 : 0;
   }
 
   Map<String, dynamic> toMap() {

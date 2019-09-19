@@ -6,8 +6,10 @@ import 'package:squazzle/data/models/models.dart';
 class HomeMatchList extends StatefulWidget {
   final List<ActiveMatch> activeMatches;
   final List<PastMatch> pastMatches;
+
   HomeMatchList({Key key, this.activeMatches, this.pastMatches})
       : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _HomeMatchListState();
@@ -55,7 +57,6 @@ class _HomeMatchListState extends State<HomeMatchList> {
   }
 
   bool areListsEmpty() {
-    return (widget.activeMatches == null || widget.activeMatches.isEmpty) &&
-        (widget.pastMatches == null || widget.pastMatches.isEmpty);
+    return widget.activeMatches.isEmpty && widget.pastMatches.isEmpty;
   }
 }

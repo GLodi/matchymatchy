@@ -178,18 +178,24 @@ async function resetMatch(matchId: string) {
   joinRef.update({
     currentMatch: null
   });
-  hostRef.collection("pastmatches").add({
-    moves: matchDoc.data()!.hostmoves,
-    enemymoves: matchDoc.data()!.joinmoves,
-    winner: matchDoc.data()!.winnername,
-    forfeitwin: matchDoc.data()!.forfeitwin
-  });
-  joinRef.collection("pastmatches").add({
-    moves: matchDoc.data()!.joinmoves,
-    enemymoves: matchDoc.data()!.hostmoves,
-    winner: matchDoc.data()!.winnername,
-    forfeitwin: matchDoc.data()!.forfeitwin
-  });
+  hostRef
+    .collection("pastmatches")
+    .doc(matchDoc.id)
+    .set({
+      moves: matchDoc.data()!.hostmoves,
+      enemymoves: matchDoc.data()!.joinmoves,
+      winner: matchDoc.data()!.winnername,
+      forfeitwin: matchDoc.data()!.forfeitwin == true ? true : false
+    });
+  joinRef
+    .collection("pastmatches")
+    .doc(matchDoc.id)
+    .set({
+      moves: matchDoc.data()!.joinmoves,
+      enemymoves: matchDoc.data()!.hostmoves,
+      winner: matchDoc.data()!.winnername,
+      forfeitwin: matchDoc.data()!.forfeitwin == true ? true : false
+    });
   hostRef
     .collection("activematches")
     .doc(matchId)

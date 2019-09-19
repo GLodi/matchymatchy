@@ -165,7 +165,8 @@ class _MultiScreenState extends State<MultiScreen>
               FlatButton(
                 onPressed: () {
                   bloc.forfeitButton.add(true);
-                  Navigator.popAndPushNamed(context, '/');
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 },
                 child: Text('Yes'),
               ),

@@ -83,8 +83,7 @@ async function onMatchStart(matchId: string) {
     notification: {
       title: "Match started!",
       body: joinName + " challenged you!"
-    },
-    token: matchDoc.data()!.hostfcmtoken
+    }
   };
   let messageToJoin = {
     data: {
@@ -96,18 +95,25 @@ async function onMatchStart(matchId: string) {
     notification: {
       title: "Match started!",
       body: hostName + " challenged you!"
-    },
-    token: matchDoc.data()!.joinfcmtoken
+    }
+  };
+  let options = {
+    priority: "high",
+    timeToLive: 60 * 60 * 24
   };
   try {
-    admin.messaging().send(messageToHost);
+    admin
+      .messaging()
+      .sendToDevice(matchDoc.data()!.hostfcmtoken, messageToHost, options);
     console.log("message sent to host: " + matchDoc.data()!.hostfcmtoken);
   } catch (e) {
     console.log("--- error sending message: ");
     console.error(e);
   }
   try {
-    admin.messaging().send(messageToJoin);
+    admin
+      .messaging()
+      .sendToDevice(matchDoc.data()!.joinfcmtoken, messageToJoin, options);
     console.log("message sent to join: " + matchDoc.data()!.joinfcmtoken);
   } catch (e) {
     console.log("--- error sending message: ");
@@ -121,11 +127,20 @@ function onMove(newMatch: DocumentData, matchId: string, hostOrJoin: boolean) {
       matchid: matchId,
       enemytarget: hostOrJoin ? newMatch.hosttarget : newMatch.jointarget,
       messType: "move"
-    },
-    token: hostOrJoin ? newMatch.joinfcmtoken : newMatch.hostfcmtoken
+    }
+  };
+  let options = {
+    priority: "high",
+    timeToLive: 60 * 60 * 24
   };
   try {
-    admin.messaging().send(message);
+    admin
+      .messaging()
+      .sendToDevice(
+        hostOrJoin ? newMatch.joinfcmtoken : newMatch.hostfcmtoken,
+        message,
+        options
+      );
   } catch (e) {
     console.log("--- error sending message");
     console.error(e);
@@ -144,8 +159,7 @@ function onWinner(newMatch: DocumentData, matchId: string) {
     notification: {
       title: "Match finished!",
       body: newMatch.winnername + " won!"
-    },
-    token: newMatch.joinfcmtoken
+    }
   };
   let messageToHost = {
     data: {
@@ -158,17 +172,24 @@ function onWinner(newMatch: DocumentData, matchId: string) {
     notification: {
       title: "Match finished!",
       body: newMatch.winnername + " won!"
-    },
-    token: newMatch.hostfcmtoken
+    }
+  };
+  let options = {
+    priority: "high",
+    timeToLive: 60 * 60 * 24
   };
   try {
-    admin.messaging().send(messageToJoin);
+    admin
+      .messaging()
+      .sendToDevice(newMatch.joinfcmtoken, messageToJoin, options);
   } catch (e) {
     console.log("--- error sending message");
     console.error(e);
   }
   try {
-    admin.messaging().send(messageToHost);
+    admin
+      .messaging()
+      .sendToDevice(newMatch.hostfcmtoken, messageToHost, options);
   } catch (e) {
     console.log("--- error sending message");
     console.error(e);

@@ -92,11 +92,12 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
           // TODO: show inmatch on multi button
         });
         _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
-          print('home winnner');
+          print('home winner');
           _repo.updateMatches(); // to test
           if (mess.winner == uid) {
             _repo.updateUserInfo();
-            // TODO: update wins amount in user_widget
+            // TODO: update wins amount in user_widget,
+            // make stream for it
           }
         });
       } else {

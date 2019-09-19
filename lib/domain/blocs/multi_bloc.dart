@@ -84,11 +84,12 @@ class MultiBloc extends GameBloc {
     if (_challengeSubs == null && _moveSubs == null && _winnerSubs == null) {
       _challengeSubs =
           _messEventBus.on<ChallengeMessage>().listen((mess) async {
-        await _repo
+        print('multi challenge');
+        _repo
             .queuePlayer()
-            .catchError(emitEvent(GameEvent(type: GameEventType.error)))
+            .catchError(
+                (Object e) => emitEvent(GameEvent(type: GameEventType.error)))
             .then((match) => queueResult(match));
-        await emitEvent(GameEvent(type: GameEventType.start));
       });
       _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) {
         _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));

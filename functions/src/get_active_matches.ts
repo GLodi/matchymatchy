@@ -8,29 +8,32 @@ let users = admin.firestore().collection("users");
 export async function getActiveMatches(request: any, response: any) {
   let userId: string = request.query.userId;
   try {
-    let docs = await users
+    let activeMatchesQuery = await users
       .doc(userId)
       .collection("activematches")
       .get();
-    if (!docs.empty) {
-      let activeMatches: ActiveMatch[] = await makeList(userId, docs);
+    if (!activeMatchesQuery.empty) {
+      let activeMatches: ActiveMatch[] = await makeList(
+        userId,
+        activeMatchesQuery
+      );
       response.send(activeMatches);
     } else {
-      response.status(500).send("No active matches");
+      response.send([]);
     }
   } catch (e) {
     console.log("--- error getting matches player");
-    console.error(e);
+    console.error(Error(e));
     response.status(500).send("Error retrieving active matches information");
   }
 }
 
 async function makeList(
   userId: string,
-  query: QuerySnapshot
+  activeMatchesQuery: QuerySnapshot
 ): Promise<ActiveMatch[]> {
   let list: ActiveMatch[] = [];
-  for (let doc of query.docs) {
+  for (let doc of activeMatchesQuery.docs) {
     let match = await matches.doc(doc.id).get();
     if (userId == match.data()!.hostuid) {
       list.push(

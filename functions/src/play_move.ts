@@ -12,27 +12,22 @@ export async function playMove(request: any, response: any) {
   let done: boolean = request.query.done == "true";
   let moves: number = +request.query.moves;
   let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
-  try {
-    if (matchDoc.exists) {
-      if (isPlayer(userId, matchDoc)) {
-        await updateMatch(userId, matchId, newGf, newTarget, moves);
-        if (done) await setPlayerDone(userId, matchId);
-        response.send(true);
-        if (done && isOtherPlayerDone(userId, matchDoc)) {
-          await declareWinner(matchId);
-        }
-      } else {
-        console.log("--- error user neither host nor join");
-        response.status(500).send("Error: user neither host nor join");
+  if (isPlayer(userId, matchDoc)) {
+    try {
+      await updateMatch(userId, matchDoc, newGf, newTarget, moves);
+      if (done) await setPlayerDone(userId, matchDoc);
+      response.send(true);
+      if (done && isOtherPlayerDone(userId, matchDoc)) {
+        await declareWinner(matchDoc);
       }
-    } else {
-      console.log("--- error no match with specified matchId");
-      response.status(500).send("Error: no match with specified matchId");
+    } catch (e) {
+      console.log("--- error applying player move");
+      console.error(Error(e));
+      response.status(500).send("Error playing move");
     }
-  } catch (e) {
-    console.log("--- error applying player move");
-    console.error(e);
-    response.status(500).send("Error playing move");
+  } else {
+    console.log("--- error user neither host nor join");
+    response.status(500).send("Error: user neither host nor join");
   }
 }
 
@@ -44,10 +39,10 @@ export async function forfeit(request: any, response: any) {
     if (matchDoc.exists) {
       if (matchDoc.data()!.winner == null) {
         if (userId == matchDoc.data()!.hostuid) {
-          await upWinAmount(matchId, false, true);
+          await upWinAmount(matchDoc, false, true);
         }
         if (userId == matchDoc.data()!.joinuid) {
-          await upWinAmount(matchId, true, true);
+          await upWinAmount(matchDoc, true, true);
         }
         response.send(true);
       } else {
@@ -57,7 +52,7 @@ export async function forfeit(request: any, response: any) {
     }
   } catch (e) {
     console.log("--- error forfeting player player");
-    console.error(e);
+    console.error(Error(e));
     response.status(500).send("Error forfeiting player");
   }
 }
@@ -86,19 +81,18 @@ function isOtherPlayerDone(
  */
 async function updateMatch(
   userId: string,
-  matchId: string,
+  matchDoc: DocumentSnapshot,
   newGf: string,
   newTarget: string,
   moves: number
 ) {
-  let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
   userId == matchDoc.data()!.hostuid
-    ? await matches.doc(matchId).update({
+    ? await matches.doc(matchDoc.id).update({
         hostgf: newGf,
         hosttarget: newTarget,
         hostmoves: +moves
       })
-    : await matches.doc(matchId).update({
+    : await matches.doc(matchDoc.id).update({
         joingf: newGf,
         jointarget: newTarget,
         joinmoves: +moves
@@ -108,13 +102,12 @@ async function updateMatch(
 /**
  * If a player signals that is done with the match, update the doc.
  */
-async function setPlayerDone(userId: string, matchId: string) {
-  let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
+async function setPlayerDone(userId: string, matchDoc: DocumentSnapshot) {
   userId == matchDoc.data()!.hostuid
-    ? await matches.doc(matchId).update({
+    ? await matches.doc(matchDoc.id).update({
         hostdone: true
       })
-    : await matches.doc(matchId).update({
+    : await matches.doc(matchDoc.id).update({
         joindone: true
       });
   await users.doc(userId).update({
@@ -125,17 +118,16 @@ async function setPlayerDone(userId: string, matchId: string) {
 /**
  * If both players are done, declare winner.
  */
-async function declareWinner(matchId: string) {
-  let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
+async function declareWinner(matchDoc: DocumentSnapshot) {
   if (matchDoc.data()!.hostmoves < matchDoc.data()!.joinmoves) {
-    await upWinAmount(matchId, true, false);
+    await upWinAmount(matchDoc, true, false);
   } else if (matchDoc.data()!.hostmoves > matchDoc.data()!.joinmoves) {
-    await upWinAmount(matchId, false, false);
+    await upWinAmount(matchDoc, false, false);
   } else {
-    await matches.doc(matchId).update({
+    await matches.doc(matchDoc.id).update({
       winner: "draw"
     });
-    await resetMatch(matchId);
+    await resetMatch(matchDoc);
   }
 }
 
@@ -143,11 +135,10 @@ async function declareWinner(matchId: string) {
  * Increase winner's win count.
  */
 async function upWinAmount(
-  matchId: string,
+  matchDoc: DocumentSnapshot,
   hostOrJoin: boolean,
   forfeitWin: boolean
 ) {
-  let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
   let userRef: DocumentReference = await users.doc(
     hostOrJoin ? matchDoc.data()!.hostuid : matchDoc.data()!.joinuid
   );
@@ -155,12 +146,12 @@ async function upWinAmount(
   userRef.update({
     matchesWon: +user.data()!.matchesWon + 1
   });
-  matches.doc(matchId).update({
+  await matches.doc(matchDoc.id).update({
     winner: hostOrJoin ? matchDoc.data()!.hostuid : matchDoc.data()!.joinuid,
     winnername: user.data()!.username,
     forfeitwin: forfeitWin
   });
-  await resetMatch(matchId);
+  await resetMatch(matchDoc);
 }
 
 /**
@@ -168,8 +159,7 @@ async function upWinAmount(
  * Copies match document to each user's user/pastmatches collection and
  * deletes it from matches and user/activematches.
  */
-async function resetMatch(matchId: string) {
-  let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
+async function resetMatch(matchDoc: DocumentSnapshot) {
   let hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
   let joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);
   hostRef.update({
@@ -200,11 +190,11 @@ async function resetMatch(matchId: string) {
     });
   hostRef
     .collection("activematches")
-    .doc(matchId)
+    .doc(matchDoc.id)
     .delete();
   joinRef
     .collection("activematches")
-    .doc(matchId)
+    .doc(matchDoc.id)
     .delete();
-  matches.doc(matchId).delete();
+  matches.doc(matchDoc.id).delete();
 }

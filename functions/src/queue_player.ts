@@ -30,7 +30,7 @@ export async function queuePlayer(request: any, response: any) {
     }
   } catch (e) {
     console.log("--- error queueing player");
-    console.error(e);
+    console.error(Error(e));
     response.status(500).send("Error queueing player");
   }
 }
@@ -96,33 +96,22 @@ async function reconnect(
   let gfDoc: DocumentSnapshot = await gamefields
     .doc(String(matchDoc.data()!.gfid))
     .get();
-  if (matchDoc.data()!.joinuid != null) {
-    return new ActiveMatch(
-      currentMatch,
-      gfDoc.id,
-      hostOrJoin ? matchDoc.data()!.hostgf : matchDoc.data()!.joingf,
-      gfDoc.data()!.target,
-      hostOrJoin ? matchDoc.data()!.hostmoves : matchDoc.data()!.joinmoves,
-      hostOrJoin ? matchDoc.data()!.joinmoves : matchDoc.data()!.hostmoves,
-      hostOrJoin
+  let hasStarted: boolean = matchDoc.data()!.joinuid != null;
+  return new ActiveMatch(
+    currentMatch,
+    gfDoc.id,
+    hostOrJoin ? matchDoc.data()!.hostgf : matchDoc.data()!.joingf,
+    gfDoc.data()!.target,
+    hostOrJoin ? matchDoc.data()!.hostmoves : matchDoc.data()!.joinmoves,
+    hostOrJoin ? matchDoc.data()!.joinmoves : matchDoc.data()!.hostmoves,
+    hasStarted
+      ? hostOrJoin
         ? await getUsername(matchDoc.data()!.joinuid)
-        : await getUsername(matchDoc.data()!.hostuid),
-      hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
-      1
-    );
-  } else {
-    return new ActiveMatch(
-      currentMatch,
-      gfDoc.id,
-      hostOrJoin ? matchDoc.data()!.hostgf : matchDoc.data()!.joingf,
-      gfDoc.data()!.target,
-      hostOrJoin ? matchDoc.data()!.hostmoves : matchDoc.data()!.joinmoves,
-      hostOrJoin ? matchDoc.data()!.joinmoves : matchDoc.data()!.hostmoves,
-      "Searching...",
-      hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
-      0
-    );
-  }
+        : await getUsername(matchDoc.data()!.hostuid)
+      : "Searching...",
+    hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
+    hasStarted ? 1 : 0
+  );
 }
 
 async function getUsername(userId: string): Promise<string> {

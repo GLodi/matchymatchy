@@ -108,7 +108,7 @@ async function onMatchStart(matchId: string) {
     console.log("message sent to host: " + matchDoc.data()!.hostfcmtoken);
   } catch (e) {
     console.log("--- error sending message: ");
-    console.error(e);
+    console.error(Error(e));
   }
   try {
     admin
@@ -117,7 +117,7 @@ async function onMatchStart(matchId: string) {
     console.log("message sent to join: " + matchDoc.data()!.joinfcmtoken);
   } catch (e) {
     console.log("--- error sending message: ");
-    console.error(e);
+    console.error(Error(e));
   }
 }
 
@@ -143,7 +143,7 @@ function onMove(newMatch: DocumentData, matchId: string, hostOrJoin: boolean) {
       );
   } catch (e) {
     console.log("--- error sending message");
-    console.error(e);
+    console.error(Error(e));
   }
 }
 
@@ -184,7 +184,7 @@ function onWinner(newMatch: DocumentData, matchId: string) {
       .sendToDevice(newMatch.joinfcmtoken, messageToJoin, options);
   } catch (e) {
     console.log("--- error sending message");
-    console.error(e);
+    console.error(Error(e));
   }
   try {
     admin
@@ -192,6 +192,6 @@ function onWinner(newMatch: DocumentData, matchId: string) {
       .sendToDevice(newMatch.hostfcmtoken, messageToHost, options);
   } catch (e) {
     console.log("--- error sending message");
-    console.error(e);
+    console.error(Error(e));
   }
 }

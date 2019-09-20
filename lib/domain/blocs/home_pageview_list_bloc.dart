@@ -15,22 +15,41 @@ class HomePageViewListBloc
   Stream<List<PastMatch>> get pastMatches => _pastMatchesSubject.stream;
 
   HomePageViewListBloc(this._repo)
-      : super(initialState: HomePageViewListState.notInit());
+      : super(initialState: HomePageViewListState.fetching());
 
   @override
   Stream<HomePageViewListState> eventHandler(
       HomePageViewListEvent event, HomePageViewListState currentState) async* {
     switch (event.type) {
       case HomePageViewEventType.start:
-        List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
-        List<PastMatch> pastMatches = await _repo.getPastMatches();
-        if (activeMatches != null) _activeMatchesSubject.add(activeMatches);
-        if (pastMatches != null) _pastMatchesSubject.add(pastMatches);
-        _repo.newActiveMatches
-            .listen((list) => _activeMatchesSubject.add(list));
-        _repo.newPastMatches.listen((list) => _pastMatchesSubject.add(list));
+        yield HomePageViewListState(type: HomePageViewListStateType.fetching);
+        try {
+          _repo.newActiveMatches
+              .listen((list) => _activeMatchesSubject.add(list));
+          _repo.newPastMatches.listen((list) => _pastMatchesSubject.add(list));
+          List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
+          List<PastMatch> pastMatches = await _repo.getPastMatches();
+          if (areListsNotEmpty(activeMatches, pastMatches)) {
+            yield HomePageViewListState(
+                type: HomePageViewListStateType.init,
+                activeMatches: activeMatches.isNotEmpty ? activeMatches : [],
+                pastMatches: pastMatches.isNotEmpty ? pastMatches : []);
+          } else {
+            yield HomePageViewListState(type: HomePageViewListStateType.empty);
+          }
+        } catch (e) {
+          yield HomePageViewListState(
+              type: HomePageViewListStateType.error,
+              message: 'Error fetching matches information');
+        }
         break;
       default:
     }
+  }
+
+  bool areListsNotEmpty(
+      List<ActiveMatch> activeMatches, List<PastMatch> pastMatches) {
+    return (activeMatches != null && activeMatches.isNotEmpty) ||
+        (pastMatches != null && pastMatches.isNotEmpty);
   }
 }

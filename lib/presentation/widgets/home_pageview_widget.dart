@@ -29,6 +29,8 @@ class _HomePageViewWidgetState extends State<HomePageViewWidget> {
       child: PageIndicatorContainer(
         key: _pageViewKey,
         child: PageView(
+          controller: controller,
+          reverse: false,
           children: <Widget>[
             Container(color: Colors.white),
             BlocProvider(
@@ -36,8 +38,6 @@ class _HomePageViewWidgetState extends State<HomePageViewWidget> {
               bloc: kiwi.Container().resolve<HomePageViewListBloc>(),
             ),
           ],
-          controller: controller,
-          reverse: false,
         ),
         align: IndicatorAlign.top,
         length: 2,

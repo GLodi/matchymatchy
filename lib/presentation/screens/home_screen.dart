@@ -84,10 +84,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     parentWidth: width);
               },
             ),
-            BlocProvider(
-              child: HomePageViewWidget(),
-              bloc: kiwi.Container().resolve<HomePageViewBloc>(),
-            ),
+            HomePageViewWidget(),
           ],
         ),
         bottomButtons("Multiplayer"),

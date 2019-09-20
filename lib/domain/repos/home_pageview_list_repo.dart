@@ -1,11 +1,11 @@
 import 'package:squazzle/data/data.dart';
 
-class HomePageViewRepo {
+class HomePageViewListRepo {
   final DbProvider dbProvider;
   final SharedPrefsProvider prefsProvider;
   final ApiProvider apiProvider;
 
-  HomePageViewRepo(this.dbProvider, this.prefsProvider, this.apiProvider) {
+  HomePageViewListRepo(this.dbProvider, this.prefsProvider, this.apiProvider) {
     newActiveMatches = dbProvider.newActiveMatches();
     newPastMatches = dbProvider.newPastMatches();
   }

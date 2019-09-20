@@ -18,7 +18,7 @@ export async function playMove(request: any, response: any) {
       if (done) await setPlayerDone(userId, matchDoc);
       response.send(true);
       if (done && isOtherPlayerDone(userId, matchDoc)) {
-        await declareWinner(matchDoc);
+        declareWinner(matchDoc);
       }
     } catch (e) {
       console.log("--- error applying player move");
@@ -36,19 +36,16 @@ export async function forfeit(request: any, response: any) {
   let matchId: string = request.query.matchId;
   let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
   try {
-    if (matchDoc.exists) {
-      if (matchDoc.data()!.winner == null) {
-        if (userId == matchDoc.data()!.hostuid) {
-          await upWinAmount(matchDoc, false, true);
-        }
-        if (userId == matchDoc.data()!.joinuid) {
-          await upWinAmount(matchDoc, true, true);
-        }
-        response.send(true);
-      } else {
-        console.log("--- error winner already declared");
-        response.status(500).send("Error: winner already declared");
+    if (matchDoc.data()!.winner == null) {
+      if (userId == matchDoc.data()!.hostuid) {
+        await upWinAmount(matchDoc, false, true);
       }
+      if (userId == matchDoc.data()!.joinuid) {
+        await upWinAmount(matchDoc, true, true);
+      }
+      response.send(true);
+    } else {
+      response.send(false);
     }
   } catch (e) {
     console.log("--- error forfeting player player");

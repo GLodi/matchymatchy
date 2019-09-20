@@ -4,9 +4,9 @@ import 'dart:async';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
 
-class HomePageViewBloc
-    extends BlocEventStateBase<HomePageViewEvent, HomePageViewState> {
-  final HomePageViewRepo _repo;
+class HomePageViewListBloc
+    extends BlocEventStateBase<HomePageViewListEvent, HomePageViewListState> {
+  final HomePageViewListRepo _repo;
 
   final _activeMatchesSubject = BehaviorSubject<List<ActiveMatch>>();
   Stream<List<ActiveMatch>> get activeMatches => _activeMatchesSubject.stream;
@@ -14,12 +14,12 @@ class HomePageViewBloc
   final _pastMatchesSubject = BehaviorSubject<List<PastMatch>>();
   Stream<List<PastMatch>> get pastMatches => _pastMatchesSubject.stream;
 
-  HomePageViewBloc(this._repo)
-      : super(initialState: HomePageViewState.notInit());
+  HomePageViewListBloc(this._repo)
+      : super(initialState: HomePageViewListState.notInit());
 
   @override
-  Stream<HomePageViewState> eventHandler(
-      HomePageViewEvent event, HomePageViewState currentState) async* {
+  Stream<HomePageViewListState> eventHandler(
+      HomePageViewListEvent event, HomePageViewListState currentState) async* {
     switch (event.type) {
       case HomePageViewEventType.start:
         List<ActiveMatch> activeMatches = await _repo.getActiveMatches();

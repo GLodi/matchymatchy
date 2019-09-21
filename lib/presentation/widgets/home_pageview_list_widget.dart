@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
+import 'pageview_matchlist_item.dart';
 
 class HomePageViewListWidget extends StatefulWidget {
   HomePageViewListWidget({Key key}) : super(key: key);
@@ -19,7 +20,6 @@ class _HomePageViewListWidgetState extends State<HomePageViewListWidget>
 
   @override
   void initState() {
-    print('INITINIT');
     bloc = BlocProvider.of<HomePageViewListBloc>(context);
     bloc.emitEvent(HomePageViewListEvent(type: HomePageViewEventType.start));
     super.initState();
@@ -52,26 +52,39 @@ class _HomePageViewListWidgetState extends State<HomePageViewListWidget>
   }
 
   Widget init(List<ActiveMatch> activeMatches, List<PastMatch> pastMatches) {
-    return StreamBuilder<List<ActiveMatch>>(
-      stream: bloc.activeMatches,
-      initialData: activeMatches,
-      builder: (context, snapshot1) {
-        return StreamBuilder<List<PastMatch>>(
-          stream: bloc.pastMatches,
-          initialData: pastMatches,
-          builder: (context2, snapshot2) {
-            return ListView.builder(
-              itemCount: activeMatches.length,
-              itemBuilder: (context, position) {
-                return Card(
-                  child: Text(activeMatches[position].gfid.toString(),
-                      style: TextStyle(color: Colors.black)),
-                );
-              },
-            );
-          },
-        );
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Expanded(
+          child: StreamBuilder<List<ActiveMatch>>(
+            stream: bloc.activeMatches,
+            initialData: activeMatches,
+            builder: (context, snapshot) {
+              return ListView.builder(
+                itemCount: activeMatches.length,
+                itemBuilder: (context, position) {
+                  return ActiveMatchItem(snapshot.data[position]);
+                },
+              );
+            },
+          ),
+        ),
+        Expanded(
+          child: StreamBuilder<List<PastMatch>>(
+            stream: bloc.pastMatches,
+            initialData: pastMatches,
+            builder: (context, snapshot) {
+              return ListView.builder(
+                itemCount: pastMatches.length,
+                itemBuilder: (context, position) {
+                  return PastMatchItem(snapshot.data[position]);
+                },
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -106,6 +119,7 @@ class _HomePageViewListWidgetState extends State<HomePageViewListWidget>
               'No active nor past matches stored',
               style: TextStyle(color: Colors.blue[300]),
             ),
+            SizedBox(height: 60),
           ]),
     );
   }

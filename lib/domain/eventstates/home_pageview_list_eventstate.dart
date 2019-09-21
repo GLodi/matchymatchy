@@ -48,4 +48,6 @@ class HomePageViewListEvent extends BlocEvent {
 
 enum HomePageViewEventType {
   start,
+  updateActive,
+  updatePast,
 }

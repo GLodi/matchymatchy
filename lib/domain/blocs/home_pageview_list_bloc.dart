@@ -26,7 +26,10 @@ class HomePageViewListBloc
         try {
           _repo.newActiveMatches
               .listen((list) => _activeMatchesSubject.add(list));
-          _repo.newPastMatches.listen((list) => _pastMatchesSubject.add(list));
+          _repo.newPastMatches.listen((list) {
+            print('newpastmatches');
+            _pastMatchesSubject.add(list);
+          });
           List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
           List<PastMatch> pastMatches = await _repo.getPastMatches();
           if (areListsNotEmpty(activeMatches, pastMatches)) {
@@ -41,7 +44,12 @@ class HomePageViewListBloc
           yield HomePageViewListState(
               type: HomePageViewListStateType.error,
               message: 'Error fetching matches information');
+          print(e);
         }
+        break;
+      case HomePageViewEventType.updateActive:
+        break;
+      case HomePageViewEventType.updatePast:
         break;
       default:
     }
@@ -49,7 +57,6 @@ class HomePageViewListBloc
 
   bool areListsNotEmpty(
       List<ActiveMatch> activeMatches, List<PastMatch> pastMatches) {
-    return (activeMatches != null && activeMatches.isNotEmpty) ||
-        (pastMatches != null && pastMatches.isNotEmpty);
+    return activeMatches.isNotEmpty || pastMatches.isNotEmpty;
   }
 }

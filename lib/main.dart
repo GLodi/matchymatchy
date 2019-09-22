@@ -34,11 +34,8 @@ void main() {
       c.resolve<SharedPrefsProvider>(),
       c.resolve<LogicProvider>(),
       c.resolve<DbProvider>()));
-  container.registerSingleton((c) => HomeRepo(
-      c.resolve<LoginProvider>(),
-      c.resolve<SharedPrefsProvider>(),
-      c.resolve<DbProvider>(),
-      c.resolve<ApiProvider>()));
+  container.registerSingleton((c) => HomeRepo(c.resolve<LoginProvider>(),
+      c.resolve<SharedPrefsProvider>(), c.resolve<ApiProvider>()));
   container.registerSingleton((c) => HomePageViewListRepo(
         c.resolve<DbProvider>(),
         c.resolve<SharedPrefsProvider>(),

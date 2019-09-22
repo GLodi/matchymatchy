@@ -4,11 +4,9 @@ import 'package:squazzle/data/data.dart';
 class HomeRepo {
   final LoginProvider _loginProvider;
   final SharedPrefsProvider _prefsProvider;
-  final DbProvider _dbProvider;
   final ApiProvider _apiProvider;
 
-  HomeRepo(this._loginProvider, this._prefsProvider, this._dbProvider,
-      this._apiProvider);
+  HomeRepo(this._loginProvider, this._prefsProvider, this._apiProvider);
 
   Future<void> loginWithGoogle() async {
     User user = await _loginProvider.loginWithGoogle();

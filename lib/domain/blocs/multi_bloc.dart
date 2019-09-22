@@ -40,19 +40,30 @@ class MultiBloc extends GameBloc {
   @override
   Stream<GameState> eventHandler(
       GameEvent event, GameState currentState) async* {
+    listenToMessages();
     switch (event.type) {
-      case GameEventType.queue:
-        try {
-          listenToMessages();
-          ActiveMatch currentMatch = await _repo.queuePlayer();
-          queueResult(currentMatch);
-        } catch (e) {
-          yield GameState.error('error queueing to server');
-        }
-        break;
       case GameEventType.start:
         if (currentState.type == GameStateType.notInit) {
           yield GameState(type: GameStateType.init);
+        }
+        break;
+      case GameEventType.queue:
+        try {
+          ActiveMatch currentMatch = await _repo.queuePlayer();
+          fetchResult(currentMatch);
+        } catch (e) {
+          yield GameState.error('Error queueing');
+          print(e);
+        }
+        break;
+      case GameEventType.reconnect:
+        try {
+          ActiveMatch currentMatch =
+              await _repo.reconnectPlayer(event.reconnectMatchId);
+          fetchResult(currentMatch);
+        } catch (e) {
+          yield GameState.error('Error reconnecting to match');
+          print(e);
         }
         break;
       case GameEventType.victory:
@@ -65,7 +76,7 @@ class MultiBloc extends GameBloc {
     }
   }
 
-  void queueResult(ActiveMatch currentMatch) async {
+  void fetchResult(ActiveMatch currentMatch) async {
     _waitMessageSubject.add('Waiting for opponent...');
     if (currentMatch.started == 1) {
       gameField = currentMatch.gameField;
@@ -87,7 +98,7 @@ class MultiBloc extends GameBloc {
             .queuePlayer()
             .catchError(
                 (Object e) => emitEvent(GameEvent(type: GameEventType.error)))
-            .then((match) => queueResult(match));
+            .then((match) => fetchResult(match));
       });
       _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) {
         _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));

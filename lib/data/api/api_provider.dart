@@ -97,7 +97,7 @@ class ApiProviderImpl implements ApiProvider {
         .get(_baseUrl +
             'reconnect?userId=' +
             uid +
-            '&token=' +
+            '&userFcmToken=' +
             token +
             '&matchId=' +
             matchId)

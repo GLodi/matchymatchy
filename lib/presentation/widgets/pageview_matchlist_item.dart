@@ -36,7 +36,7 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
           ),
           child: Card(
             color: Colors.blue[200],
-            child: Text('active' + widget.activeMatch.gfid.toString(),
+            child: Text(widget.activeMatch.gfid.toString(),
                 style: TextStyle(color: Colors.black)),
           ),
         ),

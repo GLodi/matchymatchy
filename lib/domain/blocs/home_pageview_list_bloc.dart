@@ -1,4 +1,3 @@
-import 'package:rxdart/rxdart.dart';
 import 'dart:async';
 
 import 'package:squazzle/data/api/mess_event_bus.dart';

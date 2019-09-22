@@ -12,7 +12,7 @@ let matches = admin.firestore().collection("matches");
 export async function reconnect(request: any, response: any) {
   let userId: string = request.query.userId;
   let userFcmToken: string = request.query.userFcmToken;
-  let matchId: string = request.query.matchid;
+  let matchId: string = request.query.matchId;
   try {
     // TODO: update all activematches with new fcmtoken
     let match: ActiveMatch = await findMatch(userId, userFcmToken, matchId);

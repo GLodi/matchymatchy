@@ -6,7 +6,7 @@ class MultiRepo extends GameRepo {
   final ApiProvider apiProvider;
   final MessagingEventBus messProvider;
   final SharedPrefsProvider prefsProvider;
-  String lastMatchId;
+  String matchId;
 
   MultiRepo(this.apiProvider, this.messProvider, this.prefsProvider,
       LogicProvider logicProvider, DbProvider dbProvider)
@@ -17,13 +17,13 @@ class MultiRepo extends GameRepo {
 
   @override
   Future<int> getMoves() async {
-    ActiveMatch activeMatch = await dbProvider.getActiveMatch(lastMatchId);
+    ActiveMatch activeMatch = await dbProvider.getActiveMatch(matchId);
     return activeMatch.moves;
   }
 
   @override
   Future<void> increaseMoves() async {
-    ActiveMatch activeMatch = await dbProvider.getActiveMatch(lastMatchId);
+    ActiveMatch activeMatch = await dbProvider.getActiveMatch(matchId);
     activeMatch.moves += 1;
     return dbProvider.updateActiveMatch(activeMatch);
   }
@@ -32,8 +32,7 @@ class MultiRepo extends GameRepo {
   Future<bool> moveDone(GameField gameField, TargetField targetField) async {
     var need = logicProvider.needToSendMove(gameField, targetField);
     if (need) {
-      ActiveMatch currentSituation =
-          await dbProvider.getActiveMatch(lastMatchId);
+      ActiveMatch currentSituation = await dbProvider.getActiveMatch(matchId);
       TargetField newTarget = logicProvider.diffToSend(gameField, targetField);
       String uid = await prefsProvider.getUid();
       bool isCorrect =
@@ -46,14 +45,23 @@ class MultiRepo extends GameRepo {
 
   Future<bool> forfeit() async {
     var userId = await prefsProvider.getUid();
-    return apiProvider.sendForfeit(userId, lastMatchId);
+    return apiProvider.sendForfeit(userId, matchId);
   }
 
   Future<ActiveMatch> queuePlayer() async {
     String uid = await prefsProvider.getUid();
     String token = await messProvider.getToken();
     ActiveMatch currentMatch = await apiProvider.queuePlayer(uid, token);
-    lastMatchId = currentMatch.matchId;
+    matchId = currentMatch.matchId;
+    return currentMatch;
+  }
+
+  Future<ActiveMatch> reconnectPlayer(String reconnectMatchId) async {
+    String uid = await prefsProvider.getUid();
+    String token = await messProvider.getToken();
+    ActiveMatch currentMatch =
+        await apiProvider.reconnect(uid, token, reconnectMatchId);
+    matchId = currentMatch.matchId;
     return currentMatch;
   }
 }

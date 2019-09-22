@@ -27,13 +27,15 @@ enum GameStateType {
 
 class GameEvent extends BlocEvent {
   final GameEventType type;
+  final String reconnectMatchId;
 
-  GameEvent({this.type: GameEventType.start});
+  GameEvent({this.type: GameEventType.start, this.reconnectMatchId});
 }
 
 enum GameEventType {
   start,
   queue,
+  reconnect,
   error,
   victory,
 }

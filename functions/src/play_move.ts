@@ -169,6 +169,7 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
     .collection("pastmatches")
     .doc(matchDoc.id)
     .set({
+      matchid: matchDoc.id,
       moves: matchDoc.data()!.hostmoves,
       enemymoves: matchDoc.data()!.joinmoves,
       winner: matchDoc.data()!.winnername,
@@ -179,6 +180,7 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
     .collection("pastmatches")
     .doc(matchDoc.id)
     .set({
+      matchid: matchDoc.id,
       moves: matchDoc.data()!.joinmoves,
       enemymoves: matchDoc.data()!.hostmoves,
       winner: matchDoc.data()!.winnername,

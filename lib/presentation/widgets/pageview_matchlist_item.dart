@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:kiwi/kiwi.dart' as kiwi;
 
+import 'package:squazzle/presentation/screens/multi_screen.dart';
 import 'package:squazzle/data/models/models.dart';
+import 'package:squazzle/domain/domain.dart';
 
 abstract class MatchListItem {}
 
@@ -18,9 +21,26 @@ class ActiveMatchItem extends StatefulWidget implements MatchListItem {
 class _ActiveMatchItemState extends State<ActiveMatchItem> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Text('active' + widget.activeMatch.gfid.toString(),
-          style: TextStyle(color: Colors.black)),
+    return Container(
+      height: 80,
+      child: Hero(
+        tag: widget.activeMatch.matchId,
+        child: GestureDetector(
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                child: MultiScreen(widget.activeMatch.matchId),
+                bloc: kiwi.Container().resolve<MultiBloc>(),
+              ),
+            ),
+          ),
+          child: Card(
+            color: Colors.blue[200],
+            child: Text('active' + widget.activeMatch.gfid.toString(),
+                style: TextStyle(color: Colors.black)),
+          ),
+        ),
+      ),
     );
   }
 }

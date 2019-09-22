@@ -13,35 +13,20 @@ let gamefields = admin.firestore().collection("gamefields");
 let matches = admin.firestore().collection("matches");
 
 /**
- * Queue handling
- * Waits for a player's connection: checks if he's currently
- * playing in a match (if which case it sends him the current
- * match's situation) or he's ready for a new game.
+ * Queue player in a new match
  */
 export async function queuePlayer(request: any, response: any) {
   let userId: string = request.query.userId;
   let userFcmToken: string = request.query.userFcmToken;
   try {
-    let currentMatch: string = await alreadyInMatch(userId);
-    if (currentMatch == null) {
-      response.send(await newGame(userId, userFcmToken));
-    } else {
-      response.send(await reconnect(userId, userFcmToken, currentMatch));
-    }
+    // TODO: update all active matches with new fcmtoken
+    let match: ActiveMatch = await newGame(userId, userFcmToken);
+    response.send(match);
   } catch (e) {
     console.log("--- error queueing player");
     console.error(Error(e));
     response.status(500).send("Error queueing player");
   }
-}
-
-/**
- * Checks whether player is registered in a running match, if so
- * return match's id
- */
-async function alreadyInMatch(userId: string): Promise<string> {
-  let user: DocumentSnapshot = await users.doc(userId).get();
-  return user.data()!.currentMatch != null ? user.data()!.currentMatch : null;
 }
 
 /**
@@ -74,49 +59,6 @@ async function newGame(
     0
   );
   return newMatch;
-}
-
-/**
- * Send player info on his current running match
- */
-async function reconnect(
-  userId: string,
-  userFcmToken: string,
-  currentMatch: string
-): Promise<ActiveMatch> {
-  let matchDoc: DocumentSnapshot = await matches.doc(currentMatch).get();
-  let hostOrJoin: boolean = userId == matchDoc.data()!.hostuid;
-  hostOrJoin
-    ? await matches.doc(currentMatch).update({
-        hostfcmtoken: userFcmToken
-      })
-    : await matches.doc(currentMatch).update({
-        joinfcmtoken: userFcmToken
-      });
-  let gfDoc: DocumentSnapshot = await gamefields
-    .doc(String(matchDoc.data()!.gfid))
-    .get();
-  let hasStarted: boolean = matchDoc.data()!.joinuid != null;
-  return new ActiveMatch(
-    currentMatch,
-    gfDoc.id,
-    hostOrJoin ? matchDoc.data()!.hostgf : matchDoc.data()!.joingf,
-    gfDoc.data()!.target,
-    hostOrJoin ? matchDoc.data()!.hostmoves : matchDoc.data()!.joinmoves,
-    hostOrJoin ? matchDoc.data()!.joinmoves : matchDoc.data()!.hostmoves,
-    hasStarted
-      ? hostOrJoin
-        ? await getUsername(matchDoc.data()!.joinuid)
-        : await getUsername(matchDoc.data()!.hostuid)
-      : "Searching...",
-    hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
-    hasStarted ? 1 : 0
-  );
-}
-
-async function getUsername(userId: string): Promise<string> {
-  let user: DocumentSnapshot = await users.doc(userId).get();
-  return user.data()!.username;
 }
 
 /**
@@ -155,9 +97,6 @@ async function queueEmpty(
     ufcmtoken: userFcmToken,
     time: admin.firestore.Timestamp.now()
   });
-  users.doc(userId).update({
-    currentMatch: newMatchRef.id
-  });
   return [gf, newMatchRef.id];
 }
 
@@ -181,12 +120,6 @@ async function queueNotEmpty(
   let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
   let hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
   let joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);
-  hostRef.update({
-    currentMatch: matchId
-  });
-  joinRef.update({
-    currentMatch: matchId
-  });
   hostRef
     .collection("activematches")
     .doc(matchDoc.id)

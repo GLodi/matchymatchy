@@ -17,6 +17,8 @@ abstract class ApiProvider {
       ActiveMatch activeMatch, String newTarget, String uid, bool done);
 
   Future<bool> sendForfeit(String uid, String matchId);
+
+  Future<ActiveMatch> reconnect(String uid, String token, String matchId);
 }
 
 class ApiProviderImpl implements ApiProvider {
@@ -46,14 +48,10 @@ class ApiProviderImpl implements ApiProvider {
     List<PastMatch> list = List<PastMatch>();
     QuerySnapshot pastMatchesQuery =
         await usersRef.document(uid).collection('pastmatches').getDocuments();
-    print('past matches detected: ' +
-        pastMatchesQuery.documents.length.toString());
     if (pastMatchesQuery.documents.isNotEmpty) {
       pastMatchesQuery.documents.forEach((d) {
-        print('data' + d.data.toString());
         list.add(PastMatch.fromMap(d.data));
       });
-      print('past matches list length' + list.length.toString());
     }
     return list;
   }
@@ -90,5 +88,19 @@ class ApiProviderImpl implements ApiProvider {
     return _net
         .get(_baseUrl + 'forfeit?userId=' + uid + '&matchId=' + matchId)
         .then((response) => response);
+  }
+
+  @override
+  Future<ActiveMatch> reconnect(
+      String uid, String token, String matchId) async {
+    return _net
+        .get(_baseUrl +
+            'reconnect?userId=' +
+            uid +
+            '&token=' +
+            token +
+            '&matchId=' +
+            matchId)
+        .then((response) => ActiveMatch.fromMap(response));
   }
 }

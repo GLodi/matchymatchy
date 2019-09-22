@@ -57,7 +57,6 @@ class LoginProviderImpl extends LoginProvider {
       } else {
         // Retrieve already existing information
         user.matchesWon = documents[0].data['matchesWon'];
-        user.currentMatch = documents[0].data['currentMatch'];
       }
     }
 

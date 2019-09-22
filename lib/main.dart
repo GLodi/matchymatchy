@@ -79,7 +79,7 @@ class App extends StatelessWidget {
               bloc: kiwi.Container().resolve<SingleBloc>(),
             ),
         '/multi': (context) => BlocProvider(
-              child: MultiScreen(),
+              child: MultiScreen('multibutton'),
               bloc: kiwi.Container().resolve<MultiBloc>(),
             ),
       },

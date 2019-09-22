@@ -9,7 +9,7 @@ class HomePageViewListBloc
     extends BlocEventStateBase<HomePageViewListEvent, HomePageViewListState> {
   final HomePageViewListRepo _repo;
   final MessagingEventBus _messEventBus;
-  StreamSubscription _winnerSubs;
+  StreamSubscription _challengeSubs, _winnerSubs;
 
   HomePageViewListBloc(this._repo, this._messEventBus)
       : super(initialState: HomePageViewListState.fetching());
@@ -49,6 +49,11 @@ class HomePageViewListBloc
   }
 
   void listenToWinnerMessages() {
+    _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) async {
+      print('pageviewlist challenge');
+      emitEvent(
+          HomePageViewListEvent(type: HomePageViewListEventType.updateMatches));
+    });
     _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
       print('pageviewlist winner');
       emitEvent(
@@ -58,6 +63,7 @@ class HomePageViewListBloc
 
   @override
   void dispose() {
+    _challengeSubs.cancel();
     _winnerSubs.cancel();
     super.dispose();
   }

@@ -3,7 +3,6 @@ class User {
   String uid;
   String photoUrl;
   int matchesWon;
-  String currentMatch;
 
   User({this.username, this.uid, this.photoUrl, this.matchesWon = 0});
 
@@ -12,7 +11,6 @@ class User {
     uid = map['uid'];
     photoUrl = map['photoUrl'];
     matchesWon = map['matchesWon'];
-    currentMatch = map['currentMatch'];
   }
 
   Map<String, dynamic> toMap() {
@@ -21,7 +19,6 @@ class User {
       'uid': uid,
       'photoUrl': photoUrl,
       'matchesWon': matchesWon,
-      'currentMatch': currentMatch,
     };
   }
 }

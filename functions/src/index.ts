@@ -7,40 +7,30 @@ import { DocumentData } from "@google-cloud/firestore";
 import { playMove, forfeit } from "./play_move";
 import { queuePlayer } from "./queue_player";
 import { getActiveMatches } from "./get_active_matches";
+import { reconnect } from "./reconnect";
 
-/**
- * Handle queue
- */
 exports.queuePlayer = functions
   .region("europe-west1")
   .https.onRequest(async (request, response) => queuePlayer(request, response));
 
-/**
- * Apply player's move to his match
- */
 exports.playMove = functions
   .region("europe-west1")
   .https.onRequest(async (request, response) => playMove(request, response));
 
-/**
- * Forfeit player from his match
- */
 exports.forfeit = functions
   .region("europe-west1")
   .https.onRequest(async (request, response) => forfeit(request, response));
 
-/**
- * Returns list of player's active matches
- */
 exports.getActiveMatches = functions
   .region("europe-west1")
   .https.onRequest(async (request, response) =>
     getActiveMatches(request, response)
   );
 
-/**
- * Listen to changes in match documents and notify players through FCM
- */
+exports.reconnect = functions
+  .region("europe-west1")
+  .https.onRequest(async (request, response) => reconnect(request, response));
+
 exports.notifyUser = functions
   .region("europe-west1")
   .firestore.document("matches/{matchId}")

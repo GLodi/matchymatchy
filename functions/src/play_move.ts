@@ -107,9 +107,6 @@ async function setPlayerDone(userId: string, matchDoc: DocumentSnapshot) {
     : await matches.doc(matchDoc.id).update({
         joindone: true
       });
-  await users.doc(userId).update({
-    currentMatch: null
-  });
 }
 
 /**
@@ -152,19 +149,13 @@ async function upWinAmount(
 }
 
 /**
- * Frees players from finished game, allowing them to re-queue.
+ * Frees players from finished game.
  * Copies match document to each user's user/pastmatches collection and
  * deletes it from matches and user/activematches.
  */
 async function resetMatch(matchDoc: DocumentSnapshot) {
   let hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
   let joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);
-  hostRef.update({
-    currentMatch: null
-  });
-  joinRef.update({
-    currentMatch: null
-  });
   hostRef
     .collection("pastmatches")
     .doc(matchDoc.id)

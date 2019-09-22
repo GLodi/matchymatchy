@@ -52,13 +52,11 @@ class MultiBloc extends GameBloc {
         break;
       case GameEventType.start:
         if (currentState.type == GameStateType.notInit) {
-          // TODO: request game info
           yield GameState(type: GameStateType.init);
         }
         break;
       case GameEventType.victory:
         correctSubject.add(true);
-        // TODO: show info until other player has finished
         break;
       case GameEventType.error:
         yield GameState.error('Error queueing');
@@ -95,7 +93,6 @@ class MultiBloc extends GameBloc {
         _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
       });
       _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
-        // TODO: populate win_widget that's already showing, or show if forfeit
         emitEvent(GameEvent(type: GameEventType.victory));
       });
     }

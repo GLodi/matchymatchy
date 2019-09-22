@@ -90,8 +90,6 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
         nextState = HomeState.initLogged(user);
         _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) {
           print('home challenge');
-          // TODO: show option to go to multi
-          // TODO: show inmatch on multi button
         });
         _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
           if (mess.winner == uid) {

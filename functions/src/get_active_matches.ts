@@ -46,7 +46,6 @@ async function makeList(
           match.data()!.joinmoves,
           match.data()!.joinname,
           match.data()!.jointarget,
-          // TODO: need to test this
           match.data()!.time != null ? 1 : 0
         )
       );

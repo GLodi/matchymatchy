@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             HomePageViewWidget(),
           ],
         ),
-        bottomButtons("Multiplayer"),
+        bottomButtons("Queue for new match"),
       ],
     );
   }
@@ -152,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       margin: EdgeInsets.only(right: 20),
       child: FittedBox(
         child: FloatingActionButton(
-          heroTag: "single",
+          heroTag: 'single',
           backgroundColor: Colors.blue[100],
           child: Icon(Icons.videogame_asset, color: Colors.blue[800], size: 35),
           elevation: 0,
@@ -180,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     String lastInput = text;
     return Expanded(
       child: Hero(
-        tag: 'multi',
+        tag: 'multibutton',
         child: StreamBuilder<bool>(
           initialData: false,
           stream: bloc.connChange,
@@ -219,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       context,
       MaterialPageRoute(
         builder: (context) => BlocProvider(
-          child: MultiScreen(),
+          child: MultiScreen('multibutton'),
           bloc: kiwi.Container().resolve<MultiBloc>(),
         ),
       ),

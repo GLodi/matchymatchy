@@ -6,6 +6,10 @@ import 'package:squazzle/presentation/widgets/multi_game_widget.dart';
 import 'package:squazzle/presentation/widgets/win_widget.dart';
 
 class MultiScreen extends StatefulWidget {
+  final String heroTag;
+
+  MultiScreen(this.heroTag);
+
   @override
   _MultiScreenState createState() => _MultiScreenState();
 }
@@ -52,7 +56,7 @@ class _MultiScreenState extends State<MultiScreen>
         ],
       ),
       body: Hero(
-        tag: 'multi',
+        tag: widget.heroTag,
         // This is to prevent a Hero animation workflow
         // https://github.com/flutter/flutter/issues/27320
         flightShuttleBuilder: (

@@ -25,10 +25,6 @@ abstract class DbProvider {
   Future<List<PastMatch>> getPastMatches();
 
   Future<void> storePastMatches(List<PastMatch> list);
-
-  Stream<void> newActiveMatches();
-
-  Stream<void> newPastMatches();
 }
 
 class DbProviderImpl extends DbProvider {
@@ -58,20 +54,6 @@ class DbProviderImpl extends DbProvider {
         data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
     await File(dbPath).writeAsBytes(bytes);
     _db = await openDatabase(dbPath);
-  }
-
-  @override
-  Stream<void> newActiveMatches() {
-    return _messController.stream
-        .where((event) => event is List<ActiveMatch>)
-        .cast<void>();
-  }
-
-  @override
-  Stream<void> newPastMatches() {
-    return _messController.stream
-        .where((event) => event is List<PastMatch>)
-        .cast<void>();
   }
 
   @override

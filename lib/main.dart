@@ -41,6 +41,8 @@ void main() {
       c.resolve<ApiProvider>()));
   container.registerSingleton((c) => HomePageViewListRepo(
         c.resolve<DbProvider>(),
+        c.resolve<SharedPrefsProvider>(),
+        c.resolve<ApiProvider>(),
       ));
 
   // Blocs
@@ -49,8 +51,8 @@ void main() {
       (c) => MultiBloc(c.resolve<MultiRepo>(), c.resolve<MessagingEventBus>()));
   container.registerFactory(
       (c) => HomeBloc(c.resolve<HomeRepo>(), c.resolve<MessagingEventBus>()));
-  container.registerFactory(
-      (c) => HomePageViewListBloc(c.resolve<HomePageViewListRepo>()));
+  container.registerFactory((c) => HomePageViewListBloc(
+      c.resolve<HomePageViewListRepo>(), c.resolve<MessagingEventBus>()));
 
   runApp(App());
 }

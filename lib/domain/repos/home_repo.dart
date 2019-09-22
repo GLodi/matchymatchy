@@ -2,40 +2,29 @@ import 'package:squazzle/data/data.dart';
 
 /// HomeBloc's repository.
 class HomeRepo {
-  final LoginProvider loginProvider;
-  final SharedPrefsProvider prefsProvider;
-  final DbProvider dbProvider;
-  final ApiProvider apiProvider;
+  final LoginProvider _loginProvider;
+  final SharedPrefsProvider _prefsProvider;
+  final DbProvider _dbProvider;
+  final ApiProvider _apiProvider;
 
-  HomeRepo(this.loginProvider, this.prefsProvider, this.dbProvider,
-      this.apiProvider);
+  HomeRepo(this._loginProvider, this._prefsProvider, this._dbProvider,
+      this._apiProvider);
 
   Future<void> loginWithGoogle() async {
-    User user = await loginProvider.loginWithGoogle();
-    return await prefsProvider.storeUser(user);
+    User user = await _loginProvider.loginWithGoogle();
+    return await _prefsProvider.storeUser(user);
   }
 
-  Future<User> checkIfLoggedIn() => prefsProvider.getUser();
+  Future<User> checkIfLoggedIn() => _prefsProvider.getUser();
 
-  Future<bool> isFirstOpen() => prefsProvider.isFirstOpen();
+  Future<bool> isFirstOpen() => _prefsProvider.isFirstOpen();
 
-  Future<String> getUid() => prefsProvider.getUid();
+  Future<String> getUid() => _prefsProvider.getUid();
 
-  Future<void> updateUser() => prefsProvider
+  Future<void> updateUser() => _prefsProvider
       .getUid()
-      .then((uid) => apiProvider.getUser(uid))
-      .then((user) => prefsProvider.storeUser(user));
+      .then((uid) => _apiProvider.getUser(uid))
+      .then((user) => _prefsProvider.storeUser(user));
 
-  Future<User> getUser() => prefsProvider.getUser();
-
-  Future<void> updateMatches() async {
-    String uid = await prefsProvider.getUid();
-    List activeMatches = await apiProvider.getActiveMatches(uid);
-    if (activeMatches.isNotEmpty) {
-      await dbProvider.deleteActiveMatches();
-      await dbProvider.storeActiveMatches(activeMatches);
-    }
-    List pastMatches = await apiProvider.getPastMatches(uid);
-    if (pastMatches.isNotEmpty) await dbProvider.storePastMatches(pastMatches);
-  }
+  Future<User> getUser() => _prefsProvider.getUser();
 }

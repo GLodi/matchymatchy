@@ -70,7 +70,6 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
           yield HomeState.notInit();
           try {
             await _repo.loginWithGoogle();
-            _repo.updateMatches();
             yield await checkIfUserLogged();
           } catch (e) {
             _snackBarSubject.add('Login error');
@@ -95,14 +94,9 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
           // TODO: show inmatch on multi button
         });
         _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
-          print('home winner');
-          // TODO: following line to move to pageview_list_bloc
-          _repo.updateMatches(); // to test
           if (mess.winner == uid) {
             await _repo.updateUser();
             _userSubject.add(await _repo.getUser());
-            // TODO: update wins amount in user_widget,
-            // make stream for it
           }
         });
       } else {
@@ -120,6 +114,9 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   void dispose() {
     _intentToMultiScreenSubject.close();
     _showSlidesSubject.close();
+    _connChangeSub.close();
+    _snackBarSubject.close();
+    _userSubject.close();
     _doneSlidesButtonSubject.close();
     _connectivitySubs.cancel();
     _winnerSubs.cancel();

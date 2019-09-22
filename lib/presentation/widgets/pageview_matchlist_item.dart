@@ -5,7 +5,7 @@ import 'package:squazzle/data/models/models.dart';
 abstract class MatchListItem {}
 
 class ActiveMatchItem extends StatefulWidget implements MatchListItem {
-  ActiveMatch activeMatch;
+  final ActiveMatch activeMatch;
 
   ActiveMatchItem(this.activeMatch);
 
@@ -26,7 +26,7 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
 }
 
 class PastMatchItem extends StatefulWidget implements MatchListItem {
-  PastMatch pastMatch;
+  final PastMatch pastMatch;
 
   PastMatchItem(this.pastMatch);
 

@@ -1,20 +1,17 @@
 import 'package:rxdart/rxdart.dart';
 import 'dart:async';
 
+import 'package:squazzle/data/api/mess_event_bus.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
 
 class HomePageViewListBloc
     extends BlocEventStateBase<HomePageViewListEvent, HomePageViewListState> {
   final HomePageViewListRepo _repo;
+  final MessagingEventBus _messEventBus;
+  StreamSubscription _winnerSubs;
 
-  final _activeMatchesSubject = BehaviorSubject<List<ActiveMatch>>();
-  Stream<List<ActiveMatch>> get activeMatches => _activeMatchesSubject.stream;
-
-  final _pastMatchesSubject = BehaviorSubject<List<PastMatch>>();
-  Stream<List<PastMatch>> get pastMatches => _pastMatchesSubject.stream;
-
-  HomePageViewListBloc(this._repo)
+  HomePageViewListBloc(this._repo, this._messEventBus)
       : super(initialState: HomePageViewListState.fetching());
 
   @override
@@ -22,19 +19,17 @@ class HomePageViewListBloc
       HomePageViewListEvent event, HomePageViewListState currentState) async* {
     switch (event.type) {
       case HomePageViewListEventType.start:
-        _repo.newActiveMatches.listen((_) => emitEvent(HomePageViewListEvent(
-            type: HomePageViewListEventType.updateMatches)));
-        _repo.newPastMatches.listen((_) => emitEvent(HomePageViewListEvent(
-            type: HomePageViewListEventType.updateMatches)));
+        listenToWinnerMessages();
         emitEvent(HomePageViewListEvent(
             type: HomePageViewListEventType.updateMatches));
         break;
       case HomePageViewListEventType.updateMatches:
         yield HomePageViewListState(type: HomePageViewListStateType.fetching);
+        await _repo.updateMatches();
         try {
           List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
           List<PastMatch> pastMatches = await _repo.getPastMatches();
-          if (areListsNotEmpty(activeMatches, pastMatches)) {
+          if (activeMatches.isNotEmpty || pastMatches.isNotEmpty) {
             yield HomePageViewListState(
                 type: HomePageViewListStateType.init,
                 activeMatches: activeMatches.isNotEmpty ? activeMatches : [],
@@ -53,8 +48,17 @@ class HomePageViewListBloc
     }
   }
 
-  bool areListsNotEmpty(
-      List<ActiveMatch> activeMatches, List<PastMatch> pastMatches) {
-    return activeMatches.isNotEmpty || pastMatches.isNotEmpty;
+  void listenToWinnerMessages() {
+    _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
+      print('pageviewlist winner');
+      emitEvent(
+          HomePageViewListEvent(type: HomePageViewListEventType.updateMatches));
+    });
+  }
+
+  @override
+  void dispose() {
+    _winnerSubs.cancel();
+    super.dispose();
   }
 }

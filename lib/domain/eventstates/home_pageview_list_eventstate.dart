@@ -41,13 +41,12 @@ enum HomePageViewListStateType {
 }
 
 class HomePageViewListEvent extends BlocEvent {
-  final HomePageViewEventType type;
+  final HomePageViewListEventType type;
 
-  HomePageViewListEvent({this.type: HomePageViewEventType.start});
+  HomePageViewListEvent({this.type: HomePageViewListEventType.start});
 }
 
-enum HomePageViewEventType {
+enum HomePageViewListEventType {
   start,
-  updateActive,
-  updatePast,
+  updateMatches,
 }

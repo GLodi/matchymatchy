@@ -41,8 +41,6 @@ void main() {
       c.resolve<ApiProvider>()));
   container.registerSingleton((c) => HomePageViewListRepo(
         c.resolve<DbProvider>(),
-        c.resolve<SharedPrefsProvider>(),
-        c.resolve<ApiProvider>(),
       ));
 
   // Blocs

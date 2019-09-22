@@ -21,15 +21,17 @@ class HomePageViewListBloc
   Stream<HomePageViewListState> eventHandler(
       HomePageViewListEvent event, HomePageViewListState currentState) async* {
     switch (event.type) {
-      case HomePageViewEventType.start:
+      case HomePageViewListEventType.start:
+        _repo.newActiveMatches.listen((_) => emitEvent(HomePageViewListEvent(
+            type: HomePageViewListEventType.updateMatches)));
+        _repo.newPastMatches.listen((_) => emitEvent(HomePageViewListEvent(
+            type: HomePageViewListEventType.updateMatches)));
+        emitEvent(HomePageViewListEvent(
+            type: HomePageViewListEventType.updateMatches));
+        break;
+      case HomePageViewListEventType.updateMatches:
         yield HomePageViewListState(type: HomePageViewListStateType.fetching);
         try {
-          _repo.newActiveMatches
-              .listen((list) => _activeMatchesSubject.add(list));
-          _repo.newPastMatches.listen((list) {
-            print('newpastmatches');
-            _pastMatchesSubject.add(list);
-          });
           List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
           List<PastMatch> pastMatches = await _repo.getPastMatches();
           if (areListsNotEmpty(activeMatches, pastMatches)) {
@@ -46,10 +48,6 @@ class HomePageViewListBloc
               message: 'Error fetching matches information');
           print(e);
         }
-        break;
-      case HomePageViewEventType.updateActive:
-        break;
-      case HomePageViewEventType.updatePast:
         break;
       default:
     }

@@ -26,9 +26,9 @@ abstract class DbProvider {
 
   Future<void> storePastMatches(List<PastMatch> list);
 
-  Stream<List<ActiveMatch>> newActiveMatches();
+  Stream<void> newActiveMatches();
 
-  Stream<List<PastMatch>> newPastMatches();
+  Stream<void> newPastMatches();
 }
 
 class DbProviderImpl extends DbProvider {
@@ -61,17 +61,17 @@ class DbProviderImpl extends DbProvider {
   }
 
   @override
-  Stream<List<ActiveMatch>> newActiveMatches() {
+  Stream<void> newActiveMatches() {
     return _messController.stream
         .where((event) => event is List<ActiveMatch>)
-        .cast<List<ActiveMatch>>();
+        .cast<void>();
   }
 
   @override
-  Stream<List<PastMatch>> newPastMatches() {
+  Stream<void> newPastMatches() {
     return _messController.stream
         .where((event) => event is List<PastMatch>)
-        .cast<List<PastMatch>>();
+        .cast<void>();
   }
 
   @override

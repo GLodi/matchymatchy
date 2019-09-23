@@ -30,9 +30,10 @@ class MultiRepo extends GameRepo {
 
   @override
   Future<bool> moveDone(GameField gameField, TargetField targetField) async {
-    var need = logicProvider.needToSendMove(gameField, targetField);
-    if (need) {
+    if (logicProvider.needToSendMove(gameField, targetField)) {
       ActiveMatch currentSituation = await dbProvider.getActiveMatch(matchId);
+      currentSituation.gameField = gameField;
+      dbProvider.updateActiveMatch(currentSituation);
       TargetField newTarget = logicProvider.diffToSend(gameField, targetField);
       String uid = await prefsProvider.getUid();
       bool isCorrect =

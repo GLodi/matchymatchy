@@ -34,13 +34,16 @@ async function findMatch(
 ) {
   let matchDoc: DocumentSnapshot = await matches.doc(currentMatch).get();
   let hostOrJoin: boolean = userId == matchDoc.data()!.hostuid;
-  hostOrJoin
-    ? await matches.doc(currentMatch).update({
-        hostfcmtoken: userFcmToken
-      })
-    : await matches.doc(currentMatch).update({
-        joinfcmtoken: userFcmToken
-      });
+  if (hostOrJoin && matchDoc.data()!.hostfcmtoken != userFcmToken) {
+    await matches.doc(currentMatch).update({
+      hostfcmtoken: userFcmToken
+    });
+  }
+  if (!hostOrJoin && matchDoc.data()!.joinfcmtoken != userFcmToken) {
+    await matches.doc(currentMatch).update({
+      joinfcmtoken: userFcmToken
+    });
+  }
   let gfDoc: DocumentSnapshot = await gamefields
     .doc(String(matchDoc.data()!.gfid))
     .get();

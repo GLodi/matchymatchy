@@ -90,23 +90,20 @@ class MultiBloc extends GameBloc {
   }
 
   void listenToMessages() {
-    if (_challengeSubs == null && _moveSubs == null && _winnerSubs == null) {
-      _challengeSubs =
-          _messEventBus.on<ChallengeMessage>().listen((mess) async {
-        print('multi challenge');
-        _repo
-            .queuePlayer()
-            .catchError(
-                (Object e) => emitEvent(GameEvent(type: GameEventType.error)))
-            .then((match) => fetchResult(match));
-      });
-      _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) {
-        _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
-      });
-      _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
-        emitEvent(GameEvent(type: GameEventType.victory));
-      });
-    }
+    _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) async {
+      print('multi challenge');
+      _repo
+          .queuePlayer()
+          .catchError(
+              (Object e) => emitEvent(GameEvent(type: GameEventType.error)))
+          .then((match) => fetchResult(match));
+    });
+    _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) {
+      _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
+    });
+    _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
+      emitEvent(GameEvent(type: GameEventType.victory));
+    });
   }
 
   @override

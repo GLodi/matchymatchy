@@ -8,8 +8,8 @@ abstract class GameRepo {
 
   GameRepo({this.logicProvider, this.dbProvider});
 
-  Future<GameField> applyMove(GameField gameField, Move move) {
-    increaseMoves();
+  Future<GameField> applyMove(GameField gameField, Move move) async {
+    await increaseMoves();
     return logicProvider.applyMove(gameField, move);
   }
 

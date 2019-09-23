@@ -30,22 +30,23 @@ class MultiRepo extends GameRepo {
 
   @override
   Future<bool> moveDone(GameField gameField, TargetField targetField) async {
+    ActiveMatch currentMatch = await dbProvider.getActiveMatch(matchId);
+    currentMatch.gameField = gameField;
+    dbProvider.updateActiveMatch(currentMatch);
     if (logicProvider.needToSendMove(gameField, targetField)) {
-      ActiveMatch currentSituation = await dbProvider.getActiveMatch(matchId);
-      currentSituation.gameField = gameField;
-      dbProvider.updateActiveMatch(currentSituation);
       TargetField newTarget = logicProvider.diffToSend(gameField, targetField);
       String uid = await prefsProvider.getUid();
       bool isCorrect =
           await logicProvider.checkIfCorrect(gameField, targetField);
-      await apiProvider.sendMove(
-          currentSituation, newTarget.grid, uid, isCorrect);
+      await apiProvider.sendMove(currentMatch, newTarget.grid, uid, isCorrect);
     }
     return logicProvider.checkIfCorrect(gameField, targetField);
   }
 
   Future<bool> forfeit() async {
     var userId = await prefsProvider.getUid();
+    // TODO: make it so player can't reopen match while
+    // it is waiting for a winnermessage
     return apiProvider.sendForfeit(userId, matchId);
   }
 
@@ -60,9 +61,17 @@ class MultiRepo extends GameRepo {
   Future<ActiveMatch> reconnectPlayer(String reconnectMatchId) async {
     String uid = await prefsProvider.getUid();
     String token = await messProvider.getToken();
-    ActiveMatch currentMatch =
+    ActiveMatch storedMatch = await dbProvider.getActiveMatch(reconnectMatchId);
+    ActiveMatch reconnectedMatch =
         await apiProvider.reconnect(uid, token, reconnectMatchId);
-    matchId = currentMatch.matchId;
-    return currentMatch;
+    if (storedMatch.moves > reconnectedMatch.moves) {
+      storedMatch.enemyMoves = reconnectedMatch.enemyMoves;
+      storedMatch.enemyTargetField = reconnectedMatch.enemyTargetField;
+    } else {
+      storedMatch = reconnectedMatch;
+    }
+    dbProvider.updateActiveMatch(storedMatch);
+    matchId = reconnectedMatch.matchId;
+    return storedMatch;
   }
 }

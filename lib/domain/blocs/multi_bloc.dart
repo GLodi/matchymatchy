@@ -101,7 +101,6 @@ class MultiBloc extends GameBloc {
       _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
     });
     _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
-      //qui
       print('multi winner');
       emitEvent(GameEvent(type: GameEventType.victory));
     });

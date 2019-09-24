@@ -20,7 +20,12 @@ export async function queuePlayer(request: any, response: any) {
   let userFcmToken: string = request.query.userFcmToken;
   try {
     // TODO: update all active matches with new fcmtoken
-    // TODO: prevent player from playing against itself
+    let qs: QuerySnapshot = await queue.get();
+    if (!qs.empty && qs.docs[0].get("uid") == userId) {
+      response.status;
+    } else {
+      // TODO: delete queue immediately so as to prevent concurrency issues
+    }
     let match: ActiveMatch = await newGame(userId, userFcmToken);
     response.send(match);
   } catch (e) {
@@ -43,7 +48,7 @@ async function newGame(
   let qs: QuerySnapshot = await queue.get();
   let gfDocMatch: [DocumentSnapshot, string] = qs.empty
     ? await queueEmpty(userId, userFcmToken)
-    : await checkNotHimself(userId, userFcmToken);
+    : await queueNotEmpty(qs, userId, userFcmToken);
   let diff: string = await diffToSend(
     gfDocMatch[0].data()!.grid,
     gfDocMatch[0].data()!.target
@@ -60,21 +65,6 @@ async function newGame(
     0
   );
   return newMatch;
-}
-
-async function checkNotHimself(
-  userId: string,
-  userFcmToken: string
-): Promise<[DocumentSnapshot, string]> {
-  let query: QuerySnapshot = await queue
-    .orderBy("time", "asc")
-    .limit(1)
-    .get();
-  if (query.docs[0].get("uid") == userId) {
-    throw Error;
-  } else {
-    return await queueNotEmpty(query, userId, userFcmToken);
-  }
 }
 
 /**

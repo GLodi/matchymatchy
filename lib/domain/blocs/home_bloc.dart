@@ -86,17 +86,8 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     try {
       User user = await _repo.checkIfLoggedIn();
       if (user != null) {
-        String uid = await _repo.getUid();
+        listenToMessages();
         nextState = HomeState.initLogged(user);
-        _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) {
-          print('home challenge');
-        });
-        _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
-          if (mess.winner == uid) {
-            await _repo.updateUser();
-            _userSubject.add(await _repo.getUser());
-          }
-        });
       } else {
         nextState = HomeState.initNotLogged();
       }
@@ -106,6 +97,19 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
       print(e);
     }
     return nextState;
+  }
+
+  void listenToMessages() async {
+    String uid = await _repo.getUid();
+    _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) {
+      print('home challenge');
+    });
+    _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
+      if (mess.winner == uid) {
+        await _repo.updateUser();
+        _userSubject.add(await _repo.getUser());
+      }
+    });
   }
 
   @override

@@ -92,16 +92,17 @@ class MultiBloc extends GameBloc {
   void listenToMessages() {
     _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) async {
       print('multi challenge');
-      _repo
-          .queuePlayer()
-          .catchError(
-              (Object e) => emitEvent(GameEvent(type: GameEventType.error)))
-          .then((match) => fetchResult(match));
+      emitEvent(GameEvent(
+          type: GameEventType.reconnect, reconnectMatchId: mess.matchId));
     });
     _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) {
+      // TODO: make some check, suspect that if someone from a different
+      // match sends a move, it is shown here
       _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
     });
     _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
+      //qui
+      print('multi winner');
       emitEvent(GameEvent(type: GameEventType.victory));
     });
   }

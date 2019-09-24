@@ -209,7 +209,6 @@ class _SingleScreenState extends State<SingleScreen>
   @override
   void dispose() {
     _entryAnimCont.dispose();
-    bloc.dispose();
     super.dispose();
   }
 }

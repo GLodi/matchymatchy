@@ -20,6 +20,7 @@ export async function queuePlayer(request: any, response: any) {
   let userFcmToken: string = request.query.userFcmToken;
   try {
     // TODO: update all active matches with new fcmtoken
+    // TODO: prevent player from playing against itself
     let match: ActiveMatch = await newGame(userId, userFcmToken);
     response.send(match);
   } catch (e) {
@@ -33,7 +34,7 @@ export async function queuePlayer(request: any, response: any) {
  * Host/Join game depending on queue's situation
  * Queue can either be empty or full.
  * If empty, create new element in queue and wait for someone.
- * if full, join other player's match and start game.
+ * If full, join other player's match and start game.
  */
 async function newGame(
   userId: string,
@@ -42,7 +43,7 @@ async function newGame(
   let qs: QuerySnapshot = await queue.get();
   let gfDocMatch: [DocumentSnapshot, string] = qs.empty
     ? await queueEmpty(userId, userFcmToken)
-    : await queueNotEmpty(userId, userFcmToken);
+    : await checkNotHimself(userId, userFcmToken);
   let diff: string = await diffToSend(
     gfDocMatch[0].data()!.grid,
     gfDocMatch[0].data()!.target
@@ -61,9 +62,23 @@ async function newGame(
   return newMatch;
 }
 
+async function checkNotHimself(
+  userId: string,
+  userFcmToken: string
+): Promise<[DocumentSnapshot, string]> {
+  let query: QuerySnapshot = await queue
+    .orderBy("time", "asc")
+    .limit(1)
+    .get();
+  if (query.docs[0].get("uid") == userId) {
+    throw Error;
+  } else {
+    return await queueNotEmpty(query, userId, userFcmToken);
+  }
+}
+
 /**
  * Populate queue with player's information.
- * Returns match's GameField
  */
 async function queueEmpty(
   userId: string,
@@ -105,13 +120,10 @@ async function queueEmpty(
  * Returns GameField of starting match.
  */
 async function queueNotEmpty(
+  query: QuerySnapshot,
   userId: string,
   userFcmToken: string
 ): Promise<[DocumentSnapshot, string]> {
-  let query: QuerySnapshot = await queue
-    .orderBy("time", "asc")
-    .limit(1)
-    .get();
   let matchId: string = await delQueueStartMatch(
     query.docs[0],
     userId,

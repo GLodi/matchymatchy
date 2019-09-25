@@ -19,12 +19,28 @@ export async function queuePlayer(request: any, response: any) {
   let userId: string = request.query.userId;
   let userFcmToken: string = request.query.userFcmToken;
   try {
-    // TODO: update all active matches with new fcmtoken
+    // TODO: move fcmtoken logic to user table. can't update all matches
     let qs: QuerySnapshot = await queue.get();
     if (!qs.empty && qs.docs[0].get("uid") == userId) {
-      response.status;
-    } else {
-      // TODO: delete queue immediately so as to prevent concurrency issues
+      let gfDocMatch: DocumentSnapshot = await matches
+        .doc(qs.docs[0].get("matchid"))
+        .get();
+      let diff: string = await diffToSend(
+        gfDocMatch.data()!.grid,
+        gfDocMatch.data()!.target
+      );
+      let queueingMatch: ActiveMatch = new ActiveMatch(
+        qs.docs[0].get("matchid"),
+        gfDocMatch.id,
+        gfDocMatch.data()!.grid,
+        gfDocMatch.data()!.target,
+        0,
+        0,
+        "Searching...",
+        diff,
+        0
+      );
+      response.send(queueingMatch);
     }
     let match: ActiveMatch = await newGame(userId, userFcmToken);
     response.send(match);

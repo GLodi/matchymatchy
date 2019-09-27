@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:squazzle/data/api/mess_event_bus.dart';
 import 'package:squazzle/data/models/models.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -10,12 +9,12 @@ final GoogleSignIn _googleSignIn = GoogleSignIn();
 
 // TODO: add logout option
 abstract class LoginProvider {
-  Future<User> loginWithGoogle(MessagingEventBus messEventBus);
+  Future<User> loginWithGoogle(String fcmToken);
 }
 
 class LoginProviderImpl extends LoginProvider {
   @override
-  Future<User> loginWithGoogle(MessagingEventBus messEventBus) async {
+  Future<User> loginWithGoogle(String fcmToken) async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
@@ -54,7 +53,7 @@ class LoginProviderImpl extends LoginProvider {
           'uid': fireUser.uid,
           'matchesWon': 0,
           'currentMatch': null,
-          'fcmToken': await messEventBus.getToken(),
+          'fcmToken': fcmToken,
         });
       } else {
         // Retrieve already existing information

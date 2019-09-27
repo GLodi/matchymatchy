@@ -8,8 +8,8 @@ class HomeRepo {
 
   HomeRepo(this._loginProvider, this._prefsProvider, this._apiProvider);
 
-  Future<void> loginWithGoogle() async {
-    User user = await _loginProvider.loginWithGoogle();
+  Future<void> loginWithGoogle(String fcmToken) async {
+    User user = await _loginProvider.loginWithGoogle(fcmToken);
     return await _prefsProvider.storeUser(user);
   }
 

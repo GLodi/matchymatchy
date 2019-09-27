@@ -69,7 +69,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
         } else {
           yield HomeState.notInit();
           try {
-            await _repo.loginWithGoogle();
+            await _repo.loginWithGoogle(await _messEventBus.getToken());
             yield await checkIfUserLogged();
           } catch (e) {
             _snackBarSubject.add('Login error');

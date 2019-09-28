@@ -49,15 +49,14 @@ class LoginProviderImpl extends LoginProvider {
         // Update server if new user
         Firestore.instance.collection('users').document(fireUser.uid).setData({
           'username': fireUser.displayName,
-          'photoUrl': fireUser.photoUrl,
+          'photourl': fireUser.photoUrl,
           'uid': fireUser.uid,
-          'matchesWon': 0,
-          'currentMatch': null,
-          'fcmToken': fcmToken,
+          'matcheswon': 0,
+          'fcmtoken': fcmToken,
         });
       } else {
         // Retrieve already existing information
-        user.matchesWon = documents[0].data['matchesWon'];
+        user.matchesWon = documents[0].data['matcheswon'];
       }
     }
 

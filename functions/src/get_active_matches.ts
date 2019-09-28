@@ -2,18 +2,18 @@ import * as admin from "firebase-admin";
 import { QuerySnapshot } from "@google-cloud/firestore";
 import { ActiveMatch } from "./models/active_match";
 
-let matches = admin.firestore().collection("matches");
-let users = admin.firestore().collection("users");
+const matches = admin.firestore().collection("matches");
+const users = admin.firestore().collection("users");
 
 export async function getActiveMatches(request: any, response: any) {
-  let userId: string = request.query.userId;
+  const userId: string = request.query.userId;
   try {
-    let activeMatchesQuery = await users
+    const activeMatchesQuery = await users
       .doc(userId)
       .collection("activematches")
       .get();
     if (!activeMatchesQuery.empty) {
-      let activeMatches: ActiveMatch[] = await makeList(
+      const activeMatches: ActiveMatch[] = await makeList(
         userId,
         activeMatchesQuery
       );
@@ -32,9 +32,9 @@ async function makeList(
   userId: string,
   activeMatchesQuery: QuerySnapshot
 ): Promise<ActiveMatch[]> {
-  let list: ActiveMatch[] = [];
-  for (let doc of activeMatchesQuery.docs) {
-    let match = await matches.doc(doc.id).get();
+  const list: ActiveMatch[] = [];
+  for (const doc of activeMatchesQuery.docs) {
+    const match = await matches.doc(doc.id).get();
     if (userId == match.data()!.hostuid) {
       list.push(
         new ActiveMatch(

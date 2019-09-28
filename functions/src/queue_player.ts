@@ -1,5 +1,6 @@
 import * as admin from "firebase-admin";
 import { ActiveMatch } from "./models/active_match";
+import { updateFcmToken } from "./updatefcmtoken";
 import {
   DocumentReference,
   DocumentSnapshot,
@@ -7,29 +8,29 @@ import {
   QuerySnapshot
 } from "@google-cloud/firestore";
 
-let users = admin.firestore().collection("users");
-let queue = admin.firestore().collection("queue");
-let gamefields = admin.firestore().collection("gamefields");
-let matches = admin.firestore().collection("matches");
+const users = admin.firestore().collection("users");
+const queue = admin.firestore().collection("queue");
+const gamefields = admin.firestore().collection("gamefields");
+const matches = admin.firestore().collection("matches");
 
 /**
  * Queue player in a new match
  */
 export async function queuePlayer(request: any, response: any) {
-  let userId: string = request.query.userId;
-  let userFcmToken: string = request.query.userFcmToken;
+  const userId: string = request.query.userId;
+  const userFcmToken: string = request.query.userFcmToken;
   try {
     // TODO: move fcmtoken logic to user table. can't update all matches
-    let qs: QuerySnapshot = await queue.get();
+    const qs: QuerySnapshot = await queue.get();
     if (!qs.empty && qs.docs[0].get("uid") == userId) {
-      let gfDocMatch: DocumentSnapshot = await matches
+      const gfDocMatch: DocumentSnapshot = await matches
         .doc(qs.docs[0].get("matchid"))
         .get();
-      let diff: string = await diffToSend(
+      const diff: string = await diffToSend(
         gfDocMatch.data()!.grid,
         gfDocMatch.data()!.target
       );
-      let queueingMatch: ActiveMatch = new ActiveMatch(
+      const queueingMatch: ActiveMatch = new ActiveMatch(
         qs.docs[0].get("matchid"),
         gfDocMatch.id,
         gfDocMatch.data()!.grid,
@@ -41,8 +42,9 @@ export async function queuePlayer(request: any, response: any) {
         0
       );
       response.send(queueingMatch);
+      updateFcmToken(userId, userFcmToken);
     }
-    let match: ActiveMatch = await newGame(userId, userFcmToken);
+    const match: ActiveMatch = await newGame(userId, userFcmToken);
     response.send(match);
   } catch (e) {
     console.log("--- error queueing player");
@@ -61,15 +63,15 @@ async function newGame(
   userId: string,
   userFcmToken: string
 ): Promise<ActiveMatch> {
-  let qs: QuerySnapshot = await queue.get();
-  let gfDocMatch: [DocumentSnapshot, string] = qs.empty
+  const qs: QuerySnapshot = await queue.get();
+  const gfDocMatch: [DocumentSnapshot, string] = qs.empty
     ? await queueEmpty(userId, userFcmToken)
     : await queueNotEmpty(qs, userId, userFcmToken);
-  let diff: string = await diffToSend(
+  const diff: string = await diffToSend(
     gfDocMatch[0].data()!.grid,
     gfDocMatch[0].data()!.target
   );
-  let newMatch: ActiveMatch = new ActiveMatch(
+  const newMatch: ActiveMatch = new ActiveMatch(
     gfDocMatch[1],
     gfDocMatch[0].id,
     gfDocMatch[0].data()!.grid,
@@ -90,9 +92,9 @@ async function queueEmpty(
   userId: string,
   userFcmToken: string
 ): Promise<[DocumentSnapshot, string]> {
-  let gfid: number = Math.floor(Math.random() * 1000) + 1;
-  let gf: DocumentSnapshot = await gamefields.doc(String(gfid)).get();
-  let newMatchRef: DocumentReference = matches.doc();
+  const gfid: number = Math.floor(Math.random() * 1000) + 1;
+  const gf: DocumentSnapshot = await gamefields.doc(String(gfid)).get();
+  const newMatchRef: DocumentReference = matches.doc();
   newMatchRef.set({
     gfid: +gf.id,
     hostmoves: +0,
@@ -130,14 +132,14 @@ async function queueNotEmpty(
   userId: string,
   userFcmToken: string
 ): Promise<[DocumentSnapshot, string]> {
-  let matchId: string = await delQueueStartMatch(
+  const matchId: string = await delQueueStartMatch(
     query.docs[0],
     userId,
     userFcmToken
   );
-  let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
-  let hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
-  let joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);
+  const matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
+  const hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
+  const joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);
   hostRef
     .collection("activematches")
     .doc(matchDoc.id)
@@ -146,14 +148,14 @@ async function queueNotEmpty(
     .collection("activematches")
     .doc(matchDoc.id)
     .set({});
-  let gf: DocumentSnapshot = await gamefields
+  const gf: DocumentSnapshot = await gamefields
     .doc(String(matchDoc.data()!.gfid))
     .get();
   return [gf, matchId];
 }
 
 /**
- * Delete queue element and start match
+ * Deconste queue element and start match
  */
 async function delQueueStartMatch(
   doc: QueryDocumentSnapshot,
@@ -161,7 +163,7 @@ async function delQueueStartMatch(
   joinFcmToken: string
 ): Promise<string> {
   queue.doc(doc.id).delete();
-  let matchId: string = doc.data().matchid;
+  const matchId: string = doc.data().matchid;
   await matches.doc(matchId).update({
     hostmoves: 0,
     joinmoves: 0,

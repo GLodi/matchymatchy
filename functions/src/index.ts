@@ -54,16 +54,20 @@ exports.notifyUser = functions
     return true;
   });
 
-let matches = admin.firestore().collection("matches");
-let users = admin.firestore().collection("users");
+const matches = admin.firestore().collection("matches");
+const users = admin.firestore().collection("users");
 
 async function onMatchStart(matchId: string) {
-  let matchDoc = await matches.doc(matchId).get();
-  let hostDoc = await users.where("uid", "==", matchDoc.data()!.hostuid).get();
-  let hostName = await hostDoc.docs[0].data().username;
-  let joinDoc = await users.where("uid", "==", matchDoc.data()!.joinuid).get();
-  let joinName = await joinDoc.docs[0].data().username;
-  let messageToHost = {
+  const matchDoc = await matches.doc(matchId).get();
+  const hostDoc = await users
+    .where("uid", "==", matchDoc.data()!.hostuid)
+    .get();
+  const hostName = await hostDoc.docs[0].data().username;
+  const joinDoc = await users
+    .where("uid", "==", matchDoc.data()!.joinuid)
+    .get();
+  const joinName = await joinDoc.docs[0].data().username;
+  const messageToHost = {
     data: {
       matchid: matchDoc.id,
       click_action: "FLUTTER_NOTIFICATION_CLICK",
@@ -75,7 +79,7 @@ async function onMatchStart(matchId: string) {
       body: joinName + " challenged you!"
     }
   };
-  let messageToJoin = {
+  const messageToJoin = {
     data: {
       matchid: matchDoc.id,
       click_action: "FLUTTER_NOTIFICATION_CLICK",
@@ -87,7 +91,7 @@ async function onMatchStart(matchId: string) {
       body: hostName + " challenged you!"
     }
   };
-  let options = {
+  const options = {
     priority: "high",
     timeToLive: 60 * 60 * 24
   };
@@ -112,14 +116,14 @@ async function onMatchStart(matchId: string) {
 }
 
 function onMove(newMatch: DocumentData, matchId: string, hostOrJoin: boolean) {
-  let message = {
+  const message = {
     data: {
       matchid: matchId,
       enemytarget: hostOrJoin ? newMatch.hosttarget : newMatch.jointarget,
       messType: "move"
     }
   };
-  let options = {
+  const options = {
     priority: "high",
     timeToLive: 60 * 60 * 24
   };
@@ -138,7 +142,7 @@ function onMove(newMatch: DocumentData, matchId: string, hostOrJoin: boolean) {
 }
 
 function onWinner(newMatch: DocumentData, matchId: string) {
-  let messageToJoin = {
+  const messageToJoin = {
     data: {
       matchid: matchId,
       winner: newMatch.winner,
@@ -151,7 +155,7 @@ function onWinner(newMatch: DocumentData, matchId: string) {
       body: newMatch.winnername + " won!"
     }
   };
-  let messageToHost = {
+  const messageToHost = {
     data: {
       matchid: matchId,
       winner: newMatch.winner,
@@ -164,7 +168,7 @@ function onWinner(newMatch: DocumentData, matchId: string) {
       body: newMatch.winnername + " won!"
     }
   };
-  let options = {
+  const options = {
     priority: "high",
     timeToLive: 60 * 60 * 24
   };

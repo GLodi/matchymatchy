@@ -1,17 +1,17 @@
 import * as admin from "firebase-admin";
 import { DocumentReference, DocumentSnapshot } from "@google-cloud/firestore";
 
-let matches = admin.firestore().collection("matches");
-let users = admin.firestore().collection("users");
+const matches = admin.firestore().collection("matches");
+const users = admin.firestore().collection("users");
 
 export async function playMove(request: any, response: any) {
-  let userId: string = request.query.userId;
-  let matchId: string = request.query.matchId;
-  let newGf: string = request.query.newGf;
-  let newTarget: string = request.query.newTarget;
-  let done: boolean = request.query.done == "true";
-  let moves: number = +request.query.moves;
-  let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
+  const userId: string = request.query.userId;
+  const matchId: string = request.query.matchId;
+  const newGf: string = request.query.newGf;
+  const newTarget: string = request.query.newTarget;
+  const done: boolean = request.query.done == "true";
+  const moves: number = +request.query.moves;
+  const matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
   if (isPlayer(userId, matchDoc)) {
     try {
       await updateMatch(userId, matchDoc, newGf, newTarget, moves);
@@ -32,9 +32,9 @@ export async function playMove(request: any, response: any) {
 }
 
 export async function forfeit(request: any, response: any) {
-  let userId: string = request.query.userId;
-  let matchId: string = request.query.matchId;
-  let matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
+  const userId: string = request.query.userId;
+  const matchId: string = request.query.matchId;
+  const matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
   try {
     if (matchDoc.data()!.winner == null) {
       if (userId == matchDoc.data()!.hostuid) {
@@ -133,10 +133,10 @@ async function upWinAmount(
   hostOrJoin: boolean,
   forfeitWin: boolean
 ) {
-  let userRef: DocumentReference = await users.doc(
+  const userRef: DocumentReference = await users.doc(
     hostOrJoin ? matchDoc.data()!.hostuid : matchDoc.data()!.joinuid
   );
-  let user: DocumentSnapshot = await userRef.get();
+  const user: DocumentSnapshot = await userRef.get();
   userRef.update({
     matchesWon: +user.data()!.matchesWon + 1
   });
@@ -151,11 +151,11 @@ async function upWinAmount(
 /**
  * Frees players from finished game.
  * Copies match document to each user's user/pastmatches collection and
- * deletes it from matches and user/activematches.
+ * deconstes it from matches and user/activematches.
  */
 async function resetMatch(matchDoc: DocumentSnapshot) {
-  let hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
-  let joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);
+  const hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
+  const joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);
   hostRef
     .collection("pastmatches")
     .doc(matchDoc.id)

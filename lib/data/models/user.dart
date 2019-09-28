@@ -9,16 +9,16 @@ class User {
   User.fromMap(Map<String, dynamic> map) {
     username = map['username'];
     uid = map['uid'];
-    photoUrl = map['photoUrl'];
-    matchesWon = map['matchesWon'];
+    photoUrl = map['photourl'];
+    matchesWon = map['matcheswon'];
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'username': username,
       'uid': uid,
-      'photoUrl': photoUrl,
-      'matchesWon': matchesWon,
+      'photourl': photoUrl,
+      'matcheswon': matchesWon,
     };
   }
 }

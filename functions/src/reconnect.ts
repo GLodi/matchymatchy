@@ -1,22 +1,24 @@
 import * as admin from "firebase-admin";
 import { ActiveMatch } from "./models/active_match";
+import { updateFcmToken } from "./updatefcmtoken";
 import { DocumentSnapshot } from "@google-cloud/firestore";
 
-let users = admin.firestore().collection("users");
-let gamefields = admin.firestore().collection("gamefields");
-let matches = admin.firestore().collection("matches");
+const users = admin.firestore().collection("users");
+const gamefields = admin.firestore().collection("gamefields");
+const matches = admin.firestore().collection("matches");
 
 /**
  * Send player information about ongoing match
  */
 export async function reconnect(request: any, response: any) {
-  let userId: string = request.query.userId;
-  let userFcmToken: string = request.query.userFcmToken;
-  let matchId: string = request.query.matchId;
+  const userId: string = request.query.userId;
+  const userFcmToken: string = request.query.userFcmToken;
+  const matchId: string = request.query.matchId;
   try {
     // TODO: update all activematches with new fcmtoken
-    let match: ActiveMatch = await findMatch(userId, userFcmToken, matchId);
+    const match: ActiveMatch = await findMatch(userId, userFcmToken, matchId);
     response.send(match);
+    updateFcmToken(userId, userFcmToken);
   } catch (e) {
     console.log("--- error queueing player");
     console.error(Error(e));
@@ -32,8 +34,8 @@ async function findMatch(
   userFcmToken: string,
   currentMatch: string
 ) {
-  let matchDoc: DocumentSnapshot = await matches.doc(currentMatch).get();
-  let hostOrJoin: boolean = userId == matchDoc.data()!.hostuid;
+  const matchDoc: DocumentSnapshot = await matches.doc(currentMatch).get();
+  const hostOrJoin: boolean = userId == matchDoc.data()!.hostuid;
   if (hostOrJoin && matchDoc.data()!.hostfcmtoken != userFcmToken) {
     await matches.doc(currentMatch).update({
       hostfcmtoken: userFcmToken
@@ -44,10 +46,10 @@ async function findMatch(
       joinfcmtoken: userFcmToken
     });
   }
-  let gfDoc: DocumentSnapshot = await gamefields
+  const gfDoc: DocumentSnapshot = await gamefields
     .doc(String(matchDoc.data()!.gfid))
     .get();
-  let hasStarted: boolean = matchDoc.data()!.joinuid != null;
+  const hasStarted: boolean = matchDoc.data()!.joinuid != null;
   return new ActiveMatch(
     currentMatch,
     gfDoc.id,
@@ -66,6 +68,6 @@ async function findMatch(
 }
 
 async function getUsername(userId: string): Promise<string> {
-  let user: DocumentSnapshot = await users.doc(userId).get();
+  const user: DocumentSnapshot = await users.doc(userId).get();
   return user.data()!.username;
 }

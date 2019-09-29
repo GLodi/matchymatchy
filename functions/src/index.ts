@@ -59,14 +59,10 @@ const users = admin.firestore().collection("users");
 
 async function onMatchStart(matchId: string) {
   const matchDoc = await matches.doc(matchId).get();
-  const hostDoc = await users
-    .where("uid", "==", matchDoc.data()!.hostuid)
-    .get();
-  const hostName = await hostDoc.docs[0].data().username;
-  const joinDoc = await users
-    .where("uid", "==", matchDoc.data()!.joinuid)
-    .get();
-  const joinName = await joinDoc.docs[0].data().username;
+  const hostDoc = await users.doc(matchDoc.data()!.hostuid).get();
+  const hostName = await hostDoc.data()!.username;
+  const joinDoc = await users.doc(matchDoc.data()!.joinuid).get();
+  const joinName = await joinDoc.data()!.username;
   const messageToHost = {
     data: {
       matchid: matchDoc.id,
@@ -98,8 +94,8 @@ async function onMatchStart(matchId: string) {
   try {
     admin
       .messaging()
-      .sendToDevice(matchDoc.data()!.hostfcmtoken, messageToHost, options);
-    console.log("message sent to host: " + matchDoc.data()!.hostfcmtoken);
+      .sendToDevice(hostDoc.data()!.fcmtoken, messageToHost, options);
+    console.log("message sent to host: " + hostDoc.data()!.fcmtoken);
   } catch (e) {
     console.log("--- error sending message: ");
     console.error(Error(e));
@@ -107,15 +103,21 @@ async function onMatchStart(matchId: string) {
   try {
     admin
       .messaging()
-      .sendToDevice(matchDoc.data()!.joinfcmtoken, messageToJoin, options);
-    console.log("message sent to join: " + matchDoc.data()!.joinfcmtoken);
+      .sendToDevice(joinDoc.data()!.fcmtoken, messageToJoin, options);
+    console.log("message sent to join: " + joinDoc.data()!.fcmtoken);
   } catch (e) {
     console.log("--- error sending message: ");
     console.error(Error(e));
   }
 }
 
-function onMove(newMatch: DocumentData, matchId: string, hostOrJoin: boolean) {
+async function onMove(
+  newMatch: DocumentData,
+  matchId: string,
+  hostOrJoin: boolean
+) {
+  const hostDoc = await users.doc(newMatch.hostuid).get();
+  const joinDoc = await users.doc(newMatch.joinuid).get();
   const message = {
     data: {
       matchid: matchId,
@@ -131,7 +133,7 @@ function onMove(newMatch: DocumentData, matchId: string, hostOrJoin: boolean) {
     admin
       .messaging()
       .sendToDevice(
-        hostOrJoin ? newMatch.joinfcmtoken : newMatch.hostfcmtoken,
+        hostOrJoin ? joinDoc.data()!.fcmtoken : hostDoc.data()!.fcmtoken,
         message,
         options
       );
@@ -141,7 +143,9 @@ function onMove(newMatch: DocumentData, matchId: string, hostOrJoin: boolean) {
   }
 }
 
-function onWinner(newMatch: DocumentData, matchId: string) {
+async function onWinner(newMatch: DocumentData, matchId: string) {
+  const hostDoc = await users.doc(newMatch.hostuid).get();
+  const joinDoc = await users.doc(newMatch.joinuid).get();
   const messageToJoin = {
     data: {
       matchid: matchId,
@@ -175,7 +179,7 @@ function onWinner(newMatch: DocumentData, matchId: string) {
   try {
     admin
       .messaging()
-      .sendToDevice(newMatch.joinfcmtoken, messageToJoin, options);
+      .sendToDevice(joinDoc.data()!.fcmtoken, messageToJoin, options);
   } catch (e) {
     console.log("--- error sending message");
     console.error(Error(e));
@@ -183,7 +187,7 @@ function onWinner(newMatch: DocumentData, matchId: string) {
   try {
     admin
       .messaging()
-      .sendToDevice(newMatch.hostfcmtoken, messageToHost, options);
+      .sendToDevice(hostDoc.data()!.fcmtoken, messageToHost, options);
   } catch (e) {
     console.log("--- error sending message");
     console.error(Error(e));

@@ -46,6 +46,7 @@ async function makeList(
           match.data()!.joinmoves,
           match.data()!.joinname,
           match.data()!.jointarget,
+          match.data()!.joinurl,
           match.data()!.time != null ? 1 : 0
         )
       );
@@ -60,6 +61,7 @@ async function makeList(
           match.data()!.hostmoves,
           match.data()!.hostname,
           match.data()!.hosttarget,
+          match.data()!.hosturl,
           match.data()!.time != null ? 1 : 0
         )
       );

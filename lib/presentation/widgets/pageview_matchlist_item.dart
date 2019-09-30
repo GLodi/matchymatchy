@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 import 'package:squazzle/presentation/screens/multi_screen.dart';
 import 'package:squazzle/data/models/models.dart';
@@ -21,27 +23,60 @@ class ActiveMatchItem extends StatefulWidget implements MatchListItem {
 class _ActiveMatchItemState extends State<ActiveMatchItem> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 80,
-      child: Hero(
-        tag: widget.activeMatch.matchId,
-        child: GestureDetector(
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => BlocProvider(
-                child: MultiScreen(widget.activeMatch.matchId),
-                bloc: kiwi.Container().resolve<MultiBloc>(),
-              ),
+    return Hero(
+      tag: widget.activeMatch.matchId,
+      child: GestureDetector(
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              child: MultiScreen(widget.activeMatch.matchId),
+              bloc: kiwi.Container().resolve<MultiBloc>(),
             ),
           ),
-          child: Card(
-            color: Colors.blue[200],
-            child: Text(widget.activeMatch.gfid.toString(),
-                style: TextStyle(color: Colors.black)),
-          ),
+        ),
+        child: Container(
+          height: 100,
+          margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
+          child: FutureBuilder(
+              future: getImageColor(widget.activeMatch.enemyUrl),
+              builder: (context, snapshot) {
+                return Card(
+                  color: snapshot.data,
+                  child: elements(),
+                );
+              }),
         ),
       ),
     );
+  }
+
+  Widget elements() {
+    return Stack(
+      children: [
+        Center(
+          child: ClipOval(
+            child: CachedNetworkImage(
+              imageUrl: widget.activeMatch.enemyUrl,
+              placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
+          ),
+        ),
+        Text(
+          widget.activeMatch.gfid.toString(),
+          style: TextStyle(color: Colors.black),
+        )
+      ],
+    );
+  }
+
+  Future<Color> getImageColor(String url) async {
+    PaletteGenerator gen = await PaletteGenerator.fromImage(
+      Image(
+        image: CachedNetworkImageProvider(widget.activeMatch.enemyUrl),
+      ),
+    );
+    return gen.vibrantColor.color;
   }
 }
 

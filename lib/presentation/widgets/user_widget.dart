@@ -14,11 +14,11 @@ class UserWidget extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _UserWidget();
+    return _UserWidgetState();
   }
 }
 
-class _UserWidget extends State<UserWidget> with TickerProviderStateMixin {
+class _UserWidgetState extends State<UserWidget> with TickerProviderStateMixin {
   AnimationController _entryAnimCont;
   Animation _entryAnim;
 

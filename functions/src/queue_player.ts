@@ -20,9 +20,9 @@ export async function queuePlayer(request: any, response: any) {
   const userId: string = request.query.userId;
   const userFcmToken: string = request.query.userFcmToken;
   try {
-    // TODO: move fcmtoken logic to user table. can't update all matches
     const qs: QuerySnapshot = await queue.get();
     if (!qs.empty && qs.docs[0].get("uid") == userId) {
+      // TODO: find a way to de-duplicate this
       const gfDocMatch: DocumentSnapshot = await matches
         .doc(qs.docs[0].get("matchid"))
         .get();
@@ -39,13 +39,15 @@ export async function queuePlayer(request: any, response: any) {
         0,
         "Searching...",
         diff,
+        "",
         0
       );
       response.send(queueingMatch);
       updateFcmToken(userId, userFcmToken);
+    } else {
+      const match: ActiveMatch = await newGame(userId);
+      response.send(match);
     }
-    const match: ActiveMatch = await newGame(userId, userFcmToken);
-    response.send(match);
   } catch (e) {
     console.log("--- error queueing player");
     console.error(Error(e));
@@ -59,14 +61,11 @@ export async function queuePlayer(request: any, response: any) {
  * If empty, create new element in queue and wait for someone.
  * If full, join other player's match and start game.
  */
-async function newGame(
-  userId: string,
-  userFcmToken: string
-): Promise<ActiveMatch> {
+async function newGame(userId: string): Promise<ActiveMatch> {
   const qs: QuerySnapshot = await queue.get();
   const gfDocMatch: [DocumentSnapshot, string] = qs.empty
-    ? await queueEmpty(userId, userFcmToken)
-    : await queueNotEmpty(qs, userId, userFcmToken);
+    ? await queueEmpty(userId)
+    : await queueNotEmpty(qs, userId);
   const diff: string = await diffToSend(
     gfDocMatch[0].data()!.grid,
     gfDocMatch[0].data()!.target
@@ -80,6 +79,7 @@ async function newGame(
     0,
     "Searching...",
     diff,
+    "",
     0
   );
   return newMatch;
@@ -88,12 +88,10 @@ async function newGame(
 /**
  * Populate queue with player's information.
  */
-async function queueEmpty(
-  userId: string,
-  userFcmToken: string
-): Promise<[DocumentSnapshot, string]> {
+async function queueEmpty(userId: string): Promise<[DocumentSnapshot, string]> {
   const gfid: number = Math.floor(Math.random() * 1000) + 1;
   const gf: DocumentSnapshot = await gamefields.doc(String(gfid)).get();
+  const userDoc: DocumentSnapshot = await users.doc(userId).get();
   const newMatchRef: DocumentReference = matches.doc();
   newMatchRef.set({
     gfid: +gf.id,
@@ -101,12 +99,11 @@ async function queueEmpty(
     hostuid: userId,
     hostgf: gf.data()!.grid,
     hosttarget: await diffToSend(gf.data()!.grid, gf.data()!.target),
-    hostfcmtoken: userFcmToken,
+    hosturl: userDoc.data()!.photourl,
     joinmoves: +0,
     joinuid: null,
     joingf: gf.data()!.grid,
     jointarget: await diffToSend(gf.data()!.grid, gf.data()!.target),
-    joinfcmtoken: null,
     winner: null,
     winnername: null,
     hostdone: null,
@@ -117,7 +114,6 @@ async function queueEmpty(
     uid: userId,
     gfid: +gf.id,
     matchid: newMatchRef.id,
-    ufcmtoken: userFcmToken,
     time: admin.firestore.Timestamp.now()
   });
   return [gf, newMatchRef.id];
@@ -129,14 +125,9 @@ async function queueEmpty(
  */
 async function queueNotEmpty(
   query: QuerySnapshot,
-  userId: string,
-  userFcmToken: string
+  userId: string
 ): Promise<[DocumentSnapshot, string]> {
-  const matchId: string = await delQueueStartMatch(
-    query.docs[0],
-    userId,
-    userFcmToken
-  );
+  const matchId: string = await delQueueStartMatch(query.docs[0], userId);
   const matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
   const hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
   const joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);
@@ -155,21 +146,21 @@ async function queueNotEmpty(
 }
 
 /**
- * Deconste queue element and start match
+ * Delete queue element and start match
  */
 async function delQueueStartMatch(
   doc: QueryDocumentSnapshot,
-  joinUid: string,
-  joinFcmToken: string
+  joinUid: string
 ): Promise<string> {
   queue.doc(doc.id).delete();
+  const userDoc: DocumentSnapshot = await users.doc(joinUid).get();
   const matchId: string = doc.data().matchid;
   await matches.doc(matchId).update({
     hostmoves: 0,
     joinmoves: 0,
     joinuid: joinUid,
-    joinfcmtoken: joinFcmToken,
-    time: admin.firestore.Timestamp.now()
+    time: admin.firestore.Timestamp.now(),
+    joinurl: userDoc.data()!.photourl
   });
   return matchId;
 }

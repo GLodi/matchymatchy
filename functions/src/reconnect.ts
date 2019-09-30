@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import { ActiveMatch } from "./models/active_match";
-import { updateFcmToken } from "./updatefcmtoken";
 import { DocumentSnapshot } from "@google-cloud/firestore";
+import { updateFcmToken } from "./updatefcmtoken";
 
 const users = admin.firestore().collection("users");
 const gamefields = admin.firestore().collection("gamefields");
@@ -15,8 +15,7 @@ export async function reconnect(request: any, response: any) {
   const userFcmToken: string = request.query.userFcmToken;
   const matchId: string = request.query.matchId;
   try {
-    // TODO: update all activematches with new fcmtoken
-    const match: ActiveMatch = await findMatch(userId, userFcmToken, matchId);
+    const match: ActiveMatch = await findMatch(userId, matchId);
     response.send(match);
     updateFcmToken(userId, userFcmToken);
   } catch (e) {
@@ -29,23 +28,9 @@ export async function reconnect(request: any, response: any) {
 /**
  * Find match to reconnect to
  */
-async function findMatch(
-  userId: string,
-  userFcmToken: string,
-  currentMatch: string
-) {
+async function findMatch(userId: string, currentMatch: string) {
   const matchDoc: DocumentSnapshot = await matches.doc(currentMatch).get();
   const hostOrJoin: boolean = userId == matchDoc.data()!.hostuid;
-  if (hostOrJoin && matchDoc.data()!.hostfcmtoken != userFcmToken) {
-    await matches.doc(currentMatch).update({
-      hostfcmtoken: userFcmToken
-    });
-  }
-  if (!hostOrJoin && matchDoc.data()!.joinfcmtoken != userFcmToken) {
-    await matches.doc(currentMatch).update({
-      joinfcmtoken: userFcmToken
-    });
-  }
   const gfDoc: DocumentSnapshot = await gamefields
     .doc(String(matchDoc.data()!.gfid))
     .get();
@@ -63,6 +48,7 @@ async function findMatch(
         : await getUsername(matchDoc.data()!.hostuid)
       : "Searching...",
     hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
+    hostOrJoin ? matchDoc.data()!.joinurl : matchDoc.data()!.hosturl,
     hasStarted ? 1 : 0
   );
 }

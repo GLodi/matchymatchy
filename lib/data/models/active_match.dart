@@ -17,6 +17,7 @@ class ActiveMatch extends Match {
   String matchId;
   String enemyName;
   String winnerName;
+  String enemyUrl;
   int moves;
   int enemyMoves;
   int gfid;
@@ -29,6 +30,7 @@ class ActiveMatch extends Match {
     matchId = map['matchid'];
     enemyName = map['enemyname'];
     winnerName = map['winnername'];
+    enemyUrl = map['enemyurl'];
     moves = int.parse(map['moves'].toString());
     enemyMoves = int.parse(map['enemymoves'].toString());
     gfid = int.parse(map['gfid'].toString());
@@ -43,6 +45,7 @@ class ActiveMatch extends Match {
       'matchid': matchId,
       'enemyname': enemyName,
       'winnername': winnerName,
+      'enemyurl': enemyUrl,
       'moves': moves,
       'enemymoves': enemyMoves,
       'gfid': gfid,

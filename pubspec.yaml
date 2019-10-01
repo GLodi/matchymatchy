@@ -28,7 +28,6 @@ dependencies:
   flutter_spinkit: ^3.1.0
   dots_indicator: ^1.0.0
   preload_page_view: ^0.1.4
-  palette_generator: ^0.2.0
 
   flutter:
     sdk: flutter

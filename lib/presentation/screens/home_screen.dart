@@ -11,7 +11,9 @@ import 'package:squazzle/presentation/widgets/home_pageview_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool isTest;
+
   HomeScreen(this.isTest);
+
   @override
   State<StatefulWidget> createState() {
     return _HomeScreenState();
@@ -66,7 +68,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  // Shows Single/Multi button and UserWidget at the bottom
   Widget initLogged(User user) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
@@ -92,7 +93,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  // Shows Single/Login buttons
   Widget initNotLogged() {
     return Stack(
       children: <Widget>[
@@ -117,7 +117,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  // Widget that includes both bottom bottons
   Widget bottomButtons(String multiButtonText) {
     return Align(
       alignment: Alignment.bottomCenter,
@@ -144,7 +143,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  // Bottom left practice button
   Widget practiceFAB() {
     return Container(
       height: 55.0,
@@ -175,7 +173,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  // Bottom right multiplayer button
   Widget multiButton(String text) {
     String lastInput = text;
     return Expanded(
@@ -192,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               elevation: 0,
               highlightElevation: 0,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30)),
+                  borderRadius: BorderRadius.circular(20)),
               onPressed: () => snapshot.data
                   ? bloc.emitEvent(
                       HomeEvent(type: HomeEventType.multiButtonPress))

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:palette_generator/palette_generator.dart';
 
 import 'package:squazzle/presentation/screens/multi_screen.dart';
 import 'package:squazzle/data/models/models.dart';
@@ -25,26 +24,24 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
   Widget build(BuildContext context) {
     return Hero(
       tag: widget.activeMatch.matchId,
-      child: GestureDetector(
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              child: MultiScreen(widget.activeMatch.matchId),
-              bloc: kiwi.Container().resolve<MultiBloc>(),
+      child: Container(
+        height: 110,
+        margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
+        child: MaterialButton(
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                child: MultiScreen(widget.activeMatch.matchId),
+                bloc: kiwi.Container().resolve<MultiBloc>(),
+              ),
             ),
           ),
-        ),
-        child: Container(
-          height: 100,
-          margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
-          child: FutureBuilder(
-              future: getImageColor(widget.activeMatch.enemyUrl),
-              builder: (context, snapshot) {
-                return Card(
-                  color: snapshot.data,
-                  child: elements(),
-                );
-              }),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          elevation: 0,
+          highlightElevation: 0,
+          color: Colors.blue[100],
+          child: elements(),
         ),
       ),
     );
@@ -53,30 +50,33 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
   Widget elements() {
     return Stack(
       children: [
-        Center(
-          child: ClipOval(
-            child: CachedNetworkImage(
-              imageUrl: widget.activeMatch.enemyUrl,
-              placeholder: (context, url) => CircularProgressIndicator(),
-              errorWidget: (context, url, error) => Icon(Icons.error),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Container(
+            height: 70,
+            width: 70,
+            margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
+            child: ClipOval(
+              child: CachedNetworkImage(
+                imageUrl: widget.activeMatch.enemyUrl,
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
             ),
           ),
         ),
-        Text(
-          widget.activeMatch.gfid.toString(),
-          style: TextStyle(color: Colors.black),
+        Align(
+          alignment: Alignment.centerRight,
+          child: Text(
+            widget.activeMatch.gfid.toString(),
+            style: TextStyle(
+              color: Colors.blue[800],
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         )
       ],
     );
-  }
-
-  Future<Color> getImageColor(String url) async {
-    PaletteGenerator gen = await PaletteGenerator.fromImage(
-      Image(
-        image: CachedNetworkImageProvider(widget.activeMatch.enemyUrl),
-      ),
-    );
-    return gen.vibrantColor.color;
   }
 }
 

@@ -45,11 +45,11 @@ class _HomePageViewWidgetState extends State<HomePageViewWidget> {
                 currentIndex = position;
               }),
               children: [
-                Container(color: Colors.white),
                 BlocProvider(
                   child: HomePageViewListWidget(),
                   bloc: kiwi.Container().resolve<HomePageViewListBloc>(),
                 ),
+                Container(color: Colors.white),
               ],
             ),
           ),

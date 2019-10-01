@@ -36,6 +36,7 @@ async function makeList(
   for (const doc of activeMatchesQuery.docs) {
     const match = await matches.doc(doc.id).get();
     if (userId == match.data()!.hostuid) {
+      const enemy = await users.doc(match.data()!.joinuid).get();
       list.push(
         new ActiveMatch(
           match.id,
@@ -44,13 +45,14 @@ async function makeList(
           match.data()!.hosttarget,
           match.data()!.hostmoves,
           match.data()!.joinmoves,
-          match.data()!.joinname,
+          enemy.data()!.username,
           match.data()!.jointarget,
           match.data()!.joinurl,
           match.data()!.time != null ? 1 : 0
         )
       );
     } else {
+      const enemy = await users.doc(match.data()!.hostuid).get();
       list.push(
         new ActiveMatch(
           match.id,
@@ -59,7 +61,7 @@ async function makeList(
           match.data()!.jointarget,
           match.data()!.joinmoves,
           match.data()!.hostmoves,
-          match.data()!.hostname,
+          enemy.data()!.username,
           match.data()!.hosttarget,
           match.data()!.hosturl,
           match.data()!.time != null ? 1 : 0

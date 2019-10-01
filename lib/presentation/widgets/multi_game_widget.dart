@@ -45,16 +45,23 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    Container(
-                      constraints: BoxConstraints(
-                        maxHeight: 3 * tenthWidth,
-                        maxWidth: 3 * tenthWidth,
-                      ),
-                      alignment: Alignment.topCenter,
-                      child: BlocProvider(
-                        child: EnemyWidget(),
-                        bloc: EnemyFieldBloc(widget.bloc),
-                      ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Container(
+                          constraints: BoxConstraints(
+                            maxHeight: 3 * tenthWidth,
+                            maxWidth: 3 * tenthWidth,
+                          ),
+                          alignment: Alignment.topCenter,
+                          child: BlocProvider(
+                            child: EnemyWidget(),
+                            bloc: EnemyFieldBloc(widget.bloc),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text("Enemy", style: TextStyle(fontSize: 15)),
+                      ],
                     ),
                     StreamBuilder<int>(
                       stream: widget.bloc.moveNumber,
@@ -79,22 +86,29 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
                                 fontSize: 25.0,
                                 color: Colors.white,
                               ),
-                            )
+                            ),
+                            SizedBox(height: 20),
                           ],
                         );
                       },
                     ),
-                    Container(
-                      constraints: BoxConstraints(
-                        maxHeight: 3 * tenthWidth,
-                        maxWidth: 3 * tenthWidth,
-                      ),
-                      alignment: Alignment.topCenter,
-                      child: BlocProvider(
-                        child: TargetFieldWidget(),
-                        bloc: TargetBloc(widget.bloc),
-                      ),
-                    ),
+                    Column(
+                      children: <Widget>[
+                        Container(
+                          constraints: BoxConstraints(
+                            maxHeight: 3 * tenthWidth,
+                            maxWidth: 3 * tenthWidth,
+                          ),
+                          alignment: Alignment.topCenter,
+                          child: BlocProvider(
+                            child: TargetFieldWidget(),
+                            bloc: TargetBloc(widget.bloc),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text("You", style: TextStyle(fontSize: 15)),
+                      ],
+                    )
                   ],
                 ),
                 SafeArea(

@@ -55,7 +55,7 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
           child: Container(
             height: 70,
             width: 70,
-            margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
+            margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
             child: ClipOval(
               child: CachedNetworkImage(
                 imageUrl: widget.activeMatch.enemyUrl,
@@ -65,16 +65,58 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
             ),
           ),
         ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Text(
-            widget.activeMatch.gfid.toString(),
-            style: TextStyle(
-              color: Colors.blue[800],
-              fontWeight: FontWeight.bold,
+        Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                widget.activeMatch.enemyName.toString(),
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.blue[800],
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                "You",
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.blue[800],
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.fromLTRB(0, 0, 35, 0),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  widget.activeMatch.enemyMoves.toString(),
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.blue[800],
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  widget.activeMatch.moves.toString(),
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.blue[800],
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ),
-        )
+        ),
       ],
     );
   }

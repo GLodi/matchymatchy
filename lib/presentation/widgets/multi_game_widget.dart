@@ -32,7 +32,6 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
   @override
   Widget build(BuildContext context) {
     double tenthWidth = widget.width / 10;
-    double fifthWidth = widget.width / 5;
     _entryAnimCont.forward();
     return ScaleTransition(
         scale: _entryAnim,
@@ -60,7 +59,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
                           ),
                         ),
                         SizedBox(height: 10),
-                        Text("Enemy", style: TextStyle(fontSize: 15)),
+                        Text("Opponent", style: TextStyle(fontSize: 15)),
                       ],
                     ),
                     StreamBuilder<int>(
@@ -106,14 +105,14 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
                           ),
                         ),
                         SizedBox(height: 10),
-                        Text("You", style: TextStyle(fontSize: 15)),
+                        Text("Target", style: TextStyle(fontSize: 15)),
                       ],
                     )
                   ],
                 ),
                 SafeArea(
                   child: Container(
-                    constraints: BoxConstraints(maxHeight: 5 * fifthWidth),
+                    constraints: BoxConstraints(maxHeight: widget.width),
                     alignment: Alignment.bottomCenter,
                     child: BlocProvider(
                       child: GameFieldWidget(),

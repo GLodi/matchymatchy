@@ -122,6 +122,7 @@ async function onMove(
     data: {
       matchid: matchId,
       enemytarget: hostOrJoin ? newMatch.hosttarget : newMatch.jointarget,
+      enemymoves: hostOrJoin ? newMatch.hostmoves : newMatch.joinmoves,
       messType: "move"
     }
   };

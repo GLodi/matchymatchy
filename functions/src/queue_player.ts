@@ -13,9 +13,6 @@ const queue = admin.firestore().collection("queue");
 const gamefields = admin.firestore().collection("gamefields");
 const matches = admin.firestore().collection("matches");
 
-/**
- * Queue player in a new match
- */
 export async function queuePlayer(request: any, response: any) {
   const userId: string = request.query.userId;
   const userFcmToken: string = request.query.userFcmToken;
@@ -63,18 +60,19 @@ export async function queuePlayer(request: any, response: any) {
  */
 async function newGame(userId: string): Promise<ActiveMatch> {
   const qs: QuerySnapshot = await queue.get();
-  const gfDocMatch: [DocumentSnapshot, string] = qs.empty
+  // TODO: no need to have 2 objects returned
+  const newMatchSnap: [DocumentSnapshot, string] = qs.empty
     ? await queueEmpty(userId)
     : await queueNotEmpty(qs, userId);
   const diff: string = await diffToSend(
-    gfDocMatch[0].data()!.grid,
-    gfDocMatch[0].data()!.target
+    newMatchSnap[0].data()!.grid,
+    newMatchSnap[0].data()!.target
   );
   const newMatch: ActiveMatch = new ActiveMatch(
-    gfDocMatch[1],
-    gfDocMatch[0].id,
-    gfDocMatch[0].data()!.grid,
-    gfDocMatch[0].data()!.target,
+    newMatchSnap[1],
+    newMatchSnap[0].id,
+    newMatchSnap[0].data()!.grid,
+    newMatchSnap[0].data()!.target,
     0,
     0,
     "Searching...",

@@ -10,7 +10,9 @@ STILL IN DEVELOPMENT
 If you want to use the online component, you can create a new Firebase project, 
 create your own google-services.json and put it under android/app.
 
-![](https://raw.githubusercontent.com/GLodi/squazzle/master/gfx/squazzlevert.gif)
+<div align="center">
+	<img src="https://raw.githubusercontent.com/GLodi/squazzle/master/gfx/squazzlevert.gif" width="256">
+</div>
 
 ## Architecture
 

@@ -58,8 +58,7 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
             margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
             child: ClipOval(
               child: CachedNetworkImage(
-                imageUrl:
-                    'https://avatars2.githubusercontent.com/u/8247053?s=400&v=4',
+                imageUrl: widget.activeMatch.enemyUrl,
                 placeholder: (context, url) => CircularProgressIndicator(),
                 errorWidget: (context, url, error) => Icon(Icons.error),
               ),
@@ -71,7 +70,7 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                "Matteo",
+                widget.activeMatch.enemyName,
                 style: TextStyle(
                   fontSize: 15,
                   color: Colors.blue[800],
@@ -98,7 +97,7 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  20.toString(),
+                  widget.activeMatch.enemyMoves.toString(),
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.blue[800],

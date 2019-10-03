@@ -15,9 +15,9 @@ export async function reconnect(request: any, response: any) {
   const userFcmToken: string = request.query.userFcmToken;
   const matchId: string = request.query.matchId;
   try {
+    updateFcmToken(userId, userFcmToken);
     const match: ActiveMatch = await findMatch(userId, matchId);
     response.send(match);
-    updateFcmToken(userId, userFcmToken);
   } catch (e) {
     console.log("--- error queueing player");
     console.error(Error(e));

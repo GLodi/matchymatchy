@@ -10,10 +10,12 @@ class HomePageViewListRepo {
 
   Future<void> updateMatches() async {
     String uid = await _prefsProvider.getUid();
-    List activeMatches = await _apiProvider.getActiveMatches(uid);
+    List<ActiveMatch> activeMatches = await _apiProvider.getActiveMatches(uid);
+    activeMatches.sort((a, b) => b.time.compareTo(a.time));
     await _dbProvider.deleteActiveMatches();
     await _dbProvider.storeActiveMatches(activeMatches);
-    List pastMatches = await _apiProvider.getPastMatches(uid);
+    List<PastMatch> pastMatches = await _apiProvider.getPastMatches(uid);
+    pastMatches.sort((a, b) => b.time.compareTo(a.time));
     await _dbProvider.storePastMatches(pastMatches);
   }
 

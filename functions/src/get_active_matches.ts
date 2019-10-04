@@ -48,7 +48,8 @@ async function makeList(
           enemy.data()!.username,
           match.data()!.jointarget,
           match.data()!.joinurl,
-          match.data()!.time != null ? 1 : 0
+          match.data()!.time != null ? 1 : 0,
+          match.data()!.time
         )
       );
     } else {
@@ -64,7 +65,8 @@ async function makeList(
           enemy.data()!.username,
           match.data()!.hosttarget,
           match.data()!.hosturl,
-          match.data()!.time != null ? 1 : 0
+          match.data()!.time != null ? 1 : 0,
+          match.data()!.time
         )
       );
     }

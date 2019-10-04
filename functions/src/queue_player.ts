@@ -46,6 +46,7 @@ async function newGame(userId: string): Promise<ActiveMatch> {
     "Searching...",
     await diffToSend(gf.data()!.grid, gf.data()!.target),
     "",
+    0,
     0
   );
   return newMatch;
@@ -71,13 +72,14 @@ async function queueEmpty(userId: string): Promise<string> {
     winnername: null,
     hostdone: null,
     joindone: null,
-    forfeitwin: false
+    forfeitwin: false,
+    time: admin.firestore.Timestamp.now().toMillis()
   });
   await queue.add({
     uid: userId,
     gfid: +gf.id,
     matchid: newMatchRef.id,
-    time: admin.firestore.Timestamp.now()
+    time: admin.firestore.Timestamp.now().toMillis()
   });
   return newMatchRef.id;
 }
@@ -117,7 +119,7 @@ async function delQueueElement(
     hostmoves: 0,
     joinmoves: 0,
     joinuid: joinUid,
-    time: admin.firestore.Timestamp.now(),
+    time: admin.firestore.Timestamp.now().toMillis(),
     joinurl: userDoc.data()!.photourl
   });
 }

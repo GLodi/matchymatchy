@@ -62,7 +62,7 @@ class MultiBloc extends GameBloc {
               await _repo.reconnectPlayer(event.reconnectMatchId);
           fetchResult(currentMatch);
         } catch (e) {
-          yield GameState.error('Error reconnecting to match');
+          yield GameState.error('Error connecting to match');
           print(e);
         }
         break;
@@ -108,6 +108,7 @@ class MultiBloc extends GameBloc {
 
   @override
   void dispose() async {
+    print('multi disposed');
     _moveSubs.cancel();
     _challengeSubs.cancel();
     _winnerSubs.cancel();

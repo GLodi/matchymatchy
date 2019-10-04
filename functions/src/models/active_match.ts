@@ -9,6 +9,7 @@ export class ActiveMatch {
   enemytarget: string;
   enemyurl: string;
   started: number;
+  time: number;
 
   constructor(
     matchid: string,
@@ -20,7 +21,8 @@ export class ActiveMatch {
     enemyname: string,
     enemytarget: string,
     enemyurl: string,
-    started: number
+    started: number,
+    time: number
   ) {
     this.matchid = matchid;
     this.gfid = gfid;
@@ -32,5 +34,6 @@ export class ActiveMatch {
     this.enemytarget = enemytarget;
     this.enemyurl = enemyurl;
     this.started = started;
+    this.time = time;
   }
 }

@@ -23,6 +23,7 @@ class ActiveMatch extends Match {
   int gfid;
   int started;
   TargetField enemyTargetField;
+  DateTime time;
 
   ActiveMatch.fromMap(Map<String, dynamic> map) {
     this.gameField = GameField(grid: map['gf']);
@@ -36,6 +37,7 @@ class ActiveMatch extends Match {
     gfid = int.parse(map['gfid'].toString());
     started = int.parse(map['started'].toString());
     enemyTargetField = TargetField(grid: map['enemytarget']);
+    time = DateTime.fromMillisecondsSinceEpoch(map['time']);
   }
 
   Map<String, dynamic> toMap() {
@@ -51,6 +53,7 @@ class ActiveMatch extends Match {
       'gfid': gfid,
       'started': started,
       'enemytarget': enemyTargetField.grid,
+      'time': time.millisecondsSinceEpoch,
     };
   }
 }

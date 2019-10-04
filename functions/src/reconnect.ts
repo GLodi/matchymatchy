@@ -49,7 +49,8 @@ async function findMatch(userId: string, currentMatch: string) {
       : "Searching...",
     hostOrJoin ? matchDoc.data()!.jointarget : matchDoc.data()!.hosttarget,
     hostOrJoin ? matchDoc.data()!.joinurl : matchDoc.data()!.hosturl,
-    hasStarted ? 1 : 0
+    hasStarted ? 1 : 0,
+    matchDoc.data()!.time
   );
 }
 

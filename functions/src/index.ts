@@ -38,9 +38,8 @@ exports.notifyUser = functions
     const newMatch = change.after.data();
     const oldMatch = change.before.data();
     if (newMatch != null && oldMatch != null) {
-      // TODO: include information to send in method calls
       if (newMatch.joinuid != oldMatch.joinuid) {
-        onMatchStart(context.params.matchId);
+        onMatchStart(newMatch, context.params.matchId);
       }
       if (newMatch.hosttarget != oldMatch.hosttarget) {
         onMove(newMatch, context.params.matchId, true);
@@ -55,21 +54,17 @@ exports.notifyUser = functions
     return true;
   });
 
-const matches = admin.firestore().collection("matches");
 const users = admin.firestore().collection("users");
 
-async function onMatchStart(matchId: string) {
-  console.log("onMatchStart");
-  const matchDoc = await matches.doc(matchId).get();
-  const hostDoc = await users.doc(matchDoc.data()!.hostuid).get();
-  const hostName = await hostDoc.data()!.username;
-  const joinDoc = await users.doc(matchDoc.data()!.joinuid).get();
-  const joinName = await joinDoc.data()!.username;
-  console.log("onMatchStart after awaits");
+async function onMatchStart(newMatch: DocumentData, matchId: string) {
+  const hostDoc = await users.doc(newMatch.hostuid).get();
+  const hostName = hostDoc.data()!.username;
+  const joinDoc = await users.doc(newMatch.joinuid).get();
+  const joinName = joinDoc.data()!.username;
 
   const messageToHost = {
     data: {
-      matchid: matchDoc.id,
+      matchid: matchId,
       click_action: "FLUTTER_NOTIFICATION_CLICK",
       messType: "challenge",
       enemyName: joinName
@@ -81,7 +76,7 @@ async function onMatchStart(matchId: string) {
   };
   const messageToJoin = {
     data: {
-      matchid: matchDoc.id,
+      matchid: matchId,
       click_action: "FLUTTER_NOTIFICATION_CLICK",
       messType: "challenge",
       enemyName: hostName
@@ -96,11 +91,10 @@ async function onMatchStart(matchId: string) {
     timeToLive: 60 * 60 * 24
   };
   try {
-    console.log("onMatchStart in try");
-    admin
+    await admin
       .messaging()
       .sendToDevice(hostDoc.data()!.fcmtoken, messageToHost, options);
-    console.log("message sent to host: " + hostDoc.data()!.fcmtoken);
+    await console.log("message sent to host: " + hostDoc.data()!.fcmtoken);
   } catch (e) {
     console.log("--- error sending message: ");
     console.error(Error(e));

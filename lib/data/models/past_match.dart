@@ -4,6 +4,7 @@ class PastMatch {
   int enemyMoves;
   String winner;
   int forfeitWin;
+  DateTime time;
 
   PastMatch.fromMap(Map<String, dynamic> map) {
     matchId = map['matchid'];
@@ -11,6 +12,7 @@ class PastMatch {
     enemyMoves = int.parse(map['enemymoves'].toString());
     winner = map['winner'];
     forfeitWin = map['forfeitwin'] == 'true' ? 1 : 0;
+    time = DateTime.fromMillisecondsSinceEpoch(map['time']);
   }
 
   Map<String, dynamic> toMap() {
@@ -20,6 +22,7 @@ class PastMatch {
       'enemymoves': enemyMoves,
       'winner': winner,
       'forfeitwin': forfeitWin,
+      'time': time.millisecondsSinceEpoch,
     };
   }
 }

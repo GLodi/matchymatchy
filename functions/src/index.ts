@@ -38,6 +38,7 @@ exports.notifyUser = functions
     const newMatch = change.after.data();
     const oldMatch = change.before.data();
     if (newMatch != null && oldMatch != null) {
+      // TODO: include information to send in method calls
       if (newMatch.joinuid != oldMatch.joinuid) {
         onMatchStart(context.params.matchId);
       }
@@ -58,11 +59,14 @@ const matches = admin.firestore().collection("matches");
 const users = admin.firestore().collection("users");
 
 async function onMatchStart(matchId: string) {
+  console.log("onMatchStart");
   const matchDoc = await matches.doc(matchId).get();
   const hostDoc = await users.doc(matchDoc.data()!.hostuid).get();
   const hostName = await hostDoc.data()!.username;
   const joinDoc = await users.doc(matchDoc.data()!.joinuid).get();
   const joinName = await joinDoc.data()!.username;
+  console.log("onMatchStart after awaits");
+
   const messageToHost = {
     data: {
       matchid: matchDoc.id,
@@ -92,6 +96,7 @@ async function onMatchStart(matchId: string) {
     timeToLive: 60 * 60 * 24
   };
   try {
+    console.log("onMatchStart in try");
     admin
       .messaging()
       .sendToDevice(hostDoc.data()!.fcmtoken, messageToHost, options);

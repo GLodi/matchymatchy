@@ -86,6 +86,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               },
             ),
             HomePageViewWidget(),
+            SizedBox(height: 80),
           ],
         ),
         bottomButtons("Queue for new match"),

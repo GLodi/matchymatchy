@@ -58,20 +58,13 @@ class MultiRepo extends GameRepo {
     return currentMatch;
   }
 
-  Future<ActiveMatch> reconnectPlayer(String reconnectMatchId) async {
+  Future<ActiveMatch> connectPlayer(String connectMatchId) async {
     String uid = await prefsProvider.getUid();
     String token = await messProvider.getToken();
-    ActiveMatch storedMatch = await dbProvider.getActiveMatch(reconnectMatchId);
-    ActiveMatch reconnectedMatch =
-        await apiProvider.reconnect(uid, token, reconnectMatchId);
-    if (storedMatch.moves > reconnectedMatch.moves) {
-      storedMatch.enemyMoves = reconnectedMatch.enemyMoves;
-      storedMatch.enemyTargetField = reconnectedMatch.enemyTargetField;
-    } else {
-      storedMatch = reconnectedMatch;
-    }
-    dbProvider.updateActiveMatch(storedMatch);
-    matchId = reconnectedMatch.matchId;
-    return storedMatch;
+    ActiveMatch connectedMatch =
+        await apiProvider.reconnect(uid, token, connectMatchId);
+    dbProvider.storeActiveMatch(connectedMatch);
+    matchId = connectedMatch.matchId;
+    return connectedMatch;
   }
 }

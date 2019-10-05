@@ -56,10 +56,10 @@ class MultiBloc extends GameBloc {
           print(e);
         }
         break;
-      case GameEventType.reconnect:
+      case GameEventType.connect:
         try {
           ActiveMatch currentMatch =
-              await _repo.reconnectPlayer(event.reconnectMatchId);
+              await _repo.connectPlayer(event.connectMatchId);
           fetchResult(currentMatch);
         } catch (e) {
           yield GameState.error('Error connecting to match');
@@ -90,27 +90,30 @@ class MultiBloc extends GameBloc {
   }
 
   void listenToMessages() {
-    _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) async {
-      print('multi challenge');
-      emitEvent(GameEvent(
-          type: GameEventType.reconnect, reconnectMatchId: mess.matchId));
+    _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) {
+      if (_repo.matchId == mess.matchId) {
+        print('multi challenge');
+        emitEvent(GameEvent(
+            type: GameEventType.connect, connectMatchId: mess.matchId));
+      }
     });
     _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) {
-      // TODO: make some check, suspect that if someone from a different
-      // match sends a move, it is shown here
-      _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
+      if (_repo.matchId == mess.matchId) {
+        _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
+      }
     });
     _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
-      print('multi winner');
-      emitEvent(GameEvent(type: GameEventType.victory));
+      if (_repo.matchId == mess.matchId) {
+        print('multi winner');
+        emitEvent(GameEvent(type: GameEventType.victory));
+      }
     });
   }
 
   @override
-  void dispose() async {
-    print('multi disposed');
-    _moveSubs.cancel();
+  void dispose() {
     _challengeSubs.cancel();
+    _moveSubs.cancel();
     _winnerSubs.cancel();
     _enemyTargetSubject.close();
     _waitMessageSubject.close();

@@ -27,7 +27,7 @@ class _MultiScreenState extends State<MultiScreen>
     widget.heroTag == 'multibutton'
         ? bloc.emitEvent(GameEvent(type: GameEventType.queue))
         : bloc.emitEvent(GameEvent(
-            type: GameEventType.reconnect, reconnectMatchId: widget.heroTag));
+            type: GameEventType.connect, connectMatchId: widget.heroTag));
     bloc.correct.listen((correct) => _changeOpacity());
   }
 

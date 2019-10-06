@@ -18,14 +18,14 @@ class HomePageViewListBloc
       HomePageViewListEvent event, HomePageViewListState currentState) async* {
     switch (event.type) {
       case HomePageViewListEventType.start:
-        listenToWinnerMessages();
+        listenToMessages();
         emitEvent(HomePageViewListEvent(
             type: HomePageViewListEventType.updateMatches));
         break;
       case HomePageViewListEventType.updateMatches:
         yield HomePageViewListState(type: HomePageViewListStateType.fetching);
-        await _repo.updateMatches();
         try {
+          await _repo.updateMatches();
           List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
           List<PastMatch> pastMatches = await _repo.getPastMatches();
           if (activeMatches.isNotEmpty || pastMatches.isNotEmpty) {
@@ -47,7 +47,7 @@ class HomePageViewListBloc
     }
   }
 
-  void listenToWinnerMessages() {
+  void listenToMessages() {
     if (_challengeSubs == null && _winnerSubs == null) {
       _challengeSubs =
           _messEventBus.on<ChallengeMessage>().listen((mess) async {

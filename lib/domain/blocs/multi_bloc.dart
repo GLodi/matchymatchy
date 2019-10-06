@@ -43,7 +43,6 @@ class MultiBloc extends GameBloc {
   @override
   Stream<GameState> eventHandler(
       GameEvent event, GameState currentState) async* {
-    listenToMessages();
     switch (event.type) {
       case GameEventType.start:
         if (currentState.type == GameStateType.notInit) {
@@ -52,6 +51,7 @@ class MultiBloc extends GameBloc {
         break;
       case GameEventType.queue:
         try {
+          listenToMessages();
           ActiveMatch currentMatch = await _repo.queuePlayer();
           fetchResult(currentMatch);
         } catch (e) {
@@ -61,6 +61,7 @@ class MultiBloc extends GameBloc {
         break;
       case GameEventType.connect:
         try {
+          listenToMessages();
           ActiveMatch currentMatch =
               await _repo.connectPlayer(event.connectMatchId);
           fetchResult(currentMatch);

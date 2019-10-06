@@ -15,12 +15,12 @@ class HomePageViewWidget extends StatefulWidget {
 
 class _HomePageViewWidgetState extends State<HomePageViewWidget> {
   PreloadPageController controller;
-  int currentIndex = 0;
+  int currentIndex = 1;
 
   @override
   void initState() {
     super.initState();
-    controller = PreloadPageController();
+    controller = PreloadPageController(initialPage: 1);
   }
 
   @override
@@ -30,7 +30,7 @@ class _HomePageViewWidgetState extends State<HomePageViewWidget> {
         children: [
           SizedBox(height: 5),
           DotsIndicator(
-            dotsCount: 2,
+            dotsCount: 3,
             position: currentIndex,
             decorator: DotsDecorator(
               activeSize: Size.square(12),
@@ -40,16 +40,27 @@ class _HomePageViewWidgetState extends State<HomePageViewWidget> {
             child: PreloadPageView(
               controller: controller,
               reverse: false,
-              preloadPagesCount: 2,
+              preloadPagesCount: 3,
               onPageChanged: (int position) => setState(() {
                 currentIndex = position;
               }),
               children: [
+                Center(
+                  child: Text(
+                    'Friends',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
                 BlocProvider(
                   child: HomePageViewListWidget(),
                   bloc: kiwi.Container().resolve<HomePageViewListBloc>(),
                 ),
-                Container(color: Colors.white),
+                Center(
+                  child: Text(
+                    'News',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
               ],
             ),
           ),

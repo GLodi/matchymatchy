@@ -7,9 +7,6 @@ const users = admin.firestore().collection("users");
 const gamefields = admin.firestore().collection("gamefields");
 const matches = admin.firestore().collection("matches");
 
-/**
- * Send player information about ongoing match
- */
 export async function reconnect(request: any, response: any) {
   const userId: string = request.query.userId;
   const userFcmToken: string = request.query.userFcmToken;
@@ -19,24 +16,21 @@ export async function reconnect(request: any, response: any) {
     const match: ActiveMatch = await findMatch(userId, matchId);
     response.send(match);
   } catch (e) {
-    console.log("--- error queueing player");
+    console.log("--- error reconnecting player");
     console.error(Error(e));
-    response.status(500).send("Error queueing player");
+    response.status(500).send("Error reconnecting player");
   }
 }
 
-/**
- * Find match to reconnect to
- */
-async function findMatch(userId: string, currentMatch: string) {
-  const matchDoc: DocumentSnapshot = await matches.doc(currentMatch).get();
+async function findMatch(userId: string, matchId: string) {
+  const matchDoc: DocumentSnapshot = await matches.doc(matchId).get();
   const hostOrJoin: boolean = userId == matchDoc.data()!.hostuid;
   const gfDoc: DocumentSnapshot = await gamefields
     .doc(String(matchDoc.data()!.gfid))
     .get();
   const hasStarted: boolean = matchDoc.data()!.joinuid != null;
   return new ActiveMatch(
-    currentMatch,
+    matchId,
     gfDoc.id,
     hostOrJoin ? matchDoc.data()!.hostgf : matchDoc.data()!.joingf,
     gfDoc.data()!.target,

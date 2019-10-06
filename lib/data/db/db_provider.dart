@@ -20,6 +20,8 @@ abstract class DbProvider {
 
   Future<void> updateActiveMatch(ActiveMatch activeMatch);
 
+  Future<void> deleteActiveMatch(String matchId);
+
   Future<void> deleteActiveMatches();
 
   Future<List<PastMatch>> getPastMatches();
@@ -117,6 +119,13 @@ class DbProviderImpl extends DbProvider {
     var dbClient = await db;
     return await dbClient.update(activeMatchTable, activeMatch.toMap(),
         where: 'matchid = ?', whereArgs: [activeMatch.matchId]);
+  }
+
+  @override
+  Future<void> deleteActiveMatch(String matchId) async {
+    var dbClient = await db;
+    return await dbClient
+        .delete(activeMatchTable, where: 'matchid=?', whereArgs: [matchId]);
   }
 
   @override

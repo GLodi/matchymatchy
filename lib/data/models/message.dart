@@ -1,10 +1,13 @@
 class MoveMessage {
   String matchId;
   String enemyTarget;
+  int enemyMoves;
 
   MoveMessage.fromMap(Map<String, dynamic> map) {
     this.matchId = map['data'].cast<String, dynamic>()['matchid'];
     this.enemyTarget = map['data'].cast<String, dynamic>()['enemytarget'];
+    this.enemyMoves =
+        int.parse(map['data'].cast<String, dynamic>()['enemymoves']);
   }
 }
 

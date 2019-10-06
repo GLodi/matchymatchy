@@ -28,6 +28,9 @@ class MultiBloc extends GameBloc {
   final _enemyNameSubject = BehaviorSubject<String>();
   Stream<String> get enemyName => _enemyNameSubject.stream;
 
+  final _enemyMovesSubject = BehaviorSubject<int>();
+  Stream<int> get enemyMoves => _enemyMovesSubject.stream;
+
   final _forfeitButtonSubject = PublishSubject<bool>();
   Sink<bool> get forfeitButton => _forfeitButtonSubject.sink;
 
@@ -90,24 +93,27 @@ class MultiBloc extends GameBloc {
   }
 
   void listenToMessages() {
-    _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) {
-      if (_repo.matchId == mess.matchId) {
-        print('multi challenge');
-        emitEvent(GameEvent(
-            type: GameEventType.connect, connectMatchId: mess.matchId));
-      }
-    });
-    _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) {
-      if (_repo.matchId == mess.matchId) {
-        _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
-      }
-    });
-    _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
-      if (_repo.matchId == mess.matchId) {
-        print('multi winner');
-        emitEvent(GameEvent(type: GameEventType.victory));
-      }
-    });
+    if (_challengeSubs == null && _moveSubs == null && _winnerSubs == null) {
+      _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) {
+        if (_repo.matchId == mess.matchId) {
+          print('multi challenge');
+          emitEvent(GameEvent(
+              type: GameEventType.connect, connectMatchId: mess.matchId));
+        }
+      });
+      _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) {
+        if (_repo.matchId == mess.matchId) {
+          _enemyMovesSubject.add(mess.enemyMoves);
+          _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
+        }
+      });
+      _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
+        if (_repo.matchId == mess.matchId) {
+          print('multi winner');
+          emitEvent(GameEvent(type: GameEventType.victory));
+        }
+      });
+    }
   }
 
   @override
@@ -115,10 +121,6 @@ class MultiBloc extends GameBloc {
     _challengeSubs.cancel();
     _moveSubs.cancel();
     _winnerSubs.cancel();
-    _enemyTargetSubject.close();
-    _waitMessageSubject.close();
-    _enemyNameSubject.close();
-    _hasMatchStartedSubject.close();
     super.dispose();
   }
 }

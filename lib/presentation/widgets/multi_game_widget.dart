@@ -31,98 +31,114 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
 
   @override
   Widget build(BuildContext context) {
-    double tenthWidth = widget.width / 10;
     _entryAnimCont.forward();
     return ScaleTransition(
-        scale: _entryAnim,
-        alignment: Alignment.center,
-        child: Stack(
-          children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Container(
-                          constraints: BoxConstraints(
-                            maxHeight: 3 * tenthWidth,
-                            maxWidth: 3 * tenthWidth,
-                          ),
-                          alignment: Alignment.topCenter,
-                          child: BlocProvider(
-                            child: EnemyWidget(),
-                            bloc: EnemyFieldBloc(widget.bloc),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text("Opponent", style: TextStyle(fontSize: 15)),
-                      ],
-                    ),
-                    StreamBuilder<int>(
-                      stream: widget.bloc.moveNumber,
-                      initialData: 0,
-                      builder: (context, snapshot) {
-                        return Column(
-                          children: <Widget>[
-                            Text(
-                              'Moves',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: "Roboto",
-                                fontSize: 20.0,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Text(
-                              snapshot.data.toString(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: "Roboto",
-                                fontSize: 25.0,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: 20),
-                          ],
-                        );
-                      },
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Container(
-                          constraints: BoxConstraints(
-                            maxHeight: 3 * tenthWidth,
-                            maxWidth: 3 * tenthWidth,
-                          ),
-                          alignment: Alignment.topCenter,
-                          child: BlocProvider(
-                            child: TargetFieldWidget(),
-                            bloc: TargetBloc(widget.bloc),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text("Target", style: TextStyle(fontSize: 15)),
-                      ],
-                    )
-                  ],
-                ),
-                SafeArea(
-                  child: Container(
-                    constraints: BoxConstraints(maxHeight: widget.width),
-                    alignment: Alignment.bottomCenter,
-                    child: BlocProvider(
-                      child: GameFieldWidget(),
-                      bloc: GameFieldBloc(widget.bloc),
-                    ),
+      scale: _entryAnim,
+      alignment: Alignment.center,
+      child: Stack(
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              targetsRow(),
+              movesRow(),
+              SafeArea(
+                child: Container(
+                  constraints: BoxConstraints(maxHeight: widget.width),
+                  alignment: Alignment.bottomCenter,
+                  child: BlocProvider(
+                    child: GameFieldWidget(),
+                    bloc: GameFieldBloc(widget.bloc),
                   ),
                 ),
-              ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget targetsRow() {
+    double tenthWidth = widget.width / 10;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              constraints: BoxConstraints(
+                maxHeight: 3 * tenthWidth,
+                maxWidth: 3 * tenthWidth,
+              ),
+              alignment: Alignment.topCenter,
+              child: BlocProvider(
+                child: EnemyWidget(),
+                bloc: EnemyFieldBloc(widget.bloc),
+              ),
             ),
+            SizedBox(height: 10),
+            Text("Opponent", style: TextStyle(fontSize: 15)),
           ],
-        ));
+        ),
+        Column(
+          children: <Widget>[
+            Container(
+              constraints: BoxConstraints(
+                maxHeight: 3 * tenthWidth,
+                maxWidth: 3 * tenthWidth,
+              ),
+              alignment: Alignment.topCenter,
+              child: BlocProvider(
+                child: TargetFieldWidget(),
+                bloc: TargetBloc(widget.bloc),
+              ),
+            ),
+            SizedBox(height: 10),
+            Text("Target", style: TextStyle(fontSize: 15)),
+          ],
+        )
+      ],
+    );
+  }
+
+  Widget movesRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text("Opponent"),
+              StreamBuilder<int>(
+                initialData: 0,
+                stream: widget.bloc.enemyMoves,
+                builder: (context, snapshot) {
+                  return Text(snapshot.data.toString());
+                },
+              ),
+            ],
+          ),
+        ),
+        Text("Moves"),
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text("You"),
+              StreamBuilder<int>(
+                initialData: 0,
+                stream: widget.bloc.moveNumber,
+                builder: (context, snapshot) {
+                  return Text(snapshot.data.toString());
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }

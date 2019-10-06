@@ -100,16 +100,18 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   }
 
   void listenToMessages() async {
-    String uid = await _repo.getUid();
-    _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) {
-      print('home challenge');
-    });
-    _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
-      if (mess.winner == uid) {
-        await _repo.updateUser();
-        _userSubject.add(await _repo.getUser());
-      }
-    });
+    if (_challengeSubs == null && _winnerSubs == null) {
+      String uid = await _repo.getUid();
+      _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) {
+        print('home challenge');
+      });
+      _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
+        if (mess.winner == uid) {
+          await _repo.updateUser();
+          _userSubject.add(await _repo.getUser());
+        }
+      });
+    }
   }
 
   @override

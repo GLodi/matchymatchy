@@ -48,16 +48,19 @@ class HomePageViewListBloc
   }
 
   void listenToWinnerMessages() {
-    _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) async {
-      print('pageviewlist challenge');
-      emitEvent(
-          HomePageViewListEvent(type: HomePageViewListEventType.updateMatches));
-    });
-    _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
-      print('pageviewlist winner');
-      emitEvent(
-          HomePageViewListEvent(type: HomePageViewListEventType.updateMatches));
-    });
+    if (_challengeSubs == null && _winnerSubs == null) {
+      _challengeSubs =
+          _messEventBus.on<ChallengeMessage>().listen((mess) async {
+        print('pageviewlist challenge');
+        emitEvent(HomePageViewListEvent(
+            type: HomePageViewListEventType.updateMatches));
+      });
+      _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
+        print('pageviewlist winner');
+        emitEvent(HomePageViewListEvent(
+            type: HomePageViewListEventType.updateMatches));
+      });
+    }
   }
 
   @override

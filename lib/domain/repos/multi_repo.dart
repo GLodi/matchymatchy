@@ -45,6 +45,7 @@ class MultiRepo extends GameRepo {
 
   Future<bool> forfeit() async {
     var userId = await prefsProvider.getUid();
+    await dbProvider.deleteActiveMatch(matchId);
     // TODO: make it so player can't reopen match while
     // it is waiting for a winnermessage
     return apiProvider.sendForfeit(userId, matchId);

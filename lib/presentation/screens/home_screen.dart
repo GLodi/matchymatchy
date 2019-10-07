@@ -89,36 +89,71 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             SizedBox(height: 80),
           ],
         ),
-        bottomButtons("Queue for new match"),
+        bottomButtons(),
       ],
     );
   }
 
   Widget initNotLogged() {
-    return Stack(
-      children: <Widget>[
-        bottomButtons("Log in"),
-        StreamBuilder<bool>(
-          initialData: false,
-          stream: bloc.showSlides,
-          builder: (context, snapshot) {
-            return Container();
-            // return Visibility(
-            //   visible: snapshot.data,
-            //   replacement: Container(),
-            //   maintainInteractivity: false,
-            //   child: IntroSlider(
-            //     slides: slides,
-            //     onDonePress: () => bloc.doneSlidesButton.add(false),
-            //   ),
-            // );
-          },
-        ),
-      ],
+    return Container(
+      decoration: BoxDecoration(color: Colors.blue[200]),
+      child: Stack(
+        children: <Widget>[
+          centerButtons(),
+          StreamBuilder<bool>(
+            initialData: false,
+            stream: bloc.showSlides,
+            builder: (context, snapshot) {
+              return Container();
+              // return Visibility(
+              //   visible: snapshot.data,
+              //   replacement: Container(),
+              //   maintainInteractivity: false,
+              //   child: IntroSlider(
+              //     slides: slides,
+              //     onDonePress: () => bloc.doneSlidesButton.add(false),
+              //   ),
+              // );
+            },
+          ),
+        ],
+      ),
     );
   }
 
-  Widget bottomButtons(String multiButtonText) {
+  Widget centerButtons() {
+    return Center(
+      child: Row(
+        children: <Widget>[
+          MaterialButton(
+            onPressed: () {
+              widget.isTest
+                  ? openMultiScreen()
+                  : Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BlocProvider(
+                          child: SingleScreen(),
+                          bloc: kiwi.Container().resolve<SingleBloc>(),
+                        ),
+                      ),
+                    );
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            elevation: 0,
+            highlightElevation: 0,
+            color: Colors.blue[100],
+            child:
+                Icon(Icons.videogame_asset, color: Colors.blue[800], size: 35),
+          ),
+          MaterialButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget bottomButtons() {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -137,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         child: Row(
           children: <Widget>[
             practiceFAB(),
-            multiButton(multiButtonText),
+            multiButton("Queue for new match"),
           ],
         ),
       ),

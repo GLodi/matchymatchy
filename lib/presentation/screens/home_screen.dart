@@ -8,6 +8,7 @@ import 'package:squazzle/presentation/screens/single_screen.dart';
 import 'package:squazzle/presentation/screens/multi_screen.dart';
 import 'package:squazzle/presentation/widgets/user_widget.dart';
 import 'package:squazzle/presentation/widgets/home_pageview_widget.dart';
+import 'package:squazzle/presentation/widgets/home_notinit_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool isTest;
@@ -49,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 return initLogged(state.user);
                 break;
               case HomeStateType.initNotLogged:
-                return initNotLogged();
+                return HomeNotInitWidget(widget.isTest, bloc);
                 break;
               case HomeStateType.notInit:
                 return Center(
@@ -91,65 +92,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         bottomButtons(),
       ],
-    );
-  }
-
-  Widget initNotLogged() {
-    return Container(
-      decoration: BoxDecoration(color: Colors.blue[200]),
-      child: Stack(
-        children: <Widget>[
-          centerButtons(),
-          StreamBuilder<bool>(
-            initialData: false,
-            stream: bloc.showSlides,
-            builder: (context, snapshot) {
-              return Container();
-              // return Visibility(
-              //   visible: snapshot.data,
-              //   replacement: Container(),
-              //   maintainInteractivity: false,
-              //   child: IntroSlider(
-              //     slides: slides,
-              //     onDonePress: () => bloc.doneSlidesButton.add(false),
-              //   ),
-              // );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget centerButtons() {
-    return Center(
-      child: Row(
-        children: <Widget>[
-          MaterialButton(
-            onPressed: () {
-              widget.isTest
-                  ? openMultiScreen()
-                  : Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BlocProvider(
-                          child: SingleScreen(),
-                          bloc: kiwi.Container().resolve<SingleBloc>(),
-                        ),
-                      ),
-                    );
-            },
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            elevation: 0,
-            highlightElevation: 0,
-            color: Colors.blue[100],
-            child:
-                Icon(Icons.videogame_asset, color: Colors.blue[800], size: 35),
-          ),
-          MaterialButton(),
-        ],
-      ),
     );
   }
 

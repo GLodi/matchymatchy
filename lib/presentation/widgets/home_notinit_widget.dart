@@ -20,39 +20,38 @@ class HomeNotInitWidget extends StatefulWidget {
 class _HomeNotInitWidgetState extends State<HomeNotInitWidget> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(color: Colors.blue[200]),
-      child: Stack(
-        children: <Widget>[
-          centerButtons(),
-          StreamBuilder<bool>(
-            initialData: false,
-            stream: widget.bloc.showSlides,
-            builder: (context, snapshot) {
-              return Container();
-              // return Visibility(
-              //   visible: snapshot.data,
-              //   replacement: Container(),
-              //   maintainInteractivity: false,
-              //   child: IntroSlider(
-              //     slides: slides,
-              //     onDonePress: () => bloc.doneSlidesButton.add(false),
-              //   ),
-              // );
-            },
-          ),
-        ],
-      ),
+    return Stack(
+      children: <Widget>[
+        centerButtons(),
+        StreamBuilder<bool>(
+          initialData: false,
+          stream: widget.bloc.showSlides,
+          builder: (context, snapshot) {
+            return Container();
+            // return Visibility(
+            //   visible: snapshot.data,
+            //   replacement: Container(),
+            //   maintainInteractivity: false,
+            //   child: IntroSlider(
+            //     slides: slides,
+            //     onDonePress: () => bloc.doneSlidesButton.add(false),
+            //   ),
+            // );
+          },
+        ),
+      ],
     );
   }
 
   Widget centerButtons() {
     return Center(
-      child: Row(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          SizedBox(height: 100),
           practiceButton(),
+          SizedBox(height: 30),
           loginButton(),
         ],
       ),
@@ -79,15 +78,22 @@ class _HomeNotInitWidgetState extends State<HomeNotInitWidget> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         elevation: 8,
         highlightElevation: 2,
-        color: Colors.white,
+        color: Colors.blue[200],
+        minWidth: 250,
         child: Container(
           margin: EdgeInsets.all(20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Icon(Icons.videogame_asset, color: Colors.blue[800], size: 50),
-              SizedBox(height: 10),
-              Text("Practice"),
+              Icon(Icons.videogame_asset, color: Colors.white, size: 80),
+              Text(
+                "practice",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w300,
+                    letterSpacing: 4.0),
+              ),
             ],
           ),
         ),
@@ -111,16 +117,17 @@ class _HomeNotInitWidgetState extends State<HomeNotInitWidget> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             elevation: 8,
             highlightElevation: 2,
-            color: Colors.white,
+            color: Colors.blue[200],
+            minWidth: 250,
             child: Container(
               margin: EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Icon(Icons.people, color: Colors.blue[800], size: 50),
-                  SizedBox(height: 10),
-                  Text("Login"),
-                ],
+              child: Text(
+                "login",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w300,
+                    letterSpacing: 4.0),
               ),
             ),
           );

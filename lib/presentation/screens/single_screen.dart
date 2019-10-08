@@ -49,7 +49,7 @@ class _SingleScreenState extends State<SingleScreen>
           BuildContext toHeroContext,
         ) {
           return ClipRRect(
-            borderRadius: BorderRadius.circular(20.0),
+            borderRadius: BorderRadius.circular(30.0),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.blue[200],

@@ -98,35 +98,33 @@ class _HomeNotInitWidgetState extends State<HomeNotInitWidget> {
   Widget loginButton() {
     return Hero(
       tag: 'multibutton',
-      child: MaterialButton(
-        onPressed: () {
-          widget.isTest
-              ? openMultiScreen()
-              : Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider(
-                      child: SingleScreen(),
-                      bloc: kiwi.Container().resolve<SingleBloc>(),
-                    ),
-                  ),
-                );
+      child: StreamBuilder<bool>(
+        initialData: false,
+        stream: widget.bloc.connChange,
+        builder: (context, snapshot) {
+          return MaterialButton(
+            onPressed: () => snapshot.data
+                ? widget.bloc
+                    .emitEvent(HomeEvent(type: HomeEventType.multiButtonPress))
+                : null,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            elevation: 8,
+            highlightElevation: 2,
+            color: Colors.white,
+            child: Container(
+              margin: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Icon(Icons.people, color: Colors.blue[800], size: 50),
+                  SizedBox(height: 10),
+                  Text("Login"),
+                ],
+              ),
+            ),
+          );
         },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        elevation: 8,
-        highlightElevation: 2,
-        color: Colors.white,
-        child: Container(
-          margin: EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Icon(Icons.videogame_asset, color: Colors.blue[800], size: 50),
-              SizedBox(height: 10),
-              Text("Practice"),
-            ],
-          ),
-        ),
       ),
     );
   }

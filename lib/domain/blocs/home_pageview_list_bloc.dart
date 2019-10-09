@@ -88,6 +88,7 @@ class HomePageViewListBloc
 
   @override
   void dispose() {
+    _connectivitySubs.cancel();
     _challengeSubs.cancel();
     _winnerSubs.cancel();
     super.dispose();

@@ -10,8 +10,9 @@ abstract class MatchListItem {}
 
 class ActiveMatchItem extends StatefulWidget implements MatchListItem {
   final ActiveMatch activeMatch;
+  final bool isOnline;
 
-  ActiveMatchItem(this.activeMatch);
+  ActiveMatchItem(this.activeMatch, this.isOnline);
 
   @override
   State<StatefulWidget> createState() {
@@ -28,14 +29,16 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
         height: 110,
         margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
         child: MaterialButton(
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => BlocProvider(
-                child: MultiScreen(widget.activeMatch.matchId),
-                bloc: kiwi.Container().resolve<MultiBloc>(),
-              ),
-            ),
-          ),
+          onPressed: () => widget.isOnline
+              ? Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      child: MultiScreen(widget.activeMatch.matchId),
+                      bloc: kiwi.Container().resolve<MultiBloc>(),
+                    ),
+                  ),
+                )
+              : null,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           elevation: 0,
@@ -72,19 +75,19 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
               Text(
                 widget.activeMatch.enemyName,
                 style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.blue[800],
-                  fontWeight: FontWeight.bold,
-                ),
+                    color: Colors.blue[800],
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 2.0),
               ),
               SizedBox(height: 20),
               Text(
                 "You",
                 style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.blue[800],
-                  fontWeight: FontWeight.bold,
-                ),
+                    color: Colors.blue[800],
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 2.0),
               ),
             ],
           ),
@@ -99,19 +102,19 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
                 Text(
                   widget.activeMatch.enemyMoves.toString(),
                   style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.blue[800],
-                    fontWeight: FontWeight.bold,
-                  ),
+                      color: Colors.blue[800],
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 2.0),
                 ),
                 SizedBox(height: 20),
                 Text(
                   widget.activeMatch.moves.toString(),
                   style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.blue[800],
-                    fontWeight: FontWeight.bold,
-                  ),
+                      color: Colors.blue[800],
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 2.0),
                 ),
               ],
             ),

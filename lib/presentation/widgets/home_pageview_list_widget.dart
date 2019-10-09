@@ -58,8 +58,18 @@ class _HomePageViewListWidgetState extends State<HomePageViewListWidget>
       itemCount: activeMatches.length + pastMatches.length,
       itemBuilder: (context, position) {
         return position < activeMatches.length
-            ? ActiveMatchItem(activeMatches[position])
+            ? activeItem(activeMatches[position])
             : PastMatchItem(pastMatches[position - activeMatches.length]);
+      },
+    );
+  }
+
+  Widget activeItem(ActiveMatch activeMatch) {
+    return StreamBuilder<bool>(
+      initialData: false,
+      stream: bloc.connChange,
+      builder: (context, snapshot) {
+        return ActiveMatchItem(activeMatch, snapshot.data);
       },
     );
   }
@@ -76,8 +86,12 @@ class _HomePageViewListWidgetState extends State<HomePageViewListWidget>
           ),
           SizedBox(height: 40),
           Text(
-            'Retrieving matches...',
-            style: TextStyle(color: Colors.blue[300]),
+            'retrieving matches...',
+            style: TextStyle(
+                color: Colors.blue[300],
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 2.0),
           ),
           SizedBox(height: 60),
         ],

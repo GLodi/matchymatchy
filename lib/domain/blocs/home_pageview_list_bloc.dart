@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:rxdart/rxdart.dart';
+import 'package:connectivity/connectivity.dart';
 
 import 'package:squazzle/data/api/mess_event_bus.dart';
 import 'package:squazzle/domain/domain.dart';
@@ -8,10 +10,31 @@ class HomePageViewListBloc
     extends BlocEventStateBase<HomePageViewListEvent, HomePageViewListState> {
   final HomePageViewListRepo _repo;
   final MessagingEventBus _messEventBus;
-  StreamSubscription _challengeSubs, _winnerSubs;
+  StreamSubscription _connectivitySubs, _challengeSubs, _winnerSubs;
+
+  final _connChangeSub = BehaviorSubject<bool>();
+  Stream<bool> get connChange => _connChangeSub.stream;
 
   HomePageViewListBloc(this._repo, this._messEventBus)
       : super(initialState: HomePageViewListState.fetching());
+
+  void setup() async {
+    ConnectivityResult curr = await Connectivity().checkConnectivity();
+    bool prev = curr == ConnectivityResult.none ? false : true;
+    _connChangeSub.add(prev);
+    _connectivitySubs = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
+      if (result == ConnectivityResult.none && prev) {
+        _connChangeSub.add(false);
+        prev = false;
+      }
+      if (result != ConnectivityResult.none && !prev) {
+        _connChangeSub.add(true);
+        prev = true;
+      }
+    });
+  }
 
   @override
   Stream<HomePageViewListState> eventHandler(

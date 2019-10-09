@@ -136,9 +136,9 @@ class PastMatchItem extends StatefulWidget implements MatchListItem {
 class _PastMatchItemState extends State<PastMatchItem> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Text('past' + widget.pastMatch.moves.toString(),
-          style: TextStyle(color: Colors.black)),
+    return Container(
+      height: 110,
+      margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
     );
   }
 }

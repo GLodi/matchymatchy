@@ -21,6 +21,7 @@ class _HomePageViewListWidgetState extends State<HomePageViewListWidget>
   @override
   void initState() {
     bloc = BlocProvider.of<HomePageViewListBloc>(context);
+    bloc.setup();
     bloc.emitEvent(
         HomePageViewListEvent(type: HomePageViewListEventType.start));
     super.initState();

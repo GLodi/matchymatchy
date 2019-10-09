@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         child: Row(
           children: <Widget>[
             practiceFAB(),
-            multiButton("Queue for new match"),
+            multiButton(),
           ],
         ),
       ),
@@ -151,8 +151,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget multiButton(String text) {
-    String lastInput = text;
+  Widget multiButton() {
     return Expanded(
       child: Hero(
         tag: 'multibutton',
@@ -173,10 +172,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       HomeEvent(type: HomeEventType.multiButtonPress))
                   : null,
               child: Text(
-                snapshot.data ? lastInput : "Offline",
+                snapshot.data ? "queue for new match" : "offline",
                 style: TextStyle(
-                  color: Colors.blue[800],
-                ),
+                    color: Colors.blue[800],
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 2.0),
               ),
             );
           },

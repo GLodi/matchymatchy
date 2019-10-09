@@ -72,7 +72,8 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
             await _repo.loginWithGoogle(await _messEventBus.getToken());
             yield await checkIfUserLogged();
           } catch (e) {
-            _snackBarSubject.add('Login error');
+            _snackBarSubject.add('login error');
+            emitEvent(HomeEvent(type: HomeEventType.checkIfUserLogged));
             print(e);
           }
         }
@@ -92,7 +93,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
         nextState = HomeState.initNotLogged();
       }
     } catch (e) {
-      _snackBarSubject.add('Login check error');
+      _snackBarSubject.add('login check error');
       nextState = HomeState.initNotLogged();
       print(e);
     }

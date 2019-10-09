@@ -46,6 +46,7 @@ class _UserWidgetState extends State<UserWidget> with TickerProviderStateMixin {
               alignment: Alignment.topCenter,
               child: Container(
                 height: 200.0,
+                width: widget.parentWidth,
                 decoration: BoxDecoration(
                   color: Colors.blue[200],
                   borderRadius: BorderRadius.only(
@@ -66,25 +67,46 @@ class _UserWidgetState extends State<UserWidget> with TickerProviderStateMixin {
   Widget elements() {
     return Stack(
       children: <Widget>[
-        Center(
-          child: Container(
-            margin: EdgeInsets.fromLTRB(0, 0, 120, 0),
-            child: ClipOval(
-              child: CachedNetworkImage(
-                imageUrl: widget.user.photoUrl,
-                placeholder: (context, url) => CircularProgressIndicator(),
-                errorWidget: (context, url, error) => Icon(Icons.error),
-              ),
-            ),
-          ),
-        ),
+        // Container(
+        //   alignment: Alignment.centerLeft,
+        //   margin: EdgeInsets.fromLTRB(65, 0, 0, 0),
+        //   child: ClipOval(
+        //     child: CachedNetworkImage(
+        //       imageUrl: widget.user.photoUrl,
+        //       placeholder: (context, url) => CircularProgressIndicator(),
+        //       errorWidget: (context, url, error) => Icon(Icons.error),
+        //     ),
+        //   ),
+        // )
+        // ,
+
         Positioned(
-            top: 80,
-            right: widget.parentWidth / 4,
-            child: Column(children: [
-              Text(widget.user.username, textAlign: TextAlign.right),
-              Text('Wins: ' + widget.user.matchesWon.toString()),
-            ])),
+          width: widget.parentWidth / 2,
+          right: 0,
+          child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "aaaaaaaaaaaaaa",
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 1,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'wins: ' + widget.user.matchesWon.toString(),
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 1,
+                  ),
+                ),
+              ]),
+        ),
       ],
     );
   }

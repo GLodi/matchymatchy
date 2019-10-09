@@ -79,7 +79,11 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
               ),
             ),
             SizedBox(height: 10),
-            Text("Opponent", style: TextStyle(fontSize: 15)),
+            Text("Opponent",
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 2.0)),
           ],
         ),
         Column(
@@ -96,7 +100,13 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
               ),
             ),
             SizedBox(height: 10),
-            Text("Target", style: TextStyle(fontSize: 15)),
+            Text(
+              "Target",
+              style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: 2.0),
+            ),
           ],
         )
       ],
@@ -111,28 +121,56 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Text("Opponent"),
+              Text(
+                "Opponent",
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 2.0),
+              ),
               StreamBuilder<int>(
                 initialData: 0,
                 stream: widget.bloc.enemyMoves,
                 builder: (context, snapshot) {
-                  return Text(snapshot.data.toString());
+                  return Text(
+                    snapshot.data.toString(),
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 2.0),
+                  );
                 },
               ),
             ],
           ),
         ),
-        Text("Moves"),
+        Text(
+          "Moves",
+          style: TextStyle(
+              fontSize: 15, fontWeight: FontWeight.w400, letterSpacing: 2.0),
+        ),
         Expanded(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Text("You"),
+              Text(
+                "You",
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 2.0),
+              ),
               StreamBuilder<int>(
                 initialData: 0,
                 stream: widget.bloc.moveNumber,
                 builder: (context, snapshot) {
-                  return Text(snapshot.data.toString());
+                  return Text(
+                    snapshot.data.toString(),
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 2.0),
+                  );
                 },
               ),
             ],

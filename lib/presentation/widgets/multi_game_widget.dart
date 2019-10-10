@@ -79,7 +79,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
               ),
             ),
             SizedBox(height: 10),
-            Text("Opponent",
+            Text("Enemy",
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w400,
@@ -122,12 +122,13 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                "Opponent",
+                "Enemy",
                 style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 20,
                     fontWeight: FontWeight.w400,
                     letterSpacing: 2.0),
               ),
+              SizedBox(height: 10),
               StreamBuilder<int>(
                 initialData: 0,
                 stream: widget.bloc.enemyMoves,
@@ -135,7 +136,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
                   return Text(
                     snapshot.data.toString(),
                     style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 20,
                         fontWeight: FontWeight.w400,
                         letterSpacing: 2.0),
                   );
@@ -156,10 +157,11 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
               Text(
                 "You",
                 style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 20,
                     fontWeight: FontWeight.w400,
                     letterSpacing: 2.0),
               ),
+              SizedBox(height: 10),
               StreamBuilder<int>(
                 initialData: 0,
                 stream: widget.bloc.moveNumber,
@@ -167,7 +169,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
                   return Text(
                     snapshot.data.toString(),
                     style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 20,
                         fontWeight: FontWeight.w400,
                         letterSpacing: 2.0),
                   );

@@ -188,7 +188,7 @@ class _MultiScreenState extends State<MultiScreen>
           context: context,
           builder: (context) => AlertDialog(
             title: Text('Close match', style: TextStyle(color: Colors.black)),
-            content: Text('Do you want to exit?',
+            content: Text('Do you want to close match?',
                 style: TextStyle(color: Colors.black)),
             actions: <Widget>[
               FlatButton(

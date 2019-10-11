@@ -93,7 +93,7 @@ class _SingleScreenState extends State<SingleScreen>
           context: context,
           builder: (context) => AlertDialog(
             title: Text('Are you sure?', style: TextStyle(color: Colors.black)),
-            content: Text('Do you want to exit?',
+            content: Text('Do you want to close match?',
                 style: TextStyle(color: Colors.black)),
             actions: <Widget>[
               FlatButton(

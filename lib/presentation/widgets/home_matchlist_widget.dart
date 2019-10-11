@@ -111,7 +111,11 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
           children: <Widget>[
             Text(
               'No active nor past matches stored',
-              style: TextStyle(color: Colors.blue[300]),
+              style: TextStyle(
+                  color: Colors.blue[300],
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: 2.0),
             ),
             SizedBox(height: 60),
           ]),

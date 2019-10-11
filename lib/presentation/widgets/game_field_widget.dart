@@ -42,6 +42,7 @@ class _GameFieldWidgetState extends State<GameFieldWidget>
   @override
   Widget build(BuildContext context) {
     fifthWidth = MediaQuery.of(context).size.width / 5;
+    // TODO: add center squares frame
     return StreamBuilder<GameField>(
       stream: bloc.gameField,
       initialData: field,
@@ -63,6 +64,8 @@ class _GameFieldWidgetState extends State<GameFieldWidget>
         }
         return Stack(
           children: <Widget>[
+            // Central frame
+            frame(),
             // Top row
             square(0, 0, 4 * fifthWidth),
             square(1, fifthWidth, 4 * fifthWidth),
@@ -96,6 +99,22 @@ class _GameFieldWidgetState extends State<GameFieldWidget>
           ],
         );
       },
+    );
+  }
+
+  Widget frame() {
+    return Center(
+      child: Container(
+        height: fifthWidth * 3,
+        width: fifthWidth * 3,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white, width: 0),
+          color: Colors.white,
+          borderRadius: BorderRadius.all(
+            Radius.circular(7.0),
+          ),
+        ),
+      ),
     );
   }
 
@@ -150,7 +169,7 @@ class _GameFieldWidgetState extends State<GameFieldWidget>
           child: Container(
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(
-                border: new Border.all(color: Colors.black),
+                border: Border.all(color: Colors.black),
                 color: colors[int.parse(field.grid[index])],
                 borderRadius: BorderRadius.all(Radius.circular(5.0))),
           ),

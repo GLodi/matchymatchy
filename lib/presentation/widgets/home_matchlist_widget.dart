@@ -3,53 +3,57 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
-import 'pageview_matchlist_item.dart';
+import 'matchlist_item.dart';
 
-class HomePageViewListWidget extends StatefulWidget {
-  HomePageViewListWidget({Key key}) : super(key: key);
+class HomeMatchListWidget extends StatefulWidget {
+  HomeMatchListWidget({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _HomePageViewListWidgetState();
+    return _HomeMatchListWidgetState();
   }
 }
 
-class _HomePageViewListWidgetState extends State<HomePageViewListWidget>
-    with AutomaticKeepAliveClientMixin<HomePageViewListWidget> {
-  HomePageViewListBloc bloc;
+class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
+    with AutomaticKeepAliveClientMixin<HomeMatchListWidget> {
+  HomeMatchListBloc bloc;
 
   @override
   void initState() {
-    bloc = BlocProvider.of<HomePageViewListBloc>(context);
+    bloc = BlocProvider.of<HomeMatchListBloc>(context);
     bloc.setup();
-    bloc.emitEvent(
-        HomePageViewListEvent(type: HomePageViewListEventType.start));
+    bloc.emitEvent(HomeMatchListEvent(type: HomeMatchListEventType.start));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocEventStateBuilder<HomePageViewListEvent, HomePageViewListState>(
-      bloc: bloc,
-      builder: (context, state) {
-        switch (state.type) {
-          case HomePageViewListStateType.init:
-            return init(state.activeMatches, state.pastMatches);
-            break;
-          case HomePageViewListStateType.fetching:
-            return fetching();
-            break;
-          case HomePageViewListStateType.empty:
-            return empty();
-            break;
-          case HomePageViewListStateType.error:
-            return error(state.message);
-            break;
-          default:
-            return Container();
-        }
-      },
+    return Expanded(
+      child: BlocEventStateBuilder<HomeMatchListEvent, HomeMatchListState>(
+        bloc: bloc,
+        builder: (context, state) {
+          switch (state.type) {
+            case HomeMatchListStateType.init:
+              return init(state.activeMatches, state.pastMatches);
+              break;
+            case HomeMatchListStateType.fetching:
+              return fetching();
+              break;
+            case HomeMatchListStateType.empty:
+              return empty();
+              break;
+            case HomeMatchListStateType.error:
+              return Center(
+                child: Text(state.message,
+                    style: TextStyle(color: Colors.blue[300])),
+              );
+              break;
+            default:
+              return Container();
+          }
+        },
+      ),
     );
   }
 
@@ -111,12 +115,6 @@ class _HomePageViewListWidgetState extends State<HomePageViewListWidget>
             ),
             SizedBox(height: 60),
           ]),
-    );
-  }
-
-  Widget error(String message) {
-    return Center(
-      child: Text(message, style: TextStyle(color: Colors.blue[300])),
     );
   }
 

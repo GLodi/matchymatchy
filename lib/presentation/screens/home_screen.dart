@@ -7,7 +7,7 @@ import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/screens/single_screen.dart';
 import 'package:squazzle/presentation/screens/multi_screen.dart';
 import 'package:squazzle/presentation/widgets/user_widget.dart';
-import 'package:squazzle/presentation/widgets/home_pageview_widget.dart';
+import 'package:squazzle/presentation/widgets/home_matchlist_widget.dart';
 import 'package:squazzle/presentation/widgets/home_notinit_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -86,7 +86,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     parentWidth: width);
               },
             ),
-            HomePageViewWidget(),
+            BlocProvider(
+              child: HomeMatchListWidget(),
+              bloc: kiwi.Container().resolve<HomeMatchListBloc>(),
+            ),
             SizedBox(height: 80),
           ],
         ),

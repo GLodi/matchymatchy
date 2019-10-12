@@ -41,16 +41,16 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
               : null,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          elevation: 0,
-          highlightElevation: 0,
+          elevation: 3,
+          highlightElevation: 1,
           color: Colors.blue[100],
-          child: elements(),
+          child: activeElements(),
         ),
       ),
     );
   }
 
-  Widget elements() {
+  Widget activeElements() {
     return Stack(
       children: [
         Align(
@@ -142,6 +142,28 @@ class _PastMatchItemState extends State<PastMatchItem> {
     return Container(
       height: 110,
       margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
+      child: MaterialButton(
+        onPressed: () => widget.isOnline
+            ? Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => BlocProvider(
+                    child: MultiScreen(widget.activeMatch.matchId),
+                    bloc: kiwi.Container().resolve<MultiBloc>(),
+                  ),
+                ),
+              )
+            : null,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 3,
+        highlightElevation: 1,
+        color: Colors.blue[100],
+        child: pastElements(),
+      ),
     );
+  }
+
+  Widget pastElements() {
+    // TODO: green back for win, red for loss
+    return widget.pastMatch.forfeitWin ? Container() : Container();
   }
 }

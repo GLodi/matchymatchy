@@ -53,6 +53,7 @@ class _HomeInitWidgetState extends State<HomeInitWidget> {
   }
 
   Widget bottomButtons() {
+    // TODO: add animation to this. Opposite of user_widget
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(

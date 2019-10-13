@@ -127,8 +127,9 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
 
 class PastMatchItem extends StatefulWidget implements MatchListItem {
   final PastMatch pastMatch;
+  final String username;
 
-  PastMatchItem(this.pastMatch);
+  PastMatchItem(this.pastMatch, this.username);
 
   @override
   State<StatefulWidget> createState() {
@@ -142,20 +143,9 @@ class _PastMatchItemState extends State<PastMatchItem> {
     return Container(
       height: 110,
       margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
-      child: MaterialButton(
-        onPressed: () => widget.isOnline
-            ? Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => BlocProvider(
-                    child: MultiScreen(widget.activeMatch.matchId),
-                    bloc: kiwi.Container().resolve<MultiBloc>(),
-                  ),
-                ),
-              )
-            : null,
+      child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         elevation: 3,
-        highlightElevation: 1,
         color: Colors.blue[100],
         child: pastElements(),
       ),
@@ -163,7 +153,12 @@ class _PastMatchItemState extends State<PastMatchItem> {
   }
 
   Widget pastElements() {
-    // TODO: green back for win, red for loss
-    return widget.pastMatch.forfeitWin ? Container() : Container();
+    print(widget.pastMatch.toMap());
+    return Container(
+      decoration: BoxDecoration(
+          color: widget.username == widget.pastMatch.winner
+              ? Colors.green
+              : Colors.red),
+    );
   }
 }

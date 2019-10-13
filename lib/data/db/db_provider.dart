@@ -106,6 +106,7 @@ class DbProviderImpl extends DbProvider {
   }
 
   @override
+  // TODO: edit db, make winner nonnull
   Future<void> storePastMatches(List<PastMatch> list) async {
     var dbClient = await db;
     list.forEach(

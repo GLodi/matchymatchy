@@ -52,10 +52,13 @@ class HomeMatchListBloc
           List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
           List<PastMatch> pastMatches = await _repo.getPastMatches();
           if (activeMatches.isNotEmpty || pastMatches.isNotEmpty) {
+            User user = await _repo.getUser();
             yield HomeMatchListState(
-                type: HomeMatchListStateType.init,
-                activeMatches: activeMatches.isNotEmpty ? activeMatches : [],
-                pastMatches: pastMatches.isNotEmpty ? pastMatches : []);
+              type: HomeMatchListStateType.init,
+              activeMatches: activeMatches.isNotEmpty ? activeMatches : [],
+              pastMatches: pastMatches.isNotEmpty ? pastMatches : [],
+              username: user.username,
+            );
           } else {
             yield HomeMatchListState(type: HomeMatchListStateType.empty);
           }

@@ -23,4 +23,6 @@ class HomeMatchListRepo {
 
   Future<List<PastMatch>> getPastMatches() async =>
       await _dbProvider.getPastMatches();
+
+  Future<User> getUser() async => await _prefsProvider.getUser();
 }

@@ -8,20 +8,23 @@ class HomeMatchListState extends BlocState {
   final String message;
   final List<ActiveMatch> activeMatches;
   final List<PastMatch> pastMatches;
+  final String username;
 
   HomeMatchListState({
     @required this.type,
     this.message,
     this.activeMatches,
     this.pastMatches,
+    this.username,
   });
 
-  factory HomeMatchListState.init(
-          List<ActiveMatch> activeMatches, List<PastMatch> pastMatches) =>
+  factory HomeMatchListState.init(List<ActiveMatch> activeMatches,
+          List<PastMatch> pastMatches, String username) =>
       HomeMatchListState(
           type: HomeMatchListStateType.init,
           activeMatches: activeMatches,
-          pastMatches: pastMatches);
+          pastMatches: pastMatches,
+          username: username);
 
   factory HomeMatchListState.fetching() =>
       HomeMatchListState(type: HomeMatchListStateType.fetching);

@@ -42,7 +42,6 @@ class _GameFieldWidgetState extends State<GameFieldWidget>
   @override
   Widget build(BuildContext context) {
     fifthWidth = MediaQuery.of(context).size.width / 5;
-    // TODO: add center squares frame
     return StreamBuilder<GameField>(
       stream: bloc.gameField,
       initialData: field,

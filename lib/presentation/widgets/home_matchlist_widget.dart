@@ -35,7 +35,8 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
         builder: (context, state) {
           switch (state.type) {
             case HomeMatchListStateType.init:
-              return init(state.activeMatches, state.pastMatches);
+              return init(
+                  state.activeMatches, state.pastMatches, state.username);
               break;
             case HomeMatchListStateType.fetching:
               return fetching();
@@ -57,13 +58,15 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
     );
   }
 
-  Widget init(List<ActiveMatch> activeMatches, List<PastMatch> pastMatches) {
+  Widget init(List<ActiveMatch> activeMatches, List<PastMatch> pastMatches,
+      String username) {
     return ListView.builder(
       itemCount: activeMatches.length + pastMatches.length,
       itemBuilder: (context, position) {
         return position < activeMatches.length
             ? activeItem(activeMatches[position])
-            : PastMatchItem(pastMatches[position - activeMatches.length]);
+            : PastMatchItem(
+                pastMatches[position - activeMatches.length], username);
       },
     );
   }

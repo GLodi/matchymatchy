@@ -9,8 +9,7 @@ class UserWidget extends StatefulWidget {
   final double parentHeight;
   final double parentWidth;
 
-  UserWidget({Key key, this.user, this.parentHeight, this.parentWidth})
-      : super(key: key);
+  UserWidget({this.user, this.parentHeight, this.parentWidth});
 
   @override
   State<StatefulWidget> createState() {

@@ -50,7 +50,6 @@ class ApiProviderImpl implements ApiProvider {
         await usersRef.document(uid).collection('pastmatches').getDocuments();
     if (pastMatchesQuery.documents.isNotEmpty) {
       pastMatchesQuery.documents.forEach((d) {
-        print(d.data);
         list.add(PastMatch.fromMap(d.data));
       });
     }
@@ -61,10 +60,7 @@ class ApiProviderImpl implements ApiProvider {
   Future<ActiveMatch> queuePlayer(String uid, String token) async {
     return _net
         .get(_baseUrl + 'queuePlayer?userId=' + uid + '&userFcmToken=' + token)
-        .then((response) {
-      print(response);
-      return ActiveMatch.fromMap(response);
-    });
+        .then((response) => ActiveMatch.fromMap(response));
   }
 
   @override
@@ -105,9 +101,6 @@ class ApiProviderImpl implements ApiProvider {
             token +
             '&matchId=' +
             matchId)
-        .then((response) {
-      print(response);
-      return ActiveMatch.fromMap(response);
-    });
+        .then((response) => ActiveMatch.fromMap(response));
   }
 }

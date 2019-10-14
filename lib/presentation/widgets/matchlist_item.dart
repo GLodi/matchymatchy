@@ -153,7 +153,6 @@ class _PastMatchItemState extends State<PastMatchItem> {
   }
 
   Widget pastElements() {
-    print(widget.pastMatch.toMap());
     return Container(
       decoration: BoxDecoration(
           color: widget.username == widget.pastMatch.winner

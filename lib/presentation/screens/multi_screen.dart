@@ -86,7 +86,16 @@ class _MultiScreenState extends State<MultiScreen>
                 switch (state.type) {
                   case GameStateType.error:
                     {
-                      return Center(child: Text(state.message));
+                      return Center(
+                        child: Text(
+                          state.message,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      );
                     }
                   case GameStateType.notInit:
                     {
@@ -141,10 +150,15 @@ class _MultiScreenState extends State<MultiScreen>
           ),
           SizedBox(height: 80),
           StreamBuilder<String>(
-            initialData: 'Connecting to server...',
+            initialData: 'connecting to server...',
             stream: bloc.waitMessage,
             builder: (context, snapshot) => Text(
               snapshot.data,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 1,
+              ),
             ),
           ),
           SizedBox(height: 60),

@@ -77,12 +77,12 @@ class HomeMatchListBloc
     if (_challengeSubs == null && _winnerSubs == null) {
       _challengeSubs =
           _messEventBus.on<ChallengeMessage>().listen((mess) async {
-        print('pageviewlist challenge');
+        print('matchlist challenge');
         emitEvent(
             HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
       });
       _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
-        print('pageviewlist winner');
+        print('matchlist winner');
         emitEvent(
             HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
       });

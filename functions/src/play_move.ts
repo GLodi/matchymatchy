@@ -142,6 +142,7 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
     .collection("pastmatches")
     .doc(matchDoc.id)
     .set({
+      enemyurl: matchDoc.data()!.joinurl,
       matchid: matchDoc.id,
       moves: matchDoc.data()!.hostmoves,
       enemymoves: matchDoc.data()!.joinmoves,
@@ -153,6 +154,7 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
     .collection("pastmatches")
     .doc(matchDoc.id)
     .set({
+      enemyurl: matchDoc.data()!.hosturl,
       matchid: matchDoc.id,
       moves: matchDoc.data()!.joinmoves,
       enemymoves: matchDoc.data()!.hostmoves,

@@ -82,7 +82,7 @@ class MultiBloc extends GameBloc {
   }
 
   void fetchResult(ActiveMatch currentMatch) async {
-    _waitMessageSubject.add('Waiting for opponent...');
+    _waitMessageSubject.add('waiting for opponent...');
     if (currentMatch.started == 1) {
       gameField = currentMatch.gameField;
       targetField = currentMatch.targetField;

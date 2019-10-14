@@ -86,7 +86,7 @@ class _UserWidgetState extends State<UserWidget> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    widget.user.username,
+                    widget.user.username.toLowerCase(),
                     textAlign: TextAlign.right,
                     style: TextStyle(
                       fontSize: 15,

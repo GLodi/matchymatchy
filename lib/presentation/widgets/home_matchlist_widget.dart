@@ -30,32 +30,40 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
   Widget build(BuildContext context) {
     super.build(context);
     return Expanded(
-      child: BlocEventStateBuilder<HomeMatchListEvent, HomeMatchListState>(
-        bloc: bloc,
-        builder: (context, state) {
-          switch (state.type) {
-            case HomeMatchListStateType.init:
-              return init(
-                  state.activeMatches, state.pastMatches, state.username);
-              break;
-            case HomeMatchListStateType.fetching:
-              return fetching();
-              break;
-            case HomeMatchListStateType.empty:
-              return empty();
-              break;
-            case HomeMatchListStateType.error:
-              return Center(
-                child: Text(state.message,
-                    style: TextStyle(color: Colors.blue[300])),
-              );
-              break;
-            default:
-              return Container();
-          }
-        },
+      child: RefreshIndicator(
+        onRefresh: _onRefresh,
+        child: BlocEventStateBuilder<HomeMatchListEvent, HomeMatchListState>(
+          bloc: bloc,
+          builder: (context, state) {
+            switch (state.type) {
+              case HomeMatchListStateType.init:
+                return init(
+                    state.activeMatches, state.pastMatches, state.username);
+                break;
+              case HomeMatchListStateType.fetching:
+                return fetching();
+                break;
+              case HomeMatchListStateType.empty:
+                return empty();
+                break;
+              case HomeMatchListStateType.error:
+                return Center(
+                  child: Text(state.message,
+                      style: TextStyle(color: Colors.blue[300])),
+                );
+                break;
+              default:
+                return Container();
+            }
+          },
+        ),
       ),
     );
+  }
+
+  Future<Null> _onRefresh() async {
+    bloc.emitEvent(
+        HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
   }
 
   Widget init(List<ActiveMatch> activeMatches, List<PastMatch> pastMatches,

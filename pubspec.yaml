@@ -26,6 +26,7 @@ dependencies:
   cloud_firestore: ^0.12.6
   connectivity: ^0.4.3+2
   flutter_spinkit: ^3.1.0
+  pull_to_refresh: ^1.5.7
 
   flutter:
     sdk: flutter

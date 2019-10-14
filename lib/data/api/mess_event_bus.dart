@@ -15,12 +15,15 @@ class MessagingEventBus {
         var typ = message['data'].cast<String, dynamic>()['messType'];
         switch (typ) {
           case 'challenge':
+            print(message);
             _messController.add(ChallengeMessage.fromMap(message));
             break;
           case 'move':
+            print(message);
             _messController.add(MoveMessage.fromMap(message));
             break;
           case 'winner':
+            print(message);
             _messController.add(WinnerMessage.fromMap(message));
             break;
         }

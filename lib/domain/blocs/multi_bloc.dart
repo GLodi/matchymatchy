@@ -88,6 +88,7 @@ class MultiBloc extends GameBloc {
       targetField = currentMatch.targetField;
       _enemyTargetSubject.add(currentMatch.enemyTargetField);
       _enemyNameSubject.add(currentMatch.enemyName);
+      _enemyMovesSubject.add(currentMatch.enemyMoves);
       moveNumberSubject.add(currentMatch.moves);
       _hasMatchStartedSubject.add(true);
       emitEvent(GameEvent(type: GameEventType.start));
@@ -105,6 +106,7 @@ class MultiBloc extends GameBloc {
       });
       _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) {
         if (_repo.matchId == mess.matchId) {
+          print('multi message');
           _enemyMovesSubject.add(mess.enemyMoves);
           _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
         }
@@ -120,6 +122,11 @@ class MultiBloc extends GameBloc {
 
   @override
   void dispose() {
+    _hasMatchStartedSubject.close();
+    _waitMessageSubject.close();
+    _enemyMovesSubject.close();
+    _enemyTargetSubject.close();
+    _enemyNameSubject.close();
     _challengeSubs.cancel();
     _moveSubs.cancel();
     _winnerSubs.cancel();

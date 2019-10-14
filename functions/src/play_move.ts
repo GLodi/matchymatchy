@@ -72,10 +72,6 @@ function isOtherPlayerDone(
   );
 }
 
-/**
- * Update match document. This change will be picked up by index.ts
- * and FCM will notify the enemy player.
- */
 async function updateMatch(
   userId: string,
   matchDoc: DocumentSnapshot,
@@ -96,9 +92,6 @@ async function updateMatch(
       });
 }
 
-/**
- * If a player signals that is done with the match, update the doc.
- */
 async function setPlayerDone(userId: string, matchDoc: DocumentSnapshot) {
   userId == matchDoc.data()!.hostuid
     ? await matches.doc(matchDoc.id).update({
@@ -109,9 +102,6 @@ async function setPlayerDone(userId: string, matchDoc: DocumentSnapshot) {
       });
 }
 
-/**
- * If both players are done, declare winner.
- */
 async function declareWinner(matchDoc: DocumentSnapshot) {
   if (matchDoc.data()!.hostmoves < matchDoc.data()!.joinmoves) {
     await upWinAmount(matchDoc, true, false);
@@ -125,9 +115,6 @@ async function declareWinner(matchDoc: DocumentSnapshot) {
   }
 }
 
-/**
- * Increase winner's win count.
- */
 async function upWinAmount(
   matchDoc: DocumentSnapshot,
   hostOrJoin: boolean,
@@ -138,21 +125,16 @@ async function upWinAmount(
   );
   const user: DocumentSnapshot = await userRef.get();
   userRef.update({
-    matchesWon: +user.data()!.matchesWon + 1
+    matcheswon: +user.data()!.matcheswon + 1
   });
   await matches.doc(matchDoc.id).update({
     winner: hostOrJoin ? matchDoc.data()!.hostuid : matchDoc.data()!.joinuid,
     winnername: user.data()!.username,
     forfeitwin: forfeitWin
   });
-  await resetMatch(matchDoc);
+  await resetMatch(await matches.doc(matchDoc.id).get());
 }
 
-/**
- * Frees players from finished game.
- * Copies match document to each user's user/pastmatches collection and
- * deconstes it from matches and user/activematches.
- */
 async function resetMatch(matchDoc: DocumentSnapshot) {
   const hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid);
   const joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid);

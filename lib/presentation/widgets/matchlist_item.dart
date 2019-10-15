@@ -82,7 +82,7 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
               ),
               SizedBox(height: 20),
               Text(
-                "You",
+                "you",
                 style: TextStyle(
                     color: Colors.blue[800],
                     fontSize: 15,
@@ -127,9 +127,9 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
 
 class PastMatchItem extends StatefulWidget implements MatchListItem {
   final PastMatch pastMatch;
-  final String username;
+  final User user;
 
-  PastMatchItem(this.pastMatch, this.username);
+  PastMatchItem(this.pastMatch, this.user);
 
   @override
   State<StatefulWidget> createState() {
@@ -143,21 +143,67 @@ class _PastMatchItemState extends State<PastMatchItem> {
     return Container(
       height: 110,
       margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        elevation: 3,
-        color: Colors.blue[100],
-        child: pastElements(),
-      ),
+      child: pastElements(),
     );
   }
 
   Widget pastElements() {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 3,
+      color: widget.user.username == widget.pastMatch.winner
+          ? Colors.green[100]
+          : Colors.red[100],
+      child: Stack(children: <Widget>[
+        winLostText(widget.user.username == widget.pastMatch.winner),
+        leftImage(),
+        rightImage(),
+      ]),
+    );
+  }
+
+  Widget winLostText(bool win) {
+    return Center(
+      child: Text(
+        win ? "you won!" : "you lost",
+        style: TextStyle(
+            color: win ? Colors.green[800] : Colors.red[800],
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 2.0),
+      ),
+    );
+  }
+
+  Widget leftImage() {
     return Container(
-      decoration: BoxDecoration(
-          color: widget.username == widget.pastMatch.winner
-              ? Colors.green
-              : Colors.red),
+      margin: EdgeInsets.all(20),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: ClipOval(
+          child: CachedNetworkImage(
+            imageUrl: widget.user.photoUrl,
+            placeholder: (context, url) => CircularProgressIndicator(),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget rightImage() {
+    return Container(
+      margin: EdgeInsets.all(20),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: ClipOval(
+          child: CachedNetworkImage(
+            imageUrl: widget.pastMatch.enemyUrl,
+            placeholder: (context, url) => CircularProgressIndicator(),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
+        ),
+      ),
     );
   }
 }

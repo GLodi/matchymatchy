@@ -37,8 +37,7 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
           builder: (context, state) {
             switch (state.type) {
               case HomeMatchListStateType.init:
-                return init(
-                    state.activeMatches, state.pastMatches, state.username);
+                return init(state.activeMatches, state.pastMatches, state.user);
                 break;
               case HomeMatchListStateType.fetching:
                 return fetching();
@@ -66,15 +65,14 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
         HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
   }
 
-  Widget init(List<ActiveMatch> activeMatches, List<PastMatch> pastMatches,
-      String username) {
+  Widget init(
+      List<ActiveMatch> activeMatches, List<PastMatch> pastMatches, User user) {
     return ListView.builder(
       itemCount: activeMatches.length + pastMatches.length,
       itemBuilder: (context, position) {
         return position < activeMatches.length
             ? activeItem(activeMatches[position])
-            : PastMatchItem(
-                pastMatches[position - activeMatches.length], username);
+            : PastMatchItem(pastMatches[position - activeMatches.length], user);
       },
     );
   }
@@ -121,7 +119,7 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'No active nor past matches stored',
+              'no active nor past matches stored',
               style: TextStyle(
                   color: Colors.blue[300],
                   fontSize: 15,

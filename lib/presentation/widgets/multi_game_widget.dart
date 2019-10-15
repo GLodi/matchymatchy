@@ -79,7 +79,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
               ),
             ),
             SizedBox(height: 10),
-            Text("Enemy",
+            Text("enemy",
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w400,
@@ -101,7 +101,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
             ),
             SizedBox(height: 10),
             Text(
-              "Target",
+              "target",
               style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w400,
@@ -122,7 +122,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                "Enemy",
+                "enemy",
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w400,
@@ -146,7 +146,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
           ),
         ),
         Text(
-          "Moves",
+          "moves",
           style: TextStyle(
               fontSize: 15, fontWeight: FontWeight.w400, letterSpacing: 2.0),
         ),
@@ -155,7 +155,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                "You",
+                "you",
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w400,

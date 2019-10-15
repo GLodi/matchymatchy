@@ -57,7 +57,7 @@ class HomeMatchListBloc
               type: HomeMatchListStateType.init,
               activeMatches: activeMatches.isNotEmpty ? activeMatches : [],
               pastMatches: pastMatches.isNotEmpty ? pastMatches : [],
-              username: user.username,
+              user: user,
             );
           } else {
             yield HomeMatchListState(type: HomeMatchListStateType.empty);

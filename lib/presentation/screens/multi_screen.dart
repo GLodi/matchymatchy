@@ -40,9 +40,16 @@ class _MultiScreenState extends State<MultiScreen>
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         title: StreamBuilder<String>(
-          initialData: 'Multiplayer',
+          initialData: 'multiplayer',
           stream: bloc.enemyName,
-          builder: (context, snapshot) => Text(snapshot.data),
+          builder: (context, snapshot) => Text(
+            snapshot.data,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 1,
+            ),
+          ),
         ),
         actions: <Widget>[
           StreamBuilder<bool>(

@@ -34,7 +34,7 @@ class LoginProviderImpl extends LoginProvider {
     print("signed in " + fireUser.displayName);
 
     User user = User(
-        username: fireUser.displayName,
+        username: fireUser.displayName.toLowerCase(),
         uid: fireUser.uid,
         photoUrl: fireUser.photoUrl);
 
@@ -48,7 +48,7 @@ class LoginProviderImpl extends LoginProvider {
       if (documents.length == 0) {
         // Update server if new user
         Firestore.instance.collection('users').document(fireUser.uid).setData({
-          'username': fireUser.displayName,
+          'username': fireUser.displayName.toLowerCase(),
           'photourl': fireUser.photoUrl,
           'uid': fireUser.uid,
           'matcheswon': 0,

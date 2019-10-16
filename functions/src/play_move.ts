@@ -140,7 +140,9 @@ async function upWinAmount(
 
 async function resetMatch(matchDoc: DocumentSnapshot) {
     const hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid)
+    const hostSnap: DocumentSnapshot = await hostRef.get()
     const joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid)
+    const joinSnap: DocumentSnapshot = await joinRef.get()
     hostRef
         .collection('pastmatches')
         .doc(matchDoc.id)
@@ -151,7 +153,11 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
             enemymoves: matchDoc.data()!.joinmoves,
             winner: matchDoc.data()!.winnername,
             forfeitwin: matchDoc.data()!.forfeitwin == true ? true : false,
-            time: admin.firestore.Timestamp.now().toMillis()
+            time: admin.firestore.Timestamp.now().toMillis(),
+            isplayer:
+                matchDoc.data()!.winnername == hostSnap.data()!.username
+                    ? true
+                    : false
         })
     joinRef
         .collection('pastmatches')
@@ -163,7 +169,11 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
             enemymoves: matchDoc.data()!.hostmoves,
             winner: matchDoc.data()!.winnername,
             forfeitwin: matchDoc.data()!.forfeitwin == true ? true : false,
-            time: admin.firestore.Timestamp.now().toMillis()
+            time: admin.firestore.Timestamp.now().toMillis(),
+            isplayer:
+                matchDoc.data()!.winnername == joinSnap.data()!.username
+                    ? true
+                    : false
         })
     hostRef
         .collection('activematches')

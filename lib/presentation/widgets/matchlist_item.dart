@@ -26,7 +26,7 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
     return Hero(
       tag: widget.activeMatch.matchId,
       child: Container(
-        height: 110,
+        height: 150,
         margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
         child: MaterialButton(
           onPressed: () => widget.isOnline

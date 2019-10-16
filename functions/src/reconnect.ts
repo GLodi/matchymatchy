@@ -12,6 +12,7 @@ export async function reconnect(request: any, response: any) {
     const userFcmToken: string = request.query.userFcmToken
     const matchId: string = request.query.matchId
     try {
+        // TODO: handle reconnection on ended match
         updateFcmToken(userId, userFcmToken)
         const match: ActiveMatch = await findMatch(userId, matchId)
         response.send(match)

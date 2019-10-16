@@ -15,14 +15,18 @@ abstract class LoginProvider {
 class LoginProviderImpl extends LoginProvider {
   @override
   Future<User> loginWithGoogle(String fcmToken) async {
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+    final GoogleSignInAccount googleSignInAccount =
+        await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+
     final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
     );
-    final FirebaseUser fireUser = await _auth.signInWithCredential(credential);
+
+    final AuthResult authResult = await _auth.signInWithCredential(credential);
+    final FirebaseUser fireUser = authResult.user;
     assert(fireUser.email != null);
     assert(fireUser.displayName != null);
     assert(!fireUser.isAnonymous);

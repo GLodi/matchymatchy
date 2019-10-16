@@ -50,6 +50,9 @@ class ApiProviderImpl implements ApiProvider {
         await usersRef.document(uid).collection('pastmatches').getDocuments();
     if (pastMatchesQuery.documents.isNotEmpty) {
       pastMatchesQuery.documents.forEach((d) {
+        // TODO: check why when updating the list, redownloading the same item
+        // triggers a unique constraint error in sqlite
+        // there should be a override rule. check on macos
         list.add(PastMatch.fromMap(d.data));
       });
     }

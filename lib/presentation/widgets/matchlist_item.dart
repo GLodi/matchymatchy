@@ -151,11 +151,10 @@ class _PastMatchItemState extends State<PastMatchItem> {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 3,
-      color: widget.user.username == widget.pastMatch.winner
-          ? Colors.green[100]
-          : Colors.red[100],
+      color:
+          widget.pastMatch.isPlayer == 1 ? Colors.green[100] : Colors.red[100],
       child: Stack(children: <Widget>[
-        winLostText(widget.user.username == widget.pastMatch.winner),
+        winLostText(widget.pastMatch.isPlayer == 1),
         leftImage(),
         rightImage(),
       ]),

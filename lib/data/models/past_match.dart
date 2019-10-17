@@ -14,8 +14,8 @@ class PastMatch {
     enemyUrl = map['enemyurl'];
     moves = int.parse(map['moves'].toString());
     enemyMoves = int.parse(map['enemymoves'].toString());
-    forfeitWin = map['forfeitwin'] == 'true' ? 1 : 0;
-    isPlayer = map['isplayer'] == 'true' ? 1 : 0;
+    forfeitWin = map['forfeitwin'];
+    isPlayer = map['isplayer'];
     time = DateTime.fromMillisecondsSinceEpoch(map['time']);
   }
 

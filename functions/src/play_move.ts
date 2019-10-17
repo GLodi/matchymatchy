@@ -39,10 +39,10 @@ export async function forfeit(request: any, response: any) {
     try {
         if (matchDoc.data()!.winner == null) {
             if (userId == matchDoc.data()!.hostuid) {
-                await upWinAmount(matchDoc, false, true)
+                await upWinAmount(matchDoc, false, 1)
             }
             if (userId == matchDoc.data()!.joinuid) {
-                await upWinAmount(matchDoc, true, true)
+                await upWinAmount(matchDoc, true, 1)
             }
             response.send(true)
         } else {
@@ -105,9 +105,9 @@ async function setPlayerDone(userId: string, matchDoc: DocumentSnapshot) {
 
 async function declareWinner(matchDoc: DocumentSnapshot) {
     if (matchDoc.data()!.hostmoves < matchDoc.data()!.joinmoves) {
-        await upWinAmount(matchDoc, true, false)
+        await upWinAmount(matchDoc, true, 0)
     } else if (matchDoc.data()!.hostmoves > matchDoc.data()!.joinmoves) {
-        await upWinAmount(matchDoc, false, false)
+        await upWinAmount(matchDoc, false, 0)
     } else {
         await matches.doc(matchDoc.id).update({
             winner: 'draw'
@@ -119,7 +119,7 @@ async function declareWinner(matchDoc: DocumentSnapshot) {
 async function upWinAmount(
     matchDoc: DocumentSnapshot,
     hostOrJoin: boolean,
-    forfeitWin: boolean
+    forfeitWin: number
 ) {
     const userRef: DocumentReference = await users.doc(
         hostOrJoin ? matchDoc.data()!.hostuid : matchDoc.data()!.joinuid
@@ -152,12 +152,9 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
             moves: matchDoc.data()!.hostmoves,
             enemymoves: matchDoc.data()!.joinmoves,
             winner: matchDoc.data()!.winnername,
-            forfeitwin: matchDoc.data()!.forfeitwin == true ? true : false,
+            forfeitwin: matchDoc.data()!.forfeitwin,
             time: admin.firestore.Timestamp.now().toMillis(),
-            isplayer:
-                matchDoc.data()!.winnername == hostSnap.data()!.username
-                    ? true
-                    : false
+            isplayer: matchDoc.data()!.winner == hostSnap.data()!.uid ? 1 : 0
         })
     joinRef
         .collection('pastmatches')
@@ -168,12 +165,9 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
             moves: matchDoc.data()!.joinmoves,
             enemymoves: matchDoc.data()!.hostmoves,
             winner: matchDoc.data()!.winnername,
-            forfeitwin: matchDoc.data()!.forfeitwin == true ? true : false,
+            forfeitwin: matchDoc.data()!.forfeitwin,
             time: admin.firestore.Timestamp.now().toMillis(),
-            isplayer:
-                matchDoc.data()!.winnername == joinSnap.data()!.username
-                    ? true
-                    : false
+            isplayer: matchDoc.data()!.winner == joinSnap.data()!.uid ? 1 : 0
         })
     hostRef
         .collection('activematches')

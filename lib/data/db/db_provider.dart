@@ -110,6 +110,7 @@ class DbProviderImpl extends DbProvider {
     var dbClient = await db;
     list.forEach(
         (pastmatch) => dbClient.insert(pastMatchTable, pastmatch.toMap()));
+    // TODO: good idea for preventing activematch reopening
     _messController.add(list);
     return null;
   }

@@ -72,7 +72,7 @@ async function queueEmpty(userId: string): Promise<string> {
         winnername: null,
         hostdone: null,
         joindone: null,
-        forfeitwin: false,
+        forfeitwin: 0,
         time: admin.firestore.Timestamp.now().toMillis()
     })
     await queue.add({

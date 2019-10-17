@@ -26,7 +26,7 @@ class ActiveMatch extends Match {
   DateTime time;
 
   ActiveMatch.fromMap(Map<String, dynamic> map) {
-    this.gameField = GameField(grid: map['gf']);
+    gameField = GameField(grid: map['gf']);
     targetField = TargetField(grid: map['target']);
     matchId = map['matchid'];
     enemyName = map['enemyname'];

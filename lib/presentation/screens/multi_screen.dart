@@ -39,16 +39,12 @@ class _MultiScreenState extends State<MultiScreen>
         leading: BackButton(color: Colors.white),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        title: StreamBuilder<String>(
-          initialData: 'multiplayer',
-          stream: bloc.enemyName,
-          builder: (context, snapshot) => Text(
-            snapshot.data,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w400,
-              letterSpacing: 1,
-            ),
+        title: Text(
+          'multiplayer',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 1,
           ),
         ),
         actions: <Widget>[
@@ -124,7 +120,7 @@ class _MultiScreenState extends State<MultiScreen>
   Widget init() {
     return Stack(
       children: <Widget>[
-        // AbsorbPointer is needed to prevent the player
+        // TODO: AbsorbPointer is needed to prevent the player
         // from moving squares when transitioning to win_widget
         AbsorbPointer(
             absorbing: opacityLevel != 0,

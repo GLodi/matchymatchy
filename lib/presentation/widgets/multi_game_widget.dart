@@ -79,7 +79,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
               ),
             ),
             SizedBox(height: 10),
-            Text("enemy",
+            Text("opponent",
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w400,
@@ -121,13 +121,18 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Text(
-                "enemy",
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 2.0),
-              ),
+              StreamBuilder<String>(
+                  initialData: 'enemy',
+                  stream: widget.bloc.enemyName,
+                  builder: (context, snapshot) {
+                    return Text(
+                      snapshot.data,
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 2.0),
+                    );
+                  }),
               SizedBox(height: 10),
               StreamBuilder<int>(
                 initialData: 0,

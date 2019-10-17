@@ -52,7 +52,6 @@ class MultiBloc extends GameBloc {
       case GameEventType.queue:
         try {
           listenToMessages();
-          // TODO: repeat multiple times, fcm is unreliable
           ActiveMatch currentMatch = await _repo.queuePlayer();
           fetchResult(currentMatch);
         } catch (e) {

@@ -27,6 +27,7 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
     _entryAnimCont = AnimationController(
         vsync: this, duration: Duration(milliseconds: 2000), value: 0.1);
     _entryAnim = CurvedAnimation(parent: _entryAnimCont, curve: Curves.ease);
+    widget.bloc.correct.listen((_) => _entryAnimCont.reverse());
   }
 
   @override
@@ -185,5 +186,11 @@ class _MultiGameWidgetState extends State<MultiGameWidget>
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _entryAnimCont.dispose();
+    super.dispose();
   }
 }

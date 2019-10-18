@@ -30,7 +30,6 @@ abstract class DbProvider {
 }
 
 class DbProviderImpl extends DbProvider {
-  final StreamController _messController = StreamController.broadcast();
   final String gameFieldTable = 'gamefields';
   final String activeMatchTable = 'activematches';
   final String pastMatchTable = 'pastmatches';
@@ -93,7 +92,6 @@ class DbProviderImpl extends DbProvider {
   Future<void> storeActiveMatches(List<ActiveMatch> list) async {
     var dbClient = await db;
     list.forEach((match) => dbClient.insert(activeMatchTable, match.toMap()));
-    _messController.add(list);
     return null;
   }
 
@@ -110,8 +108,6 @@ class DbProviderImpl extends DbProvider {
     var dbClient = await db;
     list.forEach(
         (pastmatch) => dbClient.insert(pastMatchTable, pastmatch.toMap()));
-    // TODO: good idea for preventing activematch reopening
-    _messController.add(list);
     return null;
   }
 

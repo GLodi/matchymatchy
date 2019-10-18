@@ -120,8 +120,6 @@ class _MultiScreenState extends State<MultiScreen>
   Widget init() {
     return Stack(
       children: <Widget>[
-        // TODO: AbsorbPointer is needed to prevent the player
-        // from moving squares when transitioning to win_widget
         AbsorbPointer(
             absorbing: opacityLevel != 0,
             child: MultiGameWidget(

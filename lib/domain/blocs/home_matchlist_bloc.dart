@@ -10,7 +10,10 @@ class HomeMatchListBloc
     extends BlocEventStateBase<HomeMatchListEvent, HomeMatchListState> {
   final HomeMatchListRepo _repo;
   final MessagingEventBus _messEventBus;
-  StreamSubscription _connectivitySubs, _challengeSubs, _winnerSubs;
+  StreamSubscription _forfeitSubs,
+      _connectivitySubs,
+      _challengeSubs,
+      _winnerSubs;
 
   final _connChangeSub = BehaviorSubject<bool>();
   Stream<bool> get connChange => _connChangeSub.stream;
@@ -74,7 +77,7 @@ class HomeMatchListBloc
   }
 
   void listenToMessages() {
-    if (_challengeSubs == null && _winnerSubs == null) {
+    if (_challengeSubs == null && _winnerSubs == null && _forfeitSubs == null) {
       _challengeSubs =
           _messEventBus.on<ChallengeMessage>().listen((mess) async {
         print('matchlist challenge');
@@ -86,6 +89,11 @@ class HomeMatchListBloc
         emitEvent(
             HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
       });
+      _forfeitSubs = _messEventBus.on<ForfeitMessage>().listen((forf) {
+        print('matchlist forfeit');
+        emitEvent(
+            HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
+      });
     }
   }
 
@@ -94,6 +102,7 @@ class HomeMatchListBloc
     _connectivitySubs.cancel();
     _challengeSubs.cancel();
     _winnerSubs.cancel();
+    _forfeitSubs.cancel();
     super.dispose();
   }
 }

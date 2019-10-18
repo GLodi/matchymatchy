@@ -30,3 +30,7 @@ class ChallengeMessage {
     this.enemyName = map['data'].cast<String, dynamic>()['enemyName'];
   }
 }
+
+class ForfeitMessage {
+  ForfeitMessage();
+}

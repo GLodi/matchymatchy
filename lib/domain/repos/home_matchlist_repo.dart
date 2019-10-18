@@ -24,5 +24,8 @@ class HomeMatchListRepo {
   Future<List<PastMatch>> getPastMatches() async =>
       await _dbProvider.getPastMatches();
 
+  Future<void> deleteActiveMatch(String matchId) async =>
+      await _dbProvider.deleteActiveMatch(matchId);
+
   Future<User> getUser() async => await _prefsProvider.getUser();
 }

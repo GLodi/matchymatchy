@@ -32,5 +32,7 @@ class ChallengeMessage {
 }
 
 class ForfeitMessage {
-  ForfeitMessage();
+  String matchId;
+
+  ForfeitMessage(this.matchId);
 }

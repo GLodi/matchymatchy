@@ -52,8 +52,8 @@ class MessagingEventBus {
         : _messController.stream.where((event) => event is T).cast<T>();
   }
 
-  void forfeitMatch() {
-    _messController.add(ForfeitMessage());
+  void forfeitMatch(String matchId) {
+    _messController.add(ForfeitMessage(matchId));
   }
 
   Future<String> getToken() => _messaging.getToken();

@@ -37,7 +37,10 @@ class MultiBloc extends GameBloc {
   MultiBloc(this._repo, this._messEventBus) : super(_repo);
 
   void setup() {
-    _forfeitButtonSubject.listen((input) => _repo.forfeit());
+    _forfeitButtonSubject.listen((input) {
+      _repo.forfeit();
+      _messEventBus.forfeitMatch(_repo.matchId);
+    });
   }
 
   @override

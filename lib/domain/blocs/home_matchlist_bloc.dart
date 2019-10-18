@@ -52,6 +52,21 @@ class HomeMatchListBloc
         yield HomeMatchListState(type: HomeMatchListStateType.fetching);
         try {
           await _repo.updateMatches();
+          emitEvent(
+              HomeMatchListEvent(type: HomeMatchListEventType.showMatches));
+        } catch (e) {
+          yield HomeMatchListState(
+              type: HomeMatchListStateType.error,
+              message: 'Error updating matches');
+          print(e);
+        }
+        break;
+      case HomeMatchListEventType.refreshMatches:
+        yield HomeMatchListState(type: HomeMatchListStateType.fetching);
+        emitEvent(HomeMatchListEvent(type: HomeMatchListEventType.showMatches));
+        break;
+      case HomeMatchListEventType.showMatches:
+        try {
           List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
           List<PastMatch> pastMatches = await _repo.getPastMatches();
           if (activeMatches.isNotEmpty || pastMatches.isNotEmpty) {
@@ -78,21 +93,21 @@ class HomeMatchListBloc
 
   void listenToMessages() {
     if (_challengeSubs == null && _winnerSubs == null && _forfeitSubs == null) {
-      _challengeSubs =
-          _messEventBus.on<ChallengeMessage>().listen((mess) async {
+      _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((_) async {
         print('matchlist challenge');
         emitEvent(
             HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
       });
-      _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
+      _winnerSubs = _messEventBus.on<WinnerMessage>().listen((_) async {
         print('matchlist winner');
         emitEvent(
             HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
       });
-      _forfeitSubs = _messEventBus.on<ForfeitMessage>().listen((forf) {
+      _forfeitSubs = _messEventBus.on<ForfeitMessage>().listen((forf) async {
         print('matchlist forfeit');
+        await _repo.deleteActiveMatch(forf.matchId);
         emitEvent(
-            HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
+            HomeMatchListEvent(type: HomeMatchListEventType.refreshMatches));
       });
     }
   }

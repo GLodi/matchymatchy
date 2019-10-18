@@ -52,4 +52,6 @@ class HomeMatchListEvent extends BlocEvent {
 enum HomeMatchListEventType {
   start,
   updateMatches,
+  showMatches,
+  refreshMatches,
 }

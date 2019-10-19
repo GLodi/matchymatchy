@@ -1,5 +1,4 @@
 import * as admin from 'firebase-admin'
-
 import { DocumentReference, DocumentSnapshot } from '@google-cloud/firestore'
 
 const matches = admin.firestore().collection('matches')
@@ -15,6 +14,7 @@ export async function playMove(request: any, response: any) {
     const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
     if (isPlayer(userId, matchDoc)) {
         try {
+            // TODO: handle playmove on ended match
             await updateMatch(userId, matchDoc, newGf, newTarget, moves)
             if (done) await setPlayerDone(userId, matchDoc)
             response.send(true)

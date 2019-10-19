@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 
 import 'package:squazzle/data/models/models.dart';
-import 'net_utils.dart';
 
 abstract class ApiProvider {
   Future<User> getUser(String uid);
@@ -22,7 +22,7 @@ abstract class ApiProvider {
 }
 
 class ApiProviderImpl implements ApiProvider {
-  final _net = NetUtils();
+  final _client = Dio();
   final _baseUrl = 'https://europe-west1-squazzle-40ea9.cloudfunctions.net/';
 
   CollectionReference get usersRef => Firestore.instance.collection('users');
@@ -34,13 +34,12 @@ class ApiProviderImpl implements ApiProvider {
 
   @override
   Future<List<ActiveMatch>> getActiveMatches(String uid) async {
-    return _net
+    return _client
         .get(_baseUrl + 'getActiveMatches?userId=' + uid)
-        .then((response) {
-      var list = response as List;
-      List<ActiveMatch> objs = list.map((i) => ActiveMatch.fromMap(i)).toList();
-      return objs;
-    });
+        .catchError((e) => throw e)
+        .then((response) => (response.data as List)
+            .map((i) => ActiveMatch.fromMap(i))
+            .toList());
   }
 
   @override
@@ -58,15 +57,16 @@ class ApiProviderImpl implements ApiProvider {
 
   @override
   Future<ActiveMatch> queuePlayer(String uid, String token) async {
-    return _net
+    return _client
         .get(_baseUrl + 'queuePlayer?userId=' + uid + '&userFcmToken=' + token)
-        .then((response) => ActiveMatch.fromMap(response));
+        .catchError((e) => throw e)
+        .then((response) => ActiveMatch.fromMap(response.data));
   }
 
   @override
   Future<bool> sendMove(
       ActiveMatch activeMatch, String newTarget, String uid, bool done) async {
-    return _net
+    return _client
         .get(_baseUrl +
             'playMove?userId=' +
             uid +
@@ -80,20 +80,22 @@ class ApiProviderImpl implements ApiProvider {
             done.toString() +
             '&moves=' +
             activeMatch.moves.toString())
-        .then((response) => response);
+        .catchError((e) => throw e)
+        .then((response) => response.data);
   }
 
   @override
   Future<bool> sendForfeit(String uid, String matchId) async {
-    return _net
+    return _client
         .get(_baseUrl + 'forfeit?userId=' + uid + '&matchId=' + matchId)
-        .then((response) => response);
+        .catchError((e) => throw e)
+        .then((response) => response.data);
   }
 
   @override
   Future<ActiveMatch> reconnect(
       String uid, String token, String matchId) async {
-    return _net
+    return _client
         .get(_baseUrl +
             'reconnect?userId=' +
             uid +
@@ -101,6 +103,7 @@ class ApiProviderImpl implements ApiProvider {
             token +
             '&matchId=' +
             matchId)
-        .then((response) => ActiveMatch.fromMap(response));
+        .catchError((e) => throw e)
+        .then((response) => ActiveMatch.fromMap(response.data));
   }
 }

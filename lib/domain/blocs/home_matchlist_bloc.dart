@@ -66,25 +66,18 @@ class HomeMatchListBloc
         emitEvent(HomeMatchListEvent(type: HomeMatchListEventType.showMatches));
         break;
       case HomeMatchListEventType.showMatches:
-        try {
-          List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
-          List<PastMatch> pastMatches = await _repo.getPastMatches();
-          if (activeMatches.isNotEmpty || pastMatches.isNotEmpty) {
-            User user = await _repo.getUser();
-            yield HomeMatchListState(
-              type: HomeMatchListStateType.init,
-              activeMatches: activeMatches.isNotEmpty ? activeMatches : [],
-              pastMatches: pastMatches.isNotEmpty ? pastMatches : [],
-              user: user,
-            );
-          } else {
-            yield HomeMatchListState(type: HomeMatchListStateType.empty);
-          }
-        } catch (e) {
+        List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
+        List<PastMatch> pastMatches = await _repo.getPastMatches();
+        if (activeMatches.isNotEmpty || pastMatches.isNotEmpty) {
+          User user = await _repo.getUser();
           yield HomeMatchListState(
-              type: HomeMatchListStateType.error,
-              message: 'Error fetching matches information');
-          print(e);
+            type: HomeMatchListStateType.init,
+            activeMatches: activeMatches.isNotEmpty ? activeMatches : [],
+            pastMatches: pastMatches.isNotEmpty ? pastMatches : [],
+            user: user,
+          );
+        } else {
+          yield HomeMatchListState(type: HomeMatchListStateType.empty);
         }
         break;
       default:

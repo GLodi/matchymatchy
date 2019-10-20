@@ -16,6 +16,7 @@ class HomeMatchListWidget extends StatefulWidget {
 
 class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
     with AutomaticKeepAliveClientMixin<HomeMatchListWidget> {
+  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
   HomeMatchListBloc bloc;
 
   @override
@@ -23,6 +24,7 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
     bloc = BlocProvider.of<HomeMatchListBloc>(context);
     bloc.setup();
     bloc.emitEvent(HomeMatchListEvent(type: HomeMatchListEventType.start));
+    bloc.matches.listen((matches) => _addMatches(matches));
     super.initState();
   }
 
@@ -37,7 +39,7 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
           builder: (context, state) {
             switch (state.type) {
               case HomeMatchListStateType.init:
-                return init(state.activeMatches, state.pastMatches, state.user);
+                return init(state);
                 break;
               case HomeMatchListStateType.fetching:
                 return fetching();
@@ -65,14 +67,34 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
         HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
   }
 
-  Widget init(
-      List<ActiveMatch> activeMatches, List<PastMatch> pastMatches, User user) {
-    return ListView.builder(
-      itemCount: activeMatches.length + pastMatches.length,
-      itemBuilder: (context, position) {
-        return position < activeMatches.length
-            ? activeItem(activeMatches[position])
-            : PastMatchItem(pastMatches[position - activeMatches.length], user);
+  Widget init(HomeMatchListState state) {
+    return AnimatedList(
+      key: listKey,
+      initialItemCount: bloc.matchList.length,
+      itemBuilder: (context, position, animation) {
+        return _buildItem(context, position, animation);
+      },
+    );
+  }
+
+  Widget _buildItem(
+      BuildContext context, int index, Animation<double> animation) {
+    return SizeTransition(
+      sizeFactor: animation,
+      child: bloc.matchList[index] is ActiveMatch
+          ? activeItem(bloc.matchList[index])
+          : PastMatchItem(bloc.matchList[index], bloc.user),
+    );
+  }
+
+  void _addMatches(List<dynamic> matches) {
+    StreamBuilder<List<dynamic>>(
+      initialData: matches,
+      stream: bloc.matches,
+      builder: (context, snapshot) {
+        for (int offset = 0; offset < matches.length; offset++) {
+          listKey.currentState.insertItem(0 + offset);
+        }
       },
     );
   }

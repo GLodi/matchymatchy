@@ -57,7 +57,8 @@ class HomeMatchListBloc
         matchList.clear();
         yield HomeMatchListState(type: HomeMatchListStateType.fetching);
         try {
-          await _repo.updateMatches();
+          await _repo.updateActiveMatches();
+          await _repo.updatePastMatches();
           emitEvent(
               HomeMatchListEvent(type: HomeMatchListEventType.showMatches));
         } catch (e) {
@@ -75,13 +76,18 @@ class HomeMatchListBloc
         List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
         List<PastMatch> pastMatches = await _repo.getPastMatches();
         if (activeMatches.isNotEmpty || pastMatches.isNotEmpty) {
-          User user = await _repo.getUser();
+          user = await _repo.getUser();
+          matchList.addAll(activeMatches);
+          matchList.addAll(pastMatches);
           yield HomeMatchListState(
             type: HomeMatchListStateType.init,
             activeMatches: activeMatches.isNotEmpty ? activeMatches : [],
             pastMatches: pastMatches.isNotEmpty ? pastMatches : [],
             user: user,
           );
+          matchList.addAll(activeMatches);
+          matchList.addAll(pastMatches);
+          _matchesSubject.add(matchList);
         } else {
           yield HomeMatchListState(type: HomeMatchListStateType.empty);
         }

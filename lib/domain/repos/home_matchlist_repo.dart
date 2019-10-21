@@ -7,12 +7,16 @@ class HomeMatchListRepo {
 
   HomeMatchListRepo(this._dbProvider, this._prefsProvider, this._apiProvider);
 
-  Future<void> updateMatches() async {
+  Future<void> updateActiveMatches() async {
     String uid = await _prefsProvider.getUid();
     List<ActiveMatch> activeMatches = await _apiProvider.getActiveMatches(uid);
     activeMatches.sort((a, b) => b.time.compareTo(a.time));
     await _dbProvider.deleteActiveMatches();
     await _dbProvider.storeActiveMatches(activeMatches);
+  }
+
+  Future<void> updatePastMatches() async {
+    String uid = await _prefsProvider.getUid();
     List<PastMatch> pastMatches = await _apiProvider.getPastMatches(uid);
     pastMatches.sort((a, b) => b.time.compareTo(a.time));
     await _dbProvider.storePastMatches(pastMatches);

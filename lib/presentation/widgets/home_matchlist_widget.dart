@@ -16,7 +16,7 @@ class HomeMatchListWidget extends StatefulWidget {
 
 class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
     with AutomaticKeepAliveClientMixin<HomeMatchListWidget> {
-  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+  final GlobalKey<AnimatedListState> listKey = GlobalKey();
   HomeMatchListBloc bloc;
 
   @override
@@ -39,7 +39,7 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
           builder: (context, state) {
             switch (state.type) {
               case HomeMatchListStateType.init:
-                return init(state);
+                return init();
                 break;
               case HomeMatchListStateType.fetching:
                 return fetching();
@@ -67,36 +67,47 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
         HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
   }
 
-  Widget init(HomeMatchListState state) {
+  Widget init() {
     return AnimatedList(
       key: listKey,
       initialItemCount: bloc.matchList.length,
-      itemBuilder: (context, position, animation) {
-        return _buildItem(context, position, animation);
+      itemBuilder: (context, index, animation) {
+        return _buildItem(bloc.matchList[index], animation);
       },
     );
   }
 
-  Widget _buildItem(
-      BuildContext context, int index, Animation<double> animation) {
+  Widget _buildItem(dynamic item, Animation<double> animation) {
     return SizeTransition(
       sizeFactor: animation,
-      child: bloc.matchList[index] is ActiveMatch
-          ? activeItem(bloc.matchList[index])
-          : PastMatchItem(bloc.matchList[index], bloc.user),
+      child: item is ActiveMatch
+          ? activeItem(item)
+          : PastMatchItem(item, bloc.user),
     );
   }
 
   void _addMatches(List<dynamic> matches) {
-    StreamBuilder<List<dynamic>>(
-      initialData: matches,
-      stream: bloc.matches,
-      builder: (context, snapshot) {
-        for (int offset = 0; offset < matches.length; offset++) {
-          listKey.currentState.insertItem(0 + offset);
-        }
-      },
-    );
+    for (int offset = 0; offset < matches.length; offset++) {
+      listKey.currentState.insertItem(0 + offset);
+    }
+  }
+
+  void _removeMatch(int index) {
+    var removedItem = bloc.matchList.removeAt(index);
+    AnimatedListRemovedItemBuilder builder = (context, animation) {
+      return _buildItem(removedItem, animation);
+    };
+    listKey.currentState.removeItem(index, builder);
+  }
+
+  void _removeMatches() {
+    for (int i = 0; i < bloc.matchList.length; i++) {
+      var removedItem = bloc.matchList.removeAt(0);
+      AnimatedListRemovedItemBuilder builder = (context, animation) {
+        return _buildItem(removedItem, animation);
+      };
+      listKey.currentState.removeItem(0, builder);
+    }
   }
 
   Widget activeItem(ActiveMatch activeMatch) {

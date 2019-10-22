@@ -12,7 +12,7 @@ class ActiveMatchItem extends StatefulWidget implements MatchListItem {
   final ActiveMatch activeMatch;
   final bool isOnline;
 
-  ActiveMatchItem(this.activeMatch, this.isOnline);
+  ActiveMatchItem({Key key, this.activeMatch, this.isOnline}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -129,7 +129,7 @@ class PastMatchItem extends StatefulWidget implements MatchListItem {
   final PastMatch pastMatch;
   final User user;
 
-  PastMatchItem(this.pastMatch, this.user);
+  PastMatchItem({Key key, this.pastMatch, this.user}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {

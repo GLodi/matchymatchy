@@ -78,11 +78,13 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
   }
 
   Widget _buildItem(dynamic item, Animation<double> animation) {
-    return SizeTransition(
-      sizeFactor: animation,
-      child: item is ActiveMatch
-          ? activeItem(item)
-          : PastMatchItem(item, bloc.user),
+    return Container(
+      child: SizeTransition(
+        sizeFactor: animation,
+        child: item is ActiveMatch
+            ? activeItem(item)
+            : PastMatchItem(pastMatch: item, user: bloc.user),
+      ),
     );
   }
 
@@ -115,7 +117,8 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
       initialData: false,
       stream: bloc.connChange,
       builder: (context, snapshot) {
-        return ActiveMatchItem(activeMatch, snapshot.data);
+        return ActiveMatchItem(
+            activeMatch: activeMatch, isOnline: snapshot.data);
       },
     );
   }

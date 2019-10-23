@@ -10,7 +10,6 @@ class HomeMatchListBloc
     extends BlocEventStateBase<HomeMatchListEvent, HomeMatchListState> {
   final HomeMatchListRepo _repo;
   final MessagingEventBus _messEventBus;
-  final List<dynamic> matchList = List<dynamic>();
   User user;
   StreamSubscription _forfeitSubs,
       _connectivitySubs,
@@ -54,7 +53,6 @@ class HomeMatchListBloc
             HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
         break;
       case HomeMatchListEventType.updateMatches:
-        matchList.clear();
         yield HomeMatchListState(type: HomeMatchListStateType.fetching);
         try {
           await _repo.updateActiveMatches();
@@ -77,17 +75,12 @@ class HomeMatchListBloc
         List<PastMatch> pastMatches = await _repo.getPastMatches();
         if (activeMatches.isNotEmpty || pastMatches.isNotEmpty) {
           user = await _repo.getUser();
-          matchList.addAll(activeMatches);
-          matchList.addAll(pastMatches);
           yield HomeMatchListState(
             type: HomeMatchListStateType.init,
             activeMatches: activeMatches.isNotEmpty ? activeMatches : [],
             pastMatches: pastMatches.isNotEmpty ? pastMatches : [],
             user: user,
           );
-          matchList.addAll(activeMatches);
-          matchList.addAll(pastMatches);
-          _matchesSubject.add(matchList);
         } else {
           yield HomeMatchListState(type: HomeMatchListStateType.empty);
         }

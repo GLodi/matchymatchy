@@ -16,9 +16,6 @@ class HomeMatchListWidget extends StatefulWidget {
 
 class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
     with AutomaticKeepAliveClientMixin<HomeMatchListWidget> {
-  final GlobalKey<AnimatedListState> listKey = GlobalKey();
-  final List<dynamic> matchList = List<dynamic>();
-  final List<String> provaList = ['ahah', 'hola'];
   HomeMatchListBloc bloc;
 
   @override
@@ -26,7 +23,6 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
     bloc = BlocProvider.of<HomeMatchListBloc>(context);
     bloc.setup();
     bloc.emitEvent(HomeMatchListEvent(type: HomeMatchListEventType.start));
-    bloc.matches.listen((matches) => _addMatches(matches));
     super.initState();
   }
 
@@ -41,9 +37,7 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
           builder: (context, state) {
             switch (state.type) {
               case HomeMatchListStateType.init:
-                _addMatches(state.activeMatches);
-                _addMatches(state.pastMatches);
-                return init();
+                return init(state.activeMatches, state.pastMatches, state.user);
                 break;
               case HomeMatchListStateType.fetching:
                 return fetching();
@@ -67,65 +61,22 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
   }
 
   Future<Null> _onRefresh() async {
-    matchList.clear();
     bloc.emitEvent(
         HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
   }
 
-  Widget init() {
-    return AnimatedList(
-      key: listKey,
-      initialItemCount: provaList.length,
-      itemBuilder: (context, index, animation) {
-        return _buildItemProva(provaList[index], animation);
+  Widget init(
+      List<ActiveMatch> activeMatches, List<PastMatch> pastMatches, User user) {
+    return ListView.builder(
+      itemCount: activeMatches.length + pastMatches.length,
+      itemBuilder: (context, index) {
+        return index < activeMatches.length
+            ? activeItem(activeMatches[index])
+            : PastMatchItem(
+                pastMatch: pastMatches[index - activeMatches.length],
+                user: user);
       },
     );
-  }
-
-  Widget _buildItem(dynamic item, Animation<double> animation) {
-    return SizeTransition(
-      sizeFactor: animation,
-      child: item is ActiveMatch
-          ? activeItem(item)
-          : PastMatchItem(pastMatch: item, user: bloc.user),
-    );
-  }
-
-  Widget _buildItemProva(String ahah, Animation<double> animation) {
-    return SizeTransition(
-      sizeFactor: animation,
-      child: Text(ahah),
-    );
-  }
-
-  void _addprova() {
-    provaList.add('eheh');
-    listKey.currentState.insertItem(0);
-  }
-
-  void _addMatches(List<dynamic> matches) {
-    matchList.addAll(matches);
-    for (int offset = 0; offset < matches.length; offset++) {
-      listKey.currentState.insertItem(0 + offset);
-    }
-  }
-
-  void _removeMatch(int index) {
-    var removedItem = matchList.removeAt(index);
-    AnimatedListRemovedItemBuilder builder = (context, animation) {
-      return _buildItem(removedItem, animation);
-    };
-    listKey.currentState.removeItem(index, builder);
-  }
-
-  void _removeMatches() {
-    for (int i = 0; i < matchList.length; i++) {
-      var removedItem = matchList.removeAt(0);
-      AnimatedListRemovedItemBuilder builder = (context, animation) {
-        return _buildItem(removedItem, animation);
-      };
-      listKey.currentState.removeItem(0, builder);
-    }
   }
 
   Widget activeItem(ActiveMatch activeMatch) {

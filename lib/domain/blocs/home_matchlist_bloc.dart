@@ -10,7 +10,6 @@ class HomeMatchListBloc
     extends BlocEventStateBase<HomeMatchListEvent, HomeMatchListState> {
   final HomeMatchListRepo _repo;
   final MessagingEventBus _messEventBus;
-  User user;
   StreamSubscription _forfeitSubs,
       _connectivitySubs,
       _challengeSubs,
@@ -18,9 +17,6 @@ class HomeMatchListBloc
 
   final _connChangeSub = BehaviorSubject<bool>();
   Stream<bool> get connChange => _connChangeSub.stream;
-
-  final _matchesSubject = BehaviorSubject<List<dynamic>>();
-  Stream<List<dynamic>> get matches => _matchesSubject.stream;
 
   HomeMatchListBloc(this._repo, this._messEventBus)
       : super(initialState: HomeMatchListState.fetching());
@@ -74,7 +70,7 @@ class HomeMatchListBloc
         List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
         List<PastMatch> pastMatches = await _repo.getPastMatches();
         if (activeMatches.isNotEmpty || pastMatches.isNotEmpty) {
-          user = await _repo.getUser();
+          User user = await _repo.getUser();
           yield HomeMatchListState(
             type: HomeMatchListStateType.init,
             activeMatches: activeMatches.isNotEmpty ? activeMatches : [],

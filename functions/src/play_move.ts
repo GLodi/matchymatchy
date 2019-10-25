@@ -37,6 +37,7 @@ export async function forfeit(request: any, response: any) {
     const matchId: string = request.query.matchId
     const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
     try {
+        // TODO: handle forfeit on ended match
         if (matchDoc.data()!.winner == null) {
             if (userId == matchDoc.data()!.hostuid) {
                 await upWinAmount(matchDoc, false, 1)

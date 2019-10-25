@@ -37,9 +37,14 @@ class MultiBloc extends GameBloc {
   MultiBloc(this._repo, this._messEventBus) : super(_repo);
 
   void setup() {
-    _forfeitButtonSubject.listen((input) {
-      _repo.forfeit();
-      _messEventBus.forfeitMatch(_repo.matchId);
+    _forfeitButtonSubject.listen((_) {
+      try {
+        _repo.forfeit();
+        _messEventBus.forfeitMatch(_repo.matchId);
+      } catch (e) {
+        print(e);
+        emitEvent(GameEvent(type: GameEventType.error));
+      }
     });
   }
 
@@ -65,6 +70,8 @@ class MultiBloc extends GameBloc {
       case GameEventType.connect:
         try {
           listenToMessages();
+          // TODO: either move to observing firestore or repeat
+          // this multiple times
           ActiveMatch currentMatch =
               await _repo.connectPlayer(event.connectMatchId);
           fetchResult(currentMatch);
@@ -77,7 +84,7 @@ class MultiBloc extends GameBloc {
         correctSubject.add(true);
         break;
       case GameEventType.error:
-        yield GameState.error('Error queueing');
+        yield GameState.error('Error');
         break;
       default:
     }

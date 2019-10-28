@@ -23,7 +23,7 @@ export async function queuePlayer(request: any, response: any) {
     } catch (e) {
         console.log('--- error queueing player')
         console.error(Error(e))
-        response.status(500).send('Error queueing player')
+        response.status(500).send()
     }
 }
 

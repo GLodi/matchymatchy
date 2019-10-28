@@ -24,11 +24,11 @@ export async function playMove(request: any, response: any) {
         } catch (e) {
             console.log('--- error applying player move')
             console.error(Error(e))
-            response.status(500).send('Error playing move')
+            response.status(500).send()
         }
     } else {
         console.log('--- error user neither host nor join')
-        response.status(500).send('Error: user neither host nor join')
+        response.status(500).send()
     }
 }
 
@@ -52,7 +52,7 @@ export async function forfeit(request: any, response: any) {
     } catch (e) {
         console.log('--- error forfeting player player')
         console.error(Error(e))
-        response.status(500).send('Error forfeiting player')
+        response.status(500).send()
     }
 }
 

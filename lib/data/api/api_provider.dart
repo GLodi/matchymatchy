@@ -33,9 +33,8 @@ class ApiProviderImpl implements ApiProvider {
 
   @override
   Future<List<ActiveMatch>> getActiveMatches(String uid) async {
-    return NetUtils.get(_baseUrl + 'getActiveMatches?userId=' + uid)
-        .catchError((e) => throw e)
-        .then((response) =>
+    return NetUtils.get(_baseUrl + 'getActiveMatches?userId=' + uid).then(
+        (response) =>
             (response as List).map((i) => ActiveMatch.fromMap(i)).toList());
   }
 
@@ -56,7 +55,6 @@ class ApiProviderImpl implements ApiProvider {
   Future<ActiveMatch> queuePlayer(String uid, String token) async {
     return NetUtils.get(
             _baseUrl + 'queuePlayer?userId=' + uid + '&userFcmToken=' + token)
-        .catchError((e) => throw e)
         .then((response) => ActiveMatch.fromMap(response));
   }
 
@@ -76,7 +74,6 @@ class ApiProviderImpl implements ApiProvider {
             done.toString() +
             '&moves=' +
             activeMatch.moves.toString())
-        .catchError((e) => throw e)
         .then((response) => response);
   }
 
@@ -84,7 +81,6 @@ class ApiProviderImpl implements ApiProvider {
   Future<bool> sendForfeit(String uid, String matchId) async {
     return NetUtils.get(
             _baseUrl + 'forfeit?userId=' + uid + '&matchId=' + matchId)
-        .catchError((e) => throw e)
         .then((response) => response);
   }
 

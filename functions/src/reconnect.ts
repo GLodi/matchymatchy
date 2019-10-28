@@ -19,7 +19,7 @@ export async function reconnect(request: any, response: any) {
     } catch (e) {
         console.log('--- error reconnecting player')
         console.error(Error(e))
-        response.status(500).send('Error reconnecting player')
+        response.status(500).send()
     }
 }
 

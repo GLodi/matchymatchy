@@ -51,8 +51,7 @@ class HomeMatchListBloc
       case HomeMatchListEventType.updateMatches:
         yield HomeMatchListState(type: HomeMatchListStateType.fetching);
         try {
-          await _repo.updateActiveMatches();
-          await _repo.updatePastMatches();
+          Future.wait([_repo.updateActiveMatches(), _repo.updatePastMatches()]);
           emitEvent(
               HomeMatchListEvent(type: HomeMatchListEventType.showMatches));
         } catch (e) {

@@ -43,13 +43,10 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
                 return fetching();
                 break;
               case HomeMatchListStateType.empty:
-                return empty();
+                return showMessage('no active nor past matches stored');
                 break;
               case HomeMatchListStateType.error:
-                return Center(
-                  child: Text(state.message,
-                      style: TextStyle(color: Colors.blue[300])),
-                );
+                return showMessage(state.message);
                 break;
               default:
                 return Container();
@@ -112,6 +109,26 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
           SizedBox(height: 60),
         ],
       ),
+    );
+  }
+
+  Widget showMessage(String message) {
+    return ListView.builder(
+      itemCount: 2,
+      itemBuilder: (context, index) {
+        return index == 0
+            ? SizedBox(height: 160)
+            : Center(
+                child: Text(
+                  message,
+                  style: TextStyle(
+                      color: Colors.blue[300],
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 2.0),
+                ),
+              );
+      },
     );
   }
 

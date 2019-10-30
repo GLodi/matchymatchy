@@ -41,6 +41,7 @@ void main() {
         c.resolve<SharedPrefsProvider>(),
         c.resolve<ApiProvider>(),
       ));
+  container.registerFactory((c) => WinRepo(c.resolve<MessagingEventBus>()));
 
   // Blocs
   container.registerFactory((c) => SingleBloc(c.resolve<SingleRepo>()));
@@ -50,6 +51,7 @@ void main() {
       (c) => HomeBloc(c.resolve<HomeRepo>(), c.resolve<MessagingEventBus>()));
   container.registerFactory((c) => HomeMatchListBloc(
       c.resolve<HomeMatchListRepo>(), c.resolve<MessagingEventBus>()));
+  container.registerFactory((c) => WinBloc(c.resolve<WinRepo>()));
 
   runApp(App());
 }

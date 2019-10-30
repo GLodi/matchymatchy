@@ -115,6 +115,7 @@ class MultiBloc extends GameBloc {
       });
       _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) {
         if (_repo.matchId == mess.matchId) {
+          // TODO: check match not won
           print('multi message');
           _enemyMovesSubject.add(mess.enemyMoves);
           _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));

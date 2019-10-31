@@ -51,7 +51,8 @@ class HomeMatchListBloc
       case HomeMatchListEventType.updateMatches:
         yield HomeMatchListState(type: HomeMatchListStateType.fetching);
         try {
-          Future.wait([_repo.updateActiveMatches(), _repo.updatePastMatches()]);
+          await Future.wait(
+              [_repo.updateActiveMatches(), _repo.updatePastMatches()]);
           emitEvent(
               HomeMatchListEvent(type: HomeMatchListEventType.showMatches));
         } catch (e) {
@@ -98,6 +99,7 @@ class HomeMatchListBloc
       });
       _forfeitSubs = _messEventBus.on<ForfeitMessage>().listen((forf) async {
         print('matchlist forfeit');
+        // TODO: don't delete, just update it, need to get info for winwidget
         await _repo.deleteActiveMatch(forf.matchId);
         emitEvent(
             HomeMatchListEvent(type: HomeMatchListEventType.refreshMatches));

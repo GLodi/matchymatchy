@@ -5,17 +5,19 @@ import 'package:squazzle/domain/bloc_utils/bloc_utils.dart';
 class WinState extends BlocState {
   final WinStateType type;
   final String message;
+  String winner;
 
   WinState({
     @required this.type,
     this.message,
+    this.winner,
   });
 
   factory WinState.waitingForOpp() =>
       WinState(type: WinStateType.waitingForOpp);
 
-  factory WinState.winnerDeclared() =>
-      WinState(type: WinStateType.winnerDeclared);
+  factory WinState.winnerDeclared(String winner) =>
+      WinState(type: WinStateType.winnerDeclared, winner: winner);
 }
 
 enum WinStateType {

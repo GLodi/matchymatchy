@@ -184,7 +184,10 @@ class _SingleScreenState extends State<SingleScreen>
       opacity: opacityLevel,
       child: Visibility(
         visible: opacityLevel != 0,
-        child: WinWidget(),
+        // TODO: don't make own winwidget for singleplayer
+        child: Container(
+          decoration: BoxDecoration(color: Colors.blue),
+        ),
       ),
     );
   }

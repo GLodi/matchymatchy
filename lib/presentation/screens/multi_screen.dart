@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:squazzle/domain/domain.dart';
@@ -131,7 +132,10 @@ class _MultiScreenState extends State<MultiScreen>
           opacity: opacityLevel,
           child: Visibility(
             visible: opacityLevel != 0,
-            child: WinWidget(),
+            child: BlocProvider(
+              child: WinWidget(),
+              bloc: kiwi.Container().resolve<WinBloc>(),
+            ),
           ),
         ),
       ],

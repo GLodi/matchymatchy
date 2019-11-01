@@ -14,14 +14,7 @@ class FetchDataException extends AppException {
       : super(message, "Error During Communication: ");
 }
 
-class BadRequestException extends AppException {
-  BadRequestException([message]) : super(message, "Invalid Request: ");
-}
-
-class UnauthorisedException extends AppException {
-  UnauthorisedException([message]) : super(message, "Unauthorised: ");
-}
-
-class InvalidInputException extends AppException {
-  InvalidInputException([String message]) : super(message, "Invalid Input: ");
+class DataNotAvailableException extends AppException {
+  DataNotAvailableException([String message])
+      : super(message, "Data Not Available Error: ");
 }

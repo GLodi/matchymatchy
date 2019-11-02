@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin'
 import { ActiveMatch } from './models/active_match'
+import { DataNotAvailableError } from './models/exceptions'
 import { DocumentSnapshot } from '@google-cloud/firestore'
 import { updateFcmToken } from './updatefcmtoken'
 
@@ -12,14 +13,17 @@ export async function reconnect(request: any, response: any) {
     const userFcmToken: string = request.query.userFcmToken
     const matchId: string = request.query.matchId
     try {
-        // TODO: handle reconnection on ended match
         updateFcmToken(userId, userFcmToken)
         const match: ActiveMatch = await findMatch(userId, matchId)
         response.send(match)
     } catch (e) {
-        console.log('--- error reconnecting player')
-        console.error(Error(e))
-        response.status(500).send()
+        if (e instanceof DataNotAvailableError) {
+            response.status(210).send()
+        } else {
+            console.log('--- error reconnecting player')
+            console.error(Error(e))
+            response.status(500).send()
+        }
     }
 }
 

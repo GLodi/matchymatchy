@@ -1,4 +1,5 @@
 import * as admin from 'firebase-admin'
+import { DataNotAvailableError } from './models/exceptions'
 import { DocumentReference, DocumentSnapshot } from '@google-cloud/firestore'
 
 const matches = admin.firestore().collection('matches')
@@ -12,23 +13,21 @@ export async function playMove(request: any, response: any) {
     const done: boolean = request.query.done == 'true'
     const moves: number = +request.query.moves
     const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
-    if (isPlayer(userId, matchDoc)) {
-        try {
-            // TODO: handle playmove on ended match
-            await updateMatch(userId, matchDoc, newGf, newTarget, moves)
-            if (done) await setPlayerDone(userId, matchDoc)
-            response.send(true)
-            if (done && isOtherPlayerDone(userId, matchDoc)) {
-                declareWinner(matchDoc)
-            }
-        } catch (e) {
+    try {
+        await updateMatch(userId, matchDoc, newGf, newTarget, moves)
+        if (done) await setPlayerDone(userId, matchDoc)
+        response.send(true)
+        if (done && isOtherPlayerDone(userId, matchDoc)) {
+            declareWinner(matchDoc)
+        }
+    } catch (e) {
+        if (e instanceof DataNotAvailableError) {
+            response.status(210).send()
+        } else {
             console.log('--- error applying player move')
             console.error(Error(e))
             response.status(500).send()
         }
-    } else {
-        console.log('--- error user neither host nor join')
-        response.status(500).send()
     }
 }
 
@@ -37,7 +36,6 @@ export async function forfeit(request: any, response: any) {
     const matchId: string = request.query.matchId
     const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
     try {
-        // TODO: handle forfeit on ended match
         if (matchDoc.data()!.winner == null) {
             if (userId == matchDoc.data()!.hostuid) {
                 await upWinAmount(matchDoc, false, 1)
@@ -50,16 +48,14 @@ export async function forfeit(request: any, response: any) {
             response.send(false)
         }
     } catch (e) {
-        console.log('--- error forfeting player player')
-        console.error(Error(e))
-        response.status(500).send()
+        if (e instanceof DataNotAvailableError) {
+            response.status(210).send()
+        } else {
+            console.log('--- error forfeting player player')
+            console.error(Error(e))
+            response.status(500).send()
+        }
     }
-}
-
-function isPlayer(userId: string, matchDoc: DocumentSnapshot): boolean {
-    return (
-        userId == matchDoc.data()!.hostuid || userId == matchDoc.data()!.joinuid
-    )
 }
 
 function isOtherPlayerDone(

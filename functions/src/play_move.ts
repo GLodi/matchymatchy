@@ -12,8 +12,9 @@ export async function playMove(request: any, response: any) {
     const newTarget: string = request.query.newTarget
     const done: boolean = request.query.done == 'true'
     const moves: number = +request.query.moves
-    const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
     try {
+        const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
+        if (!matchDoc.exists) throw DataNotAvailableError
         await updateMatch(userId, matchDoc, newGf, newTarget, moves)
         if (done) await setPlayerDone(userId, matchDoc)
         response.send(true)
@@ -34,8 +35,9 @@ export async function playMove(request: any, response: any) {
 export async function forfeit(request: any, response: any) {
     const userId: string = request.query.userId
     const matchId: string = request.query.matchId
-    const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
     try {
+        const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
+        if (!matchDoc.exists) throw DataNotAvailableError
         if (matchDoc.data()!.winner == null) {
             if (userId == matchDoc.data()!.hostuid) {
                 await upWinAmount(matchDoc, false, 1)

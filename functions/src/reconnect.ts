@@ -27,8 +27,12 @@ export async function reconnect(request: any, response: any) {
     }
 }
 
-async function findMatch(userId: string, matchId: string) {
+async function findMatch(
+    userId: string,
+    matchId: string
+): Promise<ActiveMatch> {
     const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
+    if (!matchDoc.exists) throw DataNotAvailableError
     const hostOrJoin: boolean = userId == matchDoc.data()!.hostuid
     const gfDoc: DocumentSnapshot = await gamefields
         .doc(String(matchDoc.data()!.gfid))

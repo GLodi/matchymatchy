@@ -2,6 +2,7 @@ import 'package:rxdart/rxdart.dart';
 import 'dart:async';
 
 import 'package:squazzle/data/api/mess_event_bus.dart';
+import 'package:squazzle/data/api/exceptions.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
 
@@ -62,6 +63,8 @@ class MultiBloc extends GameBloc {
           listenToMessages();
           ActiveMatch currentMatch = await _repo.queuePlayer();
           fetchResult(currentMatch);
+        } on DataNotAvailableException {
+          // show error and then go back to homescreen
         } catch (e) {
           yield GameState.error('Error queueing');
           print(e);
@@ -75,6 +78,8 @@ class MultiBloc extends GameBloc {
           ActiveMatch currentMatch =
               await _repo.connectPlayer(event.connectMatchId);
           fetchResult(currentMatch);
+        } on DataNotAvailableException {
+          // show error and then go back to homescreen
         } catch (e) {
           yield GameState.error('Error connecting to match');
           print(e);

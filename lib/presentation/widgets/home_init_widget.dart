@@ -25,30 +25,44 @@ class _HomeInitWidgetState extends State<HomeInitWidget> {
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
-    return Stack(
-      children: <Widget>[
-        Column(
-          children: <Widget>[
-            StreamBuilder<User>(
-              initialData: widget.user,
-              stream: widget.bloc.user,
-              builder: (context, snapshot) {
-                return UserWidget(
-                    user: snapshot.data,
-                    parentHeight: height,
-                    parentWidth: width);
-              },
-            ),
-            BlocProvider(
-              child: HomeMatchListWidget(),
-              bloc: kiwi.Container().resolve<HomeMatchListBloc>(),
-            ),
-            SizedBox(height: 80),
-          ],
-        ),
-        HomeBottomBarWidget(
-            bloc: widget.bloc, isTest: widget.isTest, parentHeight: height),
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        actions: <Widget>[
+          PopupMenuButton<String>(
+              onSelected: _onSelected,
+              itemBuilder: (context) {
+                return PopMenuButton<String>();
+              }),
+        ],
+      ),
+      body: Stack(
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              StreamBuilder<User>(
+                initialData: widget.user,
+                stream: widget.bloc.user,
+                builder: (context, snapshot) {
+                  return UserWidget(
+                      user: snapshot.data,
+                      parentHeight: height,
+                      parentWidth: width);
+                },
+              ),
+              BlocProvider(
+                child: HomeMatchListWidget(),
+                bloc: kiwi.Container().resolve<HomeMatchListBloc>(),
+              ),
+              SizedBox(height: 80),
+            ],
+          ),
+          HomeBottomBarWidget(
+              bloc: widget.bloc, isTest: widget.isTest, parentHeight: height),
+        ],
+      ),
     );
   }
+
+  void _onSelected() {}
 }

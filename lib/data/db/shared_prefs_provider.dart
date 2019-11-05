@@ -10,6 +10,8 @@ abstract class SharedPrefsProvider {
   Future<String> getUid();
 
   Future<bool> isFirstOpen();
+
+  Future<void> logout();
 }
 
 class SharedPrefsProviderImpl extends SharedPrefsProvider {
@@ -64,5 +66,14 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
       return true;
     }
     return false;
+  }
+
+  @override
+  Future<void> logout() async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.remove('username');
+    prefs.remove('uid');
+    prefs.remove('photoUrl');
+    prefs.remove('matchesWon');
   }
 }

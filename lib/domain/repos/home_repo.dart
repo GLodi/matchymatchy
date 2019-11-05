@@ -13,6 +13,10 @@ class HomeRepo {
     return await _prefsProvider.storeUser(user);
   }
 
+  Future<void> logout() async {
+    return await _prefsProvider.logout();
+  }
+
   Future<User> checkIfLoggedIn() => _prefsProvider.getUser();
 
   Future<bool> isFirstOpen() => _prefsProvider.isFirstOpen();

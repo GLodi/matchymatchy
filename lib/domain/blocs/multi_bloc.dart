@@ -79,7 +79,7 @@ class MultiBloc extends GameBloc {
               await _repo.connectPlayer(event.connectMatchId);
           fetchResult(currentMatch);
         } on DataNotAvailableException {
-          // show error and then go back to homescreen
+          // TODO: show error and then go back to homescreen
         } catch (e) {
           yield GameState.error('Error connecting to match');
           print(e);

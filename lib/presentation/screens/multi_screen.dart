@@ -89,6 +89,8 @@ class _MultiScreenState extends State<MultiScreen>
               builder: (context, state) {
                 switch (state.type) {
                   case GameStateType.error:
+                    // TODO: make this into winnerwidget-style:
+                    // fade into a widget drawn over multigamewidget
                     {
                       return Center(
                         child: Text(

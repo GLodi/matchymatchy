@@ -31,12 +31,18 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
   final _doneSlidesButtonSubject = PublishSubject<bool>();
   Sink<bool> get doneSlidesButton => _doneSlidesButtonSubject.sink;
 
+  final _logoutButtonSubject = PublishSubject<bool>();
+  Sink<bool> get logoutButton => _logoutButtonSubject.sink;
+
   HomeBloc(this._repo, this._messEventBus)
       : super(initialState: HomeState.notInit());
 
   void setup() async {
     _doneSlidesButtonSubject.listen((input) {
       _showSlidesSubject.add(input);
+    });
+    _logoutButtonSubject.listen((input) {
+      emitEvent(HomeEvent(type: HomeEventType.logoutButtonPress));
     });
     ConnectivityResult curr = await Connectivity().checkConnectivity();
     bool prev = curr == ConnectivityResult.none ? false : true;
@@ -78,6 +84,11 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
           }
         }
         break;
+      case HomeEventType.logoutButtonPress:
+        yield HomeState.notInit();
+        await _repo.logout();
+        yield await checkIfUserLogged();
+        break;
       default:
     }
   }
@@ -114,6 +125,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
 
   @override
   void dispose() {
+    print('disposing');
     _intentToMultiScreenSubject.close();
     _showSlidesSubject.close();
     _connChangeSub.close();

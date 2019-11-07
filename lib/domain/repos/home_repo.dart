@@ -5,8 +5,10 @@ class HomeRepo {
   final LoginProvider _loginProvider;
   final SharedPrefsProvider _prefsProvider;
   final ApiProvider _apiProvider;
+  final DbProvider _dbProvider;
 
-  HomeRepo(this._loginProvider, this._prefsProvider, this._apiProvider);
+  HomeRepo(this._loginProvider, this._prefsProvider, this._apiProvider,
+      this._dbProvider);
 
   Future<void> loginWithGoogle(String fcmToken) async {
     User user = await _loginProvider.loginWithGoogle(fcmToken);
@@ -14,6 +16,8 @@ class HomeRepo {
   }
 
   Future<void> logout() async {
+    await _dbProvider.deleteActiveMatches();
+    await _dbProvider.deletePastMatches();
     return await _prefsProvider.logout();
   }
 

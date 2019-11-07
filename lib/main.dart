@@ -34,8 +34,11 @@ void main() {
       c.resolve<SharedPrefsProvider>(),
       c.resolve<LogicProvider>(),
       c.resolve<DbProvider>()));
-  container.registerFactory((c) => HomeRepo(c.resolve<LoginProvider>(),
-      c.resolve<SharedPrefsProvider>(), c.resolve<ApiProvider>()));
+  container.registerFactory((c) => HomeRepo(
+      c.resolve<LoginProvider>(),
+      c.resolve<SharedPrefsProvider>(),
+      c.resolve<ApiProvider>(),
+      c.resolve<DbProvider>()));
   container.registerFactory((c) => HomeMatchListRepo(
         c.resolve<DbProvider>(),
         c.resolve<SharedPrefsProvider>(),

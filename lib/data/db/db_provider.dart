@@ -14,9 +14,13 @@ abstract class DbProvider {
 
   Future<List<ActiveMatch>> getActiveMatches();
 
+  Future<List<PastMatch>> getPastMatches();
+
   Future<void> storeActiveMatch(ActiveMatch activeMatch);
 
   Future<void> storeActiveMatches(List<ActiveMatch> list);
+
+  Future<void> storePastMatches(List<PastMatch> list);
 
   Future<void> updateActiveMatch(ActiveMatch activeMatch);
 
@@ -24,9 +28,7 @@ abstract class DbProvider {
 
   Future<void> deleteActiveMatches();
 
-  Future<List<PastMatch>> getPastMatches();
-
-  Future<void> storePastMatches(List<PastMatch> list);
+  Future<void> deletePastMatches();
 }
 
 class DbProviderImpl extends DbProvider {
@@ -129,5 +131,11 @@ class DbProviderImpl extends DbProvider {
   Future<void> deleteActiveMatches() async {
     var dbClient = await db;
     return await dbClient.delete(activeMatchTable);
+  }
+
+  @override
+  Future<void> deletePastMatches() async {
+    var dbClient = await db;
+    return await dbClient.delete(pastMatchTable);
   }
 }

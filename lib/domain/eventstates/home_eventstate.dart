@@ -42,4 +42,5 @@ class HomeEvent extends BlocEvent {
 enum HomeEventType {
   checkIfUserLogged,
   multiButtonPress,
+  logoutButtonPress,
 }

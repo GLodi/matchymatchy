@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
 import 'curve_painter.dart';
 
 class UserWidget extends StatefulWidget {
+  final HomeBloc bloc;
   final User user;
   final double parentHeight;
   final double parentWidth;
 
-  UserWidget({this.user, this.parentHeight, this.parentWidth});
+  UserWidget(this.bloc, this.user, this.parentHeight, this.parentWidth);
 
   @override
   State<StatefulWidget> createState() {
@@ -76,7 +78,7 @@ class _UserWidgetState extends State<UserWidget> with TickerProviderStateMixin {
           ),
           Container(
             alignment: Alignment.centerLeft,
-            margin: EdgeInsets.fromLTRB(70, 0, 0, 0),
+            margin: EdgeInsets.fromLTRB(70, 0, 0, 20),
             child: ClipOval(
               child: CachedNetworkImage(
                 imageUrl: widget.user.photoUrl,
@@ -89,6 +91,7 @@ class _UserWidgetState extends State<UserWidget> with TickerProviderStateMixin {
             alignment: Alignment.centerRight,
             child: Container(
               width: widget.parentWidth / 2,
+              margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
               child: Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -121,7 +124,7 @@ class _UserWidgetState extends State<UserWidget> with TickerProviderStateMixin {
 
   Widget optionWidget() {
     return PopupMenuButton<Options>(
-      icon: const Icon(Icons.more_vert, color: Colors.white),
+      icon: const Icon(Icons.more_horiz, color: Colors.white),
       onSelected: _onSelected,
       itemBuilder: (context) => <PopupMenuEntry<Options>>[
         PopupMenuItem<Options>(
@@ -135,5 +138,12 @@ class _UserWidgetState extends State<UserWidget> with TickerProviderStateMixin {
     );
   }
 
-  void _onSelected(Options option) {}
+  void _onSelected(Options option) {
+    switch (option) {
+      case Options.logout:
+        widget.bloc.logoutButton.add(true);
+        break;
+      default:
+    }
+  }
 }

@@ -33,10 +33,7 @@ class _HomeInitWidgetState extends State<HomeInitWidget> {
               initialData: widget.user,
               stream: widget.bloc.user,
               builder: (context, snapshot) {
-                return UserWidget(
-                    user: snapshot.data,
-                    parentHeight: height,
-                    parentWidth: width);
+                return UserWidget(widget.bloc, snapshot.data, height, width);
               },
             ),
             BlocProvider(

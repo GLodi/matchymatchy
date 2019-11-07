@@ -17,6 +17,8 @@ class UserWidget extends StatefulWidget {
   }
 }
 
+enum Options { logout }
+
 class _UserWidgetState extends State<UserWidget> with TickerProviderStateMixin {
   AnimationController _entryAnimCont;
   Animation _entryAnim;
@@ -36,77 +38,102 @@ class _UserWidgetState extends State<UserWidget> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     _entryAnimCont.forward();
     return AnimatedBuilder(
-        animation: _entryAnimCont,
-        builder: (context, child) {
-          return Transform(
-            transform: Matrix4.translationValues(
-                0, -_entryAnim.value * widget.parentHeight, 0),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                height: 200.0,
-                width: widget.parentWidth,
-                decoration: BoxDecoration(
-                  color: Colors.blue[200],
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: const Radius.circular(20.0),
-                    bottomRight: const Radius.circular(20.0),
-                  ),
-                ),
-                child: CustomPaint(
-                  painter: CurvePainter(),
-                  child: elements(),
+      animation: _entryAnimCont,
+      builder: (context, child) {
+        return Transform(
+          transform: Matrix4.translationValues(
+              0, -_entryAnim.value * widget.parentHeight, 0),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              height: 200.0,
+              width: widget.parentWidth,
+              decoration: BoxDecoration(
+                color: Colors.blue[200],
+                borderRadius: BorderRadius.only(
+                  bottomLeft: const Radius.circular(20.0),
+                  bottomRight: const Radius.circular(20.0),
                 ),
               ),
+              child: CustomPaint(
+                painter: CurvePainter(),
+                child: elements(),
+              ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   Widget elements() {
-    return Stack(
-      children: <Widget>[
-        Container(
-          alignment: Alignment.centerLeft,
-          margin: EdgeInsets.fromLTRB(70, 0, 0, 0),
-          child: ClipOval(
-            child: CachedNetworkImage(
-              imageUrl: widget.user.photoUrl,
-              placeholder: (context, url) => CircularProgressIndicator(),
-              errorWidget: (context, url, error) => Icon(Icons.error),
+    return SafeArea(
+      child: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.topRight,
+            child: optionWidget(),
+          ),
+          Container(
+            alignment: Alignment.centerLeft,
+            margin: EdgeInsets.fromLTRB(70, 0, 0, 0),
+            child: ClipOval(
+              child: CachedNetworkImage(
+                imageUrl: widget.user.photoUrl,
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
             ),
           ),
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Container(
-            width: widget.parentWidth / 2,
-            child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    widget.user.username,
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 1,
+          Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+              width: widget.parentWidth / 2,
+              child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.user.username,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 1,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'wins: ' + widget.user.matchesWon.toString(),
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 1,
+                    SizedBox(height: 10),
+                    Text(
+                      'wins: ' + widget.user.matchesWon.toString(),
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 1,
+                      ),
                     ),
-                  ),
-                ]),
+                  ]),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget optionWidget() {
+    return PopupMenuButton<Options>(
+      icon: const Icon(Icons.more_vert, color: Colors.white),
+      onSelected: _onSelected,
+      itemBuilder: (context) => <PopupMenuEntry<Options>>[
+        PopupMenuItem<Options>(
+          value: Options.logout,
+          child: Text(
+            "logout",
+            style: TextStyle(color: Colors.black),
           ),
         ),
       ],
     );
   }
+
+  void _onSelected(Options option) {}
 }

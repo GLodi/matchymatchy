@@ -43,8 +43,8 @@ class MultiBloc extends GameBloc {
         _repo.forfeit();
         _messEventBus.forfeitMatch(_repo.matchId);
       } catch (e) {
-        print(e);
         emitEvent(GameEvent(type: GameEventType.error));
+        print(e);
       }
     });
   }

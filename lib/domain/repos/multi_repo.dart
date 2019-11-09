@@ -38,7 +38,9 @@ class MultiRepo extends GameRepo {
       String uid = await prefsProvider.getUid();
       bool isCorrect =
           await logicProvider.checkIfCorrect(gameField, targetField);
-      await apiProvider.sendMove(currentMatch, newTarget.grid, uid, isCorrect);
+      bool result = await apiProvider.sendMove(
+          currentMatch, newTarget.grid, uid, isCorrect);
+      result ? showSitua : showEnd;
     }
     return logicProvider.checkIfCorrect(gameField, targetField);
   }

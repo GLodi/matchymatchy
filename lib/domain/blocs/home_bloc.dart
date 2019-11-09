@@ -125,7 +125,6 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
 
   @override
   void dispose() {
-    print('disposing');
     _intentToMultiScreenSubject.close();
     _showSlidesSubject.close();
     _connChangeSub.close();

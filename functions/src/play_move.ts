@@ -14,7 +14,7 @@ export async function playMove(request: any, response: any) {
     const moves: number = +request.query.moves
     try {
         const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
-        if (!matchDoc.exists) throw DataNotAvailableError
+        if (!matchDoc.exists) throw new DataNotAvailableError()
         await updateMatch(userId, matchDoc, newGf, newTarget, moves)
         if (done) await setPlayerDone(userId, matchDoc)
         response.send(true)
@@ -23,7 +23,7 @@ export async function playMove(request: any, response: any) {
         }
     } catch (e) {
         if (e instanceof DataNotAvailableError) {
-            response.status(210).send()
+            response.status(204).send()
         } else {
             console.log('--- error applying player move')
             console.error(Error(e))
@@ -37,7 +37,7 @@ export async function forfeit(request: any, response: any) {
     const matchId: string = request.query.matchId
     try {
         const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
-        if (!matchDoc.exists) throw DataNotAvailableError
+        if (!matchDoc.exists) throw new DataNotAvailableError()
         if (matchDoc.data()!.winner == null) {
             if (userId == matchDoc.data()!.hostuid) {
                 await upWinAmount(matchDoc, false, 1)
@@ -51,7 +51,7 @@ export async function forfeit(request: any, response: any) {
         }
     } catch (e) {
         if (e instanceof DataNotAvailableError) {
-            response.status(210).send()
+            response.status(204).send()
         } else {
             console.log('--- error forfeting player player')
             console.error(Error(e))

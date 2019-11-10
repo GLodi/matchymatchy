@@ -23,7 +23,7 @@ export async function queuePlayer(request: any, response: any) {
         response.send(match)
     } catch (e) {
         if (e instanceof DataNotAvailableError) {
-            response.status(210).send()
+            response.status(204).send()
         } else {
             console.log('--- error queueing player')
             console.error(Error(e))

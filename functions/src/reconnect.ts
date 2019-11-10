@@ -18,7 +18,7 @@ export async function reconnect(request: any, response: any) {
         response.send(match)
     } catch (e) {
         if (e instanceof DataNotAvailableError) {
-            response.status(210).send()
+            response.status(204).send()
         } else {
             console.log('--- error reconnecting player')
             console.error(Error(e))
@@ -32,7 +32,7 @@ async function findMatch(
     matchId: string
 ): Promise<ActiveMatch> {
     const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
-    if (!matchDoc.exists) throw DataNotAvailableError
+    if (!matchDoc.exists) throw new DataNotAvailableError()
     const hostOrJoin: boolean = userId == matchDoc.data()!.hostuid
     const gfDoc: DocumentSnapshot = await gamefields
         .doc(String(matchDoc.data()!.gfid))

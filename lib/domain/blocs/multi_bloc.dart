@@ -140,7 +140,7 @@ class MultiBloc extends GameBloc {
       _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
         if (_repo.matchId == mess.matchId) {
           print('multi winner');
-          emitEvent(GameEvent(type: GameEventType.victory));
+          correctSubject.add(true);
         }
       });
     }

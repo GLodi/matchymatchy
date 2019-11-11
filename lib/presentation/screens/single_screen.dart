@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:squazzle/domain/domain.dart';
-import 'package:squazzle/presentation/widgets/win_widget.dart';
 import 'package:squazzle/presentation/widgets/game_field_widget.dart';
 import 'package:squazzle/presentation/widgets/target_field_widget.dart';
 

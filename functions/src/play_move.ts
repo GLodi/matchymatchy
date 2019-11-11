@@ -14,6 +14,7 @@ export async function playMove(request: any, response: any) {
     const moves: number = +request.query.moves
     try {
         const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
+        // TODO: don't throw, check if match was won
         if (!matchDoc.exists) throw new DataNotAvailableError()
         await updateMatch(userId, matchDoc, newGf, newTarget, moves)
         if (done) await setPlayerDone(userId, matchDoc)

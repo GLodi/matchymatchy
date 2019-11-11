@@ -1,6 +1,5 @@
 import * as admin from 'firebase-admin'
 import { ActiveMatch } from './models/active_match'
-import { DataNotAvailableError } from './models/exceptions'
 import { updateFcmToken } from './updatefcmtoken'
 import {
     DocumentReference,
@@ -22,13 +21,9 @@ export async function queuePlayer(request: any, response: any) {
         const match: ActiveMatch = await newGame(userId)
         response.send(match)
     } catch (e) {
-        if (e instanceof DataNotAvailableError) {
-            response.status(204).send()
-        } else {
-            console.log('--- error queueing player')
-            console.error(Error(e))
-            response.status(500).send()
-        }
+        console.log('--- error queueing player')
+        console.error(Error(e))
+        response.status(500).send()
     }
 }
 

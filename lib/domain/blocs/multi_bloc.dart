@@ -63,10 +63,8 @@ class MultiBloc extends GameBloc {
           listenToMessages();
           ActiveMatch currentMatch = await _repo.queuePlayer();
           fetchResult(currentMatch);
-        } on DataNotAvailableException {
-          // show error and then go back to homescreen
         } catch (e) {
-          yield GameState.error('Error queueing');
+          yield GameState.error('error queueing');
           print(e);
         }
         break;
@@ -78,20 +76,33 @@ class MultiBloc extends GameBloc {
           ActiveMatch currentMatch =
               await _repo.connectPlayer(event.connectMatchId);
           fetchResult(currentMatch);
-        } on DataNotAvailableException {
-          // TODO: show error and then go back to homescreen
         } catch (e) {
-          yield GameState.error('Error connecting to match');
+          yield GameState.error('error connecting to match');
           print(e);
         }
         break;
-      case GameEventType.victory:
-        correctSubject.add(true);
+      case GameEventType.matchNotFound:
+        yield GameState.notInit();
+        _waitMessageSubject.add('lost connection, reconnecting...');
+        // TODO: show loading and then try to reconnect,
+        // otherwise show error
         break;
       case GameEventType.error:
-        yield GameState.error('Error');
+        yield GameState.error('error');
         break;
       default:
+    }
+  }
+
+  @override
+  void winCheck(GameField gf, TargetField tf) async {
+    try {
+      bool isCorrect = await _repo.moveDone(gf, tf);
+      if (isCorrect) correctSubject.add(true);
+    } on DataNotAvailableException {
+      emitEvent(GameEvent(type: GameEventType.matchNotFound));
+    } catch (e) {
+      emitEvent(GameEvent(type: GameEventType.error));
     }
   }
 

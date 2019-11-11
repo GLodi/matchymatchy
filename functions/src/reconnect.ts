@@ -32,7 +32,7 @@ async function findMatch(
     matchId: string
 ): Promise<ActiveMatch> {
     const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
-    if (!matchDoc.exists) throw new DataNotAvailableError()
+    if (!matchDoc.exists) throw new DataNotAvailableError() // TODO: don't throw, check if match was won
     const hostOrJoin: boolean = userId == matchDoc.data()!.hostuid
     const gfDoc: DocumentSnapshot = await gamefields
         .doc(String(matchDoc.data()!.gfid))

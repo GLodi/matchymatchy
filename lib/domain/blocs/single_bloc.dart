@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:squazzle/domain/domain.dart';
+import 'package:squazzle/data/models/models.dart';
 
 class SingleBloc extends GameBloc {
   final SingleRepo _repo;
@@ -30,10 +31,13 @@ class SingleBloc extends GameBloc {
         });
         yield result;
         break;
-      case GameEventType.victory:
-        correctSubject.add(true);
-        break;
       default:
     }
+  }
+
+  @override
+  void winCheck(GameField gf, TargetField tf) async {
+    bool isCorrect = await _repo.moveDone(gf, tf);
+    if (isCorrect) correctSubject.add(true);
   }
 }

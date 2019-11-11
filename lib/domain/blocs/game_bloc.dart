@@ -29,6 +29,8 @@ abstract class GameBloc extends BlocEventStateBase<GameEvent, GameState> {
 
   GameBloc(this.gameRepo) : super(initialState: GameState.notInit());
 
+  void winCheck(GameField gf, TargetField tf);
+
   @override
   void dispose() {
     correctSubject.close();

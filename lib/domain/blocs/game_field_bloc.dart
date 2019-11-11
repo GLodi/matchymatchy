@@ -29,9 +29,7 @@ class GameFieldBloc extends BlocEventStateBase<WidgetEvent, WidgetState> {
     _gameBloc.gameField = newField;
     _gameFieldSubject.add(newField);
     _gameBloc.moveNumberSubject.add(await _gameBloc.gameRepo.getMoves());
-    bool isCorrect = await _gameBloc.gameRepo
-        .moveDone(_gameBloc.gameField, _gameBloc.targetField);
-    if (isCorrect) _gameBloc.emitEvent(GameEvent(type: GameEventType.victory));
+    _gameBloc.winCheck(_gameBloc.gameField, _gameBloc.targetField);
   }
 
   @override

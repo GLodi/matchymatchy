@@ -105,6 +105,7 @@ class _MultiScreenState extends State<MultiScreen>
                     }
                   case GameStateType.notInit:
                     {
+                      // TODO: add animation like multigamewidget
                       return notInit();
                     }
                   case GameStateType.init:

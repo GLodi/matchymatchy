@@ -82,11 +82,13 @@ class MultiBloc extends GameBloc {
         }
         break;
       case GameEventType.matchNotFound:
-        if (currentState.type != GameStateType.notInit)
+        if (currentState.type != GameStateType.win) {
           yield GameState.notInit();
-        _waitMessageSubject.add('lost connection, reconnecting...');
-        // TODO: show loading and then try to reconnect,
-        // otherwise show error
+          _waitMessageSubject.add('lost connection, reconnecting...');
+          // TODO: show loading and then try to reconnect,
+          // otherwise show error
+
+        }
         break;
       case GameEventType.win:
         correctSubject.add(true);

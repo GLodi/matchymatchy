@@ -82,10 +82,14 @@ class MultiBloc extends GameBloc {
         }
         break;
       case GameEventType.matchNotFound:
-        yield GameState.notInit();
+        if (currentState.type != GameStateType.notInit)
+          yield GameState.notInit();
         _waitMessageSubject.add('lost connection, reconnecting...');
         // TODO: show loading and then try to reconnect,
         // otherwise show error
+        break;
+      case GameEventType.win:
+        correctSubject.add(true);
         break;
       case GameEventType.error:
         yield GameState.error('error');
@@ -98,7 +102,7 @@ class MultiBloc extends GameBloc {
   void winCheck(GameField gf, TargetField tf) async {
     try {
       bool isCorrect = await _repo.moveDone(gf, tf);
-      if (isCorrect) correctSubject.add(true);
+      if (isCorrect) emitEvent(GameEvent(type: GameEventType.win));
     } on DataNotAvailableException {
       emitEvent(GameEvent(type: GameEventType.matchNotFound));
     } catch (e) {
@@ -140,7 +144,7 @@ class MultiBloc extends GameBloc {
       _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
         if (_repo.matchId == mess.matchId) {
           print('multi winner');
-          correctSubject.add(true);
+          emitEvent(GameEvent(type: GameEventType.win));
         }
       });
     }

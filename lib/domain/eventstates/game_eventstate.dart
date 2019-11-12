@@ -36,6 +36,7 @@ enum GameEventType {
   start,
   queue,
   connect,
+  win,
   matchNotFound,
   error,
 }

@@ -83,40 +83,43 @@ class _MultiScreenState extends State<MultiScreen>
           );
         },
         child: WillPopScope(
-            onWillPop: _onBackButton,
-            child: BlocEventStateBuilder<GameEvent, GameState>(
-              bloc: bloc,
-              builder: (context, state) {
-                switch (state.type) {
-                  case GameStateType.error:
-                    // TODO: make this into winnerwidget-style:
-                    // fade into a widget drawn over multigamewidget
-                    {
-                      return Center(
-                        child: Text(
-                          state.message,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 1,
-                          ),
+          onWillPop: _onBackButton,
+          child: BlocEventStateBuilder<GameEvent, GameState>(
+            bloc: bloc,
+            builder: (context, state) {
+              switch (state.type) {
+                case GameStateType.error:
+                  // TODO: make this into winnerwidget-style:
+                  // fade into a widget drawn over multigamewidget
+                  {
+                    return Center(
+                      child: Text(
+                        state.message,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 1,
                         ),
-                      );
-                    }
-                  case GameStateType.notInit:
-                    {
-                      // TODO: add animation like multigamewidget
-                      return notInit();
-                    }
-                  case GameStateType.init:
-                    {
-                      return init();
-                    }
-                  default:
-                    return Container();
-                }
-              },
-            )),
+                      ),
+                    );
+                  }
+                case GameStateType.notInit:
+                  {
+                    // TODO: add animation like multigamewidget
+                    return notInit();
+                  }
+                case GameStateType.init:
+                  {
+                    return init();
+                  }
+                default:
+                  return Container();
+              }
+              // TODO: return init here, and use
+              // switch to show/hide states as needed
+            },
+          ),
+        ),
       ),
     );
   }

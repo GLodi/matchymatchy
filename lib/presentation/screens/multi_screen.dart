@@ -5,6 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/widgets/multi_game_widget.dart';
 import 'package:squazzle/presentation/widgets/win_widget.dart';
+import 'package:squazzle/presentation/widgets/multi_error_widget.dart';
 
 class MultiScreen extends StatefulWidget {
   final String heroTag;
@@ -84,41 +85,7 @@ class _MultiScreenState extends State<MultiScreen>
         },
         child: WillPopScope(
           onWillPop: _onBackButton,
-          child: BlocEventStateBuilder<GameEvent, GameState>(
-            bloc: bloc,
-            builder: (context, state) {
-              switch (state.type) {
-                case GameStateType.error:
-                  // TODO: make this into winnerwidget-style:
-                  // fade into a widget drawn over multigamewidget
-                  {
-                    return Center(
-                      child: Text(
-                        state.message,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                    );
-                  }
-                case GameStateType.notInit:
-                  {
-                    // TODO: add animation like multigamewidget
-                    return notInit();
-                  }
-                case GameStateType.init:
-                  {
-                    return init();
-                  }
-                default:
-                  return Container();
-              }
-              // TODO: return init here, and use
-              // switch to show/hide states as needed
-            },
-          ),
+          child: init(),
         ),
       ),
     );
@@ -127,27 +94,47 @@ class _MultiScreenState extends State<MultiScreen>
   Widget init() {
     return Stack(
       children: <Widget>[
-        AbsorbPointer(
-            absorbing: opacityLevel != 0,
-            child: MultiGameWidget(
-                bloc: bloc,
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width)),
-        AnimatedOpacity(
-          duration: Duration(milliseconds: 500),
-          opacity: opacityLevel,
-          child: Visibility(
-            visible: opacityLevel != 0,
-            child: BlocProvider(
-              child: WinWidget(),
-              bloc: kiwi.Container().resolve<WinBloc>(),
-            ),
-          ),
+        BlocEventStateBuilder<GameEvent, GameState>(
+          bloc: bloc,
+          builder: (context, state) {
+            switch (state.type) {
+              case GameStateType.error:
+                {
+                  _changeOpacity();
+                  return MultiErrorWidget(state.message);
+                }
+              case GameStateType.notInit:
+                {
+                  return notInit();
+                }
+              case GameStateType.init:
+                {
+                  return AbsorbPointer(
+                    absorbing: opacityLevel != 0,
+                    child: MultiGameWidget(
+                      bloc: bloc,
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                    ),
+                  );
+                }
+              case GameStateType.win:
+                {
+                  return BlocProvider(
+                    child: WinWidget(),
+                    bloc: kiwi.Container().resolve<WinBloc>(),
+                  );
+                }
+              default:
+                return Container();
+            }
+          },
         ),
       ],
     );
   }
 
+  // TODO: add animation like multigamewidget
   Widget notInit() {
     return Align(
       alignment: Alignment.center,

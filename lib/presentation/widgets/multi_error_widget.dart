@@ -16,9 +16,9 @@ class _MultiErrorWidget extends State<MultiErrorWidget> {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       duration: Duration(milliseconds: 500),
-      opacity: opacityLevel,
+      opacity: 1,
       child: Visibility(
-        visible: opacityLevel != 0,
+        visible: true,
         child: Center(
           child: Text(
             widget.message,

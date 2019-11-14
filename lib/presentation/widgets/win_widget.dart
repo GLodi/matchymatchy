@@ -22,9 +22,9 @@ class _WinWidget extends State<WinWidget> {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       duration: Duration(milliseconds: 500),
-      opacity: opacityLevel,
+      opacity: 1,
       child: Visibility(
-        visible: opacityLevel != 0,
+        visible: true,
         child: BlocEventStateBuilder<WinEvent, WinState>(
           bloc: bloc,
           builder: (context, state) {

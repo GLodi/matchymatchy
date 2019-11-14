@@ -12,13 +12,13 @@ class HomeRepo {
 
   Future<void> loginWithGoogle(String fcmToken) async {
     User user = await _loginProvider.loginWithGoogle(fcmToken);
-    return await _prefsProvider.storeUser(user);
+    await _prefsProvider.storeUser(user);
   }
 
   Future<void> logout() async {
     await _dbProvider.deleteActiveMatches();
     await _dbProvider.deletePastMatches();
-    return await _prefsProvider.logout();
+    await _prefsProvider.logout();
   }
 
   Future<User> checkIfLoggedIn() => _prefsProvider.getUser();

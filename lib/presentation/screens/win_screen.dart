@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:squazzle/domain/domain.dart';
 
-class WinWidget extends StatefulWidget {
+class WinScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _WinWidget();
+    return _WinState();
   }
 }
 
-class _WinWidget extends State<WinWidget> {
+class _WinState extends State<WinScreen> {
   WinBloc bloc;
 
   @override

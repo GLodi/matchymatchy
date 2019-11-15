@@ -20,6 +20,7 @@ abstract class GameBloc extends BlocEventStateBase<GameEvent, GameState> {
         because the player has completed the target.
       - moveNumberSubject emits the amount of moves currently used.
   */
+  // TODO: remove correctSubject. Created winscreen
   final BehaviorSubject<bool> correctSubject = new BehaviorSubject<bool>();
   final BehaviorSubject<int> moveNumberSubject = new BehaviorSubject<int>();
 

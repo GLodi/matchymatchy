@@ -28,8 +28,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     super.initState();
     bloc = BlocProvider.of<HomeBloc>(context);
     bloc.setup();
-    bloc.intentToMultiScreen.listen((_) => openMultiScreen());
-    bloc.snackBar.listen((message) => showSnackBar(message));
+    bloc.intentToMultiScreen.listen((_) => _openMultiScreen());
+    bloc.snackBar.listen((message) => _showSnackBar(message));
     bloc.emitEvent(HomeEvent(type: HomeEventType.checkIfUserLogged));
   }
 
@@ -66,11 +66,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  void showSnackBar(String message) {
+  void _showSnackBar(String message) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(message)));
   }
 
-  void openMultiScreen() {
+  void _openMultiScreen() {
     Navigator.push(
       context,
       MaterialPageRoute(

@@ -85,7 +85,7 @@ class _HomeBottomBarWidgetState extends State<HomeBottomBarWidget>
           highlightElevation: 0,
           onPressed: () {
             widget.isTest
-                ? openMultiScreen()
+                ? _openMultiScreen()
                 : Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -136,7 +136,7 @@ class _HomeBottomBarWidgetState extends State<HomeBottomBarWidget>
     );
   }
 
-  void openMultiScreen() {
+  void _openMultiScreen() {
     Navigator.push(
       context,
       MaterialPageRoute(

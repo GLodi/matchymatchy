@@ -3,8 +3,8 @@ import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:squazzle/domain/domain.dart';
+import 'package:squazzle/presentation/screens/win_screen.dart';
 import 'package:squazzle/presentation/widgets/multi_game_widget.dart';
-import 'package:squazzle/presentation/widgets/win_widget.dart';
 import 'package:squazzle/presentation/widgets/multi_error_widget.dart';
 
 class MultiScreen extends StatefulWidget {
@@ -19,18 +19,17 @@ class MultiScreen extends StatefulWidget {
 class _MultiScreenState extends State<MultiScreen>
     with TickerProviderStateMixin {
   MultiBloc bloc;
-  double opacityLevel = 0;
 
   @override
   void initState() {
     super.initState();
     bloc = BlocProvider.of<MultiBloc>(context);
     bloc.setup();
+    bloc.intentToWinScreen.listen((_) => _openWinScreen());
     widget.heroTag == 'multibutton'
         ? bloc.emitEvent(GameEvent(type: GameEventType.queue))
         : bloc.emitEvent(GameEvent(
             type: GameEventType.connect, connectMatchId: widget.heroTag));
-    bloc.correct.listen((correct) => _changeOpacity());
   }
 
   @override
@@ -85,52 +84,43 @@ class _MultiScreenState extends State<MultiScreen>
         },
         child: WillPopScope(
           onWillPop: _onBackButton,
-          child: init(),
-        ),
-      ),
-    );
-  }
-
-  Widget init() {
-    return Stack(
-      children: <Widget>[
-        BlocEventStateBuilder<GameEvent, GameState>(
-          bloc: bloc,
-          builder: (context, state) {
-            switch (state.type) {
-              case GameStateType.error:
-                {
-                  _changeOpacity();
-                  return MultiErrorWidget(state.message);
-                }
-              case GameStateType.notInit:
-                {
-                  return notInit();
-                }
-              case GameStateType.init:
-                {
-                  return AbsorbPointer(
-                    absorbing: opacityLevel != 0,
-                    child: MultiGameWidget(
+          child: BlocEventStateBuilder<GameEvent, GameState>(
+            bloc: bloc,
+            builder: (context, state) {
+              switch (state.type) {
+                case GameStateType.error:
+                  {
+                    return MultiErrorWidget(state.message);
+                  }
+                case GameStateType.notInit:
+                  {
+                    return notInit();
+                  }
+                case GameStateType.init:
+                  {
+                    return MultiGameWidget(
                       bloc: bloc,
                       height: MediaQuery.of(context).size.height,
                       width: MediaQuery.of(context).size.width,
-                    ),
-                  );
-                }
-              case GameStateType.win:
-                {
-                  return BlocProvider(
-                    child: WinWidget(),
-                    bloc: kiwi.Container().resolve<WinBloc>(),
-                  );
-                }
-              default:
-                return Container();
-            }
-          },
+                    );
+                  }
+                case GameStateType.win:
+                  {
+                    return Hero(
+                      tag: 'multi',
+                      child: BlocProvider(
+                        child: WinScreen(),
+                        bloc: kiwi.Container().resolve<WinBloc>(),
+                      ),
+                    );
+                  }
+                default:
+                  return Container();
+              }
+            },
+          ),
         ),
-      ],
+      ),
     );
   }
 
@@ -163,10 +153,6 @@ class _MultiScreenState extends State<MultiScreen>
         ],
       ),
     );
-  }
-
-  void _changeOpacity() {
-    setState(() => opacityLevel = opacityLevel == 0 ? 1.0 : 0.0);
   }
 
   Future<bool> _onForfeitButton() {
@@ -215,5 +201,17 @@ class _MultiScreenState extends State<MultiScreen>
           ),
         ) ??
         false;
+  }
+
+  void _openWinScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          child: WinScreen(),
+          bloc: kiwi.Container().resolve<WinBloc>(),
+        ),
+      ),
+    );
   }
 }

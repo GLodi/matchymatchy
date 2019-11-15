@@ -14,8 +14,10 @@ class MultiBloc extends GameBloc {
   StreamSubscription _moveSubs, _challengeSubs, _winnerSubs;
 
   // Streams extracted from GameBloc's subjects
-  Stream<bool> get correct => correctSubject.stream;
   Stream<int> get moveNumber => moveNumberSubject.stream;
+
+  final _intentToWinScreenSubject = BehaviorSubject<void>();
+  Stream<void> get intentToWinScreen => _intentToWinScreenSubject.stream;
 
   final _waitMessageSubject = BehaviorSubject<String>();
   Stream<String> get waitMessage => _waitMessageSubject.stream;
@@ -82,16 +84,11 @@ class MultiBloc extends GameBloc {
         }
         break;
       case GameEventType.matchNotFound:
-        if (currentState.type != GameStateType.win) {
-          yield GameState.notInit();
-          _waitMessageSubject.add('lost connection, reconnecting...');
-          // TODO: show loading and then try to reconnect,
-          // otherwise show error
+        yield GameState.notInit();
+        _waitMessageSubject.add('lost connection, reconnecting...');
+        // TODO: show loading and then try to reconnect,
+        // otherwise show error
 
-        }
-        break;
-      case GameEventType.win:
-        correctSubject.add(true);
         break;
       case GameEventType.error:
         yield GameState.error('error');
@@ -104,7 +101,7 @@ class MultiBloc extends GameBloc {
   void winCheck(GameField gf, TargetField tf) async {
     try {
       bool isCorrect = await _repo.moveDone(gf, tf);
-      if (isCorrect) emitEvent(GameEvent(type: GameEventType.win));
+      if (isCorrect) _intentToWinScreenSubject.add(null);
     } on DataNotAvailableException {
       emitEvent(GameEvent(type: GameEventType.matchNotFound));
     } catch (e) {

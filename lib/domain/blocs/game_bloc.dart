@@ -20,9 +20,9 @@ abstract class GameBloc extends BlocEventStateBase<GameEvent, GameState> {
         because the player has completed the target.
       - moveNumberSubject emits the amount of moves currently used.
   */
-  // TODO: remove correctSubject. Created winscreen
-  final BehaviorSubject<bool> correctSubject = new BehaviorSubject<bool>();
-  final BehaviorSubject<int> moveNumberSubject = new BehaviorSubject<int>();
+  final BehaviorSubject<int> moveNumberSubject = BehaviorSubject<int>();
+  final BehaviorSubject<void> intentToWinScreenSubject =
+      BehaviorSubject<void>();
 
   // Used by respective blocs to store the game state and do endgame checks.
   GameField gameField;
@@ -34,7 +34,7 @@ abstract class GameBloc extends BlocEventStateBase<GameEvent, GameState> {
 
   @override
   void dispose() {
-    correctSubject.close();
+    intentToWinScreenSubject.close();
     moveNumberSubject.close();
     super.dispose();
   }

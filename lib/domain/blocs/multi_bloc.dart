@@ -15,9 +15,7 @@ class MultiBloc extends GameBloc {
 
   // Streams extracted from GameBloc's subjects
   Stream<int> get moveNumber => moveNumberSubject.stream;
-
-  final _intentToWinScreenSubject = BehaviorSubject<void>();
-  Stream<void> get intentToWinScreen => _intentToWinScreenSubject.stream;
+  Stream<void> get intentToWinScreen => intentToWinScreenSubject.stream;
 
   final _waitMessageSubject = BehaviorSubject<String>();
   Stream<String> get waitMessage => _waitMessageSubject.stream;
@@ -101,7 +99,7 @@ class MultiBloc extends GameBloc {
   void winCheck(GameField gf, TargetField tf) async {
     try {
       bool isCorrect = await _repo.moveDone(gf, tf);
-      if (isCorrect) _intentToWinScreenSubject.add(null);
+      if (isCorrect) intentToWinScreenSubject.add(null);
     } on DataNotAvailableException {
       emitEvent(GameEvent(type: GameEventType.matchNotFound));
     } catch (e) {
@@ -143,7 +141,7 @@ class MultiBloc extends GameBloc {
       _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
         if (_repo.matchId == mess.matchId) {
           print('multi winner');
-          emitEvent(GameEvent(type: GameEventType.win));
+          intentToWinScreenSubject.add(null);
         }
       });
     }

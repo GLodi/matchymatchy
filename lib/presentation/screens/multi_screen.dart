@@ -104,16 +104,6 @@ class _MultiScreenState extends State<MultiScreen>
                       width: MediaQuery.of(context).size.width,
                     );
                   }
-                case GameStateType.win:
-                  {
-                    return Hero(
-                      tag: 'multi',
-                      child: BlocProvider(
-                        child: WinScreen(),
-                        bloc: kiwi.Container().resolve<WinBloc>(),
-                      ),
-                    );
-                  }
                 default:
                   return Container();
               }
@@ -208,7 +198,13 @@ class _MultiScreenState extends State<MultiScreen>
       context,
       MaterialPageRoute(
         builder: (context) => BlocProvider(
-          child: WinScreen(),
+          child: Hero(
+            tag: 'multi',
+            child: BlocProvider(
+              child: WinScreen(),
+              bloc: kiwi.Container().resolve<WinBloc>(),
+            ),
+          ),
           bloc: kiwi.Container().resolve<WinBloc>(),
         ),
       ),

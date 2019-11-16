@@ -21,7 +21,6 @@ class GameState extends BlocState {
 
 enum GameStateType {
   init,
-  win,
   notInit,
   error,
 }
@@ -37,7 +36,6 @@ enum GameEventType {
   start,
   queue,
   connect,
-  win,
   matchNotFound,
   error,
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:kiwi/kiwi.dart' as kiwi;
 
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/widgets/game_field_widget.dart';
 import 'package:squazzle/presentation/widgets/target_field_widget.dart';
+import 'package:squazzle/presentation/screens/win_screen.dart';
 
 class SingleScreen extends StatefulWidget {
   @override
@@ -14,7 +16,7 @@ class _SingleScreenState extends State<SingleScreen>
   SingleBloc bloc;
   AnimationController _entryAnimCont;
   Animation<double> _entryAnim;
-  double fifthWidth, tenthWidth, opacityLevel = 0;
+  double fifthWidth, tenthWidth;
 
   @override
   void initState() {
@@ -24,7 +26,7 @@ class _SingleScreenState extends State<SingleScreen>
     _entryAnim = CurvedAnimation(parent: _entryAnimCont, curve: Curves.ease);
     bloc = BlocProvider.of<SingleBloc>(context);
     bloc.emitEvent(GameEvent(type: GameEventType.start));
-    bloc.correct.listen((correct) => _changeOpacity());
+    bloc.intentToWinScreen.listen((_) => _openWinScreen());
   }
 
   @override
@@ -57,32 +59,33 @@ class _SingleScreenState extends State<SingleScreen>
           );
         },
         child: WillPopScope(
-            onWillPop: _onWillPop,
-            child: BlocEventStateBuilder<GameEvent, GameState>(
-              bloc: bloc,
-              builder: (context, state) {
-                switch (state.type) {
-                  case GameStateType.error:
-                    {
-                      return Center(child: Text(state.message));
+          onWillPop: _onWillPop,
+          child: BlocEventStateBuilder<GameEvent, GameState>(
+            bloc: bloc,
+            builder: (context, state) {
+              switch (state.type) {
+                case GameStateType.error:
+                  {
+                    return Center(child: Text(state.message));
+                  }
+                case GameStateType.notInit:
+                  {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                case GameStateType.init:
+                  {
+                    if (fifthWidth == null && tenthWidth == null) {
+                      fifthWidth = MediaQuery.of(context).size.width / 5;
+                      tenthWidth = fifthWidth / 2;
                     }
-                  case GameStateType.notInit:
-                    {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                  case GameStateType.init:
-                    {
-                      if (fifthWidth == null && tenthWidth == null) {
-                        fifthWidth = MediaQuery.of(context).size.width / 5;
-                        tenthWidth = fifthWidth / 2;
-                      }
-                      return initScreen();
-                    }
-                  default:
-                    return Container();
-                }
-              },
-            )),
+                    return initScreen();
+                  }
+                default:
+                  return Container();
+              }
+            },
+          ),
+        ),
       ),
     );
   }
@@ -112,26 +115,22 @@ class _SingleScreenState extends State<SingleScreen>
   Widget initScreen() {
     _entryAnimCont.forward();
     return ScaleTransition(
-        scale: _entryAnim,
-        alignment: Alignment.center,
-        child: Stack(
-          children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    moves(),
-                    targetField(),
-                  ],
-                ),
-                gfWidget(),
-              ],
-            ),
-            endOpacity(),
-          ],
-        ));
+      scale: _entryAnim,
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              moves(),
+              targetField(),
+            ],
+          ),
+          gfWidget(),
+        ],
+      ),
+    );
   }
 
   Widget moves() {
@@ -177,35 +176,33 @@ class _SingleScreenState extends State<SingleScreen>
     );
   }
 
-  Widget endOpacity() {
-    return AnimatedOpacity(
-      duration: Duration(milliseconds: 5000),
-      opacity: opacityLevel,
-      child: Visibility(
-        visible: opacityLevel != 0,
-        // TODO: don't make own winwidget for singleplayer
-        child: Container(
-          decoration: BoxDecoration(color: Colors.blue),
-        ),
-      ),
-    );
-  }
-
   Widget gfWidget() {
     return Container(
       constraints: BoxConstraints(maxHeight: 5 * fifthWidth),
       alignment: Alignment.bottomCenter,
-      child: AbsorbPointer(
-          absorbing: opacityLevel != 0,
-          child: BlocProvider(
-            child: GameFieldWidget(),
-            bloc: GameFieldBloc(bloc),
-          )),
+      child: BlocProvider(
+        child: GameFieldWidget(),
+        bloc: GameFieldBloc(bloc),
+      ),
     );
   }
 
-  void _changeOpacity() {
-    setState(() => opacityLevel = opacityLevel == 0 ? 1.0 : 0.0);
+  void _openWinScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          child: Hero(
+            tag: 'single',
+            child: BlocProvider(
+              child: WinScreen(),
+              bloc: kiwi.Container().resolve<WinBloc>(),
+            ),
+          ),
+          bloc: kiwi.Container().resolve<WinBloc>(),
+        ),
+      ),
+    );
   }
 
   @override

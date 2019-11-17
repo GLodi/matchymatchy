@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/data/models/models.dart';
-import 'curve_painter.dart';
+import 'package:squazzle/presentation/utils/curve_painter.dart';
 
 class UserWidget extends StatefulWidget {
   final HomeBloc bloc;

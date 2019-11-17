@@ -6,6 +6,7 @@ import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/screens/win_screen.dart';
 import 'package:squazzle/presentation/widgets/multi_game_widget.dart';
 import 'package:squazzle/presentation/widgets/multi_error_widget.dart';
+import 'package:squazzle/presentation/utils/scale_route.dart';
 
 class MultiScreen extends StatefulWidget {
   final String heroTag;
@@ -196,13 +197,10 @@ class _MultiScreenState extends State<MultiScreen>
   void _openWinScreen() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => Hero(
-          tag: 'multi',
-          child: BlocProvider(
-            child: WinScreen(heroTag: 'multi', matchId: bloc.repo.matchId),
-            bloc: kiwi.Container().resolve<WinBloc>(),
-          ),
+      ScaleRoute(
+        widget: BlocProvider(
+          child: WinScreen(matchId: bloc.repo.matchId),
+          bloc: kiwi.Container().resolve<WinBloc>(),
         ),
       ),
     );

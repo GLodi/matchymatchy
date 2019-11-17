@@ -5,6 +5,7 @@ import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/widgets/game_field_widget.dart';
 import 'package:squazzle/presentation/widgets/target_field_widget.dart';
 import 'package:squazzle/presentation/screens/win_screen.dart';
+import 'package:squazzle/presentation/utils/scale_route.dart';
 
 class SingleScreen extends StatefulWidget {
   @override
@@ -190,13 +191,10 @@ class _SingleScreenState extends State<SingleScreen>
   void _openWinScreen() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => Hero(
-          tag: 'single',
-          child: BlocProvider(
-            child: WinScreen(heroTag: 'single'),
-            bloc: kiwi.Container().resolve<WinBloc>(),
-          ),
+      ScaleRoute(
+        widget: BlocProvider(
+          child: WinScreen(),
+          bloc: kiwi.Container().resolve<WinBloc>(),
         ),
       ),
     );

@@ -22,21 +22,25 @@ class _WinState extends State<WinScreen> with TickerProviderStateMixin {
         vsync: this, duration: Duration(milliseconds: 2000), value: 0.1);
     _entryAnim = CurvedAnimation(parent: _entryAnimCont, curve: Curves.ease);
     bloc = BlocProvider.of<WinBloc>(context);
+    bloc.emitEvent(WinEvent(type: WinEventType.start));
   }
 
   @override
   Widget build(BuildContext context) {
     _entryAnimCont.forward();
-    return ScaleTransition(
-      scale: _entryAnim,
-      alignment: Alignment.center,
-      child: BlocEventStateBuilder<WinEvent, WinState>(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: BlocEventStateBuilder<WinEvent, WinState>(
         bloc: bloc,
         builder: (context, state) {
           switch (state.type) {
             case WinStateType.waitingForOpp:
-              return Center(
-                child: Text('waiting for opponent to end'),
+              return ScaleTransition(
+                scale: _entryAnim,
+                alignment: Alignment.center,
+                child: Center(
+                  child: Text('waiting for opponent to end'),
+                ),
               );
               break;
             case WinStateType.winnerDeclared:

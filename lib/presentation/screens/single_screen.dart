@@ -191,15 +191,12 @@ class _SingleScreenState extends State<SingleScreen>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => BlocProvider(
-          child: Hero(
-            tag: 'single',
-            child: BlocProvider(
-              child: WinScreen(),
-              bloc: kiwi.Container().resolve<WinBloc>(),
-            ),
+        builder: (context) => Hero(
+          tag: 'single',
+          child: BlocProvider(
+            child: WinScreen(heroTag: 'single'),
+            bloc: kiwi.Container().resolve<WinBloc>(),
           ),
-          bloc: kiwi.Container().resolve<WinBloc>(),
         ),
       ),
     );

@@ -10,7 +10,7 @@ import 'package:squazzle/presentation/widgets/home_init_widget.dart';
 class HomeScreen extends StatefulWidget {
   final bool isTest;
 
-  HomeScreen(this.isTest);
+  HomeScreen({this.isTest});
 
   @override
   State<StatefulWidget> createState() {
@@ -44,10 +44,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           builder: (context, state) {
             switch (state.type) {
               case HomeStateType.initLogged:
-                return HomeInitWidget(state.user, widget.isTest, bloc);
+                return HomeInitWidget(
+                    user: state.user, isTest: widget.isTest, bloc: bloc);
                 break;
               case HomeStateType.initNotLogged:
-                return HomeNotInitWidget(widget.isTest, bloc);
+                return HomeNotInitWidget(isTest: widget.isTest, bloc: bloc);
                 break;
               case HomeStateType.notInit:
                 return Center(
@@ -75,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       context,
       MaterialPageRoute(
         builder: (context) => BlocProvider(
-          child: MultiScreen('multibutton'),
+          child: MultiScreen(heroTag: 'multibutton'),
           bloc: kiwi.Container().resolve<MultiBloc>(),
         ),
       ),

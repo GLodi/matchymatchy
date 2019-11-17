@@ -10,7 +10,7 @@ import 'package:squazzle/presentation/widgets/multi_error_widget.dart';
 class MultiScreen extends StatefulWidget {
   final String heroTag;
 
-  MultiScreen(this.heroTag);
+  MultiScreen({this.heroTag});
 
   @override
   _MultiScreenState createState() => _MultiScreenState();
@@ -90,7 +90,7 @@ class _MultiScreenState extends State<MultiScreen>
               switch (state.type) {
                 case GameStateType.error:
                   {
-                    return MultiErrorWidget(state.message);
+                    return MultiErrorWidget(message: state.message);
                   }
                 case GameStateType.notInit:
                   {
@@ -197,15 +197,12 @@ class _MultiScreenState extends State<MultiScreen>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => BlocProvider(
-          child: Hero(
-            tag: 'multi',
-            child: BlocProvider(
-              child: WinScreen(),
-              bloc: kiwi.Container().resolve<WinBloc>(),
-            ),
+        builder: (context) => Hero(
+          tag: 'multi',
+          child: BlocProvider(
+            child: WinScreen(heroTag: 'multi', matchId: bloc.repo.matchId),
+            bloc: kiwi.Container().resolve<WinBloc>(),
           ),
-          bloc: kiwi.Container().resolve<WinBloc>(),
         ),
       ),
     );

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class MultiErrorWidget extends StatefulWidget {
   final String message;
 
-  MultiErrorWidget(this.message);
+  MultiErrorWidget({this.message});
 
   @override
   State<StatefulWidget> createState() {

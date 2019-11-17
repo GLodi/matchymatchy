@@ -141,7 +141,7 @@ class _HomeBottomBarWidgetState extends State<HomeBottomBarWidget>
       context,
       MaterialPageRoute(
         builder: (context) => BlocProvider(
-          child: MultiScreen('multibutton'),
+          child: MultiScreen(heroTag: 'multibutton'),
           bloc: kiwi.Container().resolve<MultiBloc>(),
         ),
       ),

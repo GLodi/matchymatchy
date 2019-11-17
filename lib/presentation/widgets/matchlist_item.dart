@@ -33,7 +33,7 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
               ? Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => BlocProvider(
-                      child: MultiScreen(widget.activeMatch.matchId),
+                      child: MultiScreen(heroTag: widget.activeMatch.matchId),
                       bloc: kiwi.Container().resolve<MultiBloc>(),
                     ),
                   ),

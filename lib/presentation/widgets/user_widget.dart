@@ -11,7 +11,7 @@ class UserWidget extends StatefulWidget {
   final double parentHeight;
   final double parentWidth;
 
-  UserWidget(this.bloc, this.user, this.parentHeight, this.parentWidth);
+  UserWidget({this.bloc, this.user, this.parentHeight, this.parentWidth});
 
   @override
   State<StatefulWidget> createState() {

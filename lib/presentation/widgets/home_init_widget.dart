@@ -12,7 +12,7 @@ class HomeInitWidget extends StatefulWidget {
   final bool isTest;
   final HomeBloc bloc;
 
-  HomeInitWidget(this.user, this.isTest, this.bloc);
+  HomeInitWidget({this.user, this.isTest, this.bloc});
 
   @override
   State<StatefulWidget> createState() {
@@ -33,7 +33,11 @@ class _HomeInitWidgetState extends State<HomeInitWidget> {
               initialData: widget.user,
               stream: widget.bloc.user,
               builder: (context, snapshot) {
-                return UserWidget(widget.bloc, snapshot.data, height, width);
+                return UserWidget(
+                    bloc: widget.bloc,
+                    user: snapshot.data,
+                    parentHeight: height,
+                    parentWidth: width);
               },
             ),
             BlocProvider(

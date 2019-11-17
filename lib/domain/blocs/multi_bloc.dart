@@ -9,7 +9,7 @@ import 'package:squazzle/data/models/models.dart';
 /// In addition to the functionalities available through Gamebloc,
 /// the Multiplayer version of the game needs an Enemy
 class MultiBloc extends GameBloc {
-  final MultiRepo _repo;
+  final MultiRepo repo;
   final MessagingEventBus _messEventBus;
   StreamSubscription _moveSubs, _challengeSubs, _winnerSubs;
 
@@ -35,13 +35,13 @@ class MultiBloc extends GameBloc {
   final _forfeitButtonSubject = PublishSubject<bool>();
   Sink<bool> get forfeitButton => _forfeitButtonSubject.sink;
 
-  MultiBloc(this._repo, this._messEventBus) : super(_repo);
+  MultiBloc(this.repo, this._messEventBus) : super(repo);
 
   void setup() {
     _forfeitButtonSubject.listen((_) {
       try {
-        _repo.forfeit();
-        _messEventBus.forfeitMatch(_repo.matchId);
+        repo.forfeit();
+        _messEventBus.forfeitMatch(repo.matchId);
       } catch (e) {
         emitEvent(GameEvent(type: GameEventType.error));
         print(e);
@@ -61,7 +61,7 @@ class MultiBloc extends GameBloc {
       case GameEventType.queue:
         try {
           listenToMessages();
-          ActiveMatch currentMatch = await _repo.queuePlayer();
+          ActiveMatch currentMatch = await repo.queuePlayer();
           fetchResult(currentMatch);
         } catch (e) {
           yield GameState.error('error queueing');
@@ -74,7 +74,7 @@ class MultiBloc extends GameBloc {
           // TODO: either move to observing firestore or repeat
           // this multiple times
           ActiveMatch currentMatch =
-              await _repo.connectPlayer(event.connectMatchId);
+              await repo.connectPlayer(event.connectMatchId);
           fetchResult(currentMatch);
         } catch (e) {
           yield GameState.error('error connecting to match');
@@ -98,7 +98,7 @@ class MultiBloc extends GameBloc {
   @override
   void winCheck(GameField gf, TargetField tf) async {
     try {
-      bool isCorrect = await _repo.moveDone(gf, tf);
+      bool isCorrect = await repo.moveDone(gf, tf);
       if (isCorrect) intentToWinScreenSubject.add(null);
     } on DataNotAvailableException {
       emitEvent(GameEvent(type: GameEventType.matchNotFound));
@@ -124,14 +124,14 @@ class MultiBloc extends GameBloc {
   void listenToMessages() {
     if (_challengeSubs == null && _moveSubs == null && _winnerSubs == null) {
       _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) {
-        if (_repo.matchId == mess.matchId) {
+        if (repo.matchId == mess.matchId) {
           print('multi challenge');
           emitEvent(GameEvent(
               type: GameEventType.connect, connectMatchId: mess.matchId));
         }
       });
       _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) {
-        if (_repo.matchId == mess.matchId) {
+        if (repo.matchId == mess.matchId) {
           // TODO: check match not won
           print('multi message');
           _enemyMovesSubject.add(mess.enemyMoves);
@@ -139,7 +139,7 @@ class MultiBloc extends GameBloc {
         }
       });
       _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) {
-        if (_repo.matchId == mess.matchId) {
+        if (repo.matchId == mess.matchId) {
           print('multi winner');
           intentToWinScreenSubject.add(null);
         }

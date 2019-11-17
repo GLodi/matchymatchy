@@ -6,11 +6,15 @@ import 'package:squazzle/data/data.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'package:squazzle/presentation/presentation.dart';
 
+import 'package:flutter/scheduler.dart' show timeDilation;
+
 final bool isTest = false;
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   kiwi.Container container = kiwi.Container();
+
+  timeDilation = 5.0; // Will slow down animations by a factor of two
 
   // Providers
   container
@@ -73,16 +77,8 @@ class App extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => BlocProvider(
-              child: HomeScreen(isTest),
+              child: HomeScreen(isTest: isTest),
               bloc: kiwi.Container().resolve<HomeBloc>(),
-            ),
-        '/single': (context) => BlocProvider(
-              child: SingleScreen(),
-              bloc: kiwi.Container().resolve<SingleBloc>(),
-            ),
-        '/multi': (context) => BlocProvider(
-              child: MultiScreen('multibutton'),
-              bloc: kiwi.Container().resolve<MultiBloc>(),
             ),
       },
     );

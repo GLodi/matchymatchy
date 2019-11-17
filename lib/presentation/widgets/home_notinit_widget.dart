@@ -9,7 +9,7 @@ class HomeNotInitWidget extends StatefulWidget {
   final bool isTest;
   final HomeBloc bloc;
 
-  HomeNotInitWidget(this.isTest, this.bloc);
+  HomeNotInitWidget({this.isTest, this.bloc});
 
   @override
   State<StatefulWidget> createState() {
@@ -141,7 +141,7 @@ class _HomeNotInitWidgetState extends State<HomeNotInitWidget> {
       context,
       MaterialPageRoute(
         builder: (context) => BlocProvider(
-          child: MultiScreen('multibutton'),
+          child: MultiScreen(heroTag: 'multibutton'),
           bloc: kiwi.Container().resolve<MultiBloc>(),
         ),
       ),

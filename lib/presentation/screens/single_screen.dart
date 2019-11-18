@@ -189,15 +189,15 @@ class _SingleScreenState extends State<SingleScreen>
   }
 
   void _openWinScreen() {
-    Navigator.push(
-      context,
-      ScaleRoute(
-        widget: BlocProvider(
-          child: WinScreen(),
-          bloc: kiwi.Container().resolve<WinBloc>(),
+    Navigator.pushAndRemoveUntil(
+        context,
+        ScaleRoute(
+          widget: BlocProvider(
+            child: WinScreen(),
+            bloc: kiwi.Container().resolve<WinBloc>(),
+          ),
         ),
-      ),
-    );
+        ModalRoute.withName("/"));
   }
 
   @override

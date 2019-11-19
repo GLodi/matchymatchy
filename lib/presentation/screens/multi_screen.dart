@@ -115,7 +115,6 @@ class _MultiScreenState extends State<MultiScreen>
     );
   }
 
-  // TODO: add animation like multigamewidget
   Widget notInit() {
     return Align(
       alignment: Alignment.center,

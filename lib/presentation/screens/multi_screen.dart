@@ -194,6 +194,7 @@ class _MultiScreenState extends State<MultiScreen>
   }
 
   void _openWinScreen() {
+    Navigator.of(context).pop();
     Navigator.push(
       context,
       ScaleRoute(

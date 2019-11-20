@@ -42,7 +42,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
       _showSlidesSubject.add(input);
     });
     _logoutButtonSubject.listen((input) {
-      emitEvent(HomeEvent(type: HomeEventType.logoutButtonPress));
+      emitEvent(HomeEvent.logoutButtonPress());
     });
     ConnectivityResult curr = await Connectivity().checkConnectivity();
     bool prev = curr == ConnectivityResult.none ? false : true;
@@ -79,7 +79,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
             yield await checkIfUserLogged();
           } catch (e) {
             _snackBarSubject.add('login error');
-            emitEvent(HomeEvent(type: HomeEventType.checkIfUserLogged));
+            emitEvent(HomeEvent.checkIfUserLogged());
             print(e);
           }
         }

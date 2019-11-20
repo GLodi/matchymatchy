@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:squazzle/domain/domain.dart';
 
 class WinScreen extends StatefulWidget {
+  final int moves;
   final String matchId;
 
-  WinScreen({this.matchId});
+  WinScreen({this.moves, this.matchId});
 
   @override
   State<StatefulWidget> createState() {
@@ -20,7 +21,9 @@ class _WinState extends State<WinScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     bloc = BlocProvider.of<WinBloc>(context);
-    bloc.emitEvent(WinEvent(type: WinEventType.start));
+    widget.matchId == null
+        ? bloc.emitEvent(WinEvent.single(widget.moves))
+        : bloc.emitEvent(WinEvent.multi(widget.matchId));
   }
 
   @override

@@ -22,7 +22,7 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
   void initState() {
     bloc = BlocProvider.of<HomeMatchListBloc>(context);
     bloc.setup();
-    bloc.emitEvent(HomeMatchListEvent(type: HomeMatchListEventType.start));
+    bloc.emitEvent(HomeMatchListEvent.start());
     super.initState();
   }
 
@@ -58,8 +58,7 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
   }
 
   Future<Null> _onRefresh() async {
-    bloc.emitEvent(
-        HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
+    bloc.emitEvent(HomeMatchListEvent.updateMatches());
   }
 
   Widget init(

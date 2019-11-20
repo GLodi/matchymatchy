@@ -47,6 +47,18 @@ class HomeMatchListEvent extends BlocEvent {
   final HomeMatchListEventType type;
 
   HomeMatchListEvent({this.type: HomeMatchListEventType.start});
+
+  factory HomeMatchListEvent.start() =>
+      HomeMatchListEvent(type: HomeMatchListEventType.start);
+
+  factory HomeMatchListEvent.updateMatches() =>
+      HomeMatchListEvent(type: HomeMatchListEventType.updateMatches);
+
+  factory HomeMatchListEvent.showMatches() =>
+      HomeMatchListEvent(type: HomeMatchListEventType.showMatches);
+
+  factory HomeMatchListEvent.refreshMatches() =>
+      HomeMatchListEvent(type: HomeMatchListEventType.refreshMatches);
 }
 
 enum HomeMatchListEventType {

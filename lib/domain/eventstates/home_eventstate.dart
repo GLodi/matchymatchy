@@ -37,6 +37,15 @@ class HomeEvent extends BlocEvent {
     this.type: HomeEventType.checkIfUserLogged,
     this.message,
   });
+
+  factory HomeEvent.checkIfUserLogged() =>
+      HomeEvent(type: HomeEventType.checkIfUserLogged);
+
+  factory HomeEvent.multiButtonPress() =>
+      HomeEvent(type: HomeEventType.multiButtonPress);
+
+  factory HomeEvent.logoutButtonPress() =>
+      HomeEvent(type: HomeEventType.logoutButtonPress);
 }
 
 enum HomeEventType {

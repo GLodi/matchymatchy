@@ -22,6 +22,8 @@ class WidgetEvent extends BlocEvent {
   final WidgetEventType type;
 
   WidgetEvent({this.type: WidgetEventType.start});
+
+  factory WidgetEvent.start() => WidgetEvent(type: WidgetEventType.start);
 }
 
 enum WidgetEventType {

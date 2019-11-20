@@ -5,7 +5,7 @@ import 'package:squazzle/domain/bloc_utils/bloc_utils.dart';
 class WinState extends BlocState {
   final WinStateType type;
   final String message;
-  String winner;
+  final String winner;
 
   WinState({
     @required this.type,
@@ -27,10 +27,19 @@ enum WinStateType {
 
 class WinEvent extends BlocEvent {
   final WinEventType type;
+  final String matchId;
+  final int moves;
 
-  WinEvent({this.type: WinEventType.start});
+  WinEvent({this.type: WinEventType.single, this.moves, this.matchId});
+
+  factory WinEvent.single(int moves) =>
+      WinEvent(type: WinEventType.single, moves: moves);
+
+  factory WinEvent.multi(String matchId) =>
+      WinEvent(type: WinEventType.multi, matchId: matchId);
 }
 
 enum WinEventType {
-  start,
+  multi,
+  single,
 }

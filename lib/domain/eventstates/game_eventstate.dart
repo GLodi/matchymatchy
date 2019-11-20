@@ -30,6 +30,14 @@ class GameEvent extends BlocEvent {
   final String connectMatchId;
 
   GameEvent({this.type: GameEventType.start, this.connectMatchId});
+
+  factory GameEvent.start() => GameEvent(type: GameEventType.start);
+  factory GameEvent.queue() => GameEvent(type: GameEventType.queue);
+  factory GameEvent.connect(String connectMatchId) =>
+      GameEvent(type: GameEventType.connect, connectMatchId: connectMatchId);
+  factory GameEvent.matchNotFound() =>
+      GameEvent(type: GameEventType.matchNotFound);
+  factory GameEvent.error() => GameEvent(type: GameEventType.error);
 }
 
 enum GameEventType {

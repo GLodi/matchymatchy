@@ -43,7 +43,7 @@ class MultiBloc extends GameBloc {
         repo.forfeit();
         _messEventBus.forfeitMatch(repo.matchId);
       } catch (e) {
-        emitEvent(GameEvent(type: GameEventType.error));
+        emitEvent(GameEvent.error());
         print(e);
       }
     });
@@ -101,9 +101,9 @@ class MultiBloc extends GameBloc {
       bool isCorrect = await repo.moveDone(gf, tf);
       if (isCorrect) intentToWinScreenSubject.add(null);
     } on DataNotAvailableException {
-      emitEvent(GameEvent(type: GameEventType.matchNotFound));
+      emitEvent(GameEvent.matchNotFound());
     } catch (e) {
-      emitEvent(GameEvent(type: GameEventType.error));
+      emitEvent(GameEvent.error());
     }
   }
 
@@ -117,7 +117,7 @@ class MultiBloc extends GameBloc {
       _enemyMovesSubject.add(currentMatch.enemyMoves);
       moveNumberSubject.add(currentMatch.moves);
       _hasMatchStartedSubject.add(true);
-      emitEvent(GameEvent(type: GameEventType.start));
+      emitEvent(GameEvent.start());
     }
   }
 
@@ -126,8 +126,7 @@ class MultiBloc extends GameBloc {
       _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((mess) {
         if (repo.matchId == mess.matchId) {
           print('multi challenge');
-          emitEvent(GameEvent(
-              type: GameEventType.connect, connectMatchId: mess.matchId));
+          emitEvent(GameEvent.connect(mess.matchId));
         }
       });
       _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) {

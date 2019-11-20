@@ -26,7 +26,7 @@ class _SingleScreenState extends State<SingleScreen>
         vsync: this, duration: Duration(milliseconds: 2000), value: 0.1);
     _entryAnim = CurvedAnimation(parent: _entryAnimCont, curve: Curves.ease);
     bloc = BlocProvider.of<SingleBloc>(context);
-    bloc.emitEvent(GameEvent(type: GameEventType.start));
+    bloc.emitEvent(GameEvent.start());
     bloc.intentToWinScreen.listen((_) => _openWinScreen());
   }
 

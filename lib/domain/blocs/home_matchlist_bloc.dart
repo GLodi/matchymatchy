@@ -45,16 +45,14 @@ class HomeMatchListBloc
     switch (event.type) {
       case HomeMatchListEventType.start:
         listenToMessages();
-        emitEvent(
-            HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
+        emitEvent(HomeMatchListEvent.updateMatches());
         break;
       case HomeMatchListEventType.updateMatches:
         yield HomeMatchListState(type: HomeMatchListStateType.fetching);
         try {
           await Future.wait(
               [_repo.updateActiveMatches(), _repo.updatePastMatches()]);
-          emitEvent(
-              HomeMatchListEvent(type: HomeMatchListEventType.showMatches));
+          emitEvent(HomeMatchListEvent.showMatches());
         } catch (e) {
           yield HomeMatchListState(
               type: HomeMatchListStateType.error,
@@ -64,7 +62,7 @@ class HomeMatchListBloc
         break;
       case HomeMatchListEventType.refreshMatches:
         yield HomeMatchListState(type: HomeMatchListStateType.fetching);
-        emitEvent(HomeMatchListEvent(type: HomeMatchListEventType.showMatches));
+        emitEvent(HomeMatchListEvent.showMatches());
         break;
       case HomeMatchListEventType.showMatches:
         List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
@@ -89,20 +87,17 @@ class HomeMatchListBloc
     if (_challengeSubs == null && _winnerSubs == null && _forfeitSubs == null) {
       _challengeSubs = _messEventBus.on<ChallengeMessage>().listen((_) async {
         print('matchlist challenge');
-        emitEvent(
-            HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
+        emitEvent(HomeMatchListEvent.updateMatches());
       });
       _winnerSubs = _messEventBus.on<WinnerMessage>().listen((_) async {
         print('matchlist winner');
-        emitEvent(
-            HomeMatchListEvent(type: HomeMatchListEventType.updateMatches));
+        emitEvent(HomeMatchListEvent.updateMatches());
       });
       _forfeitSubs = _messEventBus.on<ForfeitMessage>().listen((forf) async {
         print('matchlist forfeit');
         // TODO: don't delete, just update it, need to get info for winwidget
         await _repo.deleteActiveMatch(forf.matchId);
-        emitEvent(
-            HomeMatchListEvent(type: HomeMatchListEventType.refreshMatches));
+        emitEvent(HomeMatchListEvent.refreshMatches());
       });
     }
   }

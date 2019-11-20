@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     bloc.setup();
     bloc.intentToMultiScreen.listen((_) => _openMultiScreen());
     bloc.snackBar.listen((message) => _showSnackBar(message));
-    bloc.emitEvent(HomeEvent(type: HomeEventType.checkIfUserLogged));
+    bloc.emitEvent(HomeEvent.checkIfUserLogged());
   }
 
   @override

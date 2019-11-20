@@ -28,9 +28,8 @@ class _MultiScreenState extends State<MultiScreen>
     bloc.setup();
     bloc.intentToWinScreen.listen((_) => _openWinScreen());
     widget.heroTag == 'multibutton'
-        ? bloc.emitEvent(GameEvent(type: GameEventType.queue))
-        : bloc.emitEvent(GameEvent(
-            type: GameEventType.connect, connectMatchId: widget.heroTag));
+        ? bloc.emitEvent(GameEvent.queue())
+        : bloc.emitEvent(GameEvent.connect(widget.heroTag));
   }
 
   @override

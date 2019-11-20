@@ -47,6 +47,7 @@ async function newGame(userId: string): Promise<ActiveMatch> {
         await diffToSend(gf.data()!.grid, gf.data()!.target),
         '',
         0,
+        0,
         0
     )
     return newMatch

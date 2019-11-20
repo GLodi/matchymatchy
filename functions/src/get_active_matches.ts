@@ -43,39 +43,24 @@ async function pushOnList(
     userId: string,
     match: DocumentSnapshot
 ): Promise<ActiveMatch> {
-    if (userId == match.data()!.hostuid) {
-        const enemy: DocumentSnapshot = await users
-            .doc(match.data()!.joinuid)
-            .get()
-        return new ActiveMatch(
-            match.id,
-            match.data()!.gfid,
-            match.data()!.hostgf,
-            match.data()!.hosttarget,
-            match.data()!.hostmoves,
-            match.data()!.joinmoves,
-            enemy.data()!.username,
-            match.data()!.jointarget,
-            match.data()!.joinurl,
-            match.data()!.time != null ? 1 : 0,
-            match.data()!.time
-        )
-    } else {
-        const enemy = await users.doc(match.data()!.hostuid).get()
-        return new ActiveMatch(
-            match.id,
-            match.data()!.gfid,
-            match.data()!.joingf,
-            match.data()!.jointarget,
-            match.data()!.joinmoves,
-            match.data()!.hostmoves,
-            enemy.data()!.username,
-            match.data()!.hosttarget,
-            match.data()!.hosturl,
-            match.data()!.time != null ? 1 : 0,
-            match.data()!.time
-        )
-    }
+    const hostOrJoin: boolean = userId == match.data()!.hostuid
+    const enemy: DocumentSnapshot = await users
+        .doc(hostOrJoin ? match.data()!.joinuid : match.data()!.hostuid)
+        .get()
+    return new ActiveMatch(
+        match.id,
+        match.data()!.gfid,
+        hostOrJoin ? match.data()!.hostgf : match.data()!.joingf,
+        hostOrJoin ? match.data()!.hosttarget : match.data()!.jointarget,
+        hostOrJoin ? match.data()!.hostmoves : match.data()!.joinmoves,
+        hostOrJoin ? match.data()!.joinmoves : match.data()!.hostmoves,
+        enemy.data()!.username,
+        hostOrJoin ? match.data()!.jointarget : match.data()!.hosttarget,
+        hostOrJoin ? match.data()!.joinurl : match.data()!.hosturl,
+        match.data()!.time != null ? 1 : 0,
+        hostOrJoin ? +match.data()!.hostdone : +match.data()!.joindone,
+        match.data()!.time
+    )
 }
 
 async function deleteReference(userId: string, oldReference: string) {

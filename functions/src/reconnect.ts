@@ -54,6 +54,7 @@ async function findMatch(
         hostOrJoin ? matchDoc.data()!.joinurl : matchDoc.data()!.hosturl,
         hasStarted ? 1 : 0,
         hostOrJoin ? +matchDoc.data()!.hostdone : +matchDoc.data()!.joindone,
+        hostOrJoin ? +matchDoc.data()!.joindone : +matchDoc.data()!.hostdone,
         matchDoc.data()!.time
     )
 }

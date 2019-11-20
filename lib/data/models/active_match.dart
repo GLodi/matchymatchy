@@ -23,6 +23,7 @@ class ActiveMatch extends Match {
   int gfid;
   int started;
   int playerDone;
+  int enemyDone;
   TargetField enemyTargetField;
   DateTime time;
 
@@ -38,6 +39,7 @@ class ActiveMatch extends Match {
     gfid = int.parse(map['gfid'].toString());
     started = int.parse(map['started'].toString());
     playerDone = int.parse(map['playerdone'].toString());
+    enemyDone = int.parse(map['enemydone'].toString());
     enemyTargetField = TargetField(grid: map['enemytarget']);
     time = DateTime.fromMillisecondsSinceEpoch(map['time']);
   }
@@ -54,6 +56,8 @@ class ActiveMatch extends Match {
       'enemymoves': enemyMoves,
       'gfid': gfid,
       'started': started,
+      'playerdone': playerDone,
+      'enemydone': enemyDone,
       'enemytarget': enemyTargetField.grid,
       'time': time.millisecondsSinceEpoch,
     };

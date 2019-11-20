@@ -59,6 +59,7 @@ async function pushOnList(
         hostOrJoin ? match.data()!.joinurl : match.data()!.hosturl,
         match.data()!.time != null ? 1 : 0,
         hostOrJoin ? +match.data()!.hostdone : +match.data()!.joindone,
+        hostOrJoin ? +match.data()!.joindone : +match.data()!.hostdone,
         match.data()!.time
     )
 }

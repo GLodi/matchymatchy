@@ -86,7 +86,6 @@ class MultiBloc extends GameBloc {
         _waitMessageSubject.add('lost connection, reconnecting...');
         // TODO: show loading and then try to reconnect,
         // otherwise show error
-
         break;
       case GameEventType.error:
         yield GameState.error('error');
@@ -109,7 +108,9 @@ class MultiBloc extends GameBloc {
 
   void fetchResult(ActiveMatch currentMatch) async {
     _waitMessageSubject.add('waiting for opponent...');
-    if (currentMatch.started == 1) {
+    if (currentMatch.playerDone == 1) {
+      intentToWinScreenSubject.add(null);
+    } else if (currentMatch.started == 1) {
       gameField = currentMatch.gameField;
       targetField = currentMatch.targetField;
       _enemyTargetSubject.add(currentMatch.enemyTargetField);

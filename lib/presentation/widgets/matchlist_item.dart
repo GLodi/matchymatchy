@@ -55,28 +55,36 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
       children: [
         Align(
           alignment: Alignment.centerLeft,
-          child: Column(children: <Widget>[
-            Container(
-              height: 70,
-              width: 70,
-              margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
-              child: ClipOval(
-                child: CachedNetworkImage(
-                  imageUrl: widget.activeMatch.enemyUrl,
-                  placeholder: (context, url) => CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+          child: Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Container(
+                  height: 70,
+                  width: 70,
+                  child: ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: widget.activeMatch.enemyUrl,
+                      placeholder: (context, url) =>
+                          CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(height: 10),
+                Text(
+                  widget.activeMatch.enemyDone == 1 ? 'done' : 'playing',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.blue[800],
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 2.0),
+                ),
+              ],
             ),
-            Text(
-              widget.activeMatch.enemyDone == 1 ? 'done' : 'playing',
-              style: TextStyle(
-                  color: Colors.blue[800],
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 2.0),
-            ),
-          ]),
+          ),
         ),
         Center(
           child: Column(

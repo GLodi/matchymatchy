@@ -10,9 +10,11 @@ abstract class MatchListItem {}
 
 class ActiveMatchItem extends StatefulWidget implements MatchListItem {
   final ActiveMatch activeMatch;
+  final User user;
   final bool isOnline;
 
-  ActiveMatchItem({Key key, this.activeMatch, this.isOnline}) : super(key: key);
+  ActiveMatchItem({Key key, this.activeMatch, this.user, this.isOnline})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -53,92 +55,123 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
   Widget activeElements() {
     return Stack(
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: EdgeInsets.only(left: 10),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  height: 70,
-                  width: 70,
-                  child: ClipOval(
-                    child: CachedNetworkImage(
-                      imageUrl: widget.activeMatch.enemyUrl,
-                      placeholder: (context, url) =>
-                          CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  widget.activeMatch.enemyDone == 1 ? 'done' : 'playing',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.blue[800],
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 2.0),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                widget.activeMatch.enemyName,
-                style: TextStyle(
-                    color: Colors.blue[800],
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 2.0),
-              ),
-              SizedBox(height: 20),
-              Text(
-                "you",
-                style: TextStyle(
-                    color: Colors.blue[800],
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 2.0),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.fromLTRB(0, 0, 35, 0),
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  widget.activeMatch.enemyMoves.toString(),
-                  style: TextStyle(
-                      color: Colors.blue[800],
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 2.0),
-                ),
-                SizedBox(height: 20),
-                Text(
-                  widget.activeMatch.moves.toString(),
-                  style: TextStyle(
-                      color: Colors.blue[800],
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 2.0),
-                ),
-              ],
-            ),
-          ),
-        ),
+        leftColumn(),
+        center(),
+        rightColumn(),
       ],
+    );
+  }
+
+  Widget leftColumn() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              height: 70,
+              width: 70,
+              child: ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: widget.activeMatch.isPlayerHost == 1
+                      ? widget.user.photoUrl
+                      : widget.activeMatch.enemyUrl,
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              widget.activeMatch.isPlayerHost == 1
+                  ? (widget.activeMatch.playerDone == 1 ? 'done' : 'playing')
+                  : (widget.activeMatch.enemyDone == 1 ? 'done' : 'playing'),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.blue[800],
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 2.0,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget center() {
+    return Center(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(
+            widget.activeMatch.isPlayerHost == 1
+                ? widget.activeMatch.moves.toString()
+                : widget.activeMatch.enemyMoves.toString(),
+            style: TextStyle(
+              color: Colors.blue[800],
+              fontSize: 30,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 2.0,
+            ),
+          ),
+          SizedBox(width: 40),
+          Text(
+            widget.activeMatch.isPlayerHost == 1
+                ? widget.activeMatch.moves.toString()
+                : widget.activeMatch.enemyMoves.toString(),
+            style: TextStyle(
+              color: Colors.blue[800],
+              fontSize: 30,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 2.0,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget rightColumn() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              height: 70,
+              width: 70,
+              child: ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: widget.activeMatch.isPlayerHost == 1
+                      ? widget.user.photoUrl
+                      : widget.activeMatch.enemyUrl,
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              widget.activeMatch.isPlayerHost == 1
+                  ? (widget.activeMatch.playerDone == 1 ? 'done' : 'playing')
+                  : (widget.activeMatch.enemyDone == 1 ? 'done' : 'playing'),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.blue[800],
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 2.0,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -169,13 +202,16 @@ class _PastMatchItemState extends State<PastMatchItem> {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 3,
-      color:
-          widget.pastMatch.isPlayer == 1 ? Colors.green[100] : Colors.red[100],
-      child: Stack(children: <Widget>[
-        winLostText(widget.pastMatch.isPlayer == 1),
-        leftImage(),
-        rightImage(),
-      ]),
+      color: widget.pastMatch.moves > widget.pastMatch.enemyMoves
+          ? Colors.green[100]
+          : Colors.red[100],
+      child: Stack(
+        children: <Widget>[
+          winLostText(widget.pastMatch.moves > widget.pastMatch.enemyMoves),
+          leftImage(),
+          rightImage(),
+        ],
+      ),
     );
   }
 
@@ -184,10 +220,11 @@ class _PastMatchItemState extends State<PastMatchItem> {
       child: Text(
         win ? "you won!" : "you lost",
         style: TextStyle(
-            color: win ? Colors.green[800] : Colors.red[800],
-            fontSize: 15,
-            fontWeight: FontWeight.w400,
-            letterSpacing: 2.0),
+          color: win ? Colors.green[800] : Colors.red[800],
+          fontSize: 15,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 2.0,
+        ),
       ),
     );
   }

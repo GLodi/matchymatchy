@@ -56,7 +56,7 @@ class HomeMatchListBloc
         } catch (e) {
           yield HomeMatchListState(
               type: HomeMatchListStateType.error,
-              message: 'Error updating matches');
+              message: 'error updating matches');
           print(e);
         }
         break;

@@ -67,7 +67,7 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
       itemCount: activeMatches.length + pastMatches.length,
       itemBuilder: (context, index) {
         return index < activeMatches.length
-            ? activeItem(activeMatches[index])
+            ? activeItem(activeMatches[index], user)
             : PastMatchItem(
                 pastMatch: pastMatches[index - activeMatches.length],
                 user: user);
@@ -75,13 +75,16 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
     );
   }
 
-  Widget activeItem(ActiveMatch activeMatch) {
+  Widget activeItem(ActiveMatch activeMatch, User user) {
     return StreamBuilder<bool>(
       initialData: false,
       stream: bloc.connChange,
       builder: (context, snapshot) {
         return ActiveMatchItem(
-            activeMatch: activeMatch, isOnline: snapshot.data);
+          activeMatch: activeMatch,
+          isOnline: snapshot.data,
+          user: user,
+        );
       },
     );
   }

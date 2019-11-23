@@ -49,6 +49,7 @@ async function newGame(userId: string): Promise<ActiveMatch> {
         0,
         0,
         0,
+        1,
         0
     )
     return newMatch

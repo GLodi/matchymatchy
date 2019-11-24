@@ -56,5 +56,9 @@ class MessagingEventBus {
     _messController.add(ForfeitMessage(matchId));
   }
 
+  void refreshMatchList() {
+    _messController.add(RefreshMessage());
+  }
+
   Future<String> getToken() => _messaging.getToken();
 }

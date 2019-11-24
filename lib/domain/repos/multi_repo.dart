@@ -25,7 +25,8 @@ class MultiRepo extends GameRepo {
   Future<void> increaseMoves() async {
     ActiveMatch activeMatch = await dbProvider.getActiveMatch(matchId);
     activeMatch.moves += 1;
-    return dbProvider.updateActiveMatch(activeMatch);
+    await dbProvider.updateActiveMatch(activeMatch);
+    messProvider.refreshMatchList();
   }
 
   @override

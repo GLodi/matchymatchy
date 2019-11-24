@@ -165,7 +165,7 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
             winner: matchDoc.data()!.winnername,
             forfeitwin: matchDoc.data()!.forfeitwin,
             time: admin.firestore.Timestamp.now().toMillis(),
-            isplayer: 0
+            isplayerhost: 0
         })
     hostRef
         .collection('activematches')

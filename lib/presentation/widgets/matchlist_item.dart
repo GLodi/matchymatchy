@@ -28,7 +28,7 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
     return Hero(
       tag: widget.activeMatch.matchId,
       child: Container(
-        height: 150,
+        height: 140,
         margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
         child: MaterialButton(
           onPressed: () => widget.isOnline
@@ -55,54 +55,67 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
   Widget activeElements() {
     return Stack(
       children: [
-        leftColumn(),
-        center(),
-        rightColumn(),
+        leftPic(),
+        rightPic(),
+        centerMoves(),
+        rightName(),
+        leftName(),
       ],
     );
   }
 
-  Widget leftColumn() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-              height: 70,
-              width: 70,
-              child: ClipOval(
-                child: CachedNetworkImage(
-                  imageUrl: widget.activeMatch.isPlayerHost == 1
-                      ? widget.user.photoUrl
-                      : widget.activeMatch.enemyUrl,
-                  placeholder: (context, url) => CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
-                ),
-              ),
+  Widget leftPic() {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        height: 70,
+        width: 70,
+        margin: EdgeInsets.fromLTRB(10, 0, 0, 20),
+        child: ClipOval(
+          child: ShaderMask(
+            shaderCallback: (Rect rect) {
+              return LinearGradient(
+                begin: Alignment.center,
+                end: Alignment.centerRight,
+                colors: <Color>[Colors.black, Colors.transparent],
+              ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+            },
+            child: CachedNetworkImage(
+              imageUrl: widget.activeMatch.isPlayerHost == 1
+                  ? widget.user.photoUrl
+                  : widget.activeMatch.enemyUrl,
+              placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),
             ),
-            SizedBox(height: 10),
-            Text(
-              widget.activeMatch.isPlayerHost == 1
-                  ? (widget.activeMatch.playerDone == 1 ? 'done' : 'playing')
-                  : (widget.activeMatch.enemyDone == 1 ? 'done' : 'playing'),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.blue[800],
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 2.0,
-              ),
-            ),
-          ],
+            blendMode: BlendMode.dstIn,
+          ),
         ),
       ),
     );
   }
 
-  Widget center() {
+  Widget leftName() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(10, 0, 0, 15),
+      child: Align(
+        alignment: Alignment.bottomLeft,
+        child: Text(
+          widget.activeMatch.isPlayerHost == 1
+              ? widget.user.username
+              : widget.activeMatch.enemyName,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.blue[800],
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 2.0,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget centerMoves() {
     return Center(
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -120,7 +133,7 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
           ),
           SizedBox(width: 40),
           Text(
-            widget.activeMatch.isPlayerHost == 1
+            widget.activeMatch.isPlayerHost == 0
                 ? widget.activeMatch.moves.toString()
                 : widget.activeMatch.enemyMoves.toString(),
             style: TextStyle(
@@ -135,41 +148,42 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
     );
   }
 
-  Widget rightColumn() {
+  Widget rightPic() {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Container(
+        height: 70,
+        width: 70,
+        margin: EdgeInsets.fromLTRB(0, 0, 10, 20),
+        child: ClipOval(
+          child: CachedNetworkImage(
+            imageUrl: widget.activeMatch.isPlayerHost == 0
+                ? widget.user.photoUrl
+                : widget.activeMatch.enemyUrl,
+            placeholder: (context, url) => CircularProgressIndicator(),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget rightName() {
     return Container(
-      margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
+      margin: EdgeInsets.fromLTRB(0, 0, 10, 15),
       child: Align(
-        alignment: Alignment.centerRight,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-              height: 70,
-              width: 70,
-              child: ClipOval(
-                child: CachedNetworkImage(
-                  imageUrl: widget.activeMatch.isPlayerHost == 1
-                      ? widget.user.photoUrl
-                      : widget.activeMatch.enemyUrl,
-                  placeholder: (context, url) => CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              widget.activeMatch.isPlayerHost == 1
-                  ? (widget.activeMatch.playerDone == 1 ? 'done' : 'playing')
-                  : (widget.activeMatch.enemyDone == 1 ? 'done' : 'playing'),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.blue[800],
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 2.0,
-              ),
-            ),
-          ],
+        alignment: Alignment.bottomRight,
+        child: Text(
+          widget.activeMatch.isPlayerHost == 0
+              ? widget.user.username
+              : widget.activeMatch.enemyName,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.blue[800],
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 2.0,
+          ),
         ),
       ),
     );
@@ -218,7 +232,7 @@ class _PastMatchItemState extends State<PastMatchItem> {
   Widget winLostText(bool win) {
     return Center(
       child: Text(
-        win ? "you won!" : "you lost",
+        win ? "won!" : "lost",
         style: TextStyle(
           color: win ? Colors.green[800] : Colors.red[800],
           fontSize: 15,

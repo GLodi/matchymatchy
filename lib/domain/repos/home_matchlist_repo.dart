@@ -22,6 +22,12 @@ class HomeMatchListRepo {
     await _dbProvider.storePastMatches(pastMatches);
   }
 
+  Future<void> updateActiveMatchMove(int moves, String matchId) async {
+    ActiveMatch match = await _dbProvider.getActiveMatch(matchId);
+    match.enemyMoves = moves;
+    await _dbProvider.updateActiveMatch(match);
+  }
+
   Future<List<ActiveMatch>> getActiveMatches() async =>
       await _dbProvider.getActiveMatches();
 

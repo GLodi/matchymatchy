@@ -36,3 +36,5 @@ class ForfeitMessage {
 
   ForfeitMessage(this.matchId);
 }
+
+class RefreshMessage {}

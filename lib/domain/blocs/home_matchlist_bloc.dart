@@ -13,7 +13,9 @@ class HomeMatchListBloc
   StreamSubscription _forfeitSubs,
       _connectivitySubs,
       _challengeSubs,
-      _winnerSubs;
+      _winnerSubs,
+      _refreshSubs,
+      _moveSubs;
 
   final _connChangeSub = BehaviorSubject<bool>();
   Stream<bool> get connChange => _connChangeSub.stream;
@@ -99,6 +101,13 @@ class HomeMatchListBloc
         await _repo.deleteActiveMatch(forf.matchId);
         emitEvent(HomeMatchListEvent.refreshMatches());
       });
+      _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) async {
+        await _repo.updateActiveMatchMove(mess.enemyMoves, mess.matchId);
+        emitEvent(HomeMatchListEvent.refreshMatches());
+      });
+      _refreshSubs = _messEventBus.on<RefreshMessage>().listen((_) async {
+        emitEvent(HomeMatchListEvent.refreshMatches());
+      });
     }
   }
 
@@ -108,6 +117,8 @@ class HomeMatchListBloc
     _challengeSubs.cancel();
     _winnerSubs.cancel();
     _forfeitSubs.cancel();
+    _refreshSubs.cancel();
+    _moveSubs.cancel();
     super.dispose();
   }
 }

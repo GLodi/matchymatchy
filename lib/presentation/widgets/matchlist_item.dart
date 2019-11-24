@@ -67,29 +67,22 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
   Widget leftPic() {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
-        height: 70,
-        width: 70,
-        margin: EdgeInsets.fromLTRB(10, 0, 0, 20),
-        child: ClipOval(
-          child: ShaderMask(
-            shaderCallback: (Rect rect) {
-              return LinearGradient(
-                begin: Alignment.center,
-                end: Alignment.centerRight,
-                colors: <Color>[Colors.black, Colors.transparent],
-              ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
-            },
-            child: CachedNetworkImage(
-              imageUrl: widget.activeMatch.isPlayerHost == 1
-                  ? widget.user.photoUrl
-                  : widget.activeMatch.enemyUrl,
-              placeholder: (context, url) => CircularProgressIndicator(),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            ),
-            blendMode: BlendMode.dstIn,
-          ),
+      child: ShaderMask(
+        shaderCallback: (Rect rect) {
+          return LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: <Color>[Colors.black, Colors.transparent],
+          ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+        },
+        child: CachedNetworkImage(
+          imageUrl: widget.activeMatch.isPlayerHost == 1
+              ? widget.user.photoUrl
+              : widget.activeMatch.enemyUrl,
+          placeholder: (context, url) => CircularProgressIndicator(),
+          errorWidget: (context, url, error) => Icon(Icons.error),
         ),
+        blendMode: BlendMode.dstIn,
       ),
     );
   }

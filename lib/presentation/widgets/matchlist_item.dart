@@ -30,8 +30,8 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
       child: Container(
         height: 140,
         margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
-        child: MaterialButton(
-          onPressed: () => widget.isOnline
+        child: GestureDetector(
+          onTap: () => widget.isOnline
               ? Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => BlocProvider(
@@ -41,12 +41,14 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
                   ),
                 )
               : null,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          elevation: 3,
-          highlightElevation: 1,
-          color: Colors.blue[100],
-          child: activeElements(),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            elevation: 3,
+            color: Colors.blue[100],
+            child: activeElements(),
+          ),
         ),
       ),
     );
@@ -54,12 +56,12 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
 
   Widget activeElements() {
     return Stack(
-      children: [
+      children: <Widget>[
         leftPic(),
         rightPic(),
         centerMoves(),
-        rightName(),
         leftName(),
+        rightName()
       ],
     );
   }
@@ -75,12 +77,20 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
             colors: <Color>[Colors.black, Colors.transparent],
           ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
         },
-        child: CachedNetworkImage(
-          imageUrl: widget.activeMatch.isPlayerHost == 1
-              ? widget.user.photoUrl
-              : widget.activeMatch.enemyUrl,
-          placeholder: (context, url) => CircularProgressIndicator(),
-          errorWidget: (context, url, error) => Icon(Icons.error),
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            bottomLeft: Radius.circular(20.0),
+          ),
+          child: CachedNetworkImage(
+            fit: BoxFit.fill,
+            height: 140,
+            imageUrl: widget.activeMatch.isPlayerHost == 1
+                ? widget.user.photoUrl
+                : widget.activeMatch.enemyUrl,
+            placeholder: (context, url) => CircularProgressIndicator(),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
         ),
         blendMode: BlendMode.dstIn,
       ),
@@ -124,7 +134,7 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
               letterSpacing: 2.0,
             ),
           ),
-          SizedBox(width: 40),
+          SizedBox(width: 20),
           Text(
             widget.activeMatch.isPlayerHost == 0
                 ? widget.activeMatch.moves.toString()
@@ -144,12 +154,22 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
   Widget rightPic() {
     return Align(
       alignment: Alignment.centerRight,
-      child: Container(
-        height: 70,
-        width: 70,
-        margin: EdgeInsets.fromLTRB(0, 0, 10, 20),
-        child: ClipOval(
+      child: ShaderMask(
+        shaderCallback: (Rect rect) {
+          return LinearGradient(
+            begin: Alignment.centerRight,
+            end: Alignment.centerLeft,
+            colors: <Color>[Colors.black, Colors.transparent],
+          ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+        },
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(20.0),
+            bottomRight: Radius.circular(20.0),
+          ),
           child: CachedNetworkImage(
+            fit: BoxFit.fill,
+            height: 140,
             imageUrl: widget.activeMatch.isPlayerHost == 0
                 ? widget.user.photoUrl
                 : widget.activeMatch.enemyUrl,
@@ -157,6 +177,7 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
             errorWidget: (context, url, error) => Icon(Icons.error),
           ),
         ),
+        blendMode: BlendMode.dstIn,
       ),
     );
   }

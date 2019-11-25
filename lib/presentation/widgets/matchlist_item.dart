@@ -57,55 +57,30 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
   Widget activeElements() {
     return Stack(
       children: <Widget>[
-        leftPic(),
-        rightPic(),
+        pic(false),
+        pic(true),
         centerMoves(),
-        leftName(),
-        rightName()
+        username(false),
+        username(true),
       ],
     );
   }
 
-  Widget leftPic() {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: ShaderMask(
-        shaderCallback: (Rect rect) {
-          return LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: <Color>[Colors.black, Colors.transparent],
-          ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
-        },
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.0),
-            bottomLeft: Radius.circular(20.0),
-          ),
-          child: CachedNetworkImage(
-            fit: BoxFit.fill,
-            height: 140,
-            imageUrl: widget.activeMatch.isPlayerHost == 1
-                ? widget.user.photoUrl
-                : widget.activeMatch.enemyUrl,
-            placeholder: (context, url) => CircularProgressIndicator(),
-            errorWidget: (context, url, error) => Icon(Icons.error),
-          ),
-        ),
-        blendMode: BlendMode.dstIn,
-      ),
-    );
-  }
-
-  Widget leftName() {
+  Widget username(bool isOnTheRight) {
     return Container(
-      margin: EdgeInsets.fromLTRB(10, 0, 0, 15),
+      margin: isOnTheRight
+          ? EdgeInsets.fromLTRB(0, 0, 10, 15)
+          : EdgeInsets.fromLTRB(10, 0, 0, 15),
       child: Align(
-        alignment: Alignment.bottomLeft,
+        alignment: isOnTheRight ? Alignment.bottomRight : Alignment.bottomLeft,
         child: Text(
-          widget.activeMatch.isPlayerHost == 1
-              ? widget.user.username
-              : widget.activeMatch.enemyName,
+          isOnTheRight
+              ? (widget.activeMatch.isPlayerHost == 0
+                  ? widget.user.username
+                  : widget.activeMatch.enemyName)
+              : (widget.activeMatch.isPlayerHost == 1
+                  ? widget.user.username
+                  : widget.activeMatch.enemyName),
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.blue[800],
@@ -151,54 +126,45 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
     );
   }
 
-  Widget rightPic() {
+  Widget pic(bool isOnTheRight) {
     return Align(
-      alignment: Alignment.centerRight,
+      alignment: isOnTheRight ? Alignment.centerRight : Alignment.centerLeft,
       child: ShaderMask(
         shaderCallback: (Rect rect) {
           return LinearGradient(
-            begin: Alignment.centerRight,
-            end: Alignment.centerLeft,
+            begin: isOnTheRight ? Alignment.centerRight : Alignment.centerLeft,
+            end: isOnTheRight ? Alignment.centerLeft : Alignment.centerRight,
             colors: <Color>[Colors.black, Colors.transparent],
           ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
         },
         child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(20.0),
-            bottomRight: Radius.circular(20.0),
-          ),
-          child: CachedNetworkImage(
-            fit: BoxFit.fill,
-            height: 140,
-            imageUrl: widget.activeMatch.isPlayerHost == 0
-                ? widget.user.photoUrl
-                : widget.activeMatch.enemyUrl,
-            placeholder: (context, url) => CircularProgressIndicator(),
-            errorWidget: (context, url, error) => Icon(Icons.error),
+          borderRadius: isOnTheRight
+              ? BorderRadius.only(
+                  topRight: Radius.circular(20.0),
+                  bottomRight: Radius.circular(20.0),
+                )
+              : BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  bottomLeft: Radius.circular(20.0),
+                ),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: CachedNetworkImage(
+              height: 140,
+              fit: BoxFit.cover,
+              imageUrl: isOnTheRight
+                  ? (widget.activeMatch.isPlayerHost == 0
+                      ? widget.user.photoUrl
+                      : widget.activeMatch.enemyUrl)
+                  : (widget.activeMatch.isPlayerHost == 1
+                      ? widget.user.photoUrl
+                      : widget.activeMatch.enemyUrl),
+              placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
           ),
         ),
         blendMode: BlendMode.dstIn,
-      ),
-    );
-  }
-
-  Widget rightName() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(0, 0, 10, 15),
-      child: Align(
-        alignment: Alignment.bottomRight,
-        child: Text(
-          widget.activeMatch.isPlayerHost == 0
-              ? widget.user.username
-              : widget.activeMatch.enemyName,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.blue[800],
-            fontSize: 15,
-            fontWeight: FontWeight.w400,
-            letterSpacing: 2.0,
-          ),
-        ),
       ),
     );
   }

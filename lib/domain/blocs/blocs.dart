@@ -7,3 +7,4 @@ export 'home_bloc.dart';
 export 'enemy_field_bloc.dart';
 export 'home_matchlist_bloc.dart';
 export 'win_bloc.dart';
+export 'active_match_item_bloc.dart';

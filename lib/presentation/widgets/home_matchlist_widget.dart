@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:squazzle/data/models/models.dart';
 import 'package:squazzle/domain/domain.dart';
 import 'matchlist_item.dart';
+import 'active_match_item.dart';
 
 class HomeMatchListWidget extends StatefulWidget {
   HomeMatchListWidget({Key key}) : super(key: key);
@@ -21,7 +23,6 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
   @override
   void initState() {
     bloc = BlocProvider.of<HomeMatchListBloc>(context);
-    bloc.setup();
     bloc.emitEvent(HomeMatchListEvent.start());
     super.initState();
   }
@@ -67,24 +68,14 @@ class _HomeMatchListWidgetState extends State<HomeMatchListWidget>
       itemCount: activeMatches.length + pastMatches.length,
       itemBuilder: (context, index) {
         return index < activeMatches.length
-            ? activeItem(activeMatches[index], user)
+            ? BlocProvider(
+                child: ActiveMatchItem(
+                    activeMatch: activeMatches[index], user: user),
+                bloc: kiwi.Container().resolve<ActiveMatchItemBloc>(),
+              )
             : PastMatchItem(
                 pastMatch: pastMatches[index - activeMatches.length],
                 user: user);
-      },
-    );
-  }
-
-  Widget activeItem(ActiveMatch activeMatch, User user) {
-    return StreamBuilder<bool>(
-      initialData: false,
-      stream: bloc.connChange,
-      builder: (context, snapshot) {
-        return ActiveMatchItem(
-          activeMatch: activeMatch,
-          isOnline: snapshot.data,
-          user: user,
-        );
       },
     );
   }

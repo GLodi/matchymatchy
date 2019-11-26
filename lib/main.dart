@@ -49,6 +49,8 @@ void main() {
         c.resolve<ApiProvider>(),
       ));
   container.registerFactory((c) => WinRepo(c.resolve<MessagingEventBus>()));
+  container
+      .registerFactory((c) => ActiveMatchItemRepo(c.resolve<DbProvider>()));
 
   // Blocs
   container.registerFactory((c) => SingleBloc(c.resolve<SingleRepo>()));
@@ -59,6 +61,8 @@ void main() {
   container.registerFactory((c) => HomeMatchListBloc(
       c.resolve<HomeMatchListRepo>(), c.resolve<MessagingEventBus>()));
   container.registerFactory((c) => WinBloc(c.resolve<WinRepo>()));
+  container.registerFactory((c) => ActiveMatchItemBloc(
+      c.resolve<ActiveMatchItemRepo>(), c.resolve<MessagingEventBus>()));
 
   runApp(App());
 }

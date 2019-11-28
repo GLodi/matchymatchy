@@ -39,7 +39,7 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
         height: 140,
         margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
         child: GestureDetector(
-          onTap: () => bloc.onItemPress.add(null),
+          onTap: () => bloc.onItemPress.add(true),
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),

@@ -10,7 +10,7 @@ class ActiveMatchItemBloc
     extends BlocEventStateBase<ActiveItemEvent, ActiveItemState> {
   final ActiveMatchItemRepo _repo;
   final MessagingEventBus _messEventBus;
-  StreamSubscription _connectivitySubs, _moveSubs;
+  StreamSubscription _moveSubs;
 
   final _intentToMultiScreenSubject = BehaviorSubject<void>();
   Stream<void> get intentToMultiScreen => _intentToMultiScreenSubject.stream;
@@ -18,33 +18,19 @@ class ActiveMatchItemBloc
   final _enemyMoveSubject = BehaviorSubject<int>();
   Stream<int> get enemyMove => _enemyMoveSubject.stream;
 
-  final _connChangeSub = BehaviorSubject<bool>();
-  Stream<bool> get connChange => _connChangeSub.stream;
-
-  final _onItemPressSubject = PublishSubject<void>();
-  Sink<void> get onItemPress => _onItemPressSubject.sink;
+  final _onItemPressSubject = PublishSubject<bool>();
+  Sink<bool> get onItemPress => _onItemPressSubject.sink;
 
   ActiveMatchItemBloc(this._repo, this._messEventBus)
       : super(initialState: ActiveItemState.notInit());
 
   void setup() async {
-    ConnectivityResult curr = await Connectivity().checkConnectivity();
-    bool prev = curr == ConnectivityResult.none ? false : true;
-    _connChangeSub.add(prev);
-    _connectivitySubs = Connectivity()
-        .onConnectivityChanged
-        .listen((ConnectivityResult result) {
-      if (result == ConnectivityResult.none && prev) {
-        _connChangeSub.add(false);
-        prev = false;
-      }
-      if (result != ConnectivityResult.none && !prev) {
-        _connChangeSub.add(true);
-        prev = true;
-      }
-    });
     _onItemPressSubject.listen((_) async {
-      if (await connChange.last) _intentToMultiScreenSubject.add(null);
+      print('onitempress');
+      ConnectivityResult result =
+          await Connectivity().checkConnectivity().then((r) => r);
+      if (result != ConnectivityResult.none)
+        _intentToMultiScreenSubject.add(null);
     });
   }
 
@@ -75,7 +61,6 @@ class ActiveMatchItemBloc
     _intentToMultiScreenSubject.close();
     _enemyMoveSubject.close();
     _moveSubs.cancel();
-    _connectivitySubs.cancel();
     super.dispose();
   }
 }

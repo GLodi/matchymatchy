@@ -31,9 +31,11 @@ class _PastMatchItemState extends State<PastMatchItem> {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 3,
-      color: widget.pastMatch.moves > widget.pastMatch.enemyMoves
-          ? Colors.green[100]
-          : Colors.red[100],
+      color: widget.pastMatch.isTie == 1
+          ? Colors.blue[100]
+          : (widget.pastMatch.moves > widget.pastMatch.enemyMoves
+              ? Colors.green[100]
+              : Colors.red[100]),
       child: Stack(
         children: <Widget>[
           winLostText(widget.pastMatch.moves > widget.pastMatch.enemyMoves),

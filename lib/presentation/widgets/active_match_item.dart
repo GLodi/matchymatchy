@@ -85,6 +85,8 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
                       : widget.activeMatch.enemyName),
               style: TextStyle(
                 fontSize: 15,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 2.0,
                 foreground: Paint()
                   ..style = PaintingStyle.stroke
                   ..strokeWidth = 3
@@ -103,6 +105,8 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.white,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 2.0,
               ),
             ),
           ],

@@ -72,21 +72,40 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
           : EdgeInsets.fromLTRB(10, 0, 0, 15),
       child: Align(
         alignment: isOnTheRight ? Alignment.bottomRight : Alignment.bottomLeft,
-        child: Text(
-          isOnTheRight
-              ? (widget.activeMatch.isPlayerHost == 0
-                  ? widget.user.username
-                  : widget.activeMatch.enemyName)
-              : (widget.activeMatch.isPlayerHost == 1
-                  ? widget.user.username
-                  : widget.activeMatch.enemyName),
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.blue[800],
-            fontSize: 15,
-            fontWeight: FontWeight.w400,
-            letterSpacing: 2.0,
-          ),
+        child: Stack(
+          children: <Widget>[
+            // Stroked text as border.
+            Text(
+              isOnTheRight
+                  ? (widget.activeMatch.isPlayerHost == 0
+                      ? widget.user.username
+                      : widget.activeMatch.enemyName)
+                  : (widget.activeMatch.isPlayerHost == 1
+                      ? widget.user.username
+                      : widget.activeMatch.enemyName),
+              style: TextStyle(
+                fontSize: 15,
+                foreground: Paint()
+                  ..style = PaintingStyle.stroke
+                  ..strokeWidth = 3
+                  ..color = Colors.black,
+              ),
+            ),
+            // Solid text as fill.
+            Text(
+              isOnTheRight
+                  ? (widget.activeMatch.isPlayerHost == 0
+                      ? widget.user.username
+                      : widget.activeMatch.enemyName)
+                  : (widget.activeMatch.isPlayerHost == 1
+                      ? widget.user.username
+                      : widget.activeMatch.enemyName),
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.white,
+              ),
+            ),
+          ],
         ),
       ),
     );

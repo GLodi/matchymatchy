@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:rxdart/rxdart.dart';
-import 'package:connectivity/connectivity.dart';
 
 import 'package:squazzle/data/api/mess_event_bus.dart';
 import 'package:squazzle/domain/domain.dart';
@@ -10,36 +8,10 @@ class HomeMatchListBloc
     extends BlocEventStateBase<HomeMatchListEvent, HomeMatchListState> {
   final HomeMatchListRepo _repo;
   final MessagingEventBus _messEventBus;
-  StreamSubscription _forfeitSubs,
-      _connectivitySubs,
-      _challengeSubs,
-      _winnerSubs,
-      _refreshSubs,
-      _moveSubs;
-
-  final _connChangeSub = BehaviorSubject<bool>();
-  Stream<bool> get connChange => _connChangeSub.stream;
+  StreamSubscription _forfeitSubs, _challengeSubs, _winnerSubs, _refreshSubs;
 
   HomeMatchListBloc(this._repo, this._messEventBus)
       : super(initialState: HomeMatchListState.fetching());
-
-  void setup() async {
-    ConnectivityResult curr = await Connectivity().checkConnectivity();
-    bool prev = curr == ConnectivityResult.none ? false : true;
-    _connChangeSub.add(prev);
-    _connectivitySubs = Connectivity()
-        .onConnectivityChanged
-        .listen((ConnectivityResult result) {
-      if (result == ConnectivityResult.none && prev) {
-        _connChangeSub.add(false);
-        prev = false;
-      }
-      if (result != ConnectivityResult.none && !prev) {
-        _connChangeSub.add(true);
-        prev = true;
-      }
-    });
-  }
 
   @override
   Stream<HomeMatchListState> eventHandler(
@@ -101,10 +73,6 @@ class HomeMatchListBloc
         await _repo.deleteActiveMatch(forf.matchId);
         emitEvent(HomeMatchListEvent.refreshMatches());
       });
-      _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) async {
-        await _repo.updateActiveMatchMove(mess.enemyMoves, mess.matchId);
-        emitEvent(HomeMatchListEvent.refreshMatches());
-      });
       _refreshSubs = _messEventBus.on<RefreshMessage>().listen((_) async {
         emitEvent(HomeMatchListEvent.refreshMatches());
       });
@@ -113,12 +81,10 @@ class HomeMatchListBloc
 
   @override
   void dispose() {
-    _connectivitySubs.cancel();
     _challengeSubs.cancel();
     _winnerSubs.cancel();
     _forfeitSubs.cancel();
     _refreshSubs.cancel();
-    _moveSubs.cancel();
     super.dispose();
   }
 }

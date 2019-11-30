@@ -152,7 +152,9 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
             winner: matchDoc.data()!.winnername,
             forfeitwin: matchDoc.data()!.forfeitwin,
             time: admin.firestore.Timestamp.now().toMillis(),
-            isplayerhost: 1
+            isplayerhost: 1,
+            istie:
+                matchDoc.data()!.hostmoves == matchDoc.data()!.joinmoves ? 1 : 0
         })
     joinRef
         .collection('pastmatches')
@@ -165,7 +167,9 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
             winner: matchDoc.data()!.winnername,
             forfeitwin: matchDoc.data()!.forfeitwin,
             time: admin.firestore.Timestamp.now().toMillis(),
-            isplayerhost: 0
+            isplayerhost: 0,
+            istie:
+                matchDoc.data()!.hostmoves == matchDoc.data()!.joinmoves ? 1 : 0
         })
     hostRef
         .collection('activematches')

@@ -6,10 +6,9 @@ import 'package:squazzle/presentation/screens/single_screen.dart';
 import 'package:squazzle/presentation/screens/multi_screen.dart';
 
 class HomeNotInitWidget extends StatefulWidget {
-  final bool isTest;
   final HomeBloc bloc;
 
-  HomeNotInitWidget({this.isTest, this.bloc});
+  HomeNotInitWidget({this.bloc});
 
   @override
   State<StatefulWidget> createState() {
@@ -62,19 +61,7 @@ class _HomeNotInitWidgetState extends State<HomeNotInitWidget> {
     return Hero(
       tag: 'single',
       child: MaterialButton(
-        onPressed: () {
-          widget.isTest
-              ? openMultiScreen()
-              : Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider(
-                      child: SingleScreen(),
-                      bloc: kiwi.Container().resolve<SingleBloc>(),
-                    ),
-                  ),
-                );
-        },
+        onPressed: () => openMultiScreen(),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         elevation: 8,
         highlightElevation: 2,

@@ -8,10 +8,6 @@ import 'package:squazzle/presentation/widgets/home_notinit_widget.dart';
 import 'package:squazzle/presentation/widgets/home_init_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  final bool isTest;
-
-  HomeScreen({this.isTest});
-
   @override
   State<StatefulWidget> createState() {
     return _HomeScreenState();
@@ -44,11 +40,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           builder: (context, state) {
             switch (state.type) {
               case HomeStateType.initLogged:
-                return HomeInitWidget(
-                    user: state.user, isTest: widget.isTest, bloc: bloc);
+                return HomeInitWidget(user: state.user, bloc: bloc);
                 break;
               case HomeStateType.initNotLogged:
-                return HomeNotInitWidget(isTest: widget.isTest, bloc: bloc);
+                return HomeNotInitWidget(bloc: bloc);
                 break;
               case HomeStateType.notInit:
                 return Center(

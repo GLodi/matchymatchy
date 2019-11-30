@@ -7,10 +7,9 @@ import 'package:squazzle/presentation/screens/single_screen.dart';
 
 class HomeBottomBarWidget extends StatefulWidget {
   final HomeBloc bloc;
-  final bool isTest;
   final double parentHeight;
 
-  HomeBottomBarWidget({this.bloc, this.isTest, this.parentHeight});
+  HomeBottomBarWidget({this.bloc, this.parentHeight});
 
   @override
   State<StatefulWidget> createState() {
@@ -83,19 +82,7 @@ class _HomeBottomBarWidgetState extends State<HomeBottomBarWidget>
           child: Icon(Icons.videogame_asset, color: Colors.blue[800], size: 35),
           elevation: 0,
           highlightElevation: 0,
-          onPressed: () {
-            widget.isTest
-                ? _openMultiScreen()
-                : Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BlocProvider(
-                        child: SingleScreen(),
-                        bloc: kiwi.Container().resolve<SingleBloc>(),
-                      ),
-                    ),
-                  );
-          },
+          onPressed: () => _openMultiScreen(),
         ),
       ),
     );

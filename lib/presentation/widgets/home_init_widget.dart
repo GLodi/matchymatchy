@@ -9,10 +9,9 @@ import 'package:squazzle/presentation/widgets/home_bottombar_widget.dart';
 
 class HomeInitWidget extends StatefulWidget {
   final User user;
-  final bool isTest;
   final HomeBloc bloc;
 
-  HomeInitWidget({this.user, this.isTest, this.bloc});
+  HomeInitWidget({this.user, this.bloc});
 
   @override
   State<StatefulWidget> createState() {
@@ -47,8 +46,7 @@ class _HomeInitWidgetState extends State<HomeInitWidget> {
             SizedBox(height: 80),
           ],
         ),
-        HomeBottomBarWidget(
-            bloc: widget.bloc, isTest: widget.isTest, parentHeight: height),
+        HomeBottomBarWidget(bloc: widget.bloc, parentHeight: height),
       ],
     );
   }

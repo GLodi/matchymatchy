@@ -8,8 +8,6 @@ import 'package:squazzle/presentation/presentation.dart';
 
 //import 'package:flutter/scheduler.dart' show timeDilation;
 
-final bool isTest = false;
-
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   kiwi.Container container = kiwi.Container();
@@ -26,7 +24,7 @@ void main() {
   container.registerSingleton<LoginProvider, LoginProviderImpl>(
       (c) => LoginProviderImpl());
   container.registerSingleton<SharedPrefsProvider, SharedPrefsProviderImpl>(
-      (c) => SharedPrefsProviderImpl(test: isTest));
+      (c) => SharedPrefsProviderImpl());
   container.registerSingleton((c) => MessagingEventBus());
 
   // Repos
@@ -77,7 +75,7 @@ class App extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => BlocProvider(
-              child: HomeScreen(isTest: isTest),
+              child: HomeScreen(),
               bloc: kiwi.Container().resolve<HomeBloc>(),
             ),
       },

@@ -86,10 +86,10 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w400,
-                letterSpacing: 2.0,
+                letterSpacing: 1.5,
                 foreground: Paint()
                   ..style = PaintingStyle.stroke
-                  ..strokeWidth = 3
+                  ..strokeWidth = 2
                   ..color = Colors.black,
               ),
             ),
@@ -106,7 +106,7 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
                 fontSize: 15,
                 color: Colors.white,
                 fontWeight: FontWeight.w400,
-                letterSpacing: 2.0,
+                letterSpacing: 1.5,
               ),
             ),
           ],
@@ -121,7 +121,9 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           StreamBuilder<int>(
-              initialData: 0,
+              initialData: widget.activeMatch.isPlayerHost == 1
+                  ? widget.activeMatch.moves
+                  : widget.activeMatch.enemyMoves,
               stream: bloc.enemyMove,
               builder: (contet, snapshot) {
                 return Text(
@@ -138,7 +140,9 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
               }),
           SizedBox(width: 20),
           StreamBuilder<int>(
-              initialData: 0,
+              initialData: widget.activeMatch.isPlayerHost == 0
+                  ? widget.activeMatch.moves
+                  : widget.activeMatch.enemyMoves,
               stream: bloc.enemyMove,
               builder: (contet, snapshot) {
                 return Text(

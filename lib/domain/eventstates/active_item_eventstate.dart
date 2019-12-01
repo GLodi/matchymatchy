@@ -34,7 +34,7 @@ class ActiveItemEvent extends BlocEvent {
   ActiveItemEvent({this.type: ActiveItemEventType.start, this.matchId});
 
   factory ActiveItemEvent.start(String matchId) =>
-      ActiveItemEvent(type: ActiveItemEventType.start);
+      ActiveItemEvent(type: ActiveItemEventType.start, matchId: matchId);
 }
 
 enum ActiveItemEventType {

@@ -60,6 +60,7 @@ class ActiveMatchItemBloc
   void dispose() {
     _intentToMultiScreenSubject.close();
     _enemyMoveSubject.close();
+    // TODO: this is called on null
     _moveSubs.cancel();
     super.dispose();
   }

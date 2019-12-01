@@ -74,6 +74,7 @@ class HomeMatchListBloc
         emitEvent(HomeMatchListEvent.refreshMatches());
       });
       _refreshSubs = _messEventBus.on<RefreshMessage>().listen((_) async {
+        print('matchlist refresh');
         emitEvent(HomeMatchListEvent.refreshMatches());
       });
     }

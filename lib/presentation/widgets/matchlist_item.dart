@@ -39,8 +39,8 @@ class _PastMatchItemState extends State<PastMatchItem> {
       child: Stack(
         children: <Widget>[
           winLostText(widget.pastMatch.moves > widget.pastMatch.enemyMoves),
-          leftImage(),
-          rightImage(),
+          pic(true),
+          pic(false),
         ],
       ),
     );
@@ -76,18 +76,45 @@ class _PastMatchItemState extends State<PastMatchItem> {
     );
   }
 
-  Widget rightImage() {
-    return Container(
-      margin: EdgeInsets.all(20),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: ClipOval(
-          child: CachedNetworkImage(
-            imageUrl: widget.pastMatch.enemyUrl,
-            placeholder: (context, url) => CircularProgressIndicator(),
-            errorWidget: (context, url, error) => Icon(Icons.error),
+  Widget pic(bool isOnTheRight) {
+    return Align(
+      alignment: isOnTheRight ? Alignment.centerRight : Alignment.centerLeft,
+      child: ShaderMask(
+        shaderCallback: (Rect rect) {
+          return LinearGradient(
+            begin: isOnTheRight ? Alignment.centerRight : Alignment.centerLeft,
+            end: isOnTheRight ? Alignment.centerLeft : Alignment.centerRight,
+            colors: <Color>[Colors.black, Colors.transparent],
+          ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+        },
+        child: ClipRRect(
+          borderRadius: isOnTheRight
+              ? BorderRadius.only(
+                  topRight: Radius.circular(20.0),
+                  bottomRight: Radius.circular(20.0),
+                )
+              : BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  bottomLeft: Radius.circular(20.0),
+                ),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: CachedNetworkImage(
+              height: 140,
+              fit: BoxFit.cover,
+              imageUrl: isOnTheRight
+                  ? (widget.pastMatch.isPlayerHost == 0
+                      ? widget.user.photoUrl
+                      : widget.pastMatch.enemyUrl)
+                  : (widget.pastMatch.isPlayerHost == 1
+                      ? widget.user.photoUrl
+                      : widget.pastMatch.enemyUrl),
+              placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
           ),
         ),
+        blendMode: BlendMode.dstIn,
       ),
     );
   }

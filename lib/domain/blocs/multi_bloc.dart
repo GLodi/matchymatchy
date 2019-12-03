@@ -84,8 +84,7 @@ class MultiBloc extends GameBloc {
       case GameEventType.matchNotFound:
         yield GameState.notInit();
         _waitMessageSubject.add('lost connection, reconnecting...');
-        // TODO: show loading and then try to reconnect,
-        // otherwise show error
+        emitEvent(GameEvent.connect(repo.matchId));
         break;
       case GameEventType.error:
         yield GameState.error('error');
@@ -130,7 +129,7 @@ class MultiBloc extends GameBloc {
           emitEvent(GameEvent.connect(mess.matchId));
         }
       });
-      _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) {
+      _moveSubs = _messEventBus.on<EnemyMoveMessage>().listen((mess) {
         if (repo.matchId == mess.matchId) {
           // TODO: check match not won
           print('multi message');

@@ -26,7 +26,7 @@ class MultiRepo extends GameRepo {
     ActiveMatch activeMatch = await dbProvider.getActiveMatch(matchId);
     activeMatch.moves += 1;
     await dbProvider.updateActiveMatch(activeMatch);
-    messProvider.refreshMatchList();
+    messProvider.updateActiveItemOnPlayerMove(matchId);
   }
 
   @override

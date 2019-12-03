@@ -120,43 +120,65 @@ class _ActiveMatchItemState extends State<ActiveMatchItem> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          StreamBuilder<int>(
-              initialData: widget.activeMatch.isPlayerHost == 1
-                  ? widget.activeMatch.moves
-                  : widget.activeMatch.enemyMoves,
-              stream: bloc.enemyMove,
-              builder: (contet, snapshot) {
-                return Text(
-                  widget.activeMatch.isPlayerHost == 1
-                      ? widget.activeMatch.moves.toString()
-                      : snapshot.data.toString(),
-                  style: TextStyle(
-                    color: Colors.blue[800],
-                    fontSize: 30,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 2.0,
-                  ),
-                );
-              }),
+          widget.activeMatch.isPlayerHost == 1
+              ? StreamBuilder<int>(
+                  initialData: widget.activeMatch.moves,
+                  stream: bloc.playerMoves,
+                  builder: (contet, snapshot) {
+                    return Text(
+                      snapshot.data.toString(),
+                      style: TextStyle(
+                        color: Colors.blue[800],
+                        fontSize: 30,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 2.0,
+                      ),
+                    );
+                  })
+              : StreamBuilder<int>(
+                  initialData: widget.activeMatch.enemyMoves,
+                  stream: bloc.enemyMoves,
+                  builder: (contet, snapshot) {
+                    return Text(
+                      snapshot.data.toString(),
+                      style: TextStyle(
+                        color: Colors.blue[800],
+                        fontSize: 30,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 2.0,
+                      ),
+                    );
+                  }),
           SizedBox(width: 20),
-          StreamBuilder<int>(
-              initialData: widget.activeMatch.isPlayerHost == 0
-                  ? widget.activeMatch.moves
-                  : widget.activeMatch.enemyMoves,
-              stream: bloc.enemyMove,
-              builder: (contet, snapshot) {
-                return Text(
-                  widget.activeMatch.isPlayerHost == 0
-                      ? widget.activeMatch.moves.toString()
-                      : snapshot.data.toString(),
-                  style: TextStyle(
-                    color: Colors.blue[800],
-                    fontSize: 30,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 2.0,
-                  ),
-                );
-              }),
+          widget.activeMatch.isPlayerHost == 0
+              ? StreamBuilder<int>(
+                  initialData: widget.activeMatch.moves,
+                  stream: bloc.playerMoves,
+                  builder: (contet, snapshot) {
+                    return Text(
+                      snapshot.data.toString(),
+                      style: TextStyle(
+                        color: Colors.blue[800],
+                        fontSize: 30,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 2.0,
+                      ),
+                    );
+                  })
+              : StreamBuilder<int>(
+                  initialData: widget.activeMatch.enemyMoves,
+                  stream: bloc.enemyMoves,
+                  builder: (contet, snapshot) {
+                    return Text(
+                      snapshot.data.toString(),
+                      style: TextStyle(
+                        color: Colors.blue[800],
+                        fontSize: 30,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 2.0,
+                      ),
+                    );
+                  }),
         ],
       ),
     );

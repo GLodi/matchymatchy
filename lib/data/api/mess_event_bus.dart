@@ -18,7 +18,7 @@ class MessagingEventBus {
             _messController.add(ChallengeMessage.fromMap(message));
             break;
           case 'move':
-            _messController.add(MoveMessage.fromMap(message));
+            _messController.add(EnemyMoveMessage.fromMap(message));
             break;
           case 'winner':
             _messController.add(WinnerMessage.fromMap(message));
@@ -33,7 +33,7 @@ class MessagingEventBus {
             _messController.add(ChallengeMessage.fromMap(message));
             break;
           case 'move':
-            _messController.add(MoveMessage.fromMap(message));
+            _messController.add(EnemyMoveMessage.fromMap(message));
             break;
           case 'winner':
             _messController.add(WinnerMessage.fromMap(message));
@@ -56,8 +56,8 @@ class MessagingEventBus {
     _messController.add(ForfeitMessage(matchId));
   }
 
-  void refreshMatchList() {
-    _messController.add(RefreshMessage());
+  void updateActiveItemOnPlayerMove(String matchId) {
+    _messController.add(PlayerMessage(matchId));
   }
 
   Future<String> getToken() => _messaging.getToken();

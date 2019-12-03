@@ -61,7 +61,10 @@ class _HomeNotInitWidgetState extends State<HomeNotInitWidget> {
     return Hero(
       tag: 'single',
       child: MaterialButton(
-        onPressed: () => openMultiScreen(),
+        onPressed: () => BlocProvider(
+          child: SingleScreen(),
+          bloc: kiwi.Container().resolve<SingleBloc>(),
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         elevation: 8,
         highlightElevation: 2,

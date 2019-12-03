@@ -10,13 +10,16 @@ class ActiveMatchItemBloc
     extends BlocEventStateBase<ActiveItemEvent, ActiveItemState> {
   final ActiveMatchItemRepo _repo;
   final MessagingEventBus _messEventBus;
-  StreamSubscription _moveSubs;
+  StreamSubscription _enemyMoveSubs, _playerMoveSubs;
 
   final _intentToMultiScreenSubject = BehaviorSubject<void>();
   Stream<void> get intentToMultiScreen => _intentToMultiScreenSubject.stream;
 
-  final _enemyMoveSubject = BehaviorSubject<int>();
-  Stream<int> get enemyMove => _enemyMoveSubject.stream;
+  final _enemyMovesSubject = BehaviorSubject<int>();
+  Stream<int> get enemyMoves => _enemyMovesSubject.stream;
+
+  final _playerMovesSubject = BehaviorSubject<int>();
+  Stream<int> get playerMoves => _playerMovesSubject.stream;
 
   final _onItemPressSubject = PublishSubject<bool>();
   Sink<bool> get onItemPress => _onItemPressSubject.sink;
@@ -26,7 +29,6 @@ class ActiveMatchItemBloc
 
   void setup() async {
     _onItemPressSubject.listen((_) async {
-      print('onitempress');
       ConnectivityResult result =
           await Connectivity().checkConnectivity().then((r) => r);
       if (result != ConnectivityResult.none)
@@ -46,12 +48,18 @@ class ActiveMatchItemBloc
   }
 
   void listenToMessages(String matchId) async {
-    if (_moveSubs == null) {
-      _moveSubs = _messEventBus.on<MoveMessage>().listen((mess) async {
+    if (_enemyMoveSubs == null && _playerMoveSubs == null) {
+      _enemyMoveSubs =
+          _messEventBus.on<EnemyMoveMessage>().listen((mess) async {
         if (matchId == mess.matchId) {
-          _enemyMoveSubject.add(mess.enemyMoves);
-          await _repo.updateActiveMatchMove(mess.enemyMoves, mess.matchId);
+          _enemyMovesSubject.add(mess.enemyMoves);
+          await _repo.updateActiveMatchOnEnemyMove(
+              mess.enemyMoves, mess.matchId);
         }
+      });
+      _playerMoveSubs = _messEventBus.on<PlayerMessage>().listen((mess) async {
+        int moves = await _repo.getActiveMatchPlayerMove(mess.matchId);
+        _playerMovesSubject.add(moves);
       });
     }
   }
@@ -59,9 +67,11 @@ class ActiveMatchItemBloc
   @override
   void dispose() {
     _intentToMultiScreenSubject.close();
-    _enemyMoveSubject.close();
+    _enemyMovesSubject.close();
+    _playerMovesSubject.close();
     // TODO: this is called on null
-    _moveSubs.cancel();
+    _enemyMoveSubs.cancel();
+    _playerMoveSubs.cancel();
     super.dispose();
   }
 }

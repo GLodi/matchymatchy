@@ -82,7 +82,10 @@ class _HomeBottomBarWidgetState extends State<HomeBottomBarWidget>
           child: Icon(Icons.videogame_asset, color: Colors.blue[800], size: 35),
           elevation: 0,
           highlightElevation: 0,
-          onPressed: () => _openMultiScreen(),
+          onPressed: () => BlocProvider(
+            child: SingleScreen(),
+            bloc: kiwi.Container().resolve<SingleBloc>(),
+          ),
         ),
       ),
     );

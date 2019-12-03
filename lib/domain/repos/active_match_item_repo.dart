@@ -5,9 +5,14 @@ class ActiveMatchItemRepo {
 
   ActiveMatchItemRepo(this._dbProvider);
 
-  Future<void> updateActiveMatchMove(int moves, String matchId) async {
+  Future<void> updateActiveMatchOnEnemyMove(int moves, String matchId) async {
     ActiveMatch match = await _dbProvider.getActiveMatch(matchId);
     match.enemyMoves = moves;
     await _dbProvider.updateActiveMatch(match);
+  }
+
+  Future<int> getActiveMatchPlayerMove(String matchId) async {
+    ActiveMatch match = await _dbProvider.getActiveMatch(matchId);
+    return match.moves;
   }
 }

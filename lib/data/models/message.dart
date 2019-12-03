@@ -1,9 +1,9 @@
-class MoveMessage {
+class EnemyMoveMessage {
   String matchId;
   String enemyTarget;
   int enemyMoves;
 
-  MoveMessage.fromMap(Map<String, dynamic> map) {
+  EnemyMoveMessage.fromMap(Map<String, dynamic> map) {
     this.matchId = map['data'].cast<String, dynamic>()['matchid'];
     this.enemyTarget = map['data'].cast<String, dynamic>()['enemytarget'];
     this.enemyMoves =
@@ -37,4 +37,8 @@ class ForfeitMessage {
   ForfeitMessage(this.matchId);
 }
 
-class RefreshMessage {}
+class PlayerMessage {
+  String matchId;
+
+  PlayerMessage(this.matchId);
+}

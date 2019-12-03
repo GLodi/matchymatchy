@@ -34,10 +34,6 @@ class HomeMatchListBloc
           print(e);
         }
         break;
-      case HomeMatchListEventType.refreshMatches:
-        yield HomeMatchListState(type: HomeMatchListStateType.fetching);
-        emitEvent(HomeMatchListEvent.showMatches());
-        break;
       case HomeMatchListEventType.showMatches:
         List<ActiveMatch> activeMatches = await _repo.getActiveMatches();
         List<PastMatch> pastMatches = await _repo.getPastMatches();
@@ -71,10 +67,6 @@ class HomeMatchListBloc
         print('matchlist forfeit');
         // TODO: don't delete, just update it, need to get info for winwidget
         await _repo.deleteActiveMatch(forf.matchId);
-        emitEvent(HomeMatchListEvent.refreshMatches());
-      });
-      _refreshSubs = _messEventBus.on<RefreshMessage>().listen((_) async {
-        print('matchlist refresh');
         emitEvent(HomeMatchListEvent.refreshMatches());
       });
     }

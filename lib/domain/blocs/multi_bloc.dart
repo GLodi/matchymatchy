@@ -1,10 +1,10 @@
 import 'package:rxdart/rxdart.dart';
 import 'dart:async';
 
-import 'package:squazzle/data/api/mess_event_bus.dart';
-import 'package:squazzle/data/api/exceptions.dart';
-import 'package:squazzle/domain/domain.dart';
-import 'package:squazzle/data/models/models.dart';
+import 'package:matchymatchy/data/api/mess_event_bus.dart';
+import 'package:matchymatchy/data/api/exceptions.dart';
+import 'package:matchymatchy/domain/domain.dart';
+import 'package:matchymatchy/data/models/models.dart';
 
 /// In addition to the functionalities available through Gamebloc,
 /// the Multiplayer version of the game needs an Enemy

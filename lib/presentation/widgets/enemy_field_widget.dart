@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:squazzle/data/models/models.dart';
-import 'package:squazzle/domain/domain.dart';
+import 'package:matchymatchy/data/models/models.dart';
+import 'package:matchymatchy/domain/domain.dart';
 
 const colors = {
   0: Colors.white,

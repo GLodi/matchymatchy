@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:squazzle/domain/domain.dart';
+import 'package:matchymatchy/domain/domain.dart';
 
 class WinScreen extends StatefulWidget {
   final int moves;

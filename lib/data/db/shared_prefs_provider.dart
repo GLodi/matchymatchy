@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:squazzle/data/models/models.dart';
+import 'package:matchymatchy/data/models/models.dart';
 
 abstract class SharedPrefsProvider {
   Future<void> storeUser(User user);

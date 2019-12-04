@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:squazzle/domain/domain.dart';
-import 'package:squazzle/data/models/models.dart';
-import 'package:squazzle/presentation/utils/curve_painter.dart';
+import 'package:matchymatchy/domain/domain.dart';
+import 'package:matchymatchy/data/models/models.dart';
+import 'package:matchymatchy/presentation/utils/curve_painter.dart';
 
 class UserWidget extends StatefulWidget {
   final HomeBloc bloc;

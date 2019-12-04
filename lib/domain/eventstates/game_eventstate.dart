@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:squazzle/domain/bloc_utils/bloc_utils.dart';
+import 'package:matchymatchy/domain/bloc_utils/bloc_utils.dart';
 
 class GameState extends BlocState {
   final GameStateType type;

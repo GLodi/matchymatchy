@@ -1,5 +1,5 @@
 import 'game_repo.dart';
-import 'package:squazzle/data/data.dart';
+import 'package:matchymatchy/data/data.dart';
 
 /// SingleBloc's repository.
 class SingleRepo extends GameRepo {

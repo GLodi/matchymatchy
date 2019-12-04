@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'package:squazzle/data/models/models.dart';
+import 'package:matchymatchy/data/models/models.dart';
 
 class MessagingEventBus {
   final FirebaseMessaging _messaging = FirebaseMessaging();

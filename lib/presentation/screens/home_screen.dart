@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import 'package:squazzle/domain/domain.dart';
-import 'package:squazzle/presentation/screens/multi_screen.dart';
-import 'package:squazzle/presentation/widgets/home_notinit_widget.dart';
-import 'package:squazzle/presentation/widgets/home_init_widget.dart';
+import 'package:matchymatchy/domain/domain.dart';
+import 'package:matchymatchy/presentation/screens/multi_screen.dart';
+import 'package:matchymatchy/presentation/widgets/home_notinit_widget.dart';
+import 'package:matchymatchy/presentation/widgets/home_init_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

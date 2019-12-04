@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:squazzle/data/models/models.dart';
-import 'package:squazzle/domain/bloc_utils/bloc_utils.dart';
+import 'package:matchymatchy/data/models/models.dart';
+import 'package:matchymatchy/domain/bloc_utils/bloc_utils.dart';
 
 class HomeMatchListState extends BlocState {
   final HomeMatchListStateType type;

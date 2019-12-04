@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
 
-import 'package:squazzle/domain/domain.dart';
-import 'package:squazzle/presentation/widgets/game_field_widget.dart';
-import 'package:squazzle/presentation/widgets/target_field_widget.dart';
-import 'package:squazzle/presentation/screens/win_screen.dart';
-import 'package:squazzle/presentation/utils/scale_route.dart';
+import 'package:matchymatchy/domain/domain.dart';
+import 'package:matchymatchy/presentation/widgets/game_field_widget.dart';
+import 'package:matchymatchy/presentation/widgets/target_field_widget.dart';
+import 'package:matchymatchy/presentation/screens/win_screen.dart';
+import 'package:matchymatchy/presentation/utils/scale_route.dart';
 
 class SingleScreen extends StatefulWidget {
   @override

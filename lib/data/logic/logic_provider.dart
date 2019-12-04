@@ -1,4 +1,4 @@
-import 'package:squazzle/data/models/models.dart';
+import 'package:matchymatchy/data/models/models.dart';
 
 abstract class LogicProvider {
   /// Determines whether a Move is legal.

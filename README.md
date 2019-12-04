@@ -1,6 +1,6 @@
-# Squazzle
+# matchymatchy
 
-...a Square Puzzle Flutter game! 
+...a matching colors Flutter game! 
 
 The goal is to reproduce the top right pattern
 on the 9 center squares with as few moves as possible.
@@ -8,7 +8,7 @@ on the 9 center squares with as few moves as possible.
 STILL IN DEVELOPMENT 
 
 <div align="center">
-	<img src="https://raw.githubusercontent.com/GLodi/squazzle/master/gfx/newgif.gif" width="256">
+	<img src="https://raw.githubusercontent.com/GLodi/matchymatchy/master/gfx/newgif.gif" width="256">
 </div>
 
 Fun fact: this app was entirely developed on [emacs](https://giuliolodi.dev/blog/2019-05-06-flutter-on-spacemacs/)!

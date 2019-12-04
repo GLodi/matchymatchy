@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:squazzle/domain/bloc_utils/bloc_provider.dart';
+import 'package:matchymatchy/domain/bloc_utils/bloc_provider.dart';
 
 abstract class BlocEvent extends Object {}
 

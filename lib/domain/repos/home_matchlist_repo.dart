@@ -1,4 +1,4 @@
-import 'package:squazzle/data/data.dart';
+import 'package:matchymatchy/data/data.dart';
 
 class HomeMatchListRepo {
   final DbProvider _dbProvider;

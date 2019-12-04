@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:squazzle/domain/bloc_utils/bloc_utils.dart';
+import 'package:matchymatchy/domain/bloc_utils/bloc_utils.dart';
 
 class WinState extends BlocState {
   final WinStateType type;

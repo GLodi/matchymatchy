@@ -1,5 +1,5 @@
-import 'package:squazzle/data/models/models.dart';
-import 'package:squazzle/data/data.dart';
+import 'package:matchymatchy/data/models/models.dart';
+import 'package:matchymatchy/data/data.dart';
 
 /// Methods available to both Singleplayer and Multiplayer.
 abstract class GameRepo {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
 
-import 'package:squazzle/domain/domain.dart';
-import 'package:squazzle/presentation/screens/multi_screen.dart';
-import 'package:squazzle/presentation/screens/single_screen.dart';
+import 'package:matchymatchy/domain/domain.dart';
+import 'package:matchymatchy/presentation/screens/multi_screen.dart';
+import 'package:matchymatchy/presentation/screens/single_screen.dart';
 
 class HomeBottomBarWidget extends StatefulWidget {
   final HomeBloc bloc;
@@ -82,9 +82,13 @@ class _HomeBottomBarWidgetState extends State<HomeBottomBarWidget>
           child: Icon(Icons.videogame_asset, color: Colors.blue[800], size: 35),
           elevation: 0,
           highlightElevation: 0,
-          onPressed: () => BlocProvider(
-            child: SingleScreen(),
-            bloc: kiwi.Container().resolve<SingleBloc>(),
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                child: SingleScreen(),
+                bloc: kiwi.Container().resolve<SingleBloc>(),
+              ),
+            ),
           ),
         ),
       ),

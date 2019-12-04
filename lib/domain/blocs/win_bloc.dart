@@ -1,4 +1,4 @@
-import 'package:squazzle/domain/domain.dart';
+import 'package:matchymatchy/domain/domain.dart';
 
 class WinBloc extends BlocEventStateBase<WinEvent, WinState> {
   final WinRepo _repo;

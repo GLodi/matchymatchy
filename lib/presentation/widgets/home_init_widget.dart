@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
 
-import 'package:squazzle/domain/domain.dart';
-import 'package:squazzle/data/models/models.dart';
-import 'package:squazzle/presentation/widgets/user_widget.dart';
-import 'package:squazzle/presentation/widgets/home_matchlist_widget.dart';
-import 'package:squazzle/presentation/widgets/home_bottombar_widget.dart';
+import 'package:matchymatchy/domain/domain.dart';
+import 'package:matchymatchy/data/models/models.dart';
+import 'package:matchymatchy/presentation/widgets/user_widget.dart';
+import 'package:matchymatchy/presentation/widgets/home_matchlist_widget.dart';
+import 'package:matchymatchy/presentation/widgets/home_bottombar_widget.dart';
 
 class HomeInitWidget extends StatefulWidget {
   final User user;

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
 
-import 'package:squazzle/data/data.dart';
-import 'package:squazzle/domain/domain.dart';
-import 'package:squazzle/presentation/presentation.dart';
+import 'package:matchymatchy/data/data.dart';
+import 'package:matchymatchy/domain/domain.dart';
+import 'package:matchymatchy/presentation/presentation.dart';
 
 //import 'package:flutter/scheduler.dart' show timeDilation;
 

@@ -1,4 +1,4 @@
-package giuliolodi.squazzle
+package giuliolodi.matchymatchy
 
 import android.os.Bundle
 

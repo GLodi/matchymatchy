@@ -1,4 +1,4 @@
-import 'package:squazzle/data/data.dart';
+import 'package:matchymatchy/data/data.dart';
 
 class WinRepo {
   final MessagingEventBus _messProvider;

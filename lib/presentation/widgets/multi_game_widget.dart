@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:squazzle/domain/domain.dart';
-import 'package:squazzle/presentation/widgets/game_field_widget.dart';
-import 'package:squazzle/presentation/widgets/target_field_widget.dart';
-import 'package:squazzle/presentation/widgets/enemy_field_widget.dart';
+import 'package:matchymatchy/domain/domain.dart';
+import 'package:matchymatchy/presentation/widgets/game_field_widget.dart';
+import 'package:matchymatchy/presentation/widgets/target_field_widget.dart';
+import 'package:matchymatchy/presentation/widgets/enemy_field_widget.dart';
 
 class MultiGameWidget extends StatefulWidget {
   final MultiBloc bloc;

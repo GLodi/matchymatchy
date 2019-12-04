@@ -1,7 +1,7 @@
 import 'package:rxdart/rxdart.dart';
 
-import 'package:squazzle/domain/domain.dart';
-import 'package:squazzle/data/models/models.dart';
+import 'package:matchymatchy/domain/domain.dart';
+import 'package:matchymatchy/data/models/models.dart';
 
 /// Abstract class used by both Single Player and Multy Player.
 /// It offers an abstraction over all elements that a game

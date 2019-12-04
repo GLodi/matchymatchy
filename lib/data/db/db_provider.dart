@@ -5,7 +5,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'package:squazzle/data/models/models.dart';
+import 'package:matchymatchy/data/models/models.dart';
 
 abstract class DbProvider {
   Future<Match> getTestMatch(int id);
@@ -52,7 +52,7 @@ class DbProviderImpl extends DbProvider {
     var dbDir = await getDatabasesPath();
     var dbPath = join(dbDir, "app.db");
     await deleteDatabase(dbPath);
-    ByteData data = await rootBundle.load("assets/squazzle.db");
+    ByteData data = await rootBundle.load("assets/matchymatchy.db");
     List<int> bytes =
         data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
     await File(dbPath).writeAsBytes(bytes);

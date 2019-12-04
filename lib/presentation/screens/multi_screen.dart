@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import 'package:squazzle/domain/domain.dart';
-import 'package:squazzle/presentation/screens/win_screen.dart';
-import 'package:squazzle/presentation/widgets/multi_game_widget.dart';
-import 'package:squazzle/presentation/widgets/multi_error_widget.dart';
-import 'package:squazzle/presentation/utils/scale_route.dart';
+import 'package:matchymatchy/domain/domain.dart';
+import 'package:matchymatchy/presentation/screens/win_screen.dart';
+import 'package:matchymatchy/presentation/widgets/multi_game_widget.dart';
+import 'package:matchymatchy/presentation/widgets/multi_error_widget.dart';
+import 'package:matchymatchy/presentation/utils/scale_route.dart';
 
 class MultiScreen extends StatefulWidget {
   final String heroTag;

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import 'package:squazzle/data/models/models.dart';
-import 'package:squazzle/domain/domain.dart';
+import 'package:matchymatchy/data/models/models.dart';
+import 'package:matchymatchy/domain/domain.dart';
 import 'matchlist_item.dart';
 import 'active_match_item.dart';
 

@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:squazzle/domain/domain.dart';
-import 'package:squazzle/data/models/models.dart';
+import 'package:matchymatchy/domain/domain.dart';
+import 'package:matchymatchy/data/models/models.dart';
 
 class SingleBloc extends GameBloc {
   final SingleRepo _repo;

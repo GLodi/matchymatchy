@@ -37,7 +37,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "giuliolodi.squazzle"
+        applicationId "giuliolodi.matchymatchy"
         minSdkVersion 16
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()

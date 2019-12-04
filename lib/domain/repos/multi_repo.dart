@@ -1,4 +1,4 @@
-import 'package:squazzle/data/data.dart';
+import 'package:matchymatchy/data/data.dart';
 import 'game_repo.dart';
 
 /// MultiBloc's repository.

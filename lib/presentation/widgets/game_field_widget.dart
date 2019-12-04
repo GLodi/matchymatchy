@@ -64,6 +64,7 @@ class _GameFieldWidgetState extends State<GameFieldWidget>
         return Stack(
           children: <Widget>[
             // Central frame
+            outerFrame(),
             frame(),
             // Top row
             square(0, 0, 4 * fifthWidth),
@@ -101,14 +102,27 @@ class _GameFieldWidgetState extends State<GameFieldWidget>
     );
   }
 
+  Widget outerFrame() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        border: Border.all(color: Colors.grey[300], width: 0),
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(7.0),
+          topLeft: Radius.circular(7.0),
+        ),
+      ),
+    );
+  }
+
   Widget frame() {
     return Center(
       child: Container(
         height: fifthWidth * 3,
         width: fifthWidth * 3,
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.white, width: 0),
-          color: Colors.white,
+          border: Border.all(color: Colors.blue[200], width: 0),
+          color: Colors.blue[200],
           borderRadius: BorderRadius.all(
             Radius.circular(7.0),
           ),

@@ -76,8 +76,8 @@ class HomeMatchListBloc
   void dispose() {
     _challengeSubs.cancel();
     _winnerSubs.cancel();
-    _forfeitSubs.cancel();
-    _refreshSubs.cancel();
+    if (_forfeitSubs != null) _forfeitSubs.cancel();
+    if (_refreshSubs != null) _refreshSubs.cancel();
     super.dispose();
   }
 }

@@ -105,8 +105,8 @@ class _GameFieldWidgetState extends State<GameFieldWidget>
   Widget outerFrame() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[300],
-        border: Border.all(color: Colors.grey[300], width: 0),
+        color: Colors.purple[300],
+        border: Border.all(color: Colors.purple[300], width: 0),
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(7.0),
           topLeft: Radius.circular(7.0),

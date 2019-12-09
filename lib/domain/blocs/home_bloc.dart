@@ -131,9 +131,9 @@ class HomeBloc extends BlocEventStateBase<HomeEvent, HomeState> {
     _snackBarSubject.close();
     _userSubject.close();
     _doneSlidesButtonSubject.close();
-    _connectivitySubs.cancel();
-    _winnerSubs.cancel();
-    _challengeSubs.cancel();
+    if (_connectivitySubs != null) _connectivitySubs.cancel();
+    if (_winnerSubs != null) _winnerSubs.cancel();
+    if (_challengeSubs != null) _challengeSubs.cancel();
     super.dispose();
   }
 }

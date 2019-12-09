@@ -153,9 +153,9 @@ class MultiBloc extends GameBloc {
     _enemyMovesSubject.close();
     _enemyTargetSubject.close();
     _enemyNameSubject.close();
-    _challengeSubs.cancel();
-    _moveSubs.cancel();
-    _winnerSubs.cancel();
+    if (_challengeSubs != null) _challengeSubs.cancel();
+    if (_moveSubs != null) _moveSubs.cancel();
+    if (_winnerSubs != null) _winnerSubs.cancel();
     super.dispose();
   }
 }

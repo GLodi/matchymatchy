@@ -69,9 +69,8 @@ class ActiveMatchItemBloc
     _intentToMultiScreenSubject.close();
     _enemyMovesSubject.close();
     _playerMovesSubject.close();
-    // TODO: this is called on null
-    _enemyMoveSubs.cancel();
-    _playerMoveSubs.cancel();
+    if (_enemyMoveSubs != null) _enemyMoveSubs.cancel();
+    if (_playerMoveSubs != null) _playerMoveSubs.cancel();
     super.dispose();
   }
 }

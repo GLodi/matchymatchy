@@ -33,12 +33,12 @@ class _PastMatchItemState extends State<PastMatchItem> {
       elevation: 3,
       color: widget.pastMatch.isTie == 1
           ? Colors.blue[100]
-          : (widget.pastMatch.moves > widget.pastMatch.enemyMoves
+          : (widget.pastMatch.moves < widget.pastMatch.enemyMoves
               ? Colors.green[100]
               : Colors.red[100]),
       child: Stack(
         children: <Widget>[
-          winLostText(widget.pastMatch.moves > widget.pastMatch.enemyMoves),
+          winLostText(widget.pastMatch.moves < widget.pastMatch.enemyMoves),
           pic(true),
           pic(false),
         ],

@@ -31,16 +31,18 @@ void main() {
   container.registerFactory(
       (c) => SingleRepo(c.resolve<LogicProvider>(), c.resolve<DbProvider>()));
   container.registerFactory((c) => MultiRepo(
-      c.resolve<ApiProvider>(),
-      c.resolve<MessagingEventBus>(),
-      c.resolve<SharedPrefsProvider>(),
-      c.resolve<LogicProvider>(),
-      c.resolve<DbProvider>()));
+        c.resolve<ApiProvider>(),
+        c.resolve<MessagingEventBus>(),
+        c.resolve<SharedPrefsProvider>(),
+        c.resolve<LogicProvider>(),
+        c.resolve<DbProvider>(),
+      ));
   container.registerFactory((c) => HomeRepo(
-      c.resolve<LoginProvider>(),
-      c.resolve<SharedPrefsProvider>(),
-      c.resolve<ApiProvider>(),
-      c.resolve<DbProvider>()));
+        c.resolve<LoginProvider>(),
+        c.resolve<SharedPrefsProvider>(),
+        c.resolve<ApiProvider>(),
+        c.resolve<DbProvider>(),
+      ));
   container.registerFactory((c) => HomeMatchListRepo(
         c.resolve<DbProvider>(),
         c.resolve<SharedPrefsProvider>(),

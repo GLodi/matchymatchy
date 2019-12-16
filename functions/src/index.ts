@@ -96,7 +96,7 @@ async function onMatchStart(newMatch: DocumentData, matchId: string) {
         await admin
             .messaging()
             .sendToDevice(hostDoc.data()!.fcmtoken, messageToHost, options)
-        await console.log('message sent to host: ' + hostDoc.data()!.fcmtoken)
+        console.log('message sent to host: ' + hostDoc.data()!.fcmtoken)
     } catch (e) {
         console.log('--- error sending message: ')
         console.error(Error(e))

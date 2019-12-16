@@ -9,8 +9,8 @@ export class ActiveMatch {
     enemytarget: string
     enemyurl: string
     started: number
-    playerdone: number
-    enemydone: number
+    isplayerdone: number
+    isenemydone: number
     isplayerhost: number
     time: number
 
@@ -25,8 +25,8 @@ export class ActiveMatch {
         enemytarget: string,
         enemyurl: string,
         started: number,
-        playerdone: number,
-        enemydone: number,
+        isplayerdone: number,
+        isenemydone: number,
         isplayerhost: number,
         time: number
     ) {
@@ -40,8 +40,8 @@ export class ActiveMatch {
         this.enemytarget = enemytarget
         this.enemyurl = enemyurl
         this.started = started
-        this.playerdone = playerdone
-        this.enemydone = enemydone
+        this.isplayerdone = isplayerdone
+        this.isenemydone = isenemydone
         this.isplayerhost = isplayerhost
         this.time = time
     }

@@ -16,14 +16,13 @@ class Match {
 class ActiveMatch extends Match {
   String matchId;
   String enemyName;
-  String winnerName;
   String enemyUrl;
   int moves;
   int enemyMoves;
   int gfid;
   int started;
-  int playerDone;
-  int enemyDone;
+  int isPlayerDone;
+  int isEnemyDone;
   int isPlayerHost;
   TargetField enemyTargetField;
   DateTime time;
@@ -33,14 +32,13 @@ class ActiveMatch extends Match {
     targetField = TargetField(grid: map['target']);
     matchId = map['matchid'];
     enemyName = map['enemyname'];
-    winnerName = map['winnername'];
     enemyUrl = map['enemyurl'];
     moves = int.parse(map['moves'].toString());
     enemyMoves = int.parse(map['enemymoves'].toString());
     gfid = int.parse(map['gfid'].toString());
     started = int.parse(map['started'].toString());
-    playerDone = int.parse(map['playerdone'].toString());
-    enemyDone = int.parse(map['enemydone'].toString());
+    isPlayerDone = int.parse(map['isplayerdone'].toString());
+    isEnemyDone = int.parse(map['isenemydone'].toString());
     isPlayerHost = int.parse(map['isplayerhost'].toString());
     enemyTargetField = TargetField(grid: map['enemytarget']);
     time = DateTime.fromMillisecondsSinceEpoch(map['time']);
@@ -52,14 +50,13 @@ class ActiveMatch extends Match {
       'target': targetField.grid,
       'matchid': matchId,
       'enemyname': enemyName,
-      'winnername': winnerName,
       'enemyurl': enemyUrl,
       'moves': moves,
       'enemymoves': enemyMoves,
       'gfid': gfid,
       'started': started,
-      'playerdone': playerDone,
-      'enemydone': enemyDone,
+      'isplayerdone': isPlayerDone,
+      'isenemydone': isEnemyDone,
       'isplayerhost': isPlayerHost,
       'enemytarget': enemyTargetField.grid,
       'time': time.millisecondsSinceEpoch,

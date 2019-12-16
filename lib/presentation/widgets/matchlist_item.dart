@@ -31,7 +31,7 @@ class _PastMatchItemState extends State<PastMatchItem> {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 3,
-      color: widget.pastMatch.isTie == 1
+      color: widget.pastMatch.winner == null
           ? Colors.blue[100]
           : (widget.pastMatch.moves < widget.pastMatch.enemyMoves
               ? Colors.green[100]
@@ -49,7 +49,11 @@ class _PastMatchItemState extends State<PastMatchItem> {
   Widget winLostText(bool win) {
     return Center(
       child: Text(
-        win ? "won!" : "lost",
+        widget.pastMatch.winner == null
+            ? "draw"
+            : (widget.pastMatch.moves < widget.pastMatch.enemyMoves
+                ? "won!"
+                : "lost"),
         style: TextStyle(
           color: win ? Colors.green[800] : Colors.red[800],
           fontSize: 15,

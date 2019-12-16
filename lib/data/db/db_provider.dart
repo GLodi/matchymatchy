@@ -130,7 +130,8 @@ class DbProviderImpl extends DbProvider {
   @override
   Future<void> deleteActiveMatches() async {
     var dbClient = await db;
-    return await dbClient.delete(activeMatchTable);
+    List<Map> maps = await dbClient.query(activeMatchTable);
+    if (maps.isNotEmpty) return await dbClient.delete(activeMatchTable);
   }
 
   @override

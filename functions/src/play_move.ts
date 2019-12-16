@@ -20,41 +20,13 @@ export async function playMove(request: any, response: any) {
         if (done) await setPlayerDone(userId, matchDoc)
         response.send(true)
         if (done && isOtherPlayerDone(userId, matchDoc)) {
-            declareWinner(matchDoc)
+            declareWinner(matchDoc.id)
         }
     } catch (e) {
         if (e instanceof DataNotAvailableError) {
             response.status(204).send()
         } else {
             console.log('--- error applying player move')
-            console.error(Error(e))
-            response.status(500).send()
-        }
-    }
-}
-
-export async function forfeit(request: any, response: any) {
-    const userId: string = request.query.userId
-    const matchId: string = request.query.matchId
-    try {
-        const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
-        if (!matchDoc.exists) throw new DataNotAvailableError()
-        if (matchDoc.data()!.winner == null) {
-            if (userId == matchDoc.data()!.hostuid) {
-                await upWinAmount(matchDoc, false, 1)
-            }
-            if (userId == matchDoc.data()!.joinuid) {
-                await upWinAmount(matchDoc, true, 1)
-            }
-            response.send(true)
-        } else {
-            response.send(false)
-        }
-    } catch (e) {
-        if (e instanceof DataNotAvailableError) {
-            response.status(204).send()
-        } else {
-            console.log('--- error forfeting player player')
             console.error(Error(e))
             response.status(500).send()
         }
@@ -103,25 +75,18 @@ async function setPlayerDone(userId: string, matchDoc: DocumentSnapshot) {
           })
 }
 
-async function declareWinner(matchDoc: DocumentSnapshot) {
+async function declareWinner(matchId: string) {
+    const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
     if (matchDoc.data()!.hostmoves < matchDoc.data()!.joinmoves) {
-        await upWinAmount(matchDoc, true, 0)
+        await upWinAmount(matchDoc, true)
     } else if (matchDoc.data()!.hostmoves > matchDoc.data()!.joinmoves) {
-        await upWinAmount(matchDoc, false, 0)
-    } else {
-        await matches.doc(matchDoc.id).update({
-            winner: 'draw'
-        })
-        await resetMatch(matchDoc)
+        await upWinAmount(matchDoc, false)
     }
+    await resetMatch(await matches.doc(matchDoc.id).get())
 }
 
-async function upWinAmount(
-    matchDoc: DocumentSnapshot,
-    hostOrJoin: boolean,
-    forfeitWin: number
-) {
-    const userRef: DocumentReference = await users.doc(
+async function upWinAmount(matchDoc: DocumentSnapshot, hostOrJoin: boolean) {
+    const userRef: DocumentReference = users.doc(
         hostOrJoin ? matchDoc.data()!.hostuid : matchDoc.data()!.joinuid
     )
     const user: DocumentSnapshot = await userRef.get()
@@ -132,15 +97,13 @@ async function upWinAmount(
         winner: hostOrJoin
             ? matchDoc.data()!.hostuid
             : matchDoc.data()!.joinuid,
-        winnername: user.data()!.username,
-        forfeitwin: forfeitWin
+        winnername: user.data()!.username
     })
-    await resetMatch(await matches.doc(matchDoc.id).get())
 }
 
 async function resetMatch(matchDoc: DocumentSnapshot) {
-    const hostRef: DocumentReference = await users.doc(matchDoc.data()!.hostuid)
-    const joinRef: DocumentReference = await users.doc(matchDoc.data()!.joinuid)
+    const hostRef: DocumentReference = users.doc(matchDoc.data()!.hostuid)
+    const joinRef: DocumentReference = users.doc(matchDoc.data()!.joinuid)
     hostRef
         .collection('pastmatches')
         .doc(matchDoc.id)
@@ -150,11 +113,8 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
             moves: matchDoc.data()!.hostmoves,
             enemymoves: matchDoc.data()!.joinmoves,
             winner: matchDoc.data()!.winnername,
-            forfeitwin: matchDoc.data()!.forfeitwin,
             time: admin.firestore.Timestamp.now().toMillis(),
-            isplayerhost: 1,
-            istie:
-                matchDoc.data()!.hostmoves == matchDoc.data()!.joinmoves ? 1 : 0
+            isplayerhost: 1
         })
     joinRef
         .collection('pastmatches')
@@ -165,11 +125,8 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
             moves: matchDoc.data()!.joinmoves,
             enemymoves: matchDoc.data()!.hostmoves,
             winner: matchDoc.data()!.winnername,
-            forfeitwin: matchDoc.data()!.forfeitwin,
             time: admin.firestore.Timestamp.now().toMillis(),
-            isplayerhost: 0,
-            istie:
-                matchDoc.data()!.hostmoves == matchDoc.data()!.joinmoves ? 1 : 0
+            isplayerhost: 0
         })
     hostRef
         .collection('activematches')
@@ -180,4 +137,32 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
         .doc(matchDoc.id)
         .delete()
     matches.doc(matchDoc.id).delete()
+}
+
+export async function forfeit(request: any, response: any) {
+    const userId: string = request.query.userId
+    const matchId: string = request.query.matchId
+    try {
+        const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
+        if (!matchDoc.exists) throw new DataNotAvailableError()
+        if (matchDoc.data()!.winner == null) {
+            if (userId == matchDoc.data()!.hostuid) {
+                await upWinAmount(matchDoc, false)
+            }
+            if (userId == matchDoc.data()!.joinuid) {
+                await upWinAmount(matchDoc, true)
+            }
+            response.send(true)
+        } else {
+            response.send(false)
+        }
+    } catch (e) {
+        if (e instanceof DataNotAvailableError) {
+            response.status(204).send()
+        } else {
+            console.log('--- error forfeting player player')
+            console.error(Error(e))
+            response.status(500).send()
+        }
+    }
 }

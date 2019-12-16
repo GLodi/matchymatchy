@@ -107,7 +107,7 @@ class MultiBloc extends GameBloc {
 
   void fetchResult(ActiveMatch currentMatch) async {
     _waitMessageSubject.add('waiting for opponent...');
-    if (currentMatch.playerDone == 1) {
+    if (currentMatch.isPlayerDone == 1) {
       intentToWinScreenSubject.add(null);
     } else if (currentMatch.started == 1) {
       gameField = currentMatch.gameField;
@@ -155,7 +155,7 @@ class MultiBloc extends GameBloc {
     _enemyNameSubject.close();
     if (_challengeSubs != null) _challengeSubs.cancel();
     if (_moveSubs != null) _moveSubs.cancel();
-    if (_winnerSubs != null) _winnerSubs.cancel();
+    if (_winnerSubs != null) _winnerSubs?.cancel();
     super.dispose();
   }
 }

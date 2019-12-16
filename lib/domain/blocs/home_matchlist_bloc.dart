@@ -8,7 +8,7 @@ class HomeMatchListBloc
     extends BlocEventStateBase<HomeMatchListEvent, HomeMatchListState> {
   final HomeMatchListRepo _repo;
   final MessagingEventBus _messEventBus;
-  StreamSubscription _forfeitSubs, _challengeSubs, _winnerSubs, _refreshSubs;
+  StreamSubscription _forfeitSubs, _challengeSubs, _winnerSubs;
 
   HomeMatchListBloc(this._repo, this._messEventBus)
       : super(initialState: HomeMatchListState.fetching());
@@ -67,17 +67,16 @@ class HomeMatchListBloc
         print('matchlist forfeit');
         // TODO: don't delete, just update it, need to get info for winwidget
         await _repo.deleteActiveMatch(forf.matchId);
-        emitEvent(HomeMatchListEvent.refreshMatches());
+        emitEvent(HomeMatchListEvent.updateMatches());
       });
     }
   }
 
   @override
   void dispose() {
-    _challengeSubs.cancel();
-    _winnerSubs.cancel();
+    if (_challengeSubs != null) _challengeSubs.cancel();
+    if (_winnerSubs != null) _winnerSubs.cancel();
     if (_forfeitSubs != null) _forfeitSubs.cancel();
-    if (_refreshSubs != null) _refreshSubs.cancel();
     super.dispose();
   }
 }

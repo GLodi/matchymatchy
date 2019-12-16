@@ -56,14 +56,10 @@ class HomeMatchListEvent extends BlocEvent {
 
   factory HomeMatchListEvent.showMatches() =>
       HomeMatchListEvent(type: HomeMatchListEventType.showMatches);
-
-  factory HomeMatchListEvent.refreshMatches() =>
-      HomeMatchListEvent(type: HomeMatchListEventType.refreshMatches);
 }
 
 enum HomeMatchListEventType {
   start,
   updateMatches,
   showMatches,
-  refreshMatches,
 }

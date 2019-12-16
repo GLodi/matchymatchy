@@ -44,7 +44,7 @@ async function newGame(userId: string): Promise<ActiveMatch> {
         0,
         0,
         'Searching...',
-        await diffToSend(gf.data()!.grid, gf.data()!.target),
+        diffToSend(gf.data()!.grid, gf.data()!.target),
         '',
         0,
         0,
@@ -59,23 +59,22 @@ async function queueEmpty(userId: string): Promise<string> {
     const gfid: number = Math.floor(Math.random() * 1000) + 1
     const gf: DocumentSnapshot = await gamefields.doc(String(gfid)).get()
     const userDoc: DocumentSnapshot = await users.doc(userId).get()
-    const newMatchRef: DocumentReference = await matches.doc()
+    const newMatchRef: DocumentReference = matches.doc()
     await newMatchRef.set({
         gfid: +gf.id,
         hostmoves: +0,
         hostuid: userId,
         hostgf: gf.data()!.grid,
-        hosttarget: await diffToSend(gf.data()!.grid, gf.data()!.target),
+        hosttarget: diffToSend(gf.data()!.grid, gf.data()!.target),
         hosturl: userDoc.data()!.photourl,
         joinmoves: +0,
         joinuid: null,
         joingf: gf.data()!.grid,
-        jointarget: await diffToSend(gf.data()!.grid, gf.data()!.target),
+        jointarget: diffToSend(gf.data()!.grid, gf.data()!.target),
         winner: null,
         winnername: null,
         hostdone: null,
         joindone: null,
-        forfeitwin: 0,
         time: admin.firestore.Timestamp.now().toMillis()
     })
     await queue.add({
@@ -95,10 +94,8 @@ async function queueNotEmpty(
     if (qs.docs[0].get('uid') != userId) {
         const matchDoc: DocumentSnapshot = await matches.doc(matchId).get()
         await delQueueElement(qs.docs[0], userId)
-        const hostRef: DocumentReference = await users.doc(
-            matchDoc.data()!.hostuid
-        )
-        const joinRef: DocumentReference = await users.doc(userId)
+        const hostRef: DocumentReference = users.doc(matchDoc.data()!.hostuid)
+        const joinRef: DocumentReference = users.doc(userId)
         hostRef
             .collection('activematches')
             .doc(matchDoc.id)

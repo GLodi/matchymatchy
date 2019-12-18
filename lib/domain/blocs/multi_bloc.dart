@@ -98,6 +98,7 @@ class MultiBloc extends GameBloc {
     try {
       bool isCorrect = await repo.moveDone(gf, tf);
       if (isCorrect) intentToWinScreenSubject.add(null);
+      await repo.sendIfNeeded(gf, tf);
     } on DataNotAvailableException {
       emitEvent(GameEvent.matchNotFound());
     } catch (e) {

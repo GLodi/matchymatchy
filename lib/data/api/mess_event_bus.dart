@@ -23,6 +23,9 @@ class MessagingEventBus {
           case 'winner':
             _messController.add(WinnerMessage.fromMap(message));
             break;
+          case 'updatematches':
+            _messController.add(UpdateMatchesMessage());
+            break;
         }
       },
       onResume: (Map<String, dynamic> message) async {
@@ -37,6 +40,9 @@ class MessagingEventBus {
             break;
           case 'winner':
             _messController.add(WinnerMessage.fromMap(message));
+            break;
+          case 'updatematches':
+            _messController.add(UpdateMatchesMessage());
             break;
         }
       },

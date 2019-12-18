@@ -8,7 +8,10 @@ class HomeMatchListBloc
     extends BlocEventStateBase<HomeMatchListEvent, HomeMatchListState> {
   final HomeMatchListRepo _repo;
   final MessagingEventBus _messEventBus;
-  StreamSubscription _forfeitSubs, _challengeSubs, _winnerSubs;
+  StreamSubscription _forfeitSubs,
+      _challengeSubs,
+      _winnerSubs,
+      _updateMatchesSubs;
 
   HomeMatchListBloc(this._repo, this._messEventBus)
       : super(initialState: HomeMatchListState.fetching());
@@ -69,6 +72,11 @@ class HomeMatchListBloc
         await _repo.deleteActiveMatch(forf.matchId);
         emitEvent(HomeMatchListEvent.updateMatches());
       });
+      _updateMatchesSubs =
+          _messEventBus.on<UpdateMatchesMessage>().listen((_) async {
+        print('matchlist updatematches');
+        emitEvent(HomeMatchListEvent.updateMatches());
+      });
     }
   }
 
@@ -77,6 +85,7 @@ class HomeMatchListBloc
     if (_challengeSubs != null) _challengeSubs.cancel();
     if (_winnerSubs != null) _winnerSubs.cancel();
     if (_forfeitSubs != null) _forfeitSubs.cancel();
+    if (_updateMatchesSubs != null) _updateMatchesSubs.cancel();
     super.dispose();
   }
 }

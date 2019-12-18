@@ -42,3 +42,5 @@ class PlayerMessage {
 
   PlayerMessage(this.matchId);
 }
+
+class UpdateMatchesMessage {}

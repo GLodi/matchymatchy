@@ -34,17 +34,23 @@ class MultiRepo extends GameRepo {
     ActiveMatch currentMatch = await dbProvider.getActiveMatch(matchId);
     currentMatch.gameField = gameField;
     dbProvider.updateActiveMatch(currentMatch);
+    return logicProvider.checkIfCorrect(gameField, targetField);
+  }
+
+  Future<void> sendIfNeeded(
+      GameField gameField, TargetField targetField) async {
     if (logicProvider.needToSendMove(gameField, targetField)) {
       TargetField newTarget = logicProvider.diffToSend(gameField, targetField);
       String uid = await prefsProvider.getUid();
       bool isCorrect =
           await logicProvider.checkIfCorrect(gameField, targetField);
       ActiveMatch doneMatch = await dbProvider.getActiveMatch(matchId);
-      doneMatch.isPlayerDone = 1;
-      dbProvider.updateActiveMatch(doneMatch);
+      if (isCorrect) {
+        doneMatch.isPlayerDone = 1;
+        dbProvider.updateActiveMatch(doneMatch);
+      }
       await apiProvider.sendMove(doneMatch, newTarget.grid, uid, isCorrect);
     }
-    return logicProvider.checkIfCorrect(gameField, targetField);
   }
 
   Future<bool> forfeit() async {

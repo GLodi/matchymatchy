@@ -32,7 +32,7 @@ class _PastMatchItemState extends State<PastMatchItem> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 3,
       color: widget.pastMatch.winner == null
-          ? Colors.blue[100]
+          ? Colors.yellow[100]
           : (widget.pastMatch.moves < widget.pastMatch.enemyMoves
               ? Colors.green[100]
               : Colors.red[100]),
@@ -55,7 +55,11 @@ class _PastMatchItemState extends State<PastMatchItem> {
                 ? "won!"
                 : "lost"),
         style: TextStyle(
-          color: win ? Colors.green[800] : Colors.red[800],
+          color: widget.pastMatch.winner == null
+              ? Colors.yellow[800]
+              : (widget.pastMatch.moves < widget.pastMatch.enemyMoves
+                  ? Colors.green[800]
+                  : Colors.red[800]),
           fontSize: 15,
           fontWeight: FontWeight.w400,
           letterSpacing: 2.0,

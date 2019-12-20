@@ -6,11 +6,15 @@ class WinState extends BlocState {
   final WinStateType type;
   final String message;
   final String winner;
+  final int moves;
+  final int enemyMoves;
 
   WinState({
     @required this.type,
     this.message,
     this.winner,
+    this.moves,
+    this.enemyMoves,
   });
 
   factory WinState.waitingForOpp() =>
@@ -18,11 +22,15 @@ class WinState extends BlocState {
 
   factory WinState.winnerDeclared(String winner) =>
       WinState(type: WinStateType.winnerDeclared, winner: winner);
+
+  factory WinState.singleWin(int moves) =>
+      WinState(type: WinStateType.singleWin, moves: moves);
 }
 
 enum WinStateType {
   waitingForOpp,
   winnerDeclared,
+  singleWin,
 }
 
 class WinEvent extends BlocEvent {

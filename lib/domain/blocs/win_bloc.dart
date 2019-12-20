@@ -9,7 +9,7 @@ class WinBloc extends BlocEventStateBase<WinEvent, WinState> {
   Stream<WinState> eventHandler(WinEvent event, WinState currentState) async* {
     switch (event.type) {
       case WinEventType.single:
-        yield WinState(type: WinStateType.waitingForOpp);
+        yield WinState(type: WinStateType.singleWin, moves: event.moves);
         break;
       case WinEventType.multi:
         yield WinState(type: WinStateType.waitingForOpp);

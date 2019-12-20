@@ -39,6 +39,10 @@ class _WinState extends State<WinScreen> with TickerProviderStateMixin {
         bloc: bloc,
         builder: (context, state) {
           switch (state.type) {
+            case WinStateType.singleWin:
+              print(state.moves);
+              return singleWinWidget(state.moves);
+              break;
             case WinStateType.waitingForOpp:
               return Center(
                 child: Text(
@@ -55,6 +59,40 @@ class _WinState extends State<WinScreen> with TickerProviderStateMixin {
               return Container();
           }
         },
+      ),
+    );
+  }
+
+  Widget singleWinWidget(int moves) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(
+            "You did it in",
+            style: TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 2.0,
+            ),
+          ),
+          Text(
+            moves.toString(),
+            style: TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 2.0,
+            ),
+          ),
+          Text(
+            "moves!",
+            style: TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 2.0,
+            ),
+          ),
+        ],
       ),
     );
   }

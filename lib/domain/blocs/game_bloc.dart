@@ -21,8 +21,7 @@ abstract class GameBloc extends BlocEventStateBase<GameEvent, GameState> {
       - moveNumberSubject emits the amount of moves currently used.
   */
   final BehaviorSubject<int> moveNumberSubject = BehaviorSubject<int>();
-  final BehaviorSubject<void> intentToWinScreenSubject =
-      BehaviorSubject<void>();
+  final BehaviorSubject<int> intentToWinScreenSubject = BehaviorSubject<int>();
 
   // Used by respective blocs to store the game state and do endgame checks.
   GameField gameField;

@@ -27,7 +27,7 @@ class _SingleScreenState extends State<SingleScreen>
     _entryAnim = CurvedAnimation(parent: _entryAnimCont, curve: Curves.ease);
     bloc = BlocProvider.of<SingleBloc>(context);
     bloc.emitEvent(GameEvent.start());
-    bloc.intentToWinScreen.listen((_) => _openWinScreen());
+    bloc.intentToWinScreen.listen((int moves) => _openWinScreen(moves));
   }
 
   @override
@@ -188,13 +188,14 @@ class _SingleScreenState extends State<SingleScreen>
     );
   }
 
-  void _openWinScreen() {
+  void _openWinScreen(int moves) {
+    print('holahola');
     Navigator.of(context).pop();
     Navigator.push(
       context,
       ScaleRoute(
         widget: BlocProvider(
-          child: WinScreen(),
+          child: WinScreen(moves: moves),
           bloc: kiwi.Container().resolve<WinBloc>(),
         ),
       ),

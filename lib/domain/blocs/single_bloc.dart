@@ -8,7 +8,7 @@ class SingleBloc extends GameBloc {
   Random ran = Random();
 
   Stream<int> get moveNumber => moveNumberSubject.stream;
-  Stream<void> get intentToWinScreen => intentToWinScreenSubject.stream;
+  Stream<int> get intentToWinScreen => intentToWinScreenSubject.stream;
 
   SingleBloc(this._repo) : super(_repo);
 
@@ -37,6 +37,6 @@ class SingleBloc extends GameBloc {
   @override
   void winCheck(GameField gf, TargetField tf) async {
     bool isCorrect = await _repo.moveDone(gf, tf);
-    if (isCorrect) intentToWinScreenSubject.add(null);
+    if (isCorrect) intentToWinScreenSubject.add(moveNumberSubject.value);
   }
 }

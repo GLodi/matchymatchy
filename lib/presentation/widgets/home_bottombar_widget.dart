@@ -129,16 +129,4 @@ class _HomeBottomBarWidgetState extends State<HomeBottomBarWidget>
       ),
     );
   }
-
-  void _openMultiScreen() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BlocProvider(
-          child: MultiScreen(heroTag: 'multibutton'),
-          bloc: kiwi.Container().resolve<MultiBloc>(),
-        ),
-      ),
-    );
-  }
 }

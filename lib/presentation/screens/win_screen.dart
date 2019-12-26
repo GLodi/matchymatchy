@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:matchymatchy/domain/domain.dart';
+import 'package:matchymatchy/data/models/models.dart';
 
 class WinScreen extends StatefulWidget {
   final int moves;
@@ -40,25 +41,54 @@ class _WinState extends State<WinScreen> with TickerProviderStateMixin {
         builder: (context, state) {
           switch (state.type) {
             case WinStateType.singleWin:
-              print(state.moves);
               return singleWinWidget(state.moves);
               break;
             case WinStateType.waitingForOpp:
               return Center(
-                child: Text(
-                  'waiting for opponent to end',
-                ),
+                child: Text('waiting for opponent to end'),
               );
               break;
             case WinStateType.winnerDeclared:
-              return Center(
-                child: Text('winner: ' + state.winner),
-              );
+              return multiWinWidget(state.message);
               break;
             default:
               return Container();
           }
         },
+      ),
+    );
+  }
+
+  Widget multiWinWidget(WinnerMessage message) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(
+            message.winner + " did it in",
+            style: TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 2.0,
+            ),
+          ),
+          Text(
+            message.moves.toString(),
+            style: TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 2.0,
+            ),
+          ),
+          Text(
+            "moves!",
+            style: TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 2.0,
+            ),
+          ),
+        ],
       ),
     );
   }

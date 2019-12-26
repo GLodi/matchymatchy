@@ -82,7 +82,7 @@ async function declareWinner(matchId: string) {
     } else if (matchDoc.data()!.hostmoves > matchDoc.data()!.joinmoves) {
         await upWinAmount(matchDoc, false)
     }
-    await resetMatch(await matches.doc(matchDoc.id).get())
+    await storePastMatch(await matches.doc(matchDoc.id).get())
 }
 
 async function upWinAmount(matchDoc: DocumentSnapshot, hostOrJoin: boolean) {
@@ -101,9 +101,11 @@ async function upWinAmount(matchDoc: DocumentSnapshot, hostOrJoin: boolean) {
     })
 }
 
-async function resetMatch(matchDoc: DocumentSnapshot) {
+async function storePastMatch(matchDoc: DocumentSnapshot) {
     const hostRef: DocumentReference = users.doc(matchDoc.data()!.hostuid)
     const joinRef: DocumentReference = users.doc(matchDoc.data()!.joinuid)
+    const hostDoc: DocumentSnapshot = await hostRef.get()
+    const joinDoc: DocumentSnapshot = await joinRef.get()
     hostRef
         .collection('pastmatches')
         .doc(matchDoc.id)
@@ -112,6 +114,7 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
             matchid: matchDoc.id,
             moves: matchDoc.data()!.hostmoves,
             enemymoves: matchDoc.data()!.joinmoves,
+            enemyname: joinDoc.data()!.username,
             winner: matchDoc.data()!.winnername,
             time: admin.firestore.Timestamp.now().toMillis(),
             isplayerhost: 1
@@ -124,10 +127,17 @@ async function resetMatch(matchDoc: DocumentSnapshot) {
             matchid: matchDoc.id,
             moves: matchDoc.data()!.joinmoves,
             enemymoves: matchDoc.data()!.hostmoves,
+            enemyname: hostDoc.data()!.username,
             winner: matchDoc.data()!.winnername,
             time: admin.firestore.Timestamp.now().toMillis(),
             isplayerhost: 0
         })
+    await resetMatch(matchDoc)
+}
+
+async function resetMatch(matchDoc: DocumentSnapshot) {
+    const hostRef: DocumentReference = users.doc(matchDoc.data()!.hostuid)
+    const joinRef: DocumentReference = users.doc(matchDoc.data()!.joinuid)
     hostRef
         .collection('activematches')
         .doc(matchDoc.id)

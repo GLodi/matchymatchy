@@ -189,7 +189,6 @@ class _SingleScreenState extends State<SingleScreen>
   }
 
   void _openWinScreen(int moves) {
-    print('holahola');
     Navigator.of(context).pop();
     Navigator.push(
       context,

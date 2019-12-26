@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:matchymatchy/domain/bloc_utils/bloc_utils.dart';
+import 'package:matchymatchy/data/models/models.dart';
 
 class WinState extends BlocState {
   final WinStateType type;
@@ -37,17 +38,23 @@ class WinEvent extends BlocEvent {
   final WinEventType type;
   final String matchId;
   final int moves;
+  final WinnerMessage message;
 
-  WinEvent({this.type: WinEventType.single, this.moves, this.matchId});
+  WinEvent(
+      {this.type: WinEventType.single, this.moves, this.matchId, this.message});
 
   factory WinEvent.single(int moves) =>
       WinEvent(type: WinEventType.single, moves: moves);
 
   factory WinEvent.multi(String matchId) =>
       WinEvent(type: WinEventType.multi, matchId: matchId);
+
+  factory WinEvent.showWinner(WinnerMessage message) =>
+      WinEvent(type: WinEventType.showWinner, message: message);
 }
 
 enum WinEventType {
+  showWinner,
   multi,
   single,
 }

@@ -1,7 +1,10 @@
 import 'package:matchymatchy/data/data.dart';
+import 'package:matchymatchy/data/models/models.dart';
 
 class WinRepo {
-  final MessagingEventBus _messProvider;
+  final SharedPrefsProvider _prefsProvider;
 
-  WinRepo(this._messProvider);
+  WinRepo(this._prefsProvider);
+
+  Future<User> getUser() async => await _prefsProvider.getUser();
 }

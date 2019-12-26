@@ -8,8 +8,8 @@ export async function activeMatchNotification(
     change: Change<DocumentSnapshot>,
     context: EventContext
 ) {
-    const newMatch = change.after.data()
-    const oldMatch = change.before.data()
+    const newMatch: DocumentData | undefined = change.after.data()
+    const oldMatch: DocumentData | undefined = change.before.data()
     if (newMatch != null && oldMatch != null) {
         if (newMatch.joinuid != oldMatch.joinuid) {
             onMatchStart(newMatch, context.params.matchId)
@@ -28,12 +28,19 @@ export async function activeMatchNotification(
 }
 
 export async function pastMatchNotification(context: EventContext) {
-    const playerDoc = await users.doc(context.params.userId).get()
-    const message = {}
+    const playerDoc: DocumentSnapshot = await users
+        .doc(context.params.userId)
+        .get()
+    const message = {
+        data: {
+            messType: 'updatematches'
+        }
+    }
     const options = {
         priority: 'high',
         timeToLive: 60 * 60 * 24
     }
+
     try {
         admin
             .messaging()
@@ -45,11 +52,10 @@ export async function pastMatchNotification(context: EventContext) {
 }
 
 async function onMatchStart(newMatch: DocumentData, matchId: string) {
-    const hostDoc = await users.doc(newMatch.hostuid).get()
-    const hostName = hostDoc.data()!.username
-    const joinDoc = await users.doc(newMatch.joinuid).get()
-    const joinName = joinDoc.data()!.username
-
+    const hostDoc: DocumentSnapshot = await users.doc(newMatch.hostuid).get()
+    const hostName: string = hostDoc.data()!.username
+    const joinDoc: DocumentSnapshot = await users.doc(newMatch.joinuid).get()
+    const joinName: string = joinDoc.data()!.username
     const messageToHost = {
         data: {
             matchid: matchId,
@@ -78,6 +84,7 @@ async function onMatchStart(newMatch: DocumentData, matchId: string) {
         priority: 'high',
         timeToLive: 60 * 60 * 24
     }
+
     try {
         await admin
             .messaging()
@@ -103,8 +110,8 @@ async function onMove(
     matchId: string,
     hostOrJoin: boolean
 ) {
-    const hostDoc = await users.doc(newMatch.hostuid).get()
-    const joinDoc = await users.doc(newMatch.joinuid).get()
+    const hostDoc: DocumentSnapshot = await users.doc(newMatch.hostuid).get()
+    const joinDoc: DocumentSnapshot = await users.doc(newMatch.joinuid).get()
     const message = {
         data: {
             matchid: matchId,
@@ -119,6 +126,7 @@ async function onMove(
         priority: 'high',
         timeToLive: 60 * 60 * 24
     }
+
     try {
         admin
             .messaging()
@@ -136,13 +144,15 @@ async function onMove(
 }
 
 async function onWinner(newMatch: DocumentData, matchId: string) {
-    const hostDoc = await users.doc(newMatch.hostuid).get()
-    const joinDoc = await users.doc(newMatch.joinuid).get()
+    console.log('onWinner called')
+    const hostDoc: DocumentSnapshot = await users.doc(newMatch.hostuid).get()
+    const joinDoc: DocumentSnapshot = await users.doc(newMatch.joinuid).get()
     const messageToJoin = {
         data: {
             matchid: matchId,
             winner: newMatch.winner,
-            messType: 'winner'
+            messType: 'winner',
+            enemyname: newMatch.enemyname
         },
         notification: {
             title: 'Match finished!',
@@ -153,7 +163,8 @@ async function onWinner(newMatch: DocumentData, matchId: string) {
         data: {
             matchid: matchId,
             winner: newMatch.winner,
-            messType: 'winner'
+            messType: 'winner',
+            enemyname: newMatch.enemyname
         },
         notification: {
             title: 'Match finished!',
@@ -164,6 +175,7 @@ async function onWinner(newMatch: DocumentData, matchId: string) {
         priority: 'high',
         timeToLive: 60 * 60 * 24
     }
+
     try {
         admin
             .messaging()

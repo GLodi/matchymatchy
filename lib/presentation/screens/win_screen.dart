@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:matchymatchy/domain/domain.dart';
-import 'package:matchymatchy/data/models/models.dart';
 
 class WinScreen extends StatefulWidget {
   final int moves;
@@ -49,7 +48,7 @@ class _WinState extends State<WinScreen> with TickerProviderStateMixin {
               );
               break;
             case WinStateType.winnerDeclared:
-              return multiWinWidget(state.message);
+              return multiWinWidget(state);
               break;
             default:
               return Container();
@@ -59,13 +58,13 @@ class _WinState extends State<WinScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget multiWinWidget(WinnerMessage message) {
+  Widget multiWinWidget(WinState state) {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
-            message.winner + " did it in",
+            state.winner + " did it in",
             style: TextStyle(
               fontSize: 40,
               fontWeight: FontWeight.w400,
@@ -73,7 +72,7 @@ class _WinState extends State<WinScreen> with TickerProviderStateMixin {
             ),
           ),
           Text(
-            message.moves.toString(),
+            state.moves.toString(),
             style: TextStyle(
               fontSize: 40,
               fontWeight: FontWeight.w400,

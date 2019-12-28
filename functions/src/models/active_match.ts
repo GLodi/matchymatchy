@@ -12,6 +12,7 @@ export class ActiveMatch {
     isplayerdone: number
     isenemydone: number
     isplayerhost: number
+    isover: number
     time: number
 
     constructor(
@@ -28,6 +29,7 @@ export class ActiveMatch {
         isplayerdone: number,
         isenemydone: number,
         isplayerhost: number,
+        isover: number,
         time: number
     ) {
         this.matchid = matchid
@@ -43,6 +45,7 @@ export class ActiveMatch {
         this.isplayerdone = isplayerdone
         this.isenemydone = isenemydone
         this.isplayerhost = isplayerhost
+        this.isover = isover
         this.time = time
     }
 }

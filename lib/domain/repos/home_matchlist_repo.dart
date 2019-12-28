@@ -11,7 +11,6 @@ class HomeMatchListRepo {
     String uid = await _prefsProvider.getUid();
     List<ActiveMatch> activeMatches = await _apiProvider.getActiveMatches(uid);
     activeMatches.sort((a, b) => b.time.compareTo(a.time));
-    await _dbProvider.deleteActiveMatches();
     await _dbProvider.storeActiveMatches(activeMatches);
   }
 

@@ -33,8 +33,9 @@ class WinBloc extends BlocEventStateBase<WinEvent, WinState> {
       _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
         if (mess.matchId == matchId) {
           User user = await _repo.getUser();
-          if (mess.winner == user.uid) {}
-          emitEvent(WinEvent.showWinner(mess));
+          ActiveMatch activeMatch = await _repo.getActiveMatch(mess.matchId);
+          emitEvent(
+              WinEvent.showWinner(mess.winner, user.username, activeMatch));
         }
       });
     }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
 
 import 'package:matchymatchy/domain/domain.dart';
-import 'package:matchymatchy/presentation/screens/multi_screen.dart';
 import 'package:matchymatchy/presentation/screens/single_screen.dart';
 
 class HomeBottomBarWidget extends StatefulWidget {

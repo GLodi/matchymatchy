@@ -68,7 +68,6 @@ class HomeMatchListBloc
       });
       _forfeitSubs = _messEventBus.on<ForfeitMessage>().listen((forf) async {
         print('matchlist forfeit');
-        // TODO: don't delete, just update it, need to get info for winwidget
         await _repo.deleteActiveMatch(forf.matchId);
         emitEvent(HomeMatchListEvent.updateMatches());
       });

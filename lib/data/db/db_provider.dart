@@ -84,7 +84,8 @@ class DbProviderImpl extends DbProvider {
   @override
   Future<List<ActiveMatch>> getActiveMatches() async {
     var dbClient = await db;
-    List<Map> maps = await dbClient.query(activeMatchTable);
+    List<Map> maps = await dbClient
+        .query(activeMatchTable, where: 'isOver = ?', whereArgs: ['0']);
     List<ActiveMatch> matches =
         maps.map((m) => ActiveMatch.fromMap(m)).toList();
     return matches.length > 0 ? matches : [];

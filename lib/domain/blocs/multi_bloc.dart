@@ -133,7 +133,7 @@ class MultiBloc extends GameBloc {
       _moveSubs = _messEventBus.on<EnemyMoveMessage>().listen((mess) {
         if (repo.matchId == mess.matchId) {
           // TODO: check match not won
-          print('multi message');
+          print('multi move');
           _enemyMovesSubject.add(mess.enemyMoves);
           _enemyTargetSubject.add(TargetField(grid: mess.enemyTarget));
         }

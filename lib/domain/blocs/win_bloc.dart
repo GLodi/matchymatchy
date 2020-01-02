@@ -21,8 +21,16 @@ class WinBloc extends BlocEventStateBase<WinEvent, WinState> {
         break;
       case WinEventType.multi:
         matchId = event.matchId;
-        yield WinState(type: WinStateType.waitingForOpp);
         listenToMessages();
+        yield WinState(type: WinStateType.waitingForOpp);
+        // TODO: make network request. if there's no pastmatch with
+        // that id, then do nothing
+        // if there is, then show info on move amounts.
+        try {
+          PastMatch pastMatch = await _repo.getPastMatch(matchId);
+        } catch (e) {
+          // TODO: nothing, as waitingforopp is already showing
+        }
         break;
       default:
     }
@@ -30,12 +38,11 @@ class WinBloc extends BlocEventStateBase<WinEvent, WinState> {
 
   void listenToMessages() {
     if (_winnerSubs == null) {
+      print('winbloc matchId: ' + matchId);
       _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
         if (mess.matchId == matchId) {
-          User user = await _repo.getUser();
-          ActiveMatch activeMatch = await _repo.getActiveMatch(mess.matchId);
-          emitEvent(
-              WinEvent.showWinner(mess.winner, user.username, activeMatch));
+          // TODO: make network call presuming pastmatch exists on db
+          print('win winner');
         }
       });
     }

@@ -9,7 +9,7 @@ class WinState extends BlocState {
   final String winner;
   final String username;
   final int moves;
-  final ActiveMatch activeMatch;
+  final PastMatch pastMatch;
 
   WinState({
     @required this.type,
@@ -17,19 +17,19 @@ class WinState extends BlocState {
     this.winner,
     this.moves,
     this.username,
-    this.activeMatch,
+    this.pastMatch,
   });
 
   factory WinState.waitingForOpp() =>
       WinState(type: WinStateType.waitingForOpp);
 
   factory WinState.winnerDeclared(
-          String winner, String username, ActiveMatch activeMatch) =>
+          String winner, String username, PastMatch pastMatch) =>
       WinState(
         type: WinStateType.winnerDeclared,
         winner: winner,
         username: username,
-        activeMatch: activeMatch,
+        pastMatch: pastMatch,
       );
 
   factory WinState.singleWin(int moves) =>
@@ -45,18 +45,12 @@ enum WinStateType {
 class WinEvent extends BlocEvent {
   final WinEventType type;
   final String matchId;
-  final String winner;
-  final String username;
   final int moves;
-  final ActiveMatch activeMatch;
 
   WinEvent({
     this.type: WinEventType.single,
     this.matchId,
-    this.winner,
-    this.username,
     this.moves,
-    this.activeMatch,
   });
 
   factory WinEvent.single(int moves) =>
@@ -64,19 +58,9 @@ class WinEvent extends BlocEvent {
 
   factory WinEvent.multi(String matchId) =>
       WinEvent(type: WinEventType.multi, matchId: matchId);
-
-  factory WinEvent.showWinner(
-          String winner, String username, ActiveMatch activeMatch) =>
-      WinEvent(
-        type: WinEventType.showWinner,
-        winner: winner,
-        username: username,
-        activeMatch: activeMatch,
-      );
 }
 
 enum WinEventType {
-  showWinner,
   multi,
   single,
 }

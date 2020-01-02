@@ -144,27 +144,26 @@ async function onMove(
 }
 
 async function onWinner(newMatch: DocumentData, matchId: string) {
-    console.log('onWinner called')
     const hostDoc: DocumentSnapshot = await users.doc(newMatch.hostuid).get()
     const joinDoc: DocumentSnapshot = await users.doc(newMatch.joinuid).get()
-    const messageToJoin = {
+    const messageToHost = {
         data: {
             matchid: matchId,
             winner: newMatch.winner,
             messType: 'winner',
-            enemyname: newMatch.enemyname
+            enemyname: joinDoc.data()!.username
         },
         notification: {
             title: 'Match finished!',
             body: newMatch.winnername + ' won!'
         }
     }
-    const messageToHost = {
+    const messageToJoin = {
         data: {
             matchid: matchId,
             winner: newMatch.winner,
             messType: 'winner',
-            enemyname: newMatch.enemyname
+            enemyname: hostDoc.data()!.username
         },
         notification: {
             title: 'Match finished!',
@@ -179,7 +178,7 @@ async function onWinner(newMatch: DocumentData, matchId: string) {
     try {
         admin
             .messaging()
-            .sendToDevice(joinDoc.data()!.fcmtoken, messageToJoin, options)
+            .sendToDevice(hostDoc.data()!.fcmtoken, messageToHost, options)
     } catch (e) {
         console.log('--- error sending message')
         console.error(Error(e))
@@ -187,7 +186,7 @@ async function onWinner(newMatch: DocumentData, matchId: string) {
     try {
         admin
             .messaging()
-            .sendToDevice(hostDoc.data()!.fcmtoken, messageToHost, options)
+            .sendToDevice(joinDoc.data()!.fcmtoken, messageToJoin, options)
     } catch (e) {
         console.log('--- error sending message')
         console.error(Error(e))

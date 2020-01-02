@@ -71,7 +71,7 @@ class DbProviderImpl extends DbProvider {
   Future<ActiveMatch> getActiveMatch(String matchId) async {
     var dbClient = await db;
     List<Map> maps = await dbClient
-        .query(activeMatchTable, where: 'matchId = ?', whereArgs: [matchId]);
+        .query(activeMatchTable, where: 'matchid = ?', whereArgs: [matchId]);
     return maps.length > 0 ? ActiveMatch.fromMap(maps.first) : null;
   }
 
@@ -85,9 +85,11 @@ class DbProviderImpl extends DbProvider {
   Future<List<ActiveMatch>> getActiveMatches() async {
     var dbClient = await db;
     List<Map> maps = await dbClient
-        .query(activeMatchTable, where: 'isOver = ?', whereArgs: ['0']);
+        .query(activeMatchTable, where: 'isover = ?', whereArgs: ['0']);
     List<ActiveMatch> matches =
         maps.map((m) => ActiveMatch.fromMap(m)).toList();
+    print('dbprovider ' + matches.length.toString());
+    print(matches.first.toMap());
     return matches.length > 0 ? matches : [];
   }
 

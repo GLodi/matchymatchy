@@ -9,6 +9,8 @@ abstract class ApiProvider {
 
   Future<List<ActiveMatch>> getActiveMatches(String uid);
 
+  Future<PastMatch> getPastMatch(String uid, String matchId);
+
   Future<List<PastMatch>> getPastMatches(String uid);
 
   Future<ActiveMatch> queuePlayer(String uid, String token);
@@ -36,6 +38,16 @@ class ApiProviderImpl implements ApiProvider {
     return NetUtils.get(_baseUrl + 'getActiveMatches?userId=' + uid).then(
         (response) =>
             (response as List).map((i) => ActiveMatch.fromMap(i)).toList());
+  }
+
+  @override
+  Future<PastMatch> getPastMatch(String uid, String matchId) async {
+    DocumentSnapshot pastSnap = await usersRef
+        .document(uid)
+        .collection('pastmatches')
+        .document(matchId)
+        .get();
+    return PastMatch.fromMap(pastSnap.data);
   }
 
   @override

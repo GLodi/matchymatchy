@@ -61,7 +61,6 @@ async function pushOnList(
         hostOrJoin ? +match.data()!.hostdone : +match.data()!.joindone,
         hostOrJoin ? +match.data()!.joindone : +match.data()!.hostdone,
         userId == match.data()!.hostuid ? 1 : 0,
-        0,
         match.data()!.time
     )
 }

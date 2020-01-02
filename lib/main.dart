@@ -49,7 +49,7 @@ void main() {
         c.resolve<ApiProvider>(),
       ));
   container.registerFactory((c) =>
-      WinRepo(c.resolve<SharedPrefsProvider>(), c.resolve<DbProvider>()));
+      WinRepo(c.resolve<ApiProvider>(), c.resolve<SharedPrefsProvider>()));
   container
       .registerFactory((c) => ActiveMatchItemRepo(c.resolve<DbProvider>()));
 

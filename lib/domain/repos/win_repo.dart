@@ -2,13 +2,10 @@ import 'package:matchymatchy/data/data.dart';
 import 'package:matchymatchy/data/models/models.dart';
 
 class WinRepo {
-  ApiProvider _apiProvider;
-  SharedPrefsProvider _prefsProvider;
+  DbProvider _dbProvider;
 
-  WinRepo(this._apiProvider, this._prefsProvider);
+  WinRepo(this._dbProvider);
 
-  Future<PastMatch> getPastMatch(String matchId) async {
-    String uid = await _prefsProvider.getUid();
-    return await _apiProvider.getPastMatch(uid, matchId);
-  }
+  Future<PastMatch> getPastMatch(String matchId) async =>
+      await _dbProvider.getPastMatch(matchId);
 }

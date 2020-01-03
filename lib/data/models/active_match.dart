@@ -24,7 +24,6 @@ class ActiveMatch extends Match {
   int isPlayerDone;
   int isEnemyDone;
   int isPlayerHost;
-  int isOver;
   TargetField enemyTargetField;
   DateTime time;
 
@@ -41,7 +40,6 @@ class ActiveMatch extends Match {
     isPlayerDone = int.parse(map['isplayerdone'].toString());
     isEnemyDone = int.parse(map['isenemydone'].toString());
     isPlayerHost = int.parse(map['isplayerhost'].toString());
-    isOver = int.parse(map['isover'].toString());
     enemyTargetField = TargetField(grid: map['enemytarget']);
     time = DateTime.fromMillisecondsSinceEpoch(map['time']);
   }
@@ -60,7 +58,6 @@ class ActiveMatch extends Match {
       'isplayerdone': isPlayerDone,
       'isenemydone': isEnemyDone,
       'isplayerhost': isPlayerHost,
-      'isover': isOver,
       'enemytarget': enemyTargetField.grid,
       'time': time.millisecondsSinceEpoch,
     };

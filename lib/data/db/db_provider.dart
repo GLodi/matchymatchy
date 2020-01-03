@@ -14,6 +14,8 @@ abstract class DbProvider {
 
   Future<List<ActiveMatch>> getActiveMatches();
 
+  Future<PastMatch> getPastMatch(String matchId);
+
   Future<List<PastMatch>> getPastMatches();
 
   Future<void> storeActiveMatch(ActiveMatch activeMatch);
@@ -84,12 +86,9 @@ class DbProviderImpl extends DbProvider {
   @override
   Future<List<ActiveMatch>> getActiveMatches() async {
     var dbClient = await db;
-    List<Map> maps = await dbClient
-        .query(activeMatchTable, where: 'isover = ?', whereArgs: ['0']);
+    List<Map> maps = await dbClient.query(activeMatchTable);
     List<ActiveMatch> matches =
         maps.map((m) => ActiveMatch.fromMap(m)).toList();
-    print('dbprovider ' + matches.length.toString());
-    print(matches.first.toMap());
     return matches.length > 0 ? matches : [];
   }
 
@@ -98,6 +97,14 @@ class DbProviderImpl extends DbProvider {
     var dbClient = await db;
     list.forEach((match) => dbClient.insert(activeMatchTable, match.toMap()));
     return null;
+  }
+
+  @override
+  Future<PastMatch> getPastMatch(String matchId) async {
+    var dbClient = await db;
+    List<Map> maps = await dbClient
+        .query(pastMatchTable, where: 'matchid = ?', whereArgs: [matchId]);
+    return maps.length > 0 ? PastMatch.fromMap(maps.first) : null;
   }
 
   @override

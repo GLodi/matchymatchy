@@ -23,9 +23,6 @@ class WinBloc extends BlocEventStateBase<WinEvent, WinState> {
         matchId = event.matchId;
         listenToMessages();
         yield WinState(type: WinStateType.waitingForOpp);
-        // TODO: make network request. if there's no pastmatch with
-        // that id, then do nothing
-        // if there is, then show info on move amounts.
         try {
           PastMatch pastMatch = await _repo.getPastMatch(matchId);
         } catch (e) {

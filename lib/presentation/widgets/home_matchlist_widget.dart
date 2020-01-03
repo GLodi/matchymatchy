@@ -4,7 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:matchymatchy/data/models/models.dart';
 import 'package:matchymatchy/domain/domain.dart';
-import 'matchlist_item.dart';
+import 'past_match_item.dart';
 import 'active_match_item.dart';
 
 class HomeMatchListWidget extends StatefulWidget {

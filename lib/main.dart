@@ -60,8 +60,7 @@ void main() {
       (c) => HomeBloc(c.resolve<HomeRepo>(), c.resolve<MessagingEventBus>()));
   container.registerFactory((c) => HomeMatchListBloc(
       c.resolve<HomeMatchListRepo>(), c.resolve<MessagingEventBus>()));
-  container.registerFactory(
-      (c) => WinBloc(c.resolve<WinRepo>(), c.resolve<MessagingEventBus>()));
+  container.registerFactory((c) => WinBloc(c.resolve<WinRepo>()));
   container.registerFactory((c) => ActiveMatchItemBloc(
       c.resolve<ActiveMatchItemRepo>(), c.resolve<MessagingEventBus>()));
 

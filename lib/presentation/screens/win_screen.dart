@@ -64,7 +64,7 @@ class _WinState extends State<WinScreen> with TickerProviderStateMixin {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
-            state.winner + " did it in",
+            state.pastMatch.winner + " did it in",
             style: TextStyle(
               fontSize: 40,
               fontWeight: FontWeight.w400,

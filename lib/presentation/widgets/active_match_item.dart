@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:matchymatchy/data/models/models.dart';
-import 'package:matchymatchy/domain/domain.dart';
 import 'package:matchymatchy/presentation/screens/multi_screen.dart';
 import 'matchlist_item.dart';
+import 'package:matchymatchy/data/models/models.dart';
+import 'package:matchymatchy/domain/domain.dart';
 
 class ActiveMatchItem extends StatefulWidget implements MatchListItem {
   final ActiveMatch activeMatch;

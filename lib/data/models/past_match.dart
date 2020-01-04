@@ -2,6 +2,7 @@ class PastMatch {
   String matchId;
   String winner;
   String enemyUrl;
+  String enemyName;
   int moves;
   int enemyMoves;
   int isPlayerHost;
@@ -11,6 +12,7 @@ class PastMatch {
     matchId = map['matchid'];
     winner = map['winner'];
     enemyUrl = map['enemyurl'];
+    enemyName = map['enemyname'];
     moves = int.parse(map['moves'].toString());
     enemyMoves = int.parse(map['enemymoves'].toString());
     isPlayerHost = map['isplayerhost'];
@@ -21,6 +23,7 @@ class PastMatch {
     return <String, dynamic>{
       'matchid': matchId,
       'winner': winner,
+      'enemyname': enemyName,
       'enemyurl': enemyUrl,
       'moves': moves,
       'enemymoves': enemyMoves,

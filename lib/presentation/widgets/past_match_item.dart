@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:matchymatchy/presentation/widgets/matchlist_item.dart';
+import 'package:matchymatchy/presentation/screens/multi_screen.dart';
+import 'matchlist_item.dart';
+import 'package:matchymatchy/domain/domain.dart';
 import 'package:matchymatchy/data/models/models.dart';
 
 class PastMatchItem extends StatefulWidget implements MatchListItem {
   final PastMatch pastMatch;
   final User user;
 
-  PastMatchItem({Key key, this.pastMatch, this.user}) : super(key: key);
+  PastMatchItem({Key key, this.pastMatch, this.user});
 
   @override
   State<StatefulWidget> createState() {
@@ -22,7 +26,10 @@ class _PastMatchItemState extends State<PastMatchItem> {
     return Container(
       height: 110,
       margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
-      child: pastElements(),
+      child: GestureDetector(
+        onTap: () => _openMultiScreen(),
+        child: pastElements(),
+      ),
     );
   }
 
@@ -122,6 +129,17 @@ class _PastMatchItemState extends State<PastMatchItem> {
           ),
         ),
         blendMode: BlendMode.dstIn,
+      ),
+    );
+  }
+
+  void _openMultiScreen() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          child: MultiScreen(heroTag: widget.pastMatch.matchId),
+          bloc: kiwi.Container().resolve<MultiBloc>(),
+        ),
       ),
     );
   }

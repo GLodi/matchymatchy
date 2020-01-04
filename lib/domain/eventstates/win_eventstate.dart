@@ -6,7 +6,6 @@ import 'package:matchymatchy/data/models/models.dart';
 class WinState extends BlocState {
   final WinStateType type;
   final String message;
-  final String winner;
   final String username;
   final int moves;
   final PastMatch pastMatch;
@@ -14,7 +13,6 @@ class WinState extends BlocState {
   WinState({
     @required this.type,
     this.message,
-    this.winner,
     this.moves,
     this.username,
     this.pastMatch,
@@ -23,11 +21,9 @@ class WinState extends BlocState {
   factory WinState.waitingForOpp() =>
       WinState(type: WinStateType.waitingForOpp);
 
-  factory WinState.winnerDeclared(
-          String winner, String username, PastMatch pastMatch) =>
+  factory WinState.winnerDeclared(String username, PastMatch pastMatch) =>
       WinState(
         type: WinStateType.winnerDeclared,
-        winner: winner,
         username: username,
         pastMatch: pastMatch,
       );

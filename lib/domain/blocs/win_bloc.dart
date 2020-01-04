@@ -6,12 +6,10 @@ import 'package:matchymatchy/data/models/models.dart';
 
 class WinBloc extends BlocEventStateBase<WinEvent, WinState> {
   final WinRepo _repo;
-  final MessagingEventBus _messEventBus;
   StreamSubscription _winnerSubs;
   String matchId;
 
-  WinBloc(this._repo, this._messEventBus)
-      : super(initialState: WinState.waitingForOpp());
+  WinBloc(this._repo) : super(initialState: WinState.waitingForOpp());
 
   @override
   Stream<WinState> eventHandler(WinEvent event, WinState currentState) async* {
@@ -21,27 +19,16 @@ class WinBloc extends BlocEventStateBase<WinEvent, WinState> {
         break;
       case WinEventType.multi:
         matchId = event.matchId;
-        listenToMessages();
         yield WinState(type: WinStateType.waitingForOpp);
         try {
           PastMatch pastMatch = await _repo.getPastMatch(matchId);
+          User user = await _repo.getUser();
+          yield WinState.winnerDeclared(user.username, pastMatch);
         } catch (e) {
           // TODO: nothing, as waitingforopp is already showing
         }
         break;
       default:
-    }
-  }
-
-  void listenToMessages() {
-    if (_winnerSubs == null) {
-      print('winbloc matchId: ' + matchId);
-      _winnerSubs = _messEventBus.on<WinnerMessage>().listen((mess) async {
-        if (mess.matchId == matchId) {
-          // TODO: make network call presuming pastmatch exists on db
-          print('win winner');
-        }
-      });
     }
   }
 

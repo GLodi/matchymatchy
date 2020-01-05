@@ -25,7 +25,7 @@ class WinBloc extends BlocEventStateBase<WinEvent, WinState> {
           User user = await _repo.getUser();
           yield WinState.winnerDeclared(user.username, pastMatch);
         } catch (e) {
-          // TODO: nothing, as waitingforopp is already showing
+          print(e);
         }
         break;
       default:

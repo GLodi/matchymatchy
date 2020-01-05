@@ -5,7 +5,7 @@ class WinRepo {
   SharedPrefsProvider _prefsProvider;
   DbProvider _dbProvider;
 
-  WinRepo(this._dbProvider);
+  WinRepo(this._dbProvider, this._prefsProvider);
 
   Future<PastMatch> getPastMatch(String matchId) async =>
       await _dbProvider.getPastMatch(matchId);

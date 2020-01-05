@@ -3,8 +3,7 @@ import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:matchymatchy/presentation/widgets/matchlist_item.dart';
-import 'package:matchymatchy/presentation/screens/multi_screen.dart';
-import 'matchlist_item.dart';
+import 'package:matchymatchy/presentation/screens/win_screen.dart';
 import 'package:matchymatchy/domain/domain.dart';
 import 'package:matchymatchy/data/models/models.dart';
 
@@ -137,8 +136,8 @@ class _PastMatchItemState extends State<PastMatchItem> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => BlocProvider(
-          child: MultiScreen(heroTag: widget.pastMatch.matchId),
-          bloc: kiwi.Container().resolve<MultiBloc>(),
+          child: WinScreen(matchId: widget.pastMatch.matchId),
+          bloc: kiwi.Container().resolve<WinBloc>(),
         ),
       ),
     );

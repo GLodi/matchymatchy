@@ -79,7 +79,6 @@ class DbProviderImpl extends DbProvider {
 
   @override
   Future<void> storeActiveMatch(ActiveMatch activeMatch) async {
-    print('STOREACTIVEMATCH');
     var dbClient = await db;
     await dbClient.insert(activeMatchTable, activeMatch.toMap());
   }
@@ -95,7 +94,6 @@ class DbProviderImpl extends DbProvider {
 
   @override
   Future<void> storeActiveMatches(List<ActiveMatch> list) async {
-    print('STOREACTIVEMATCHES');
     var dbClient = await db;
     list.forEach((match) => dbClient.insert(activeMatchTable, match.toMap()));
     return null;
@@ -119,7 +117,6 @@ class DbProviderImpl extends DbProvider {
 
   @override
   Future<void> storePastMatches(List<PastMatch> list) async {
-    print('STOREPASTMATCHES');
     var dbClient = await db;
     list.forEach(
         (pastmatch) => dbClient.insert(pastMatchTable, pastmatch.toMap()));

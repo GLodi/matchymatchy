@@ -117,7 +117,9 @@ async function storePastMatch(matchDoc: DocumentSnapshot) {
             enemyname: joinDoc.data()!.username,
             winner: matchDoc.data()!.winnername,
             time: admin.firestore.Timestamp.now().toMillis(),
-            isplayerhost: 1
+            isplayerhost: 1,
+            isplayerwinner:
+                matchDoc.data()!.winner == hostDoc.data()!.uid ? 1 : 0
         })
     joinRef
         .collection('pastmatches')
@@ -130,7 +132,9 @@ async function storePastMatch(matchDoc: DocumentSnapshot) {
             enemyname: hostDoc.data()!.username,
             winner: matchDoc.data()!.winnername,
             time: admin.firestore.Timestamp.now().toMillis(),
-            isplayerhost: 0
+            isplayerhost: 0,
+            isplayerwinner:
+                matchDoc.data()!.winner == joinDoc.data()!.uid ? 1 : 0
         })
     await resetMatch(matchDoc)
 }

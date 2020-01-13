@@ -6,6 +6,7 @@ class PastMatch {
   int moves;
   int enemyMoves;
   int isPlayerHost;
+  int isPlayerWinner;
   DateTime time;
 
   PastMatch.fromMap(Map<String, dynamic> map) {
@@ -15,7 +16,8 @@ class PastMatch {
     enemyName = map['enemyname'];
     moves = int.parse(map['moves'].toString());
     enemyMoves = int.parse(map['enemymoves'].toString());
-    isPlayerHost = map['isplayerhost'];
+    isPlayerHost = int.parse(map['isplayerhost'].toString());
+    isPlayerWinner = int.parse(map['isplayerwinner'].toString());
     time = DateTime.fromMillisecondsSinceEpoch(map['time']);
   }
 
@@ -28,6 +30,7 @@ class PastMatch {
       'moves': moves,
       'enemymoves': enemyMoves,
       'isplayerhost': isPlayerHost,
+      'isplayerwinner': isPlayerWinner,
       'time': time.millisecondsSinceEpoch,
     };
   }

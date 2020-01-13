@@ -72,7 +72,9 @@ class _WinState extends State<WinScreen> with TickerProviderStateMixin {
             ),
           ),
           Text(
-            state.moves.toString(),
+            state.username == state.pastMatch.winner
+                ? state.pastMatch.moves.toString()
+                : state.pastMatch.enemyMoves.toString(),
             style: TextStyle(
               fontSize: 40,
               fontWeight: FontWeight.w400,

@@ -7,7 +7,6 @@ import 'package:matchymatchy/data/models/models.dart';
 class WinBloc extends BlocEventStateBase<WinEvent, WinState> {
   final WinRepo _repo;
   StreamSubscription _winnerSubs;
-  String matchId;
 
   WinBloc(this._repo) : super(initialState: WinState.waitingForOpp());
 
@@ -18,12 +17,13 @@ class WinBloc extends BlocEventStateBase<WinEvent, WinState> {
         yield WinState(type: WinStateType.singleWin, moves: event.moves);
         break;
       case WinEventType.multi:
-        matchId = event.matchId;
         yield WinState(type: WinStateType.waitingForOpp);
         try {
-          PastMatch pastMatch = await _repo.getPastMatch(matchId);
-          User user = await _repo.getUser();
-          yield WinState.winnerDeclared(user.username, pastMatch);
+          PastMatch pastMatch = await _repo.getPastMatch(event.matchId);
+          if (pastMatch != null) {
+            User user = await _repo.getUser();
+            yield WinState.winnerDeclared(user.username, pastMatch);
+          }
         } catch (e) {
           print(e);
         }

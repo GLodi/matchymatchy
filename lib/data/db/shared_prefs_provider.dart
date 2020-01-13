@@ -28,7 +28,6 @@ class SharedPrefsProviderImpl extends SharedPrefsProvider {
 
   @override
   Future<User> getUser() async {
-    print("quiquiqui");
     prefs = await SharedPreferences.getInstance();
     String username = prefs.getString('username');
     String uid = prefs.getString('uid');

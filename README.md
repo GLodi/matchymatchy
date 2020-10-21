@@ -11,7 +11,7 @@ STILL IN DEVELOPMENT
 	<img src="https://raw.githubusercontent.com/GLodi/matchymatchy/master/gfx/newgif.gif" width="256">
 </div>
 
-Fun fact: this app was entirely developed on [emacs](https://giuliolodi.dev/blog/2019/05/06/flutter-on-spacemacs)!
+Fun fact: this app was entirely developed on [emacs](https://giuliolodi.dev/2019/05/06/flutter-on-spacemacs)!
 
 ## Architecture
 
